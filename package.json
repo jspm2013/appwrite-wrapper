@@ -1,6 +1,6 @@
 {
   "name": "@jspm2013/test-own-library",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "My first awesome test library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

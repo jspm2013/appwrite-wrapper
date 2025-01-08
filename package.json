@@ -1,7 +1,7 @@
 {
-  "name": "@jspm2013/test-own-library",
-  "version": "1.0.4",
-  "description": "My first awesome test library",
+  "name": "@jspm2013/appwrite-wrapper",
+  "version": "1.0.5",
+  "description": "Wrapper library to handle Appwrite methods including server handling using SSR",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -9,11 +9,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jspm2013/test-own-library.git"
+    "url": "git+https://github.com/jspm2013/appwrite-wrapper.git"
   },
   "keywords": [
     "library",
-    "javascript"
+    "javascript",
+    "appwrite",
+    "ssr"
   ],
   "author": "Johann Payer",
   "license": "MIT",
@@ -25,7 +27,11 @@
     "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "next": "^15.1.4",
+    "node-appwrite": "^14.1.0"
   }
 }

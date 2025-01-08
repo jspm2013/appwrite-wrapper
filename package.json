@@ -1,0 +1,28 @@
+{
+    "name": "@jspm2013/test-own-library",
+    "version": "1.0.0",
+    "description": "My first awesome test library",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+      "dist"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/jspm2013/test-own-library.git"
+    },
+    "keywords": [
+      "library",
+      "javascript"
+    ],
+    "author": "Johann Payer",
+    "license": "MIT",
+    "scripts": {
+      "build": "tsc",
+      "prepublishOnly": "pnpm run build"
+    },
+    "devDependencies": {
+      "typescript": "^5.0.0",
+      "@types/node": "^22.0.0"
+    }
+  }

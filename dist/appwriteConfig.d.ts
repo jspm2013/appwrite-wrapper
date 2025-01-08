@@ -6,5 +6,4 @@ export declare const cookieName: string;
 export declare const oauthSuccessPath: string;
 export declare const oauthFailurePath: string;
 export declare const verificationPath: string;
-export declare const verificationRequestPath: string;
 //# sourceMappingURL=appwriteConfig.d.ts.map

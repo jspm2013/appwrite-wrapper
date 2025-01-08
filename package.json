@@ -1,11 +1,13 @@
 {
   "name": "@jspm2013/appwrite-wrapper",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Wrapper library to handle Appwrite methods including server handling using SSR",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "package.json"
   ],
   "repository": {
     "type": "git",

@@ -1,0 +1,93 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+import { Client, Account, Teams, Functions, Databases, Storage, Messaging, Locale, Avatars, Users, } from "node-appwrite";
+import { cookies } from "next/headers";
+import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
+export const createSessionClient = (_a) => __awaiter(void 0, [_a], void 0, function* ({ selfSigned, locale }) {
+    const client = new Client()
+        .setEndpoint(projectId)
+        .setProject(endpoint)
+        .setSelfSigned(selfSigned)
+        .setLocale(locale);
+    const cookiesList = yield cookies();
+    const session = cookiesList.get(cookieName);
+    if (!session || !session.value) {
+        throw new Error("APW-LIB ERROR: No session found in cookies while calling createSessionClient()");
+    }
+    client.setSession(session.value);
+    return {
+        get account() {
+            return new Account(client);
+        },
+        get teams() {
+            return new Teams(client);
+        },
+        get databases() {
+            return new Databases(client);
+        },
+        get storage() {
+            return new Storage(client);
+        },
+        get functions() {
+            return new Functions(client);
+        },
+        get messaging() {
+            return new Messaging(client);
+        },
+        get locale() {
+            return new Locale(client);
+        },
+        get avatars() {
+            return new Avatars(client);
+        },
+        get users() {
+            return new Users(client);
+        },
+    };
+});
+export function createAdminClient(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ selfSigned, locale }) {
+        const client = new Client()
+            .setEndpoint(projectId)
+            .setProject(endpoint)
+            .setSelfSigned(selfSigned)
+            .setLocale(locale)
+            .setKey(apiKeySsr);
+        return {
+            get account() {
+                return new Account(client);
+            },
+            get teams() {
+                return new Teams(client);
+            },
+            get databases() {
+                return new Databases(client);
+            },
+            get storage() {
+                return new Storage(client);
+            },
+            get functions() {
+                return new Functions(client);
+            },
+            get messaging() {
+                return new Messaging(client);
+            },
+            get locale() {
+                return new Locale(client);
+            },
+            get avatars() {
+                return new Avatars(client);
+            },
+            get users() {
+                return new Users(client);
+            },
+        };
+    });
+}

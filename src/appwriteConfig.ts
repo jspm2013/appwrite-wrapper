@@ -28,11 +28,6 @@ if (!process.env.APPWRITE_VERIFICATION_PATH) {
     "APW-LIB ERROR: Missing required environment variable: APPWRITE_VERIFICATION_PATH"
   );
 }
-if (!process.env.APPWRITE_VERIFICATION_REQUEST_PATH) {
-  throw new Error(
-    "APW-LIB ERROR: Missing required environment variable: APPWRITE_VERIFICATION_REQUEST_PATH"
-  );
-}
 
 export const projectId = process.env.APPWRITE_PROJECT_ID;
 export const endpoint = `${process.env.APPWRITE_SERVER_URL}/v1`;
@@ -47,5 +42,3 @@ export const oauthFailurePath =
   process.env.APPWRITE_OAUTH_FAILURE_PATH || "sign-in";
 export const verificationPath =
   process.env.APPWRITE_VERIFICATION_PATH || "verification";
-export const verificationRequestPath =
-  process.env.APPWRITE_VERIFICATION_REQUEST_PATH || "verification-request";

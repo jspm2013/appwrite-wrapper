@@ -34,7 +34,7 @@ const createAccount = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email
         return yield account.create(ID.unique(), email, password, name);
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing createAccount():", err);
+        console.error("APW-LIB ERROR (account): Error executing createAccount():", err);
         return err;
     }
 });
@@ -47,7 +47,7 @@ const createJWT = () => __awaiter(void 0, void 0, void 0, function* () {
         return yield account.createJWT();
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing createJWT():", err);
+        console.error("APW-LIB ERROR (account): Error executing createJWT():", err);
         return err;
     }
 });
@@ -60,7 +60,7 @@ const createVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ 
         return yield account.createVerification(verificationUrl);
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing createVerification():", err);
+        console.error("APW-LIB ERROR (account): Error executing createVerification():", err);
         return err;
     }
 });
@@ -73,7 +73,7 @@ const deleteSession = (_a) => __awaiter(void 0, [_a], void 0, function* ({ sessi
         yield account.deleteSession(sessionId);
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing deleteSession():", err);
+        console.error("APW-LIB ERROR (account): Error executing deleteSession():", err);
         return err;
     }
 });
@@ -86,7 +86,7 @@ const listSessions = () => __awaiter(void 0, void 0, void 0, function* () {
         return yield account.listSessions();
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing listSessions():", err);
+        console.error("APW-LIB ERROR (account): Error executing listSessions():", err);
         return err;
     }
 });
@@ -99,7 +99,7 @@ const deleteSessions = () => __awaiter(void 0, void 0, void 0, function* () {
         yield account.deleteSessions();
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing deleteSessions():", err);
+        console.error("APW-LIB ERROR (account): Error executing deleteSessions():", err);
         return err;
     }
 });
@@ -112,8 +112,12 @@ const getUser = () => __awaiter(void 0, void 0, void 0, function* () {
         return yield account.get();
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing getUser():", err);
-        return err;
+        return null;
+        /*
+         * Appwrite throws occurs when the user is not logged in, we have to return null for that case.
+         */
+        //console.error("APW-LIB ERROR (account): Error executing getUser():", err);
+        //return err as Error;
     }
 });
 /**
@@ -131,7 +135,7 @@ const deletePrefs = (_a) => __awaiter(void 0, [_a], void 0, function* ({ key, })
         return oldPrefs;
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing deletePrefs():", err);
+        console.error("APW-LIB ERROR (account): Error executing deletePrefs():", err);
         return err;
     }
 });
@@ -144,7 +148,7 @@ const getPrefs = () => __awaiter(void 0, void 0, void 0, function* () {
         return yield account.getPrefs();
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing getPrefs():", err);
+        console.error("APW-LIB ERROR (account): Error executing getPrefs():", err);
         return err;
     }
 });
@@ -163,7 +167,7 @@ const setPrefs = (_a) => __awaiter(void 0, [_a], void 0, function* ({ newPrefs, 
         }
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing setPrefs():", err);
+        console.error("APW-LIB ERROR (account): Error executing setPrefs():", err);
         return err;
     }
 });
@@ -176,7 +180,7 @@ const updateVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ 
         return yield account.updateVerification(userId, secret);
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing updateVerification():", err);
+        console.error("APW-LIB ERROR (account): Error executing updateVerification():", err);
         return err;
     }
 });
@@ -196,7 +200,7 @@ const createEmailPasswordSession = (_a) => __awaiter(void 0, [_a], void 0, funct
         return session;
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing createEmailPasswordSession():", err);
+        console.error("APW-LIB ERROR (account): Error executing createEmailPasswordSession():", err);
         return err;
     }
 });
@@ -209,7 +213,7 @@ const createOAuth2Token = (_a) => __awaiter(void 0, [_a], void 0, function* ({ p
         return yield account.createOAuth2Token(OAuthProvider[provider], `${host}/${successPath}`, `${host}/${failurePath}`);
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing createOAuth2Token():", err);
+        console.error("APW-LIB ERROR (account): Error executing createOAuth2Token():", err);
         return err;
     }
 });
@@ -229,7 +233,7 @@ const createSession = (_a) => __awaiter(void 0, [_a], void 0, function* ({ userI
         return session;
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing createSession():", err);
+        console.error("APW-LIB ERROR (account): Error executing createSession():", err);
         return err;
     }
 });

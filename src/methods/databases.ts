@@ -61,7 +61,7 @@ const createDocument = async ({
       permissions
     );
   } catch (err) {
-    console.error("Error in createDocument:", err);
+    console.error("APW-LIB ERROR (databases): Error in createDocument():", err);
     return err as Error;
   }
 };
@@ -78,7 +78,7 @@ const deleteDocument = async ({
     const { databases } = await createAdminClient();
     await databases.deleteDocument(dbId!, collectionId, documentId);
   } catch (err) {
-    console.error("Error in deleteDocument:", err);
+    console.error("APW-LIB ERROR (databases): Error in deleteDocument():", err);
     return err as Error;
   }
 };
@@ -101,7 +101,7 @@ const getDocument = async ({
       queries
     );
   } catch (err) {
-    console.error("Error in getDocument:", err);
+    console.error("APW-LIB ERROR (databases): Error in getDocument():", err);
     return err as Error;
   }
 };
@@ -118,7 +118,7 @@ const listDocuments = async ({
     const { databases } = await createAdminClient();
     return await databases.listDocuments(dbId!, collectionId, queries);
   } catch (err) {
-    console.error("Error in listDocuments:", err);
+    console.error("APW-LIB ERROR (databases): Error in listDocuments():", err);
     return err as Error;
   }
 };
@@ -143,7 +143,7 @@ const updateDocument = async ({
       permissions
     );
   } catch (err) {
-    console.error("Error in updateDocument:", err);
+    console.error("APW-LIB ERROR (databases): Error in updateDocument():", err);
     return err as Error;
   }
 };

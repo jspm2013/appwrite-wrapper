@@ -19,7 +19,7 @@ const getFlag = (_a) => __awaiter(void 0, [_a], void 0, function* ({ code, width
         return Buffer.from(buffer).toString("base64");
     }
     catch (err) {
-        console.error("Error in getFlag:", err);
+        console.error("APW-LIB ERROR (avatars): Error in getFlag():", err);
         return err;
     }
 });
@@ -33,7 +33,7 @@ const getImageFromUrl = (_a) => __awaiter(void 0, [_a], void 0, function* ({ url
         return Buffer.from(buffer).toString("base64");
     }
     catch (err) {
-        console.error("Error in getImageFromUrl:", err);
+        console.error("APW-LIB ERROR (avatars): Error in getImageFromUrl():", err);
         return err;
     }
 });
@@ -47,7 +47,7 @@ const getUserInitials = (_a) => __awaiter(void 0, [_a], void 0, function* ({ nam
         return Buffer.from(buffer).toString("base64");
     }
     catch (err) {
-        console.error("Error in getUserInitials:", err);
+        console.error("APW-LIB ERROR (avatars): Error in getUserInitials():", err);
         return err;
     }
 });
@@ -61,7 +61,7 @@ const getQrCodeFromString = (_a) => __awaiter(void 0, [_a], void 0, function* ({
         return Buffer.from(buffer).toString("base64");
     }
     catch (err) {
-        console.error("Error in getQrCodeFromString:", err);
+        console.error("APW-LIB ERROR (avatars): Error in getQrCodeFromString():", err);
         return err;
     }
 });

@@ -79,7 +79,7 @@ declare const deleteSessions: () => Promise<void | Error>;
 /**
  * Retrieves the current user.
  */
-declare const getUser: () => Promise<Models.User<Models.Preferences> | Error>;
+declare const getUser: () => Promise<Models.User<Models.Preferences> | Error | null>;
 /**
  * Deletes a specific preference key for the current user.
  */

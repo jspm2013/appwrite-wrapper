@@ -106,7 +106,7 @@ const createSessionForUserId = async ({
     return session;
   } catch (err) {
     console.error(
-      "APW-LIB ERROR: Error executing createSessionForUserId():",
+      "APW-LIB ERROR (users): Error executing createSessionForUserId():",
       err
     );
     return JSON.parse(JSON.stringify(err));
@@ -126,7 +126,7 @@ const createToken = async ({
     const token = await users.createToken(userId, length, expire);
     return token;
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing createToken():", err);
+    console.error("APW-LIB ERROR (users): Error executing createToken():", err);
     return JSON.parse(JSON.stringify(err));
   }
 };
@@ -143,7 +143,7 @@ const deleteSessionForUserId = async ({
     await users.deleteSession(userId, sessionId);
   } catch (err) {
     console.error(
-      "APW-LIB ERROR: Error executing deleteSessionForUserId():",
+      "APW-LIB ERROR (users): Error executing deleteSessionForUserId():",
       err
     );
     return JSON.parse(JSON.stringify(err));
@@ -161,7 +161,7 @@ const deleteSessionsForUserId = async ({
     await users.deleteSessions(userId);
   } catch (err) {
     console.error(
-      "APW-LIB ERROR: Error executing deleteSessionsForUserId():",
+      "APW-LIB ERROR (users): Error executing deleteSessionsForUserId():",
       err
     );
     return JSON.parse(JSON.stringify(err));
@@ -181,7 +181,10 @@ const getUserForUserId = async ({
     const user = await users.get(userId);
     return user;
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing getUserForUserId():", err);
+    console.error(
+      "APW-LIB ERROR (users): Error executing getUserForUserId():",
+      err
+    );
     return JSON.parse(JSON.stringify(err));
   }
 };
@@ -198,7 +201,7 @@ const listUsers = async ({
     const userList = await users.list(queries, search);
     return userList;
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing listUsers():", err);
+    console.error("APW-LIB ERROR (users): Error executing listUsers():", err);
     return JSON.parse(JSON.stringify(err));
   }
 };
@@ -221,7 +224,7 @@ const updateEmailVerificationForUserId = async ({
     return user;
   } catch (err) {
     console.error(
-      "APW-LIB ERROR: Error executing updateEmailVerificationForUserId():",
+      "APW-LIB ERROR (users): Error executing updateEmailVerificationForUserId():",
       err
     );
     return JSON.parse(JSON.stringify(err));

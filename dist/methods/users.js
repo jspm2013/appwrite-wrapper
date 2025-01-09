@@ -20,7 +20,7 @@ const createSessionForUserId = (_a) => __awaiter(void 0, [_a], void 0, function*
         return session;
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing createSessionForUserId():", err);
+        console.error("APW-LIB ERROR (users): Error executing createSessionForUserId():", err);
         return JSON.parse(JSON.stringify(err));
     }
 });
@@ -34,7 +34,7 @@ const createToken = (_a) => __awaiter(void 0, [_a], void 0, function* ({ userId,
         return token;
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing createToken():", err);
+        console.error("APW-LIB ERROR (users): Error executing createToken():", err);
         return JSON.parse(JSON.stringify(err));
     }
 });
@@ -47,7 +47,7 @@ const deleteSessionForUserId = (_a) => __awaiter(void 0, [_a], void 0, function*
         yield users.deleteSession(userId, sessionId);
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing deleteSessionForUserId():", err);
+        console.error("APW-LIB ERROR (users): Error executing deleteSessionForUserId():", err);
         return JSON.parse(JSON.stringify(err));
     }
 });
@@ -60,7 +60,7 @@ const deleteSessionsForUserId = (_a) => __awaiter(void 0, [_a], void 0, function
         yield users.deleteSessions(userId);
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing deleteSessionsForUserId():", err);
+        console.error("APW-LIB ERROR (users): Error executing deleteSessionsForUserId():", err);
         return JSON.parse(JSON.stringify(err));
     }
 });
@@ -74,7 +74,7 @@ const getUserForUserId = (_a) => __awaiter(void 0, [_a], void 0, function* ({ us
         return user;
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing getUserForUserId():", err);
+        console.error("APW-LIB ERROR (users): Error executing getUserForUserId():", err);
         return JSON.parse(JSON.stringify(err));
     }
 });
@@ -88,7 +88,7 @@ const listUsers = (_a) => __awaiter(void 0, [_a], void 0, function* ({ queries, 
         return userList;
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing listUsers():", err);
+        console.error("APW-LIB ERROR (users): Error executing listUsers():", err);
         return JSON.parse(JSON.stringify(err));
     }
 });
@@ -105,7 +105,7 @@ const updateEmailVerificationForUserId = (_a) => __awaiter(void 0, [_a], void 0,
         return user;
     }
     catch (err) {
-        console.error("APW-LIB ERROR: Error executing updateEmailVerificationForUserId():", err);
+        console.error("APW-LIB ERROR (users): Error executing updateEmailVerificationForUserId():", err);
         return JSON.parse(JSON.stringify(err));
     }
 });

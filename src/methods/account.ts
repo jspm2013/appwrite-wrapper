@@ -80,7 +80,10 @@ const createAccount = async ({
     const { account } = await createSessionClient();
     return await account.create(ID.unique(), email, password, name);
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing createAccount():", err);
+    console.error(
+      "APW-LIB ERROR (account): Error executing createAccount():",
+      err
+    );
     return err as Error;
   }
 };
@@ -93,7 +96,7 @@ const createJWT = async (): Promise<Models.Jwt | Error> => {
     const { account } = await createSessionClient();
     return await account.createJWT();
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing createJWT():", err);
+    console.error("APW-LIB ERROR (account): Error executing createJWT():", err);
     return err as Error;
   }
 };
@@ -108,7 +111,10 @@ const createVerification = async ({
     const { account } = await createSessionClient();
     return await account.createVerification(verificationUrl);
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing createVerification():", err);
+    console.error(
+      "APW-LIB ERROR (account): Error executing createVerification():",
+      err
+    );
     return err as Error;
   }
 };
@@ -123,7 +129,10 @@ const deleteSession = async ({
     const { account } = await createSessionClient();
     await account.deleteSession(sessionId);
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing deleteSession():", err);
+    console.error(
+      "APW-LIB ERROR (account): Error executing deleteSession():",
+      err
+    );
     return err as Error;
   }
 };
@@ -136,7 +145,10 @@ const listSessions = async (): Promise<Models.SessionList | Error> => {
     const { account } = await createSessionClient();
     return await account.listSessions();
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing listSessions():", err);
+    console.error(
+      "APW-LIB ERROR (account): Error executing listSessions():",
+      err
+    );
     return err as Error;
   }
 };
@@ -149,7 +161,10 @@ const deleteSessions = async (): Promise<void | Error> => {
     const { account } = await createSessionClient();
     await account.deleteSessions();
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing deleteSessions():", err);
+    console.error(
+      "APW-LIB ERROR (account): Error executing deleteSessions():",
+      err
+    );
     return err as Error;
   }
 };
@@ -157,13 +172,19 @@ const deleteSessions = async (): Promise<void | Error> => {
 /**
  * Retrieves the current user.
  */
-const getUser = async (): Promise<Models.User<Models.Preferences> | Error> => {
+const getUser = async (): Promise<
+  Models.User<Models.Preferences> | Error | null
+> => {
   try {
     const { account } = await createSessionClient();
     return await account.get();
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing getUser():", err);
-    return err as Error;
+    return null;
+    /*
+     * Appwrite throws occurs when the user is not logged in, we have to return null for that case.
+     */
+    //console.error("APW-LIB ERROR (account): Error executing getUser():", err);
+    //return err as Error;
   }
 };
 
@@ -183,7 +204,10 @@ const deletePrefs = async ({
     }
     return oldPrefs;
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing deletePrefs():", err);
+    console.error(
+      "APW-LIB ERROR (account): Error executing deletePrefs():",
+      err
+    );
     return err as Error;
   }
 };
@@ -196,7 +220,7 @@ const getPrefs = async (): Promise<Models.Preferences | Error> => {
     const { account } = await createSessionClient();
     return await account.getPrefs();
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing getPrefs():", err);
+    console.error("APW-LIB ERROR (account): Error executing getPrefs():", err);
     return err as Error;
   }
 };
@@ -218,7 +242,7 @@ const setPrefs = async ({
       throw new Error("Invalid JSON object");
     }
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing setPrefs():", err);
+    console.error("APW-LIB ERROR (account): Error executing setPrefs():", err);
     return err as Error;
   }
 };
@@ -234,7 +258,10 @@ const updateVerification = async ({
     const { account } = await createSessionClient();
     return await account.updateVerification(userId, secret);
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing updateVerification():", err);
+    console.error(
+      "APW-LIB ERROR (account): Error executing updateVerification():",
+      err
+    );
     return err as Error;
   }
 };
@@ -258,7 +285,7 @@ const createEmailPasswordSession = async ({
     return session;
   } catch (err) {
     console.error(
-      "APW-LIB ERROR: Error executing createEmailPasswordSession():",
+      "APW-LIB ERROR (account): Error executing createEmailPasswordSession():",
       err
     );
     return err as Error;
@@ -281,7 +308,10 @@ const createOAuth2Token = async ({
       `${host}/${failurePath}`
     );
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing createOAuth2Token():", err);
+    console.error(
+      "APW-LIB ERROR (account): Error executing createOAuth2Token():",
+      err
+    );
     return err as Error;
   }
 };
@@ -304,7 +334,10 @@ const createSession = async ({
     });
     return session;
   } catch (err) {
-    console.error("APW-LIB ERROR: Error executing createSession():", err);
+    console.error(
+      "APW-LIB ERROR (account): Error executing createSession():",
+      err
+    );
     return err as Error;
   }
 };

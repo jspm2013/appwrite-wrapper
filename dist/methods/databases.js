@@ -19,7 +19,7 @@ const createDocument = (_a) => __awaiter(void 0, [_a], void 0, function* ({ coll
         return yield databases.createDocument(dbId, collectionId, documentId, data, permissions);
     }
     catch (err) {
-        console.error("Error in createDocument:", err);
+        console.error("APW-LIB ERROR (databases): Error in createDocument():", err);
         return err;
     }
 });
@@ -32,7 +32,7 @@ const deleteDocument = (_a) => __awaiter(void 0, [_a], void 0, function* ({ coll
         yield databases.deleteDocument(dbId, collectionId, documentId);
     }
     catch (err) {
-        console.error("Error in deleteDocument:", err);
+        console.error("APW-LIB ERROR (databases): Error in deleteDocument():", err);
         return err;
     }
 });
@@ -45,7 +45,7 @@ const getDocument = (_a) => __awaiter(void 0, [_a], void 0, function* ({ collect
         return yield databases.getDocument(dbId, collectionId, documentId, queries);
     }
     catch (err) {
-        console.error("Error in getDocument:", err);
+        console.error("APW-LIB ERROR (databases): Error in getDocument():", err);
         return err;
     }
 });
@@ -58,7 +58,7 @@ const listDocuments = (_a) => __awaiter(void 0, [_a], void 0, function* ({ colle
         return yield databases.listDocuments(dbId, collectionId, queries);
     }
     catch (err) {
-        console.error("Error in listDocuments:", err);
+        console.error("APW-LIB ERROR (databases): Error in listDocuments():", err);
         return err;
     }
 });
@@ -71,7 +71,7 @@ const updateDocument = (_a) => __awaiter(void 0, [_a], void 0, function* ({ coll
         return yield databases.updateDocument(dbId, collectionId, documentId, data, permissions);
     }
     catch (err) {
-        console.error("Error in updateDocument:", err);
+        console.error("APW-LIB ERROR (databases): Error in updateDocument():", err);
         return err;
     }
 });

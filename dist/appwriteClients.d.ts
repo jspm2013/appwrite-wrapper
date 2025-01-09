@@ -1,35 +1,38 @@
-import { Account, Teams, Functions, Databases, Storage, Messaging, Locale, Users, Avatars } from "node-appwrite";
-type CreateClientParams = {
-    selfSigned?: boolean;
-    locale?: string;
-};
 /**
  * Creates a session client for the current user.
  */
-export declare function createSessionClient(params?: CreateClientParams): Promise<{
-    account: Account;
-    teams: Teams;
-    databases: Databases;
-    storage: Storage;
-    functions: Functions;
-    messaging: Messaging;
-    locale: Locale;
-    avatars: Avatars;
-    users: Users;
+export function createSessionClient(params?: {}): Promise<{
+    readonly account: Account;
+    readonly teams: Teams;
+    readonly databases: Databases;
+    readonly storage: Storage;
+    readonly functions: Functions;
+    readonly messaging: Messaging;
+    readonly locale: Locale;
+    readonly avatars: Avatars;
+    readonly users: Users;
 }>;
 /**
  * Creates an admin client with elevated privileges.
  */
-export declare function createAdminClient(params?: CreateClientParams): Promise<{
-    account: Account;
-    teams: Teams;
-    databases: Databases;
-    storage: Storage;
-    functions: Functions;
-    messaging: Messaging;
-    locale: Locale;
-    avatars: Avatars;
-    users: Users;
+export function createAdminClient(params?: {}): Promise<{
+    readonly account: Account;
+    readonly teams: Teams;
+    readonly databases: Databases;
+    readonly storage: Storage;
+    readonly functions: Functions;
+    readonly messaging: Messaging;
+    readonly locale: Locale;
+    readonly avatars: Avatars;
+    readonly users: Users;
 }>;
-export {};
+import { Account } from "node-appwrite";
+import { Teams } from "node-appwrite";
+import { Databases } from "node-appwrite";
+import { Storage } from "node-appwrite";
+import { Functions } from "node-appwrite";
+import { Messaging } from "node-appwrite";
+import { Locale } from "node-appwrite";
+import { Avatars } from "node-appwrite";
+import { Users } from "node-appwrite";
 //# sourceMappingURL=appwriteClients.d.ts.map

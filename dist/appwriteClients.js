@@ -29,15 +29,33 @@ export function createSessionClient() {
         }
         client.setSession(session.value);
         return {
-            account: new Account(client),
-            teams: new Teams(client),
-            databases: new Databases(client),
-            storage: new Storage(client),
-            functions: new Functions(client),
-            messaging: new Messaging(client),
-            locale: new Locale(client),
-            avatars: new Avatars(client),
-            users: new Users(client),
+            get account() {
+                return new Account(client);
+            },
+            get teams() {
+                return new Teams(client);
+            },
+            get databases() {
+                return new Databases(client);
+            },
+            get storage() {
+                return new Storage(client);
+            },
+            get functions() {
+                return new Functions(client);
+            },
+            get messaging() {
+                return new Messaging(client);
+            },
+            get locale() {
+                return new Locale(client);
+            },
+            get avatars() {
+                return new Avatars(client);
+            },
+            get users() {
+                return new Users(client);
+            },
         };
     });
 }
@@ -54,15 +72,33 @@ export function createAdminClient() {
             .setLocale(locale)
             .setKey(apiKeySsr);
         return {
-            account: new Account(client),
-            teams: new Teams(client),
-            databases: new Databases(client),
-            storage: new Storage(client),
-            functions: new Functions(client),
-            messaging: new Messaging(client),
-            locale: new Locale(client),
-            avatars: new Avatars(client),
-            users: new Users(client),
+            get account() {
+                return new Account(client);
+            },
+            get teams() {
+                return new Teams(client);
+            },
+            get databases() {
+                return new Databases(client);
+            },
+            get storage() {
+                return new Storage(client);
+            },
+            get functions() {
+                return new Functions(client);
+            },
+            get messaging() {
+                return new Messaging(client);
+            },
+            get locale() {
+                return new Locale(client);
+            },
+            get avatars() {
+                return new Avatars(client);
+            },
+            get users() {
+                return new Users(client);
+            },
         };
     });
 }

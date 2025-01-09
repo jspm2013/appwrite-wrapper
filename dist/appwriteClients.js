@@ -14,7 +14,8 @@ import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
 /**
  * Creates a session client for the current user.
  */
-export const createSessionClient = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* ({ selfSigned = false, locale = "", } = {}) {
+export const createSessionClient = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* (params = {}) {
+    const { selfSigned = false, locale = "" } = params;
     const client = new Client()
         .setEndpoint(endpoint)
         .setProject(projectId)
@@ -27,74 +28,37 @@ export const createSessionClient = (...args_1) => __awaiter(void 0, [...args_1],
     }
     client.setSession(session.value);
     return {
-        get account() {
-            return new Account(client);
-        },
-        get teams() {
-            return new Teams(client);
-        },
-        get databases() {
-            return new Databases(client);
-        },
-        get storage() {
-            return new Storage(client);
-        },
-        get functions() {
-            return new Functions(client);
-        },
-        get messaging() {
-            return new Messaging(client);
-        },
-        get locale() {
-            return new Locale(client);
-        },
-        get avatars() {
-            return new Avatars(client);
-        },
-        get users() {
-            return new Users(client);
-        },
+        account: new Account(client),
+        teams: new Teams(client),
+        databases: new Databases(client),
+        storage: new Storage(client),
+        functions: new Functions(client),
+        messaging: new Messaging(client),
+        locale: new Locale(client),
+        avatars: new Avatars(client),
+        users: new Users(client),
     };
 });
 /**
  * Creates an admin client with elevated privileges.
  */
-export function createAdminClient() {
-    return __awaiter(this, arguments, void 0, function* ({ selfSigned = false, locale = "", } = {}) {
-        const client = new Client()
-            .setEndpoint(endpoint)
-            .setProject(projectId)
-            .setSelfSigned(selfSigned)
-            .setLocale(locale)
-            .setKey(apiKeySsr);
-        return {
-            get account() {
-                return new Account(client);
-            },
-            get teams() {
-                return new Teams(client);
-            },
-            get databases() {
-                return new Databases(client);
-            },
-            get storage() {
-                return new Storage(client);
-            },
-            get functions() {
-                return new Functions(client);
-            },
-            get messaging() {
-                return new Messaging(client);
-            },
-            get locale() {
-                return new Locale(client);
-            },
-            get avatars() {
-                return new Avatars(client);
-            },
-            get users() {
-                return new Users(client);
-            },
-        };
-    });
-}
+export const createAdminClient = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* (params = {}) {
+    const { selfSigned = false, locale = "" } = params;
+    const client = new Client()
+        .setEndpoint(endpoint)
+        .setProject(projectId)
+        .setSelfSigned(selfSigned)
+        .setLocale(locale)
+        .setKey(apiKeySsr);
+    return {
+        account: new Account(client),
+        teams: new Teams(client),
+        databases: new Databases(client),
+        storage: new Storage(client),
+        functions: new Functions(client),
+        messaging: new Messaging(client),
+        locale: new Locale(client),
+        avatars: new Avatars(client),
+        users: new Users(client),
+    };
+});

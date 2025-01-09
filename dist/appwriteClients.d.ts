@@ -6,30 +6,30 @@ type CreateClientParams = {
 /**
  * Creates a session client for the current user.
  */
-export declare const createSessionClient: ({ selfSigned, locale, }?: CreateClientParams) => Promise<{
-    readonly account: Account;
-    readonly teams: Teams;
-    readonly databases: Databases;
-    readonly storage: Storage;
-    readonly functions: Functions;
-    readonly messaging: Messaging;
-    readonly locale: Locale;
-    readonly avatars: Avatars;
-    readonly users: Users;
+export declare const createSessionClient: (params?: CreateClientParams) => Promise<{
+    account: Account;
+    teams: Teams;
+    databases: Databases;
+    storage: Storage;
+    functions: Functions;
+    messaging: Messaging;
+    locale: Locale;
+    avatars: Avatars;
+    users: Users;
 }>;
 /**
  * Creates an admin client with elevated privileges.
  */
-export declare function createAdminClient({ selfSigned, locale, }?: CreateClientParams): Promise<{
-    readonly account: Account;
-    readonly teams: Teams;
-    readonly databases: Databases;
-    readonly storage: Storage;
-    readonly functions: Functions;
-    readonly messaging: Messaging;
-    readonly locale: Locale;
-    readonly avatars: Avatars;
-    readonly users: Users;
+export declare const createAdminClient: (params?: CreateClientParams) => Promise<{
+    account: Account;
+    teams: Teams;
+    databases: Databases;
+    storage: Storage;
+    functions: Functions;
+    messaging: Messaging;
+    locale: Locale;
+    avatars: Avatars;
+    users: Users;
 }>;
 export {};
 //# sourceMappingURL=appwriteClients.d.ts.map

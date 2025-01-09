@@ -367,6 +367,11 @@ export type AccountFunctions = {
   createSession: typeof createSession;
 };
 
+/**
+ * Exporting OAuthProvider for consumer usage
+ */
+export { OAuthProvider };
+
 export {
   createAccount,
   createJWT,

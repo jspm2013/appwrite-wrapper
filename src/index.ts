@@ -3,6 +3,7 @@ import { AvatarFunctions } from "./methods/avatars";
 
 import * as account from "./methods/account";
 import { AccountFunctions } from "./methods/account"; // Example: Define this type in account module
+import { OAuthProvider } from "./methods/account";
 
 import * as databases from "./methods/databases";
 import { DatabaseFunctions } from "./methods/databases"; // Example: Define this type in databases module

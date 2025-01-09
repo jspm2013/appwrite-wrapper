@@ -238,4 +238,8 @@ const createSession = (_a) => __awaiter(void 0, [_a], void 0, function* ({ userI
         return err;
     }
 });
+/**
+ * Exporting OAuthProvider for consumer usage
+ */
+export { OAuthProvider };
 export { createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession, };

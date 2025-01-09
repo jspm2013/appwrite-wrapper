@@ -128,5 +128,9 @@ export type AccountFunctions = {
     createOAuth2Token: typeof createOAuth2Token;
     createSession: typeof createSession;
 };
+/**
+ * Exporting OAuthProvider for consumer usage
+ */
+export { OAuthProvider };
 export { createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession, };
 //# sourceMappingURL=account.d.ts.map

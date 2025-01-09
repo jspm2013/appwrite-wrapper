@@ -69,6 +69,13 @@ export type CreateSessionParams = {
 };
 
 /**
+ * Parameters for deleting a session.
+ */
+export type DeleteSessionParams = {
+  sessionId?: string;
+};
+
+/**
  * Creates a new account.
  */
 const createAccount = async ({
@@ -124,7 +131,7 @@ const createVerification = async ({
  */
 const deleteSession = async ({
   sessionId = "current",
-}): Promise<void | Error> => {
+}: DeleteSessionParams = {}): Promise<void | Error> => {
   try {
     const { account } = await createSessionClient();
     await account.deleteSession(sessionId);
@@ -179,12 +186,12 @@ const getUser = async (): Promise<
     const { account } = await createSessionClient();
     return await account.get();
   } catch (err) {
-    return null;
     /*
      * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
      */
-    //console.error("APW-LIB ERROR (account): Error executing getUser():", err);
-    //return err as Error;
+    //return null;
+    console.error("APW-LIB ERROR (account): Error executing getUser():", err);
+    return err as Error;
   }
 };
 

@@ -114,7 +114,7 @@ const getUser = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (err) {
         return null;
         /*
-         * Appwrite throws occurs when the user is not logged in, we have to return null for that case.
+         * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
          */
         //console.error("APW-LIB ERROR (account): Error executing getUser():", err);
         //return err as Error;

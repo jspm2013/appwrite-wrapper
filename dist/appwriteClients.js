@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Client, Account, Teams, Functions, Databases, Storage, Messaging, Locale, Avatars, Users, } from "node-appwrite";
+import { Client, Account, Teams, Functions, Databases, Storage, Messaging, Locale, Users, Avatars, } from "node-appwrite";
 import { cookies } from "next/headers";
 import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
 export const createSessionClient = (_a) => __awaiter(void 0, [_a], void 0, function* ({ selfSigned, locale }) {

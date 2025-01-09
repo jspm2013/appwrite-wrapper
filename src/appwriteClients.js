@@ -7,8 +7,8 @@ import {
   Storage,
   Messaging,
   Locale,
-  Avatars,
   Users,
+  Avatars,
 } from "node-appwrite";
 import { cookies } from "next/headers";
 import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";

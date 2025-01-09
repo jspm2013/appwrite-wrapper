@@ -23,7 +23,7 @@ type CreateClientParams = {
 /**
  * Creates a session client for the current user.
  */
-export const createSessionClient = async (
+export async function createSessionClient(
   params: CreateClientParams = {}
 ): Promise<{
   account: Account;
@@ -35,7 +35,7 @@ export const createSessionClient = async (
   locale: Locale;
   avatars: Avatars;
   users: Users;
-}> => {
+}> {
   const { selfSigned = false, locale = "" } = params;
 
   const client = new Client()
@@ -65,12 +65,12 @@ export const createSessionClient = async (
     avatars: new Avatars(client),
     users: new Users(client),
   };
-};
+}
 
 /**
  * Creates an admin client with elevated privileges.
  */
-export const createAdminClient = async (
+export async function createAdminClient(
   params: CreateClientParams = {}
 ): Promise<{
   account: Account;
@@ -82,7 +82,7 @@ export const createAdminClient = async (
   locale: Locale;
   avatars: Avatars;
   users: Users;
-}> => {
+}> {
   const { selfSigned = false, locale = "" } = params;
 
   const client = new Client()
@@ -103,4 +103,4 @@ export const createAdminClient = async (
     avatars: new Avatars(client),
     users: new Users(client),
   };
-};
+}

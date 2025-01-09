@@ -6,7 +6,7 @@ type CreateClientParams = {
 /**
  * Creates a session client for the current user.
  */
-export declare const createSessionClient: (params?: CreateClientParams) => Promise<{
+export declare function createSessionClient(params?: CreateClientParams): Promise<{
     account: Account;
     teams: Teams;
     databases: Databases;
@@ -20,7 +20,7 @@ export declare const createSessionClient: (params?: CreateClientParams) => Promi
 /**
  * Creates an admin client with elevated privileges.
  */
-export declare const createAdminClient: (params?: CreateClientParams) => Promise<{
+export declare function createAdminClient(params?: CreateClientParams): Promise<{
     account: Account;
     teams: Teams;
     databases: Databases;

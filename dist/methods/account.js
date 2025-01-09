@@ -67,7 +67,7 @@ const createVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ 
 /**
  * Deletes a specific session or the current session.
  */
-const deleteSession = (_a) => __awaiter(void 0, [_a], void 0, function* ({ sessionId = "current", }) {
+const deleteSession = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* ({ sessionId = "current", } = {}) {
     try {
         const { account } = yield createSessionClient();
         yield account.deleteSession(sessionId);
@@ -112,12 +112,12 @@ const getUser = () => __awaiter(void 0, void 0, void 0, function* () {
         return yield account.get();
     }
     catch (err) {
-        return null;
         /*
          * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
          */
-        //console.error("APW-LIB ERROR (account): Error executing getUser():", err);
-        //return err as Error;
+        //return null;
+        console.error("APW-LIB ERROR (account): Error executing getUser():", err);
+        return err;
     }
 });
 /**

@@ -1,3 +1,4 @@
+"use server";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,7 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { Client, Account, Teams, Functions, Databases, Storage, Messaging, Locale, Users, Avatars, } from "node-appwrite";
 import { cookies } from "next/headers";
 import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
-export const createSessionClient = (_a) => __awaiter(void 0, [_a], void 0, function* ({ selfSigned, locale }) {
+/**
+ * Creates a session client for the current user.
+ */
+export const createSessionClient = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* ({ selfSigned = false, locale = "", } = {}) {
     const client = new Client()
         .setEndpoint(endpoint)
         .setProject(projectId)
@@ -52,8 +56,11 @@ export const createSessionClient = (_a) => __awaiter(void 0, [_a], void 0, funct
         },
     };
 });
-export function createAdminClient(_a) {
-    return __awaiter(this, arguments, void 0, function* ({ selfSigned, locale }) {
+/**
+ * Creates an admin client with elevated privileges.
+ */
+export function createAdminClient() {
+    return __awaiter(this, arguments, void 0, function* ({ selfSigned = false, locale = "", } = {}) {
         const client = new Client()
             .setEndpoint(endpoint)
             .setProject(projectId)

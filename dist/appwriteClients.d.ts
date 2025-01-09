@@ -1,7 +1,12 @@
-export function createAdminClient({ selfSigned, locale }: {
-    selfSigned: any;
-    locale: any;
-}): Promise<{
+import { Account, Teams, Functions, Databases, Storage, Messaging, Locale, Users, Avatars } from "node-appwrite";
+type CreateClientParams = {
+    selfSigned?: boolean;
+    locale?: string;
+};
+/**
+ * Creates a session client for the current user.
+ */
+export declare const createSessionClient: ({ selfSigned, locale, }?: CreateClientParams) => Promise<{
     readonly account: Account;
     readonly teams: Teams;
     readonly databases: Databases;
@@ -12,10 +17,10 @@ export function createAdminClient({ selfSigned, locale }: {
     readonly avatars: Avatars;
     readonly users: Users;
 }>;
-export function createSessionClient({ selfSigned, locale }: {
-    selfSigned: any;
-    locale: any;
-}): Promise<{
+/**
+ * Creates an admin client with elevated privileges.
+ */
+export declare function createAdminClient({ selfSigned, locale, }?: CreateClientParams): Promise<{
     readonly account: Account;
     readonly teams: Teams;
     readonly databases: Databases;
@@ -26,13 +31,5 @@ export function createSessionClient({ selfSigned, locale }: {
     readonly avatars: Avatars;
     readonly users: Users;
 }>;
-import { Account } from "node-appwrite";
-import { Teams } from "node-appwrite";
-import { Databases } from "node-appwrite";
-import { Storage } from "node-appwrite";
-import { Functions } from "node-appwrite";
-import { Messaging } from "node-appwrite";
-import { Locale } from "node-appwrite";
-import { Avatars } from "node-appwrite";
-import { Users } from "node-appwrite";
+export {};
 //# sourceMappingURL=appwriteClients.d.ts.map

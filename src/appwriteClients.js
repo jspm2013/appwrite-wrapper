@@ -15,8 +15,8 @@ import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
 
 export const createSessionClient = async ({ selfSigned, locale }) => {
   const client = new Client()
-    .setEndpoint(projectId)
-    .setProject(endpoint)
+    .setEndpoint(endpoint)
+    .setProject(projectId)
     .setSelfSigned(selfSigned)
     .setLocale(locale);
 
@@ -63,8 +63,8 @@ export const createSessionClient = async ({ selfSigned, locale }) => {
 
 export async function createAdminClient({ selfSigned, locale }) {
   const client = new Client()
-    .setEndpoint(projectId)
-    .setProject(endpoint)
+    .setEndpoint(endpoint)
+    .setProject(projectId)
     .setSelfSigned(selfSigned)
     .setLocale(locale)
     .setKey(apiKeySsr);

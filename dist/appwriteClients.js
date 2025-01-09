@@ -12,8 +12,8 @@ import { cookies } from "next/headers";
 import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
 export const createSessionClient = (_a) => __awaiter(void 0, [_a], void 0, function* ({ selfSigned, locale }) {
     const client = new Client()
-        .setEndpoint(projectId)
-        .setProject(endpoint)
+        .setEndpoint(endpoint)
+        .setProject(projectId)
         .setSelfSigned(selfSigned)
         .setLocale(locale);
     const cookiesList = yield cookies();
@@ -55,8 +55,8 @@ export const createSessionClient = (_a) => __awaiter(void 0, [_a], void 0, funct
 export function createAdminClient(_a) {
     return __awaiter(this, arguments, void 0, function* ({ selfSigned, locale }) {
         const client = new Client()
-            .setEndpoint(projectId)
-            .setProject(endpoint)
+            .setEndpoint(endpoint)
+            .setProject(projectId)
             .setSelfSigned(selfSigned)
             .setLocale(locale)
             .setKey(apiKeySsr);

@@ -1,3 +1,5 @@
+"use server";
+
 import {
   Client,
   Account,
@@ -13,7 +15,18 @@ import {
 import { cookies } from "next/headers";
 import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
 
-export const createSessionClient = async ({ selfSigned, locale }) => {
+type CreateClientParams = {
+  selfSigned?: boolean;
+  locale?: string;
+};
+
+/**
+ * Creates a session client for the current user.
+ */
+export const createSessionClient = async ({
+  selfSigned = false,
+  locale = "",
+}: CreateClientParams = {}) => {
   const client = new Client()
     .setEndpoint(endpoint)
     .setProject(projectId)
@@ -61,7 +74,13 @@ export const createSessionClient = async ({ selfSigned, locale }) => {
   };
 };
 
-export async function createAdminClient({ selfSigned, locale }) {
+/**
+ * Creates an admin client with elevated privileges.
+ */
+export async function createAdminClient({
+  selfSigned = false,
+  locale = "",
+}: CreateClientParams = {}) {
   const client = new Client()
     .setEndpoint(endpoint)
     .setProject(projectId)

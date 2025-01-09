@@ -190,8 +190,9 @@ const getUser = async (): Promise<
     /*
      * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
      */
-    console.error("APW-LIB ERROR (account): Error executing getUser():", err);
-    return err as Error;
+    return null;
+    //console.error("APW-LIB ERROR (account): Error executing getUser():", err);
+    //return err as Error;
   }
 };
 

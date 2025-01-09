@@ -1,5 +1,6 @@
 import * as avatars from "./methods/avatars";
 import * as account from "./methods/account";
+import { OAuthProvider } from "./methods/account";
 import * as databases from "./methods/databases";
 //import * as functions from "./ts/functions";
 //import { FunctionFunctions } from "./ts/functions"; // Example: Define this type in functions module
@@ -19,3 +20,5 @@ export { avatars, account, databases,
 //storage,
 //teams,
 users, };
+// Exporting OAuthProvider explicitly for easier access
+export { OAuthProvider };

@@ -38,6 +38,9 @@ export {
   users,
 };
 
+// Exporting OAuthProvider explicitly for easier access
+export { OAuthProvider };
+
 // Define the type for the entire `Methods` object
 export type Methods = {
   avatars: AvatarFunctions;

@@ -71,7 +71,7 @@ declare const createVerification: ({ verificationUrl, }: {
 /**
  * Deletes a specific session or the current session.
  */
-declare const deleteSession: ({ sessionId, }?: DeleteSessionParams) => Promise<void | Error>;
+declare const deleteSession: (params?: DeleteSessionParams) => Promise<void | Error>;
 /**
  * Lists all sessions for the current user.
  */

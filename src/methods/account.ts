@@ -129,9 +129,10 @@ const createVerification = async ({
 /**
  * Deletes a specific session or the current session.
  */
-const deleteSession = async ({
-  sessionId = "current",
-}: DeleteSessionParams = {}): Promise<void | Error> => {
+const deleteSession = async (
+  params: DeleteSessionParams = {}
+): Promise<void | Error> => {
+  const { sessionId = "current" } = params;
   try {
     const { account } = await createSessionClient();
     await account.deleteSession(sessionId);
@@ -189,7 +190,6 @@ const getUser = async (): Promise<
     /*
      * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
      */
-    //return null;
     console.error("APW-LIB ERROR (account): Error executing getUser():", err);
     return err as Error;
   }

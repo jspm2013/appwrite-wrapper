@@ -20,7 +20,7 @@ const createDocument = (_a) => __awaiter(void 0, [_a], void 0, function* ({ coll
     }
     catch (err) {
         console.error("APW-LIB ERROR (databases): Error in createDocument():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -33,7 +33,7 @@ const deleteDocument = (_a) => __awaiter(void 0, [_a], void 0, function* ({ coll
     }
     catch (err) {
         console.error("APW-LIB ERROR (databases): Error in deleteDocument():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -46,7 +46,7 @@ const getDocument = (_a) => __awaiter(void 0, [_a], void 0, function* ({ collect
     }
     catch (err) {
         console.error("APW-LIB ERROR (databases): Error in getDocument():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -59,7 +59,7 @@ const listDocuments = (_a) => __awaiter(void 0, [_a], void 0, function* ({ colle
     }
     catch (err) {
         console.error("APW-LIB ERROR (databases): Error in listDocuments():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -72,7 +72,7 @@ const updateDocument = (_a) => __awaiter(void 0, [_a], void 0, function* ({ coll
     }
     catch (err) {
         console.error("APW-LIB ERROR (databases): Error in updateDocument():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 export { createDocument, deleteDocument, getDocument, listDocuments, updateDocument, };

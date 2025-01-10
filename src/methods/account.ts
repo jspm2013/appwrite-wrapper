@@ -91,7 +91,7 @@ const createAccount = async ({
       "APW-LIB ERROR (account): Error executing createAccount():",
       err
     );
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -104,7 +104,7 @@ const createJWT = async (): Promise<Models.Jwt | Error> => {
     return await account.createJWT();
   } catch (err) {
     console.error("APW-LIB ERROR (account): Error executing createJWT():", err);
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -122,7 +122,7 @@ const createVerification = async ({
       "APW-LIB ERROR (account): Error executing createVerification():",
       err
     );
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -141,7 +141,7 @@ const deleteSession = async (
       "APW-LIB ERROR (account): Error executing deleteSession():",
       err
     );
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -157,7 +157,7 @@ const listSessions = async (): Promise<Models.SessionList | Error> => {
       "APW-LIB ERROR (account): Error executing listSessions():",
       err
     );
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -173,7 +173,7 @@ const deleteSessions = async (): Promise<void | Error> => {
       "APW-LIB ERROR (account): Error executing deleteSessions():",
       err
     );
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -192,7 +192,7 @@ const getUser = async (): Promise<
      */
     return null;
     //console.error("APW-LIB ERROR (account): Error executing getUser():", err);
-    //return err as Error;
+    //throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -216,7 +216,7 @@ const deletePrefs = async ({
       "APW-LIB ERROR (account): Error executing deletePrefs():",
       err
     );
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -229,7 +229,7 @@ const getPrefs = async (): Promise<Models.Preferences | Error> => {
     return await account.getPrefs();
   } catch (err) {
     console.error("APW-LIB ERROR (account): Error executing getPrefs():", err);
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -251,7 +251,7 @@ const setPrefs = async ({
     }
   } catch (err) {
     console.error("APW-LIB ERROR (account): Error executing setPrefs():", err);
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -270,7 +270,7 @@ const updateVerification = async ({
       "APW-LIB ERROR (account): Error executing updateVerification():",
       err
     );
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -296,7 +296,7 @@ const createEmailPasswordSession = async ({
       "APW-LIB ERROR (account): Error executing createEmailPasswordSession():",
       err
     );
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -320,7 +320,7 @@ const createOAuth2Token = async ({
       "APW-LIB ERROR (account): Error executing createOAuth2Token():",
       err
     );
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -346,7 +346,7 @@ const createSession = async ({
       "APW-LIB ERROR (account): Error executing createSession():",
       err
     );
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 

@@ -35,7 +35,7 @@ const createAccount = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing createAccount():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -48,7 +48,7 @@ const createJWT = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing createJWT():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -61,7 +61,7 @@ const createVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ 
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing createVerification():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -75,7 +75,7 @@ const deleteSession = (...args_1) => __awaiter(void 0, [...args_1], void 0, func
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing deleteSession():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -88,7 +88,7 @@ const listSessions = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing listSessions():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -101,7 +101,7 @@ const deleteSessions = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing deleteSessions():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -118,7 +118,7 @@ const getUser = () => __awaiter(void 0, void 0, void 0, function* () {
          */
         return null;
         //console.error("APW-LIB ERROR (account): Error executing getUser():", err);
-        //return err as Error;
+        //throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -137,7 +137,7 @@ const deletePrefs = (_a) => __awaiter(void 0, [_a], void 0, function* ({ key, })
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing deletePrefs():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -150,7 +150,7 @@ const getPrefs = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing getPrefs():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -169,7 +169,7 @@ const setPrefs = (_a) => __awaiter(void 0, [_a], void 0, function* ({ newPrefs, 
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing setPrefs():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -182,7 +182,7 @@ const updateVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ 
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing updateVerification():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -202,7 +202,7 @@ const createEmailPasswordSession = (_a) => __awaiter(void 0, [_a], void 0, funct
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing createEmailPasswordSession():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -215,7 +215,7 @@ const createOAuth2Token = (_a) => __awaiter(void 0, [_a], void 0, function* ({ p
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing createOAuth2Token():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -235,7 +235,7 @@ const createSession = (_a) => __awaiter(void 0, [_a], void 0, function* ({ userI
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing createSession():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 export { createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession, };

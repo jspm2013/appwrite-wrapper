@@ -62,7 +62,7 @@ const createDocument = async ({
     );
   } catch (err) {
     console.error("APW-LIB ERROR (databases): Error in createDocument():", err);
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -79,7 +79,7 @@ const deleteDocument = async ({
     await databases.deleteDocument(dbId!, collectionId, documentId);
   } catch (err) {
     console.error("APW-LIB ERROR (databases): Error in deleteDocument():", err);
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -102,7 +102,7 @@ const getDocument = async ({
     );
   } catch (err) {
     console.error("APW-LIB ERROR (databases): Error in getDocument():", err);
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -119,7 +119,7 @@ const listDocuments = async ({
     return await databases.listDocuments(dbId!, collectionId, queries);
   } catch (err) {
     console.error("APW-LIB ERROR (databases): Error in listDocuments():", err);
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -144,7 +144,7 @@ const updateDocument = async ({
     );
   } catch (err) {
     console.error("APW-LIB ERROR (databases): Error in updateDocument():", err);
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 

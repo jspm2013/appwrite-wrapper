@@ -20,7 +20,7 @@ const getFlag = (_a) => __awaiter(void 0, [_a], void 0, function* ({ code, width
     }
     catch (err) {
         console.error("APW-LIB ERROR (avatars): Error in getFlag():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -34,7 +34,7 @@ const getImageFromUrl = (_a) => __awaiter(void 0, [_a], void 0, function* ({ url
     }
     catch (err) {
         console.error("APW-LIB ERROR (avatars): Error in getImageFromUrl():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -48,7 +48,7 @@ const getUserInitials = (_a) => __awaiter(void 0, [_a], void 0, function* ({ nam
     }
     catch (err) {
         console.error("APW-LIB ERROR (avatars): Error in getUserInitials():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -62,7 +62,7 @@ const getQrCodeFromString = (_a) => __awaiter(void 0, [_a], void 0, function* ({
     }
     catch (err) {
         console.error("APW-LIB ERROR (avatars): Error in getQrCodeFromString():", err);
-        return err;
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 export { getFlag, getImageFromUrl, getUserInitials, getQrCodeFromString };

@@ -48,7 +48,7 @@ const getFlag = async ({
     return Buffer.from(buffer).toString("base64");
   } catch (err) {
     console.error("APW-LIB ERROR (avatars): Error in getFlag():", err);
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -66,7 +66,7 @@ const getImageFromUrl = async ({
     return Buffer.from(buffer).toString("base64");
   } catch (err) {
     console.error("APW-LIB ERROR (avatars): Error in getImageFromUrl():", err);
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -85,7 +85,7 @@ const getUserInitials = async ({
     return Buffer.from(buffer).toString("base64");
   } catch (err) {
     console.error("APW-LIB ERROR (avatars): Error in getUserInitials():", err);
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -107,7 +107,7 @@ const getQrCodeFromString = async ({
       "APW-LIB ERROR (avatars): Error in getQrCodeFromString():",
       err
     );
-    return err as Error;
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 

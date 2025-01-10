@@ -21,7 +21,7 @@ const createSessionForUserId = (_a) => __awaiter(void 0, [_a], void 0, function*
     }
     catch (err) {
         console.error("APW-LIB ERROR (users): Error executing createSessionForUserId():", err);
-        return JSON.parse(JSON.stringify(err));
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -35,7 +35,7 @@ const createToken = (_a) => __awaiter(void 0, [_a], void 0, function* ({ userId,
     }
     catch (err) {
         console.error("APW-LIB ERROR (users): Error executing createToken():", err);
-        return JSON.parse(JSON.stringify(err));
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -48,7 +48,7 @@ const deleteSessionForUserId = (_a) => __awaiter(void 0, [_a], void 0, function*
     }
     catch (err) {
         console.error("APW-LIB ERROR (users): Error executing deleteSessionForUserId():", err);
-        return JSON.parse(JSON.stringify(err));
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -61,7 +61,7 @@ const deleteSessionsForUserId = (_a) => __awaiter(void 0, [_a], void 0, function
     }
     catch (err) {
         console.error("APW-LIB ERROR (users): Error executing deleteSessionsForUserId():", err);
-        return JSON.parse(JSON.stringify(err));
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -75,7 +75,7 @@ const getUserForUserId = (_a) => __awaiter(void 0, [_a], void 0, function* ({ us
     }
     catch (err) {
         console.error("APW-LIB ERROR (users): Error executing getUserForUserId():", err);
-        return JSON.parse(JSON.stringify(err));
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -89,7 +89,7 @@ const listUsers = (_a) => __awaiter(void 0, [_a], void 0, function* ({ queries, 
     }
     catch (err) {
         console.error("APW-LIB ERROR (users): Error executing listUsers():", err);
-        return JSON.parse(JSON.stringify(err));
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 /**
@@ -106,7 +106,7 @@ const updateEmailVerificationForUserId = (_a) => __awaiter(void 0, [_a], void 0,
     }
     catch (err) {
         console.error("APW-LIB ERROR (users): Error executing updateEmailVerificationForUserId():", err);
-        return JSON.parse(JSON.stringify(err));
+        throw JSON.parse(JSON.stringify(err));
     }
 });
 export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, listUsers, updateEmailVerificationForUserId, };

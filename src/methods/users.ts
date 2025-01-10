@@ -109,7 +109,7 @@ const createSessionForUserId = async ({
       "APW-LIB ERROR (users): Error executing createSessionForUserId():",
       err
     );
-    return JSON.parse(JSON.stringify(err));
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -127,7 +127,7 @@ const createToken = async ({
     return token;
   } catch (err) {
     console.error("APW-LIB ERROR (users): Error executing createToken():", err);
-    return JSON.parse(JSON.stringify(err));
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -146,7 +146,7 @@ const deleteSessionForUserId = async ({
       "APW-LIB ERROR (users): Error executing deleteSessionForUserId():",
       err
     );
-    return JSON.parse(JSON.stringify(err));
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -164,7 +164,7 @@ const deleteSessionsForUserId = async ({
       "APW-LIB ERROR (users): Error executing deleteSessionsForUserId():",
       err
     );
-    return JSON.parse(JSON.stringify(err));
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -185,7 +185,7 @@ const getUserForUserId = async ({
       "APW-LIB ERROR (users): Error executing getUserForUserId():",
       err
     );
-    return JSON.parse(JSON.stringify(err));
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -202,7 +202,7 @@ const listUsers = async ({
     return userList;
   } catch (err) {
     console.error("APW-LIB ERROR (users): Error executing listUsers():", err);
-    return JSON.parse(JSON.stringify(err));
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 
@@ -227,7 +227,7 @@ const updateEmailVerificationForUserId = async ({
       "APW-LIB ERROR (users): Error executing updateEmailVerificationForUserId():",
       err
     );
-    return JSON.parse(JSON.stringify(err));
+    throw JSON.parse(JSON.stringify(err));
   }
 };
 

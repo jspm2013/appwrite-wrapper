@@ -34,23 +34,4 @@ export declare const isEmptyKeyValuePair: (obj: Record<string, any>) => boolean;
  * @returns {boolean} - True if the error is an AppwriteException, false otherwise.
  */
 export declare function isApwError(error: unknown): boolean;
-/**
- * Wrapper for handling Appwrite exceptions in promises.
- * @param promise - The promise to handle.
- * @returns {Promise<any>} - Resolves or rejects with the promise result or error.
- */
-export declare const apwExcWrapper: (promise: Promise<any>) => Promise<any>;
-/**
- * Handles Appwrite errors and maps them to a readable format.
- * @param error - The error to handle.
- * @param locale - The locale for error messages (e.g., "en", "de").
- * @returns {object} - Formatted error object.
- */
-export declare const handleApwError: (error: unknown, locale?: string) => {
-    name: string;
-    type: string;
-    code: number;
-    variant: string;
-    description: any;
-};
 //# sourceMappingURL=utils.d.ts.map

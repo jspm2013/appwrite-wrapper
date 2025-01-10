@@ -14,7 +14,8 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "baseUrl": "./",
     "paths": {
-      "@jspm2013/appwrite-wrapper/enums": ["src/enums"]
+      "@jspm2013/appwrite-wrapper/enums": ["src/enums"],
+      "@jspm2013/appwrite-wrapper/exceptions": ["src/exceptions"]
     }
   },
   "include": ["src/**/*"],

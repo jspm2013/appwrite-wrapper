@@ -2,12 +2,6 @@
 
 // Importing individual functions and objects from modules
 import {
-  getFlag,
-  getImageFromUrl,
-  getUserInitials,
-  getQrCodeFromString,
-} from "./methods/avatars";
-import {
   createAccount,
   createJWT,
   createVerification,
@@ -23,7 +17,14 @@ import {
   createOAuth2Token,
   createSession,
 } from "./methods/account";
-import { OAuthProvider } from "./methods/account";
+
+import {
+  getFlag,
+  getImageFromUrl,
+  getUserInitials,
+  getQrCodeFromString,
+} from "./methods/avatars";
+
 import {
   createDocument,
   deleteDocument,
@@ -31,6 +32,7 @@ import {
   listDocuments,
   updateDocument,
 } from "./methods/databases";
+
 import {
   createSessionForUserId,
   createToken,
@@ -41,19 +43,8 @@ import {
   updateEmailVerificationForUserId,
 } from "./methods/users";
 
-// Wrapping constants like OAuthProvider in async functions
-export async function getOAuthProvider() {
-  return OAuthProvider;
-}
-
 // Exporting individual functions as async
 export {
-  // Avatars functions
-  getFlag,
-  getImageFromUrl,
-  getUserInitials,
-  getQrCodeFromString,
-
   // Account functions
   createAccount,
   createJWT,
@@ -69,6 +60,12 @@ export {
   createEmailPasswordSession,
   createOAuth2Token,
   createSession,
+
+  // Avatars functions
+  getFlag,
+  getImageFromUrl,
+  getUserInitials,
+  getQrCodeFromString,
 
   // Database functions
   createDocument,

@@ -28,19 +28,19 @@ export type GetQrCodeFromStringParams = {
 /**
  * Retrieves a country flag image.
  */
-declare const getFlag: ({ code, width, height, quality, }: GetFlagParams) => Promise<string | Error>;
+declare const getFlag: ({ code, width, height, quality, }: GetFlagParams) => Promise<string>;
 /**
  * Retrieves an image from a URL.
  */
-declare const getImageFromUrl: ({ url, width, height, }: GetImageFromUrlParams) => Promise<string | Error>;
+declare const getImageFromUrl: ({ url, width, height, }: GetImageFromUrlParams) => Promise<string>;
 /**
  * Retrieves user initials as an avatar image.
  */
-declare const getUserInitials: ({ name, width, height, background, }: GetUserInitialsParams) => Promise<string | Error>;
+declare const getUserInitials: ({ name, width, height, background, }: GetUserInitialsParams) => Promise<string>;
 /**
  * Retrieves a QR code as an image.
  */
-declare const getQrCodeFromString: ({ text, size, margin, download, }: GetQrCodeFromStringParams) => Promise<string | Error>;
+declare const getQrCodeFromString: ({ text, size, margin, download, }: GetQrCodeFromStringParams) => Promise<string>;
 export type AvatarFunctions = {
     getFlag: typeof getFlag;
     getImageFromUrl: typeof getImageFromUrl;

@@ -82,7 +82,7 @@ const createAccount = async ({
   email,
   password,
   name,
-}: CreateAccountParams): Promise<Models.User<Models.Preferences> | Error> => {
+}: CreateAccountParams): Promise<Models.User<Models.Preferences>> => {
   try {
     const { account } = await createSessionClient();
     return await account.create(ID.unique(), email, password, name);
@@ -98,7 +98,7 @@ const createAccount = async ({
 /**
  * Creates a JWT token.
  */
-const createJWT = async (): Promise<Models.Jwt | Error> => {
+const createJWT = async (): Promise<Models.Jwt> => {
   try {
     const { account } = await createSessionClient();
     return await account.createJWT();
@@ -113,7 +113,7 @@ const createJWT = async (): Promise<Models.Jwt | Error> => {
  */
 const createVerification = async ({
   verificationUrl = `${host}/${verificationPath}`,
-}): Promise<Models.Token | Error> => {
+}): Promise<Models.Token> => {
   try {
     const { account } = await createSessionClient();
     return await account.createVerification(verificationUrl);
@@ -131,7 +131,7 @@ const createVerification = async ({
  */
 const deleteSession = async (
   params: DeleteSessionParams = {}
-): Promise<void | Error> => {
+): Promise<void> => {
   const { sessionId = "current" } = params;
   try {
     const { account } = await createSessionClient();
@@ -148,7 +148,7 @@ const deleteSession = async (
 /**
  * Lists all sessions for the current user.
  */
-const listSessions = async (): Promise<Models.SessionList | Error> => {
+const listSessions = async (): Promise<Models.SessionList> => {
   try {
     const { account } = await createSessionClient();
     return await account.listSessions();
@@ -164,7 +164,7 @@ const listSessions = async (): Promise<Models.SessionList | Error> => {
 /**
  * Deletes all sessions for the current user.
  */
-const deleteSessions = async (): Promise<void | Error> => {
+const deleteSessions = async (): Promise<void> => {
   try {
     const { account } = await createSessionClient();
     await account.deleteSessions();
@@ -180,9 +180,7 @@ const deleteSessions = async (): Promise<void | Error> => {
 /**
  * Retrieves the current user.
  */
-const getUser = async (): Promise<
-  Models.User<Models.Preferences> | Error | null
-> => {
+const getUser = async (): Promise<Models.User<Models.Preferences> | null> => {
   try {
     const { account } = await createSessionClient();
     return await account.get();
@@ -201,7 +199,7 @@ const getUser = async (): Promise<
  */
 const deletePrefs = async ({
   key,
-}: DeletePrefsParams): Promise<Models.Preferences | Error> => {
+}: DeletePrefsParams): Promise<Models.Preferences> => {
   try {
     const { account } = await createSessionClient();
     const oldPrefs = await account.getPrefs();
@@ -223,7 +221,7 @@ const deletePrefs = async ({
 /**
  * Retrieves all preferences for the current user.
  */
-const getPrefs = async (): Promise<Models.Preferences | Error> => {
+const getPrefs = async (): Promise<Models.Preferences> => {
   try {
     const { account } = await createSessionClient();
     return await account.getPrefs();
@@ -236,9 +234,7 @@ const getPrefs = async (): Promise<Models.Preferences | Error> => {
 /**
  * Updates preferences for the current user.
  */
-const setPrefs = async ({
-  newPrefs,
-}: SetPrefsParams): Promise<void | Error> => {
+const setPrefs = async ({ newPrefs }: SetPrefsParams): Promise<void> => {
   try {
     if (isValidJsonObject(newPrefs)) {
       const { account } = await createSessionClient();
@@ -261,7 +257,7 @@ const setPrefs = async ({
 const updateVerification = async ({
   userId,
   secret,
-}: UpdateVerificationParams): Promise<Models.Token | Error> => {
+}: UpdateVerificationParams): Promise<Models.Token> => {
   try {
     const { account } = await createSessionClient();
     return await account.updateVerification(userId, secret);
@@ -280,7 +276,7 @@ const updateVerification = async ({
 const createEmailPasswordSession = async ({
   email,
   password,
-}: CreateEmailPasswordSessionParams): Promise<Models.Session | Error> => {
+}: CreateEmailPasswordSessionParams): Promise<Models.Session> => {
   try {
     const { account } = await createAdminClient();
     const session = await account.createEmailPasswordSession(email, password);
@@ -307,7 +303,7 @@ const createOAuth2Token = async ({
   provider,
   successPath = oauthSuccessPath,
   failurePath = oauthFailurePath,
-}: CreateOAuth2TokenParams): Promise<string | Error> => {
+}: CreateOAuth2TokenParams): Promise<string> => {
   try {
     const { account } = await createAdminClient();
     return await account.createOAuth2Token(
@@ -330,7 +326,7 @@ const createOAuth2Token = async ({
 const createSession = async ({
   userId,
   secret,
-}: CreateSessionParams): Promise<Models.Session | Error> => {
+}: CreateSessionParams): Promise<Models.Session> => {
   try {
     const { account } = await createAdminClient();
     const session = await account.createSession(userId, secret);

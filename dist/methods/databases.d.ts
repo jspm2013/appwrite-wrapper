@@ -34,23 +34,23 @@ export type UpdateDocumentParams = {
 /**
  * Creates a document in a collection.
  */
-declare const createDocument: ({ collectionId, documentId, data, permissions, dbId, }: CreateDocumentParams) => Promise<any | Error>;
+declare const createDocument: ({ collectionId, documentId, data, permissions, dbId, }: CreateDocumentParams) => Promise<any>;
 /**
  * Deletes a document from a collection.
  */
-declare const deleteDocument: ({ collectionId, documentId, dbId, }: DeleteDocumentParams) => Promise<void | Error>;
+declare const deleteDocument: ({ collectionId, documentId, dbId, }: DeleteDocumentParams) => Promise<void>;
 /**
  * Retrieves a document from a collection.
  */
-declare const getDocument: ({ collectionId, documentId, queries, dbId, }: GetDocumentParams) => Promise<any | Error>;
+declare const getDocument: ({ collectionId, documentId, queries, dbId, }: GetDocumentParams) => Promise<any>;
 /**
  * Lists documents in a collection.
  */
-declare const listDocuments: ({ collectionId, queries, dbId, }: ListDocumentsParams) => Promise<any | Error>;
+declare const listDocuments: ({ collectionId, queries, dbId, }: ListDocumentsParams) => Promise<any>;
 /**
  * Updates a document in a collection.
  */
-declare const updateDocument: ({ collectionId, documentId, data, permissions, dbId, }: UpdateDocumentParams) => Promise<any | Error>;
+declare const updateDocument: ({ collectionId, documentId, data, permissions, dbId, }: UpdateDocumentParams) => Promise<any>;
 export type DatabaseFunctions = {
     createDocument: typeof createDocument;
     deleteDocument: typeof deleteDocument;

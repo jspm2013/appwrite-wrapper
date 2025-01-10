@@ -57,61 +57,61 @@ export type DeleteSessionParams = {
 /**
  * Creates a new account.
  */
-declare const createAccount: ({ email, password, name, }: CreateAccountParams) => Promise<Models.User<Models.Preferences> | Error>;
+declare const createAccount: ({ email, password, name, }: CreateAccountParams) => Promise<Models.User<Models.Preferences>>;
 /**
  * Creates a JWT token.
  */
-declare const createJWT: () => Promise<Models.Jwt | Error>;
+declare const createJWT: () => Promise<Models.Jwt>;
 /**
  * Creates an email verification token.
  */
 declare const createVerification: ({ verificationUrl, }: {
     verificationUrl?: string | undefined;
-}) => Promise<Models.Token | Error>;
+}) => Promise<Models.Token>;
 /**
  * Deletes a specific session or the current session.
  */
-declare const deleteSession: (params?: DeleteSessionParams) => Promise<void | Error>;
+declare const deleteSession: (params?: DeleteSessionParams) => Promise<void>;
 /**
  * Lists all sessions for the current user.
  */
-declare const listSessions: () => Promise<Models.SessionList | Error>;
+declare const listSessions: () => Promise<Models.SessionList>;
 /**
  * Deletes all sessions for the current user.
  */
-declare const deleteSessions: () => Promise<void | Error>;
+declare const deleteSessions: () => Promise<void>;
 /**
  * Retrieves the current user.
  */
-declare const getUser: () => Promise<Models.User<Models.Preferences> | Error | null>;
+declare const getUser: () => Promise<Models.User<Models.Preferences> | null>;
 /**
  * Deletes a specific preference key for the current user.
  */
-declare const deletePrefs: ({ key, }: DeletePrefsParams) => Promise<Models.Preferences | Error>;
+declare const deletePrefs: ({ key, }: DeletePrefsParams) => Promise<Models.Preferences>;
 /**
  * Retrieves all preferences for the current user.
  */
-declare const getPrefs: () => Promise<Models.Preferences | Error>;
+declare const getPrefs: () => Promise<Models.Preferences>;
 /**
  * Updates preferences for the current user.
  */
-declare const setPrefs: ({ newPrefs, }: SetPrefsParams) => Promise<void | Error>;
+declare const setPrefs: ({ newPrefs }: SetPrefsParams) => Promise<void>;
 /**
  * Updates the email verification for a specific user.
  */
-declare const updateVerification: ({ userId, secret, }: UpdateVerificationParams) => Promise<Models.Token | Error>;
+declare const updateVerification: ({ userId, secret, }: UpdateVerificationParams) => Promise<Models.Token>;
 /**
  * Creates a session for a user using email and password.
  */
-declare const createEmailPasswordSession: ({ email, password, }: CreateEmailPasswordSessionParams) => Promise<Models.Session | Error>;
+declare const createEmailPasswordSession: ({ email, password, }: CreateEmailPasswordSessionParams) => Promise<Models.Session>;
 /**
  * Creates an OAuth2 token for the user.
  */
-declare const createOAuth2Token: ({ provider, successPath, failurePath, }: CreateOAuth2TokenParams) => Promise<string | Error>;
+declare const createOAuth2Token: ({ provider, successPath, failurePath, }: CreateOAuth2TokenParams) => Promise<string>;
 /**
  * Creates a session for a user by their ID and secret.
  */
-declare const createSession: ({ userId, secret, }: CreateSessionParams) => Promise<Models.Session | Error>;
+declare const createSession: ({ userId, secret, }: CreateSessionParams) => Promise<Models.Session>;
 export type AccountFunctions = {
     createAccount: typeof createAccount;
     createJWT: typeof createJWT;

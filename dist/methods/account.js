@@ -156,7 +156,7 @@ const getPrefs = () => __awaiter(void 0, void 0, void 0, function* () {
 /**
  * Updates preferences for the current user.
  */
-const setPrefs = (_a) => __awaiter(void 0, [_a], void 0, function* ({ newPrefs, }) {
+const setPrefs = (_a) => __awaiter(void 0, [_a], void 0, function* ({ newPrefs }) {
     try {
         if (isValidJsonObject(newPrefs)) {
             const { account } = yield createSessionClient();

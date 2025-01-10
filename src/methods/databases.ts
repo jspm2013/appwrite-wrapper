@@ -50,7 +50,7 @@ const createDocument = async ({
   data,
   permissions = ['read("any")'],
   dbId,
-}: CreateDocumentParams): Promise<any | Error> => {
+}: CreateDocumentParams): Promise<any> => {
   try {
     const { databases } = await createAdminClient();
     return await databases.createDocument(
@@ -73,7 +73,7 @@ const deleteDocument = async ({
   collectionId,
   documentId,
   dbId,
-}: DeleteDocumentParams): Promise<void | Error> => {
+}: DeleteDocumentParams): Promise<void> => {
   try {
     const { databases } = await createAdminClient();
     await databases.deleteDocument(dbId!, collectionId, documentId);
@@ -91,7 +91,7 @@ const getDocument = async ({
   documentId,
   queries = [],
   dbId,
-}: GetDocumentParams): Promise<any | Error> => {
+}: GetDocumentParams): Promise<any> => {
   try {
     const { databases } = await createAdminClient();
     return await databases.getDocument(
@@ -113,7 +113,7 @@ const listDocuments = async ({
   collectionId,
   queries = [],
   dbId,
-}: ListDocumentsParams): Promise<any | Error> => {
+}: ListDocumentsParams): Promise<any> => {
   try {
     const { databases } = await createAdminClient();
     return await databases.listDocuments(dbId!, collectionId, queries);
@@ -132,7 +132,7 @@ const updateDocument = async ({
   data,
   permissions = ['read("any")'],
   dbId,
-}: UpdateDocumentParams): Promise<any | Error> => {
+}: UpdateDocumentParams): Promise<any> => {
   try {
     const { databases } = await createAdminClient();
     return await databases.updateDocument(

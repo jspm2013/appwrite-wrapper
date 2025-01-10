@@ -41,7 +41,7 @@ const getFlag = async ({
   width = 100,
   height = 100,
   quality = 100,
-}: GetFlagParams): Promise<string | Error> => {
+}: GetFlagParams): Promise<string> => {
   try {
     const { avatars } = await createAdminClient();
     const buffer = await avatars.getFlag(code, width, height, quality);
@@ -59,7 +59,7 @@ const getImageFromUrl = async ({
   url,
   width = 400,
   height = 400,
-}: GetImageFromUrlParams): Promise<string | Error> => {
+}: GetImageFromUrlParams): Promise<string> => {
   try {
     const { avatars } = await createAdminClient();
     const buffer = await avatars.getImage(url, width, height);
@@ -78,7 +78,7 @@ const getUserInitials = async ({
   width = 100,
   height = 100,
   background,
-}: GetUserInitialsParams): Promise<string | Error> => {
+}: GetUserInitialsParams): Promise<string> => {
   try {
     const { avatars } = await createAdminClient();
     const buffer = await avatars.getInitials(name, width, height, background);
@@ -97,7 +97,7 @@ const getQrCodeFromString = async ({
   size = 400,
   margin = 1,
   download = false,
-}: GetQrCodeFromStringParams): Promise<string | Error> => {
+}: GetQrCodeFromStringParams): Promise<string> => {
   try {
     const { avatars } = await createAdminClient();
     const buffer = await avatars.getQR(text, size, margin, download);

@@ -85,31 +85,31 @@ export type UpdateEmailVerificationForUserIdParams = {
 /**
  * Creates a session for a user by their ID.
  */
-declare const createSessionForUserId: ({ userId, }: CreateSessionForUserIdParams) => Promise<Models.Session | Error>;
+declare const createSessionForUserId: ({ userId, }: CreateSessionForUserIdParams) => Promise<Models.Session>;
 /**
  * Creates a token for a user.
  */
-declare const createToken: ({ userId, length, expire, }: CreateTokenParams) => Promise<Models.Token | Error>;
+declare const createToken: ({ userId, length, expire, }: CreateTokenParams) => Promise<Models.Token>;
 /**
  * Deletes a specific session for a user by their ID.
  */
-declare const deleteSessionForUserId: ({ userId, sessionId, }: DeleteSessionForUserIdParams) => Promise<void | Error>;
+declare const deleteSessionForUserId: ({ userId, sessionId, }: DeleteSessionForUserIdParams) => Promise<void>;
 /**
  * Deletes all sessions for a user by their ID.
  */
-declare const deleteSessionsForUserId: ({ userId, }: DeleteSessionsForUserIdParams) => Promise<void | Error>;
+declare const deleteSessionsForUserId: ({ userId, }: DeleteSessionsForUserIdParams) => Promise<void>;
 /**
  * Retrieves a user by their ID.
  */
-declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<Models.User<Models.Preferences> | Error>;
+declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<Models.User<Models.Preferences>>;
 /**
  * Lists users with optional filters and search parameters.
  */
-declare const listUsers: ({ queries, search, }: ListUsersParams) => Promise<Models.UserList<Models.Preferences> | Error>;
+declare const listUsers: ({ queries, search, }: ListUsersParams) => Promise<Models.UserList<Models.Preferences>>;
 /**
  * Updates the email verification status for a user.
  */
-declare const updateEmailVerificationForUserId: ({ userId, status, }: UpdateEmailVerificationForUserIdParams) => Promise<Models.User<Models.Preferences> | Error>;
+declare const updateEmailVerificationForUserId: ({ userId, status, }: UpdateEmailVerificationForUserIdParams) => Promise<Models.User<Models.Preferences>>;
 export type UserFunctions = {
     createSessionForUserId: typeof createSessionForUserId;
     createToken: typeof createToken;

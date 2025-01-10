@@ -99,7 +99,7 @@ export type UpdateEmailVerificationForUserIdParams = {
  */
 const createSessionForUserId = async ({
   userId = ID.unique(),
-}: CreateSessionForUserIdParams): Promise<Models.Session | Error> => {
+}: CreateSessionForUserIdParams): Promise<Models.Session> => {
   try {
     const { users } = await createAdminClient();
     const session = await users.createSession(userId);
@@ -120,7 +120,7 @@ const createToken = async ({
   userId,
   length = 32,
   expire = 60 * 3,
-}: CreateTokenParams): Promise<Models.Token | Error> => {
+}: CreateTokenParams): Promise<Models.Token> => {
   try {
     const { users } = await createAdminClient();
     const token = await users.createToken(userId, length, expire);
@@ -137,7 +137,7 @@ const createToken = async ({
 const deleteSessionForUserId = async ({
   userId,
   sessionId,
-}: DeleteSessionForUserIdParams): Promise<void | Error> => {
+}: DeleteSessionForUserIdParams): Promise<void> => {
   try {
     const { users } = await createAdminClient();
     await users.deleteSession(userId, sessionId);
@@ -155,7 +155,7 @@ const deleteSessionForUserId = async ({
  */
 const deleteSessionsForUserId = async ({
   userId,
-}: DeleteSessionsForUserIdParams): Promise<void | Error> => {
+}: DeleteSessionsForUserIdParams): Promise<void> => {
   try {
     const { users } = await createAdminClient();
     await users.deleteSessions(userId);
@@ -173,9 +173,7 @@ const deleteSessionsForUserId = async ({
  */
 const getUserForUserId = async ({
   userId,
-}: GetUserForUserIdParams): Promise<
-  Models.User<Models.Preferences> | Error
-> => {
+}: GetUserForUserIdParams): Promise<Models.User<Models.Preferences>> => {
   try {
     const { users } = await createAdminClient();
     const user = await users.get(userId);
@@ -195,7 +193,7 @@ const getUserForUserId = async ({
 const listUsers = async ({
   queries,
   search,
-}: ListUsersParams): Promise<Models.UserList<Models.Preferences> | Error> => {
+}: ListUsersParams): Promise<Models.UserList<Models.Preferences>> => {
   try {
     const { users } = await createAdminClient();
     const userList = await users.list(queries, search);
@@ -213,7 +211,7 @@ const updateEmailVerificationForUserId = async ({
   userId,
   status,
 }: UpdateEmailVerificationForUserIdParams): Promise<
-  Models.User<Models.Preferences> | Error
+  Models.User<Models.Preferences>
 > => {
   try {
     if (typeof status !== "boolean") {

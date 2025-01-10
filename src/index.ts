@@ -41,7 +41,12 @@ import {
   updateEmailVerificationForUserId,
 } from "./methods/users";
 
-// Exporting individual functions and objects
+// Wrapping constants like OAuthProvider in async functions
+export async function getOAuthProvider() {
+  return OAuthProvider;
+}
+
+// Exporting individual functions as async
 export {
   // Avatars functions
   getFlag,
@@ -64,7 +69,6 @@ export {
   createEmailPasswordSession,
   createOAuth2Token,
   createSession,
-  OAuthProvider, // Explicit export of OAuthProvider for ease of use
 
   // Database functions
   createDocument,

@@ -1,57 +1,84 @@
 "use server";
 
-import * as avatars from "./methods/avatars";
-import { AvatarFunctions } from "./methods/avatars";
-
-import * as account from "./methods/account";
-import { AccountFunctions } from "./methods/account"; // Example: Define this type in account module
+// Importing individual functions and objects from modules
+import {
+  getFlag,
+  getImageFromUrl,
+  getUserInitials,
+  getQrCodeFromString,
+} from "./methods/avatars";
+import {
+  createAccount,
+  createJWT,
+  createVerification,
+  deleteSession,
+  listSessions,
+  deleteSessions,
+  getUser,
+  deletePrefs,
+  getPrefs,
+  setPrefs,
+  updateVerification,
+  createEmailPasswordSession,
+  createOAuth2Token,
+  createSession,
+} from "./methods/account";
 import { OAuthProvider } from "./methods/account";
+import {
+  createDocument,
+  deleteDocument,
+  getDocument,
+  listDocuments,
+  updateDocument,
+} from "./methods/databases";
+import {
+  createSessionForUserId,
+  createToken,
+  deleteSessionForUserId,
+  deleteSessionsForUserId,
+  getUserForUserId,
+  listUsers,
+  updateEmailVerificationForUserId,
+} from "./methods/users";
 
-import * as databases from "./methods/databases";
-import { DatabaseFunctions } from "./methods/databases"; // Example: Define this type in databases module
-
-//import * as functions from "./ts/functions";
-//import { FunctionFunctions } from "./ts/functions"; // Example: Define this type in functions module
-
-//import * as locale from "./ts/locale";
-//import { LocaleFunctions } from "./ts/locale"; // Example: Define this type in locale module
-
-//import * as messaging from "./ts/messaging";
-//import { MessagingFunctions } from "./ts/messaging"; // Example: Define this type in messaging module
-
-//import * as storage from "./ts/storage";
-//import { StorageFunctions } from "./ts/storage"; // Example: Define this type in storage module
-
-//import * as teams from "./ts/teams";
-//import { TeamFunctions } from "./ts/teams"; // Example: Define this type in teams module
-
-import * as users from "./methods/users";
-import { UserFunctions } from "./methods/users"; // The types already defined in the `users.ts` file
-
+// Exporting individual functions and objects
 export {
-  avatars,
-  account,
-  databases,
-  //functions,
-  //locale,
-  //messaging,
-  //storage,
-  //teams,
-  users,
-};
+  // Avatars functions
+  getFlag,
+  getImageFromUrl,
+  getUserInitials,
+  getQrCodeFromString,
 
-// Exporting OAuthProvider explicitly for easier access
-export { OAuthProvider };
+  // Account functions
+  createAccount,
+  createJWT,
+  createVerification,
+  deleteSession,
+  listSessions,
+  deleteSessions,
+  getUser,
+  deletePrefs,
+  getPrefs,
+  setPrefs,
+  updateVerification,
+  createEmailPasswordSession,
+  createOAuth2Token,
+  createSession,
+  OAuthProvider, // Explicit export of OAuthProvider for ease of use
 
-// Define the type for the entire `Methods` object
-export type Methods = {
-  avatars: AvatarFunctions;
-  account: AccountFunctions;
-  databases: DatabaseFunctions;
-  //functions: FunctionFunctions;
-  //locale: LocaleFunctions;
-  //messaging: MessagingFunctions;
-  //storage: StorageFunctions;
-  //teams: TeamFunctions;
-  users: UserFunctions;
+  // Database functions
+  createDocument,
+  deleteDocument,
+  getDocument,
+  listDocuments,
+  updateDocument,
+
+  // Users functions
+  createSessionForUserId,
+  createToken,
+  deleteSessionForUserId,
+  deleteSessionsForUserId,
+  getUserForUserId,
+  listUsers,
+  updateEmailVerificationForUserId,
 };

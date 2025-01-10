@@ -1,25 +1,17 @@
 "use server";
-import * as avatars from "./methods/avatars";
-import * as account from "./methods/account";
+// Importing individual functions and objects from modules
+import { getFlag, getImageFromUrl, getUserInitials, getQrCodeFromString, } from "./methods/avatars";
+import { createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession, } from "./methods/account";
 import { OAuthProvider } from "./methods/account";
-import * as databases from "./methods/databases";
-//import * as functions from "./ts/functions";
-//import { FunctionFunctions } from "./ts/functions"; // Example: Define this type in functions module
-//import * as locale from "./ts/locale";
-//import { LocaleFunctions } from "./ts/locale"; // Example: Define this type in locale module
-//import * as messaging from "./ts/messaging";
-//import { MessagingFunctions } from "./ts/messaging"; // Example: Define this type in messaging module
-//import * as storage from "./ts/storage";
-//import { StorageFunctions } from "./ts/storage"; // Example: Define this type in storage module
-//import * as teams from "./ts/teams";
-//import { TeamFunctions } from "./ts/teams"; // Example: Define this type in teams module
-import * as users from "./methods/users";
-export { avatars, account, databases, 
-//functions,
-//locale,
-//messaging,
-//storage,
-//teams,
-users, };
-// Exporting OAuthProvider explicitly for easier access
-export { OAuthProvider };
+import { createDocument, deleteDocument, getDocument, listDocuments, updateDocument, } from "./methods/databases";
+import { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, listUsers, updateEmailVerificationForUserId, } from "./methods/users";
+// Exporting individual functions and objects
+export { 
+// Avatars functions
+getFlag, getImageFromUrl, getUserInitials, getQrCodeFromString, 
+// Account functions
+createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession, OAuthProvider, // Explicit export of OAuthProvider for ease of use
+// Database functions
+createDocument, deleteDocument, getDocument, listDocuments, updateDocument, 
+// Users functions
+createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, listUsers, updateEmailVerificationForUserId, };

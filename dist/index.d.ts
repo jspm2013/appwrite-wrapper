@@ -1,18 +1,8 @@
-import * as avatars from "./methods/avatars";
-import { AvatarFunctions } from "./methods/avatars";
-import * as account from "./methods/account";
-import { AccountFunctions } from "./methods/account";
+import { getFlag, getImageFromUrl, getUserInitials, getQrCodeFromString } from "./methods/avatars";
+import { createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession } from "./methods/account";
 import { OAuthProvider } from "./methods/account";
-import * as databases from "./methods/databases";
-import { DatabaseFunctions } from "./methods/databases";
-import * as users from "./methods/users";
-import { UserFunctions } from "./methods/users";
-export { avatars, account, databases, users, };
-export { OAuthProvider };
-export type Methods = {
-    avatars: AvatarFunctions;
-    account: AccountFunctions;
-    databases: DatabaseFunctions;
-    users: UserFunctions;
-};
+import { createDocument, deleteDocument, getDocument, listDocuments, updateDocument } from "./methods/databases";
+import { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, listUsers, updateEmailVerificationForUserId } from "./methods/users";
+export { getFlag, getImageFromUrl, getUserInitials, getQrCodeFromString, createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession, OAuthProvider, // Explicit export of OAuthProvider for ease of use
+createDocument, deleteDocument, getDocument, listDocuments, updateDocument, createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, listUsers, updateEmailVerificationForUserId, };
 //# sourceMappingURL=index.d.ts.map

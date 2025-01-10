@@ -1,24 +1,4 @@
 "use server";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 import { ID, OAuthProvider } from "node-appwrite";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
@@ -28,89 +8,89 @@ import { host } from "../host";
 /**
  * Creates a new account.
  */
-const createAccount = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, password, name, }) {
+const createAccount = async ({ email, password, name, }) => {
     try {
-        const { account } = yield createSessionClient();
-        return yield account.create(ID.unique(), email, password, name);
+        const { account } = await createSessionClient();
+        return await account.create(ID.unique(), email, password, name);
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing createAccount():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Creates a JWT token.
  */
-const createJWT = () => __awaiter(void 0, void 0, void 0, function* () {
+const createJWT = async () => {
     try {
-        const { account } = yield createSessionClient();
-        return yield account.createJWT();
+        const { account } = await createSessionClient();
+        return await account.createJWT();
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing createJWT():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Creates an email verification token.
  */
-const createVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ verificationUrl = `${host}/${verificationPath}`, }) {
+const createVerification = async ({ verificationUrl = `${host}/${verificationPath}`, }) => {
     try {
-        const { account } = yield createSessionClient();
-        return yield account.createVerification(verificationUrl);
+        const { account } = await createSessionClient();
+        return await account.createVerification(verificationUrl);
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing createVerification():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Deletes a specific session or the current session.
  */
-const deleteSession = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* (params = {}) {
+const deleteSession = async (params = {}) => {
     const { sessionId = "current" } = params;
     try {
-        const { account } = yield createSessionClient();
-        yield account.deleteSession(sessionId);
+        const { account } = await createSessionClient();
+        await account.deleteSession(sessionId);
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing deleteSession():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Lists all sessions for the current user.
  */
-const listSessions = () => __awaiter(void 0, void 0, void 0, function* () {
+const listSessions = async () => {
     try {
-        const { account } = yield createSessionClient();
-        return yield account.listSessions();
+        const { account } = await createSessionClient();
+        return await account.listSessions();
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing listSessions():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Deletes all sessions for the current user.
  */
-const deleteSessions = () => __awaiter(void 0, void 0, void 0, function* () {
+const deleteSessions = async () => {
     try {
-        const { account } = yield createSessionClient();
-        yield account.deleteSessions();
+        const { account } = await createSessionClient();
+        await account.deleteSessions();
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing deleteSessions():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Retrieves the current user.
  */
-const getUser = () => __awaiter(void 0, void 0, void 0, function* () {
+const getUser = async () => {
     try {
-        const { account } = yield createSessionClient();
-        return yield account.get();
+        const { account } = await createSessionClient();
+        return await account.get();
     }
     catch (err) {
         /*
@@ -120,17 +100,17 @@ const getUser = () => __awaiter(void 0, void 0, void 0, function* () {
         //console.error("APW-LIB ERROR (account): Error executing getUser():", err);
         //throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Deletes a specific preference key for the current user.
  */
-const deletePrefs = (_a) => __awaiter(void 0, [_a], void 0, function* ({ key, }) {
+const deletePrefs = async ({ key, }) => {
     try {
-        const { account } = yield createSessionClient();
-        const oldPrefs = yield account.getPrefs();
+        const { account } = await createSessionClient();
+        const oldPrefs = await account.getPrefs();
         if (Object.prototype.hasOwnProperty.call(oldPrefs, key)) {
-            const _b = oldPrefs, _c = key, _ = _b[_c], newPrefs = __rest(_b, [typeof _c === "symbol" ? _c : _c + ""]);
-            yield account.updatePrefs(newPrefs);
+            const { [key]: _, ...newPrefs } = oldPrefs;
+            await account.updatePrefs(newPrefs);
             return newPrefs;
         }
         return oldPrefs;
@@ -139,29 +119,29 @@ const deletePrefs = (_a) => __awaiter(void 0, [_a], void 0, function* ({ key, })
         console.error("APW-LIB ERROR (account): Error executing deletePrefs():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Retrieves all preferences for the current user.
  */
-const getPrefs = () => __awaiter(void 0, void 0, void 0, function* () {
+const getPrefs = async () => {
     try {
-        const { account } = yield createSessionClient();
-        return yield account.getPrefs();
+        const { account } = await createSessionClient();
+        return await account.getPrefs();
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing getPrefs():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Updates preferences for the current user.
  */
-const setPrefs = (_a) => __awaiter(void 0, [_a], void 0, function* ({ newPrefs }) {
+const setPrefs = async ({ newPrefs }) => {
     try {
         if (isValidJsonObject(newPrefs)) {
-            const { account } = yield createSessionClient();
-            const oldPrefs = yield account.getPrefs();
-            yield account.updatePrefs(isEmptyKeyValuePair(oldPrefs) ? newPrefs : Object.assign(Object.assign({}, oldPrefs), newPrefs));
+            const { account } = await createSessionClient();
+            const oldPrefs = await account.getPrefs();
+            await account.updatePrefs(isEmptyKeyValuePair(oldPrefs) ? newPrefs : { ...oldPrefs, ...newPrefs });
         }
         else {
             throw new Error("Invalid JSON object");
@@ -171,28 +151,28 @@ const setPrefs = (_a) => __awaiter(void 0, [_a], void 0, function* ({ newPrefs }
         console.error("APW-LIB ERROR (account): Error executing setPrefs():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Updates the email verification for a specific user.
  */
-const updateVerification = (_a) => __awaiter(void 0, [_a], void 0, function* ({ userId, secret, }) {
+const updateVerification = async ({ userId, secret, }) => {
     try {
-        const { account } = yield createSessionClient();
-        return yield account.updateVerification(userId, secret);
+        const { account } = await createSessionClient();
+        return await account.updateVerification(userId, secret);
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing updateVerification():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Creates a session for a user using email and password.
  */
-const createEmailPasswordSession = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, password, }) {
+const createEmailPasswordSession = async ({ email, password, }) => {
     try {
-        const { account } = yield createAdminClient();
-        const session = yield account.createEmailPasswordSession(email, password);
-        (yield cookies()).set(cookieName, session.secret, {
+        const { account } = await createAdminClient();
+        const session = await account.createEmailPasswordSession(email, password);
+        (await cookies()).set(cookieName, session.secret, {
             path: "/",
             httpOnly: true,
             sameSite: "strict",
@@ -204,28 +184,28 @@ const createEmailPasswordSession = (_a) => __awaiter(void 0, [_a], void 0, funct
         console.error("APW-LIB ERROR (account): Error executing createEmailPasswordSession():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Creates an OAuth2 token for the user.
  */
-const createOAuth2Token = (_a) => __awaiter(void 0, [_a], void 0, function* ({ provider, successPath = oauthSuccessPath, failurePath = oauthFailurePath, }) {
+const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, failurePath = oauthFailurePath, }) => {
     try {
-        const { account } = yield createAdminClient();
-        return yield account.createOAuth2Token(OAuthProvider[provider], `${host}/${successPath}`, `${host}/${failurePath}`);
+        const { account } = await createAdminClient();
+        return await account.createOAuth2Token(OAuthProvider[provider], `${host}/${successPath}`, `${host}/${failurePath}`);
     }
     catch (err) {
         console.error("APW-LIB ERROR (account): Error executing createOAuth2Token():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 /**
  * Creates a session for a user by their ID and secret.
  */
-const createSession = (_a) => __awaiter(void 0, [_a], void 0, function* ({ userId, secret, }) {
+const createSession = async ({ userId, secret, }) => {
     try {
-        const { account } = yield createAdminClient();
-        const session = yield account.createSession(userId, secret);
-        (yield cookies()).set(cookieName, session.secret, {
+        const { account } = await createAdminClient();
+        const session = await account.createSession(userId, secret);
+        (await cookies()).set(cookieName, session.secret, {
             path: "/",
             httpOnly: true,
             sameSite: "strict",
@@ -237,5 +217,5 @@ const createSession = (_a) => __awaiter(void 0, [_a], void 0, function* ({ userI
         console.error("APW-LIB ERROR (account): Error executing createSession():", err);
         throw JSON.parse(JSON.stringify(err));
     }
-});
+};
 export { createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession, };

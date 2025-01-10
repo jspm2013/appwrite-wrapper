@@ -1,6 +1,5 @@
-"use server";
-
 import { AppwriteException } from "node-appwrite";
+import { exceptionsLoader, messagesLoader } from "./jsonLoader";
 
 /**
  * Handles Appwrite errors and maps them to a readable format.
@@ -26,11 +25,6 @@ export const handleApwError = async (error: any, locale: string = "en") => {
   };
 
   try {
-    const messagesPath = path.join(
-      process.cwd(),
-      "messages/appwrite",
-      `${locale}.json`
-    );
     const exceptionsPath = path.join(
       __dirname,
       "exceptions",
@@ -39,22 +33,26 @@ export const handleApwError = async (error: any, locale: string = "en") => {
 
     let localizedMessages;
     try {
-      localizedMessages = JSON.parse(
-        fs.readFileSync(messagesPath, "utf-8")
-      ) as Record<string, string>;
+      // Await the result of the async messagesLoader function
+      localizedMessages = (await messagesLoader(locale)) as Record<
+        string,
+        string
+      >;
     } catch {
+      // Return the internal error object if an error occurs
       return {
         ...internalError,
         description:
-          "DEV-MSG: Failed to read custom i18n files for localization.",
+          "DEV-MSG: Failed to read custom i18n files for localization (i.e. /messages/en.json).",
       };
     }
 
     let allExceptions;
     try {
-      allExceptions = JSON.parse(
-        fs.readFileSync(exceptionsPath, "utf-8")
-      ) as Record<string, { description: string }>;
+      allExceptions = (await exceptionsLoader()) as Record<
+        string,
+        { description: string }
+      >;
     } catch {
       return {
         ...internalError,

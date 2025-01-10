@@ -1,0 +1,1 @@
+{"version":3,"file":"jsonLoader.d.ts","sourceRoot":"","sources":["../../src/exceptions/jsonLoader.ts"],"names":[],"mappings":"AAMA;;;;;;;;;;GAUG;AACH,wBAAsB,cAAc,CAClC,MAAM,EAAE,MAAM,GACb,OAAO,CAAC,MAAM,CAAC,MAAM,EAAE,MAAM,CAAC,CAAC,CAWjC;AAED;;;;;;;;;GASG;AACH,wBAAsB,gBAAgB,IAAI,OAAO,CAC/C,MAAM,CAAC,MAAM,EAAE;IAAE,WAAW,EAAE,MAAM,CAAA;CAAE,CAAC,CACxC,CAWA"}

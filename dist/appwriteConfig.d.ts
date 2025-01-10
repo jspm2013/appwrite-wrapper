@@ -1,3 +1,4 @@
+export declare const messagesPath: string;
 export declare const projectId: string;
 export declare const endpoint: string;
 export declare const apiKeySsr: string;

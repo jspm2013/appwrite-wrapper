@@ -1,5 +1,3 @@
-"use server";
-
 import { ID } from "node-appwrite";
 import { createAdminClient } from "../appwriteClients";
 import { Models } from "node-appwrite";

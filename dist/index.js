@@ -1,3 +1,4 @@
+"use server";
 import * as avatars from "./methods/avatars";
 import * as account from "./methods/account";
 import { OAuthProvider } from "./methods/account";

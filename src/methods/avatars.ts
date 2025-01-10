@@ -1,5 +1,3 @@
-"use server";
-
 import { Flag } from "node-appwrite";
 import { createAdminClient } from "../appwriteClients";
 

@@ -1,3 +1,5 @@
+"use server";
+
 import * as avatars from "./methods/avatars";
 import { AvatarFunctions } from "./methods/avatars";
 

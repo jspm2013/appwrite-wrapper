@@ -1,5 +1,3 @@
-"use server";
-
 import { ID, OAuthProvider, Models } from "node-appwrite";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";

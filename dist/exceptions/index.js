@@ -20,8 +20,6 @@ export const handleApwError = (error_1, ...args_1) => __awaiter(void 0, [error_1
     if (!(error instanceof AppwriteException)) {
         throw error;
     }
-    const fs = require("fs");
-    const path = require("path");
     const internalError = {
         appwrite: true,
         name: "INTERNAL_ERROR",
@@ -31,7 +29,6 @@ export const handleApwError = (error_1, ...args_1) => __awaiter(void 0, [error_1
         description: "",
     };
     try {
-        const exceptionsPath = path.join(__dirname, "exceptions", "exceptions.json");
         let localizedMessages;
         try {
             // Await the result of the async messagesLoader function

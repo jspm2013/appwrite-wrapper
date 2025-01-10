@@ -26,13 +26,18 @@ export function messagesLoader(locale) {
     return __awaiter(this, void 0, void 0, function* () {
         const msgsPath = path.join(process.cwd(), messagesPath, `${locale}.json`);
         try {
-            // Read the file asynchronously and parse its content
+            yield fs.access(msgsPath); // Check if the file exists
             const messagesContent = yield fs.readFile(msgsPath, "utf-8");
             return JSON.parse(messagesContent);
         }
         catch (error) {
-            // Throw an error if the file cannot be read or does not exist
-            throw new Error(`DEV-MSG: Error reading file: "${messagesPath}"`);
+            // Type the error
+            if (error.code === "ENOENT") {
+                throw new Error(`DEV-MSG: Messages file not found: ${msgsPath}`);
+            }
+            else {
+                throw new Error(`DEV-MSG: Error reading messages file ${msgsPath}: ${error.message}`);
+            }
         }
     });
 }
@@ -50,13 +55,17 @@ export function exceptionsLoader() {
     return __awaiter(this, void 0, void 0, function* () {
         const exceptionsPath = path.join(__dirname, "exceptions", "exceptions.json");
         try {
-            // Read the file asynchronously and parse its content
+            yield fs.access(exceptionsPath);
             const exceptionsContent = yield fs.readFile(exceptionsPath, "utf-8");
             return JSON.parse(exceptionsContent);
         }
         catch (error) {
-            // Throw an error if the file cannot be read or does not exist
-            throw new Error(`DEV-MSG: Error reading library's exceptions file`);
+            if (error.code === "ENOENT") {
+                throw new Error(`DEV-MSG: Exceptions file not found: ${exceptionsPath}`);
+            }
+            else {
+                throw new Error(`DEV-MSG: Error reading exceptions file ${exceptionsPath}: ${error.message}`);
+            }
         }
     });
 }

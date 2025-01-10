@@ -12,9 +12,6 @@ export const handleApwError = async (error: any, locale: string = "en") => {
     throw error;
   }
 
-  const fs = require("fs");
-  const path = require("path");
-
   const internalError = {
     appwrite: true,
     name: "INTERNAL_ERROR",
@@ -25,12 +22,6 @@ export const handleApwError = async (error: any, locale: string = "en") => {
   };
 
   try {
-    const exceptionsPath = path.join(
-      __dirname,
-      "exceptions",
-      "exceptions.json"
-    );
-
     let localizedMessages;
     try {
       // Await the result of the async messagesLoader function

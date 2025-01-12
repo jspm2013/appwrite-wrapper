@@ -11,7 +11,7 @@ const getFlag = async ({ code, width = 100, height = 100, quality = 100, }) => {
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/avatars): Error executing getFlag():", err);
-        throw JSON.parse(JSON.stringify(err));
+        throw err;
     }
 };
 /**
@@ -25,7 +25,7 @@ const getImageFromUrl = async ({ url, width = 400, height = 400, }) => {
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/avatars): Error executing getImageFromUrl():", err);
-        throw JSON.parse(JSON.stringify(err));
+        throw err;
     }
 };
 /**
@@ -39,7 +39,7 @@ const getUserInitials = async ({ name, width = 100, height = 100, background, })
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/avatars): Error executing getUserInitials():", err);
-        throw JSON.parse(JSON.stringify(err));
+        throw err;
     }
 };
 /**
@@ -53,7 +53,7 @@ const getQrCodeFromString = async ({ text, size = 400, margin = 1, download = fa
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/avatars): Error executing getQrCodeFromString():", err);
-        throw JSON.parse(JSON.stringify(err));
+        throw err;
     }
 };
 export { getFlag, getImageFromUrl, getUserInitials, getQrCodeFromString };

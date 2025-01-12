@@ -11,7 +11,7 @@ const createDocument = async ({ collectionId, documentId = ID.unique(), data, pe
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/databases): Error executing createDocument():", err);
-        throw JSON.parse(JSON.stringify(err));
+        throw err;
     }
 };
 /**
@@ -24,7 +24,7 @@ const deleteDocument = async ({ collectionId, documentId, dbId, }) => {
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/databases): Error executing deleteDocument():", err);
-        throw JSON.parse(JSON.stringify(err));
+        throw err;
     }
 };
 /**
@@ -37,7 +37,7 @@ const getDocument = async ({ collectionId, documentId, queries = [], dbId, }) =>
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/databases): Error executing getDocument():", err);
-        throw JSON.parse(JSON.stringify(err));
+        throw err;
     }
 };
 /**
@@ -50,7 +50,7 @@ const listDocuments = async ({ collectionId, queries = [], dbId, }) => {
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/databases): Error executing listDocuments():", err);
-        throw JSON.parse(JSON.stringify(err));
+        throw err;
     }
 };
 /**
@@ -63,7 +63,7 @@ const updateDocument = async ({ collectionId, documentId, data, permissions = ['
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/databases): Error executing updateDocument():", err);
-        throw JSON.parse(JSON.stringify(err));
+        throw err;
     }
 };
 export { createDocument, deleteDocument, getDocument, listDocuments, updateDocument, };

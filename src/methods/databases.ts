@@ -65,7 +65,7 @@ const createDocument = async ({
       "APW-WRAPPER - Error (methods/databases): Error executing createDocument():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -85,7 +85,7 @@ const deleteDocument = async ({
       "APW-WRAPPER - Error (methods/databases): Error executing deleteDocument():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -111,7 +111,7 @@ const getDocument = async ({
       "APW-WRAPPER - Error (methods/databases): Error executing getDocument():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -131,7 +131,7 @@ const listDocuments = async ({
       "APW-WRAPPER - Error (methods/databases): Error executing listDocuments():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -159,7 +159,7 @@ const updateDocument = async ({
       "APW-WRAPPER - Error (methods/databases): Error executing updateDocument():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 

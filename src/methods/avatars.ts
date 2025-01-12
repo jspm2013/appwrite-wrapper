@@ -51,7 +51,7 @@ const getFlag = async ({
       "APW-WRAPPER - Error (methods/avatars): Error executing getFlag():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -72,7 +72,7 @@ const getImageFromUrl = async ({
       "APW-WRAPPER - Error (methods/avatars): Error executing getImageFromUrl():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -94,7 +94,7 @@ const getUserInitials = async ({
       "APW-WRAPPER - Error (methods/avatars): Error executing getUserInitials():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -116,7 +116,7 @@ const getQrCodeFromString = async ({
       "APW-WRAPPER - Error (methods/avatars): Error executing getQrCodeFromString():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 

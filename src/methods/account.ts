@@ -91,7 +91,7 @@ const createAccount = async ({
       "APW-WRAPPER - Error (methods/account): Error executing createAccount():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -107,7 +107,7 @@ const createJWT = async (): Promise<Models.Jwt> => {
       "APW-WRAPPER - Error (methods/account): Error executing createJWT():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -125,7 +125,7 @@ const createVerification = async ({
       "APW-WRAPPER - Error (methods/account): Error executing createVerification():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -144,7 +144,7 @@ const deleteSession = async (
       "APW-WRAPPER - Error (methods/account): Error executing deleteSession():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -160,7 +160,7 @@ const listSessions = async (): Promise<Models.SessionList> => {
       "APW-WRAPPER - Error (methods/account): Error executing listSessions():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -176,7 +176,7 @@ const deleteSessions = async (): Promise<void> => {
       "APW-WRAPPER - Error (methods/account): Error executing deleteSessions():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -217,7 +217,7 @@ const deletePrefs = async ({
       "APW-WRAPPER - Error (methods/account): Error executing deletePrefs():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -233,7 +233,7 @@ const getPrefs = async (): Promise<Models.Preferences> => {
       "APW-WRAPPER - Error (methods/account): Error executing getPrefs():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -256,7 +256,7 @@ const setPrefs = async ({ newPrefs }: SetPrefsParams): Promise<void> => {
       "APW-WRAPPER - Error (methods/account): Error executing setPrefs():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -275,7 +275,7 @@ const updateVerification = async ({
       "APW-WRAPPER - Error (methods/account): Error executing updateVerification():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -301,7 +301,7 @@ const createEmailPasswordSession = async ({
       "APW-WRAPPER - Error (methods/account): Error executing createEmailPasswordSession():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -325,7 +325,7 @@ const createOAuth2Token = async ({
       "APW-WRAPPER - Error (methods/account): Error executing createOAuth2Token():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -351,7 +351,7 @@ const createSession = async ({
       "APW-WRAPPER - Error (methods/account): Error executing createSession():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 

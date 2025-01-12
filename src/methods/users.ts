@@ -109,7 +109,7 @@ const createSessionForUserId = async ({
       "APW-WRAPPER - Error (methods/users): Error executing createSessionForUserId():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -130,7 +130,7 @@ const createToken = async ({
       "APW-WRAPPER - Error (methods/users): Error executing createToken():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -149,7 +149,7 @@ const deleteSessionForUserId = async ({
       "APW-WRAPPER - Error (methods/users): Error executing deleteSessionForUserId():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -167,7 +167,7 @@ const deleteSessionsForUserId = async ({
       "APW-WRAPPER - Error (methods/users): Error executing deleteSessionsForUserId():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -186,7 +186,7 @@ const getUserForUserId = async ({
       "APW-WRAPPER - Error (methods/users): Error executing getUserForUserId():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -206,7 +206,7 @@ const listUsers = async ({
       "APW-WRAPPER - Error (methods/users): Error executing listUsers():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 
@@ -231,7 +231,7 @@ const updateEmailVerificationForUserId = async ({
       "APW-WRAPPER - Error (methods/users): Error executing updateEmailVerificationForUserId():",
       err
     );
-    throw JSON.parse(JSON.stringify(err));
+    throw err;
   }
 };
 

@@ -47,11 +47,6 @@ interface ReturnedError {
 }
 
 /**
- * Load the default locale.
- */
-const config = await configLoader();
-
-/**
  * Load the exceptions.
  */
 const exceptions: ExceptionMap = allExceptions;
@@ -65,7 +60,7 @@ const exceptions: ExceptionMap = allExceptions;
  */
 export const handleApwError = async ({
   error,
-  locale = config.defaultLocale,
+  locale,
   admin = false,
 }: ErrorHandler): Promise<ReturnedError> => {
   /*
@@ -80,14 +75,21 @@ export const handleApwError = async ({
     description: "APW-WRAPPER - Error",
   };
 
+  /**
+   * Load the default locale.
+   */
+  const config = await configLoader();
+  const defaultLocale = config.defaultLocale;
+
   /*
    * Check if the provided locale is allowed.
    */
-  if (!config.allowedLocales.includes(locale)) {
+  if (!config.allowedLocales.includes(locale ?? defaultLocale)) {
     return {
       ...internalError,
       error: {
         passedLocale: locale,
+        defaultLocale: defaultLocale,
         allowedLocales: JSON.stringify(config.allowedLocales),
       },
       appwrite: false,
@@ -113,7 +115,7 @@ export const handleApwError = async ({
    */
   let localizedMessages: MessagesMap;
   try {
-    localizedMessages = await messagesLoader(locale);
+    localizedMessages = await messagesLoader(locale ?? defaultLocale);
   } catch (err: any) {
     return {
       ...internalError,

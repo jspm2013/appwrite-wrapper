@@ -2,10 +2,6 @@ import { AppwriteException } from "node-appwrite";
 import { configLoader, messagesLoader } from "./loaders";
 import allExceptions from "./exceptions.json";
 /**
- * Load the default locale.
- */
-const config = await configLoader();
-/**
  * Load the exceptions.
  */
 const exceptions = allExceptions;
@@ -16,7 +12,7 @@ const exceptions = allExceptions;
  * @param admin - Tells the function to show detailed error messages or not.
  * @returns {object} - Formatted error object.
  */
-export const handleApwError = async ({ error, locale = config.defaultLocale, admin = false, }) => {
+export const handleApwError = async ({ error, locale, admin = false, }) => {
     /*
      * Define the internal error object.
      */
@@ -28,14 +24,20 @@ export const handleApwError = async ({ error, locale = config.defaultLocale, adm
         variant: "error",
         description: "APW-WRAPPER - Error",
     };
+    /**
+     * Load the default locale.
+     */
+    const config = await configLoader();
+    const defaultLocale = config.defaultLocale;
     /*
      * Check if the provided locale is allowed.
      */
-    if (!config.allowedLocales.includes(locale)) {
+    if (!config.allowedLocales.includes(locale ?? defaultLocale)) {
         return {
             ...internalError,
             error: {
                 passedLocale: locale,
+                defaultLocale: defaultLocale,
                 allowedLocales: JSON.stringify(config.allowedLocales),
             },
             appwrite: false,
@@ -58,7 +60,7 @@ export const handleApwError = async ({ error, locale = config.defaultLocale, adm
      */
     let localizedMessages;
     try {
-        localizedMessages = await messagesLoader(locale);
+        localizedMessages = await messagesLoader(locale ?? defaultLocale);
     }
     catch (err) {
         return {

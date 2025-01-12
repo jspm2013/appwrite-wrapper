@@ -25,7 +25,7 @@ export const handleApwError = async ({ error, locale, admin = false, }) => {
         description: "APW-WRAPPER - Error",
     };
     /**
-     * Load the default locale.
+     * Load the locales config.
      */
     const config = await configLoader();
     const defaultLocale = config.defaultLocale;
@@ -85,14 +85,13 @@ export const handleApwError = async ({ error, locale, admin = false, }) => {
                     ? "warning"
                     : "error";
         const header = admin
-            ? `APW-WRAPPER - DEV-Error: ${type}`
-            : localizedMessages[typeLowerCase]?.header ||
-                "APW-WRAPPER - Error: No header found";
+            ? "APW-WRAPPER - DEV-MSG"
+            : localizedMessages[typeLowerCase]?.header || "APW-WRAPPER - Error";
         const description = admin
-            ? `APW-WRAPPER - DEV-Error: ${message}`
+            ? message
             : localizedMessages[typeLowerCase]?.description ||
                 exceptions[type]?.description ||
-                "APW-WRAPPER - Error: No description found";
+                "No description found";
         /*
          * Update the error object.
          */

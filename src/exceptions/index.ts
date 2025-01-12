@@ -1,5 +1,5 @@
 import { AppwriteException } from "node-appwrite";
-import { getDefaultLocale, isAllowedLocale, messagesLoader } from "./loaders";
+import { configLoader, messagesLoader } from "./loaders";
 import allExceptions from "./exceptions.json";
 
 /*
@@ -49,7 +49,7 @@ interface ReturnedError {
 /**
  * Load the default locale.
  */
-const defaultLocale = await getDefaultLocale();
+const config = await configLoader();
 
 /**
  * Load the exceptions.
@@ -65,7 +65,7 @@ const exceptions: ExceptionMap = allExceptions;
  */
 export const handleApwError = async ({
   error,
-  locale = defaultLocale,
+  locale = config.defaultLocale,
   admin = false,
 }: ErrorHandler): Promise<ReturnedError> => {
   /*
@@ -83,9 +83,13 @@ export const handleApwError = async ({
   /*
    * Check if the provided locale is allowed.
    */
-  if (!(await isAllowedLocale(locale))) {
+  if (!config.allowedLocales.includes(locale)) {
     return {
       ...internalError,
+      error: {
+        passedLocale: locale,
+        allowedLocales: JSON.stringify(config.allowedLocales),
+      },
       appwrite: false,
       description: "APW-WRAPPER - Error: Invalid locale provided",
     };

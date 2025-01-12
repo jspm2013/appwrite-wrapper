@@ -1,5 +1,5 @@
 interface ErrorHandler {
-    error: object;
+    error: any;
     locale?: string;
     admin?: boolean;
 }

@@ -31,7 +31,7 @@ interface Exception {
 type ExceptionMap = Record<string, Exception>;
 
 interface ErrorHandler {
-  error: object;
+  error: any;
   locale?: string;
   admin?: boolean;
 }

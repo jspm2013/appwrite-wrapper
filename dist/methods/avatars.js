@@ -10,7 +10,7 @@ const getFlag = async ({ code, width = 100, height = 100, quality = 100, }) => {
         return Buffer.from(buffer).toString("base64");
     }
     catch (err) {
-        console.error("APW-LIB ERROR (avatars): Error in getFlag():", err);
+        console.error("APW-WRAPPER - Error (methods/avatars): Error executing getFlag():", err);
         throw JSON.parse(JSON.stringify(err));
     }
 };
@@ -24,7 +24,7 @@ const getImageFromUrl = async ({ url, width = 400, height = 400, }) => {
         return Buffer.from(buffer).toString("base64");
     }
     catch (err) {
-        console.error("APW-LIB ERROR (avatars): Error in getImageFromUrl():", err);
+        console.error("APW-WRAPPER - Error (methods/avatars): Error executing getImageFromUrl():", err);
         throw JSON.parse(JSON.stringify(err));
     }
 };
@@ -38,7 +38,7 @@ const getUserInitials = async ({ name, width = 100, height = 100, background, })
         return Buffer.from(buffer).toString("base64");
     }
     catch (err) {
-        console.error("APW-LIB ERROR (avatars): Error in getUserInitials():", err);
+        console.error("APW-WRAPPER - Error (methods/avatars): Error executing getUserInitials():", err);
         throw JSON.parse(JSON.stringify(err));
     }
 };
@@ -52,7 +52,7 @@ const getQrCodeFromString = async ({ text, size = 400, margin = 1, download = fa
         return Buffer.from(buffer).toString("base64");
     }
     catch (err) {
-        console.error("APW-LIB ERROR (avatars): Error in getQrCodeFromString():", err);
+        console.error("APW-WRAPPER - Error (methods/avatars): Error executing getQrCodeFromString():", err);
         throw JSON.parse(JSON.stringify(err));
     }
 };

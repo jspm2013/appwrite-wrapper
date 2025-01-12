@@ -88,7 +88,7 @@ const createAccount = async ({
     return await account.create(ID.unique(), email, password, name);
   } catch (err) {
     console.error(
-      "APW-LIB ERROR (account): Error executing createAccount():",
+      "APW-WRAPPER - Error (methods/account): Error executing createAccount():",
       err
     );
     throw JSON.parse(JSON.stringify(err));
@@ -103,7 +103,10 @@ const createJWT = async (): Promise<Models.Jwt> => {
     const { account } = await createSessionClient();
     return await account.createJWT();
   } catch (err) {
-    console.error("APW-LIB ERROR (account): Error executing createJWT():", err);
+    console.error(
+      "APW-WRAPPER - Error (methods/account): Error executing createJWT():",
+      err
+    );
     throw JSON.parse(JSON.stringify(err));
   }
 };
@@ -119,7 +122,7 @@ const createVerification = async ({
     return await account.createVerification(verificationUrl);
   } catch (err) {
     console.error(
-      "APW-LIB ERROR (account): Error executing createVerification():",
+      "APW-WRAPPER - Error (methods/account): Error executing createVerification():",
       err
     );
     throw JSON.parse(JSON.stringify(err));
@@ -138,7 +141,7 @@ const deleteSession = async (
     await account.deleteSession(sessionId);
   } catch (err) {
     console.error(
-      "APW-LIB ERROR (account): Error executing deleteSession():",
+      "APW-WRAPPER - Error (methods/account): Error executing deleteSession():",
       err
     );
     throw JSON.parse(JSON.stringify(err));
@@ -154,7 +157,7 @@ const listSessions = async (): Promise<Models.SessionList> => {
     return await account.listSessions();
   } catch (err) {
     console.error(
-      "APW-LIB ERROR (account): Error executing listSessions():",
+      "APW-WRAPPER - Error (methods/account): Error executing listSessions():",
       err
     );
     throw JSON.parse(JSON.stringify(err));
@@ -170,7 +173,7 @@ const deleteSessions = async (): Promise<void> => {
     await account.deleteSessions();
   } catch (err) {
     console.error(
-      "APW-LIB ERROR (account): Error executing deleteSessions():",
+      "APW-WRAPPER - Error (methods/account): Error executing deleteSessions():",
       err
     );
     throw JSON.parse(JSON.stringify(err));
@@ -189,7 +192,7 @@ const getUser = async (): Promise<Models.User<Models.Preferences> | null> => {
      * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
      */
     return null;
-    //console.error("APW-LIB ERROR (account): Error executing getUser():", err);
+    //console.error("APW-WRAPPER - Error (methods/account): Error executing getUser():", err);
     //throw JSON.parse(JSON.stringify(err));
   }
 };
@@ -211,7 +214,7 @@ const deletePrefs = async ({
     return oldPrefs;
   } catch (err) {
     console.error(
-      "APW-LIB ERROR (account): Error executing deletePrefs():",
+      "APW-WRAPPER - Error (methods/account): Error executing deletePrefs():",
       err
     );
     throw JSON.parse(JSON.stringify(err));
@@ -226,7 +229,10 @@ const getPrefs = async (): Promise<Models.Preferences> => {
     const { account } = await createSessionClient();
     return await account.getPrefs();
   } catch (err) {
-    console.error("APW-LIB ERROR (account): Error executing getPrefs():", err);
+    console.error(
+      "APW-WRAPPER - Error (methods/account): Error executing getPrefs():",
+      err
+    );
     throw JSON.parse(JSON.stringify(err));
   }
 };
@@ -246,7 +252,10 @@ const setPrefs = async ({ newPrefs }: SetPrefsParams): Promise<void> => {
       throw new Error("Invalid JSON object");
     }
   } catch (err) {
-    console.error("APW-LIB ERROR (account): Error executing setPrefs():", err);
+    console.error(
+      "APW-WRAPPER - Error (methods/account): Error executing setPrefs():",
+      err
+    );
     throw JSON.parse(JSON.stringify(err));
   }
 };
@@ -263,7 +272,7 @@ const updateVerification = async ({
     return await account.updateVerification(userId, secret);
   } catch (err) {
     console.error(
-      "APW-LIB ERROR (account): Error executing updateVerification():",
+      "APW-WRAPPER - Error (methods/account): Error executing updateVerification():",
       err
     );
     throw JSON.parse(JSON.stringify(err));
@@ -289,7 +298,7 @@ const createEmailPasswordSession = async ({
     return session;
   } catch (err) {
     console.error(
-      "APW-LIB ERROR (account): Error executing createEmailPasswordSession():",
+      "APW-WRAPPER - Error (methods/account): Error executing createEmailPasswordSession():",
       err
     );
     throw JSON.parse(JSON.stringify(err));
@@ -313,7 +322,7 @@ const createOAuth2Token = async ({
     );
   } catch (err) {
     console.error(
-      "APW-LIB ERROR (account): Error executing createOAuth2Token():",
+      "APW-WRAPPER - Error (methods/account): Error executing createOAuth2Token():",
       err
     );
     throw JSON.parse(JSON.stringify(err));
@@ -339,7 +348,7 @@ const createSession = async ({
     return session;
   } catch (err) {
     console.error(
-      "APW-LIB ERROR (account): Error executing createSession():",
+      "APW-WRAPPER - Error (methods/account): Error executing createSession():",
       err
     );
     throw JSON.parse(JSON.stringify(err));

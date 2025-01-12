@@ -15,7 +15,7 @@ export async function createSessionClient(params = {}) {
     const session = cookiesList.get(cookieName);
     /* if (!session || !session.value) {
       throw new Error(
-        "APW-LIB ERROR: No session found in cookies while calling createSessionClient()"
+        "APW-WRAPPER - Error: No session found in cookies while calling createSessionClient()"
       );
     } */
     client.setSession(session.value);

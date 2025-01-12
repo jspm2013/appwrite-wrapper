@@ -1,5 +1,3 @@
-import { AppwriteException } from "node-appwrite";
-// Client-compatible utilities
 /**
  * Converts an ArrayBuffer to a Base64 string.
  * @param buffer - The ArrayBuffer to convert.
@@ -52,15 +50,3 @@ export const isEmptyObject = (obj) => {
 export const isEmptyKeyValuePair = (obj) => {
     return Object.keys(obj).length === 1 && obj[""] === "";
 };
-/**
- * Checks if the given error is an instance of AppwriteException.
- * @param error - The error to check.
- * @returns {boolean} - True if the error is an AppwriteException, false otherwise.
- */
-export function isApwError(error) {
-    return (error instanceof AppwriteException && // Check if the error is an instance of AppwriteException
-        typeof error.code === "number" && // Verify that the error has a numeric code
-        typeof error.response === "string" && // Verify that the error has a string response
-        typeof error.type === "string" // Verify that the error has a string type
-    );
-}

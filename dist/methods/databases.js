@@ -10,7 +10,7 @@ const createDocument = async ({ collectionId, documentId = ID.unique(), data, pe
         return await databases.createDocument(dbId, collectionId, documentId, data, permissions);
     }
     catch (err) {
-        console.error("APW-LIB ERROR (databases): Error in createDocument():", err);
+        console.error("APW-WRAPPER - Error (methods/databases): Error executing createDocument():", err);
         throw JSON.parse(JSON.stringify(err));
     }
 };
@@ -23,7 +23,7 @@ const deleteDocument = async ({ collectionId, documentId, dbId, }) => {
         await databases.deleteDocument(dbId, collectionId, documentId);
     }
     catch (err) {
-        console.error("APW-LIB ERROR (databases): Error in deleteDocument():", err);
+        console.error("APW-WRAPPER - Error (methods/databases): Error executing deleteDocument():", err);
         throw JSON.parse(JSON.stringify(err));
     }
 };
@@ -36,7 +36,7 @@ const getDocument = async ({ collectionId, documentId, queries = [], dbId, }) =>
         return await databases.getDocument(dbId, collectionId, documentId, queries);
     }
     catch (err) {
-        console.error("APW-LIB ERROR (databases): Error in getDocument():", err);
+        console.error("APW-WRAPPER - Error (methods/databases): Error executing getDocument():", err);
         throw JSON.parse(JSON.stringify(err));
     }
 };
@@ -49,7 +49,7 @@ const listDocuments = async ({ collectionId, queries = [], dbId, }) => {
         return await databases.listDocuments(dbId, collectionId, queries);
     }
     catch (err) {
-        console.error("APW-LIB ERROR (databases): Error in listDocuments():", err);
+        console.error("APW-WRAPPER - Error (methods/databases): Error executing listDocuments():", err);
         throw JSON.parse(JSON.stringify(err));
     }
 };
@@ -62,7 +62,7 @@ const updateDocument = async ({ collectionId, documentId, data, permissions = ['
         return await databases.updateDocument(dbId, collectionId, documentId, data, permissions);
     }
     catch (err) {
-        console.error("APW-LIB ERROR (databases): Error in updateDocument():", err);
+        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateDocument():", err);
         throw JSON.parse(JSON.stringify(err));
     }
 };

@@ -61,7 +61,10 @@ const createDocument = async ({
       permissions
     );
   } catch (err) {
-    console.error("APW-LIB ERROR (databases): Error in createDocument():", err);
+    console.error(
+      "APW-WRAPPER - Error (methods/databases): Error executing createDocument():",
+      err
+    );
     throw JSON.parse(JSON.stringify(err));
   }
 };
@@ -78,7 +81,10 @@ const deleteDocument = async ({
     const { databases } = await createAdminClient();
     await databases.deleteDocument(dbId!, collectionId, documentId);
   } catch (err) {
-    console.error("APW-LIB ERROR (databases): Error in deleteDocument():", err);
+    console.error(
+      "APW-WRAPPER - Error (methods/databases): Error executing deleteDocument():",
+      err
+    );
     throw JSON.parse(JSON.stringify(err));
   }
 };
@@ -101,7 +107,10 @@ const getDocument = async ({
       queries
     );
   } catch (err) {
-    console.error("APW-LIB ERROR (databases): Error in getDocument():", err);
+    console.error(
+      "APW-WRAPPER - Error (methods/databases): Error executing getDocument():",
+      err
+    );
     throw JSON.parse(JSON.stringify(err));
   }
 };
@@ -118,7 +127,10 @@ const listDocuments = async ({
     const { databases } = await createAdminClient();
     return await databases.listDocuments(dbId!, collectionId, queries);
   } catch (err) {
-    console.error("APW-LIB ERROR (databases): Error in listDocuments():", err);
+    console.error(
+      "APW-WRAPPER - Error (methods/databases): Error executing listDocuments():",
+      err
+    );
     throw JSON.parse(JSON.stringify(err));
   }
 };
@@ -143,7 +155,10 @@ const updateDocument = async ({
       permissions
     );
   } catch (err) {
-    console.error("APW-LIB ERROR (databases): Error in updateDocument():", err);
+    console.error(
+      "APW-WRAPPER - Error (methods/databases): Error executing updateDocument():",
+      err
+    );
     throw JSON.parse(JSON.stringify(err));
   }
 };

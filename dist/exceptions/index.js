@@ -1,47 +1,75 @@
 import { AppwriteException } from "node-appwrite";
-import { exceptionsLoader, messagesLoader } from "./jsonLoader";
+import { getDefaultLocale, isAllowedLocale, messagesLoader } from "./loaders";
+import allExceptions from "./exceptions.json";
+/**
+ * Load the default locale.
+ */
+const defaultLocale = await getDefaultLocale();
+/**
+ * Load the exceptions.
+ */
+const exceptions = allExceptions;
 /**
  * Handles Appwrite errors and maps them to a readable format.
  * @param error - The error to handle.
  * @param locale - The locale for error messages (e.g., "en", "de").
+ * @param admin - Tells the function to show detailed error messages or not.
  * @returns {object} - Formatted error object.
  */
-export const handleApwError = async (error, locale = "en") => {
-    if (!(error instanceof AppwriteException)) {
-        throw error;
-    }
+export const handleApwError = async ({ error, locale = defaultLocale, admin = false, }) => {
+    /*
+     * Define the internal error object.
+     */
     const internalError = {
-        appwrite: true,
-        name: "INTERNAL_ERROR",
-        type: "internal_error",
+        appwrite: false,
+        header: "INTERNAL_ERROR",
+        type: "general_unknown",
         code: 500,
         variant: "error",
-        description: "",
+        description: "APW-WRAPPER - Error",
     };
+    /*
+     * Check if the provided locale is allowed.
+     */
+    if (!(await isAllowedLocale(locale))) {
+        return {
+            ...internalError,
+            appwrite: false,
+            description: "APW-WRAPPER - Error: Invalid locale provided",
+        };
+    }
+    /*
+     * If the error is not an instance of AppwriteException, throw it.
+     */
+    if (!(error instanceof AppwriteException)) {
+        return {
+            ...internalError,
+            error,
+            appwrite: false,
+            description: "APW-WRAPPER - Error: Invalid appwrite error format received",
+        };
+    }
+    /*
+     * Load the localized messages and exceptions.
+     */
+    let localizedMessages;
     try {
-        let localizedMessages;
-        try {
-            // Await the result of the async messagesLoader function
-            localizedMessages = (await messagesLoader(locale));
-        }
-        catch {
-            // Return the internal error object if an error occurs
-            return {
-                ...internalError,
-                description: "DEV-MSG: Failed to read custom i18n files for localization (i.e. /messages/en.json).",
-            };
-        }
-        let allExceptions;
-        try {
-            allExceptions = (await exceptionsLoader());
-        }
-        catch {
-            return {
-                ...internalError,
-                description: "DEV-MSG: Failed to read the library exceptions file.",
-            };
-        }
-        const { type, code } = error;
+        localizedMessages = await messagesLoader(locale);
+    }
+    catch (err) {
+        return {
+            ...internalError,
+            error: err,
+            appwrite: false,
+            description: "APW-WRAPPER - Error: Failed to read locale i18n files (i.e. root/messages/<locale>.json  ... where <locale> could be for example: en, de, ...)",
+        };
+    }
+    try {
+        /*
+         * Define error properties.
+         */
+        const errorJson = JSON.parse(JSON.stringify(error)).response; // since response is not a string, we need to stringify it for type satisfaction
+        const { type, code, message } = errorJson;
         const typeLowerCase = type.toLowerCase();
         const variant = code < 300
             ? "success"
@@ -50,22 +78,37 @@ export const handleApwError = async (error, locale = "en") => {
                 : code < 500
                     ? "warning"
                     : "error";
-        const description = localizedMessages[typeLowerCase] ||
-            allExceptions[type]?.description ||
-            "DEV-MSG: Unknown library error occurred";
-        return {
+        const header = admin
+            ? `APW-WRAPPER - DEV-Error: ${type}`
+            : localizedMessages[typeLowerCase]?.header ||
+                "APW-WRAPPER - Error: No header found";
+        const description = admin
+            ? `APW-WRAPPER - DEV-Error: ${message}`
+            : localizedMessages[typeLowerCase]?.description ||
+                exceptions[type]?.description ||
+                "APW-WRAPPER - Error: No description found";
+        /*
+         * Update the error object.
+         */
+        const apwWrapperError = {
             appwrite: true,
-            name: type,
+            header: header.charAt(0).toUpperCase() + header.slice(1),
             type: typeLowerCase,
             code,
             variant,
             description,
         };
+        return apwWrapperError;
     }
-    catch {
+    catch (err) {
+        /*
+         * Handle unexpected errors.
+         */
         return {
             ...internalError,
-            description: "DEV-MSG: An unexpected library error occurred while handling the error.",
+            error: err,
+            appwrite: false,
+            description: "APW-WRAPPER - Error: An unexpected library error occurred",
         };
     }
 };

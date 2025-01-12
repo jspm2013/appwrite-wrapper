@@ -28,10 +28,4 @@ export declare const isEmptyObject: (obj: object) => boolean;
  * @returns {boolean} - True if the object matches the condition, false otherwise.
  */
 export declare const isEmptyKeyValuePair: (obj: Record<string, any>) => boolean;
-/**
- * Checks if the given error is an instance of AppwriteException.
- * @param error - The error to check.
- * @returns {boolean} - True if the error is an AppwriteException, false otherwise.
- */
-export declare function isApwError(error: unknown): boolean;
 //# sourceMappingURL=utils.d.ts.map

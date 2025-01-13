@@ -1,7 +1,8 @@
 "use server";
 
 import { cookieName } from "./appwriteConfig";
-// Importing individual functions and objects from modules
+
+// Importing individual functions and objects from methods
 import {
   createAccount,
   createJWT,
@@ -44,10 +45,10 @@ import {
   updateEmailVerificationForUserId,
 } from "./methods/users";
 
-// Exporting individual functions as async
+// Appwrite config
+export const apwCookieName = Promise.resolve(cookieName);
+
 export {
-  // Appwrite config
-  cookieName,
   // Account functions
   createAccount,
   createJWT,

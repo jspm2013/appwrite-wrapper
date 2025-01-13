@@ -46,7 +46,7 @@ import {
 } from "./methods/users";
 
 // Appwrite config
-export const apwCookieName = Promise.resolve(cookieName);
+export const getCookieName = async (): Promise<string> => cookieName;
 
 export {
   // Account functions

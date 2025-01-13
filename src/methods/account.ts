@@ -315,11 +315,12 @@ const createOAuth2Token = async ({
 }: CreateOAuth2TokenParams): Promise<string> => {
   try {
     const { account } = await createAdminClient();
-    return await account.createOAuth2Token(
+    const url = await account.createOAuth2Token(
       OAuthProvider[provider],
       `${host}/${successPath}`,
       `${host}/${failurePath}`
     );
+    return url;
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/account): Error executing createOAuth2Token():",

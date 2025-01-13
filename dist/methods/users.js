@@ -65,8 +65,12 @@ const getUserForUserId = async ({ userId, }) => {
         return user;
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/users): Error executing getUserForUserId():", err);
-        throw err;
+        /*
+         * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
+         */
+        return null;
+        //console.error("APW-WRAPPER - Error (methods/users): Error executing getUserForUserId():", err);
+        //throw err;
     }
 };
 /**

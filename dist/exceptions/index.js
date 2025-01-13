@@ -74,9 +74,10 @@ export const handleApwError = async ({ error, locale, admin = false, }) => {
         /*
          * Define error properties.
          */
-        const errorJson = JSON.parse(JSON.stringify(error)).response; // since response is not a string, we need to stringify it for type satisfaction
-        const { type, code, message } = errorJson;
-        const typeLowerCase = type.toLowerCase();
+        const jsonError = JSON.parse(JSON.stringify(error));
+        const jsonErrorReponse = jsonError.response; // since response is not a string, we need to stringify it for type satisfaction
+        const { type, code } = jsonErrorReponse || jsonError;
+        const typeLowerCase = type?.toLowerCase();
         const variant = code < 300
             ? "success"
             : code < 400
@@ -88,7 +89,7 @@ export const handleApwError = async ({ error, locale, admin = false, }) => {
             ? "APW-WRAPPER - DEV-MSG"
             : localizedMessages[typeLowerCase]?.header || "APW-WRAPPER - Error";
         const description = admin
-            ? message
+            ? jsonErrorReponse.message || `Exception code: ${code}`
             : localizedMessages[typeLowerCase]?.description ||
                 exceptions[type]?.description ||
                 "No description found";

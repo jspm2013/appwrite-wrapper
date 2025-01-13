@@ -191,7 +191,8 @@ const createEmailPasswordSession = async ({ email, password, }) => {
 const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, failurePath = oauthFailurePath, }) => {
     try {
         const { account } = await createAdminClient();
-        return await account.createOAuth2Token(OAuthProvider[provider], `${host}/${successPath}`, `${host}/${failurePath}`);
+        const url = await account.createOAuth2Token(OAuthProvider[provider], `${host}/${successPath}`, `${host}/${failurePath}`);
+        return url;
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/account): Error executing createOAuth2Token():", err);

@@ -1,5 +1,6 @@
 "use server";
 
+import { cookieName } from "./appwriteConfig";
 // Importing individual functions and objects from modules
 import {
   createAccount,
@@ -45,6 +46,8 @@ import {
 
 // Exporting individual functions as async
 export {
+  // Appwrite config
+  cookieName,
   // Account functions
   createAccount,
   createJWT,

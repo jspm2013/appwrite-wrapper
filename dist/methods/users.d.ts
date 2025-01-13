@@ -101,7 +101,7 @@ declare const deleteSessionsForUserId: ({ userId, }: DeleteSessionsForUserIdPara
 /**
  * Retrieves a user by their ID.
  */
-declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<Models.User<Models.Preferences>>;
+declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<Models.User<Models.Preferences> | null>;
 /**
  * Lists users with optional filters and search parameters.
  */

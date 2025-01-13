@@ -1,5 +1,6 @@
 "use server";
 
+import { host, origin } from "./host";
 import { cookieName } from "./appwriteConfig";
 
 // Importing individual functions and objects from methods
@@ -46,6 +47,8 @@ import {
 } from "./methods/users";
 
 // Appwrite config
+export const getHost = async (): Promise<string> => host;
+export const getOrigin = async (): Promise<string> => origin;
 export const getCookieName = async (): Promise<string> => cookieName;
 
 export {

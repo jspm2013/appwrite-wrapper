@@ -198,6 +198,28 @@ const getUser = async (): Promise<Models.User<Models.Preferences> | null> => {
 };
 
 /**
+ * Retrieves the current user.
+ */
+const getVerifiedUser =
+  async (): Promise<Models.User<Models.Preferences> | null> => {
+    try {
+      const { account } = await createSessionClient();
+      const user = await account.get();
+      if (user.emailVerification) {
+        return user;
+      }
+      return null;
+    } catch (err) {
+      /*
+       * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
+       */
+      return null;
+      //console.error("APW-WRAPPER - Error (methods/account): Error executing getVerifiedUser():", err);
+      //throw err;
+    }
+  };
+
+/**
  * Deletes a specific preference key for the current user.
  */
 const deletePrefs = async ({
@@ -381,6 +403,7 @@ export {
   listSessions,
   deleteSessions,
   getUser,
+  getVerifiedUser,
   deletePrefs,
   getPrefs,
   setPrefs,

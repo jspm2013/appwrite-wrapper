@@ -102,6 +102,27 @@ const getUser = async () => {
     }
 };
 /**
+ * Retrieves the current user.
+ */
+const getVerifiedUser = async () => {
+    try {
+        const { account } = await createSessionClient();
+        const user = await account.get();
+        if (user.emailVerification) {
+            return user;
+        }
+        return null;
+    }
+    catch (err) {
+        /*
+         * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
+         */
+        return null;
+        //console.error("APW-WRAPPER - Error (methods/account): Error executing getVerifiedUser():", err);
+        //throw err;
+    }
+};
+/**
  * Deletes a specific preference key for the current user.
  */
 const deletePrefs = async ({ key, }) => {
@@ -219,4 +240,4 @@ const createSession = async ({ userId, secret, }) => {
         throw err;
     }
 };
-export { createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession, };
+export { createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, getVerifiedUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession, };

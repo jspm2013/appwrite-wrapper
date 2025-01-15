@@ -43,6 +43,7 @@ import {
   deleteSessionForUserId,
   deleteSessionsForUserId,
   getUserForUserId,
+  getVerifiedUserForUserId,
   listUsers,
   updateEmailVerificationForUserId,
 } from "./methods/users";
@@ -62,6 +63,7 @@ export {
   deleteSessions,
   getUser,
   getVerifiedUser,
+  getVerifiedUserForUserId,
   deletePrefs,
   getPrefs,
   setPrefs,

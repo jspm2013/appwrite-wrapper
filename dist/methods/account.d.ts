@@ -85,7 +85,7 @@ declare const deleteSessions: () => Promise<void>;
  */
 declare const getUser: () => Promise<Models.User<Models.Preferences> | null>;
 /**
- * Retrieves the current user.
+ * Retrieves the current verified user.
  */
 declare const getVerifiedUser: () => Promise<Models.User<Models.Preferences> | null>;
 /**
@@ -132,5 +132,5 @@ export type AccountFunctions = {
     createOAuth2Token: typeof createOAuth2Token;
     createSession: typeof createSession;
 };
-export { createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, getVerifiedUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getUser, getVerifiedUser, listSessions, setPrefs, updateVerification, };
 //# sourceMappingURL=account.d.ts.map

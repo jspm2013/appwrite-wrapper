@@ -198,7 +198,7 @@ const getUser = async (): Promise<Models.User<Models.Preferences> | null> => {
 };
 
 /**
- * Retrieves the current user.
+ * Retrieves the current verified user.
  */
 const getVerifiedUser =
   async (): Promise<Models.User<Models.Preferences> | null> => {
@@ -397,18 +397,18 @@ export type AccountFunctions = {
 
 export {
   createAccount,
-  createJWT,
-  createVerification,
-  deleteSession,
-  listSessions,
-  deleteSessions,
-  getUser,
-  getVerifiedUser,
-  deletePrefs,
-  getPrefs,
-  setPrefs,
-  updateVerification,
   createEmailPasswordSession,
+  createJWT,
   createOAuth2Token,
   createSession,
+  createVerification,
+  deletePrefs,
+  deleteSession,
+  deleteSessions,
+  getPrefs,
+  getUser,
+  getVerifiedUser,
+  listSessions,
+  setPrefs,
+  updateVerification,
 };

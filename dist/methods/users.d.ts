@@ -103,6 +103,10 @@ declare const deleteSessionsForUserId: ({ userId, }: DeleteSessionsForUserIdPara
  */
 declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<Models.User<Models.Preferences> | null>;
 /**
+ * Retrieves a verified user by their ID.
+ */
+declare const getVerifiedUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<Models.User<Models.Preferences> | null>;
+/**
  * Lists users with optional filters and search parameters.
  */
 declare const listUsers: ({ queries, search, }: ListUsersParams) => Promise<Models.UserList<Models.Preferences>>;
@@ -119,5 +123,5 @@ export type UserFunctions = {
     listUsers: typeof listUsers;
     updateEmailVerificationForUserId: typeof updateEmailVerificationForUserId;
 };
-export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, listUsers, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, getVerifiedUserForUserId, listUsers, updateEmailVerificationForUserId, };
 //# sourceMappingURL=users.d.ts.map

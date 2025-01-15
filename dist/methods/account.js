@@ -102,7 +102,7 @@ const getUser = async () => {
     }
 };
 /**
- * Retrieves the current user.
+ * Retrieves the current verified user.
  */
 const getVerifiedUser = async () => {
     try {
@@ -240,4 +240,4 @@ const createSession = async ({ userId, secret, }) => {
         throw err;
     }
 };
-export { createAccount, createJWT, createVerification, deleteSession, listSessions, deleteSessions, getUser, getVerifiedUser, deletePrefs, getPrefs, setPrefs, updateVerification, createEmailPasswordSession, createOAuth2Token, createSession, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getUser, getVerifiedUser, listSessions, setPrefs, updateVerification, };

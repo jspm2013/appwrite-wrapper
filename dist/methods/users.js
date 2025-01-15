@@ -76,6 +76,27 @@ const getUserForUserId = async ({ userId, }) => {
     }
 };
 /**
+ * Retrieves a verified user by their ID.
+ */
+const getVerifiedUserForUserId = async ({ userId, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const user = await users.get(userId);
+        if (user.emailVerification) {
+            return user;
+        }
+        return null;
+    }
+    catch (err) {
+        /*
+         * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
+         */
+        return null;
+        //console.error("APW-WRAPPER - Error (methods/users): Error executing getVerifiedUserForUserId():", err);
+        //throw err;
+    }
+};
+/**
  * Lists users with optional filters and search parameters.
  */
 const listUsers = async ({ queries, search, }) => {
@@ -106,4 +127,4 @@ const updateEmailVerificationForUserId = async ({ userId, status, }) => {
         throw err;
     }
 };
-export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, listUsers, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, getVerifiedUserForUserId, listUsers, updateEmailVerificationForUserId, };

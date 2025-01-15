@@ -1,8 +1,7 @@
 "use server";
 
-import { ID } from "node-appwrite";
-import { createAdminClient } from "../appwriteClients";
 import { Models } from "node-appwrite";
+import { createAdminClient } from "../appwriteClients";
 
 /**
  * Parameters for creating a session for a user.
@@ -69,7 +68,7 @@ export type GetUserForUserIdParams = {
 /**
  * Parameters for listing users.
  */
-export type ListUsersParams = {
+export type ListParams = {
   /**
    * Queries for filtering the user list.
    */
@@ -220,10 +219,30 @@ const getVerifiedUserForUserId = async ({
 /**
  * Lists users with optional filters and search parameters.
  */
+const listIdentities = async ({
+  queries,
+  search,
+}: ListParams): Promise<Models.IdentityList> => {
+  try {
+    const { users } = await createAdminClient();
+    const identitiesList = await users.listIdentities(queries, search);
+    return identitiesList;
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/users): Error executing listIdentities():",
+      err
+    );
+    throw err;
+  }
+};
+
+/**
+ * Lists users with optional filters and search parameters.
+ */
 const listUsers = async ({
   queries,
   search,
-}: ListUsersParams): Promise<Models.UserList<Models.Preferences>> => {
+}: ListParams): Promise<Models.UserList<Models.Preferences>> => {
   try {
     const { users } = await createAdminClient();
     const userList = await users.list(queries, search);
@@ -268,6 +287,8 @@ export type UserFunctions = {
   deleteSessionForUserId: typeof deleteSessionForUserId;
   deleteSessionsForUserId: typeof deleteSessionsForUserId;
   getUserForUserId: typeof getUserForUserId;
+  getVerifiedUserForUserId: typeof getVerifiedUserForUserId;
+  listIdentities: typeof listIdentities;
   listUsers: typeof listUsers;
   updateEmailVerificationForUserId: typeof updateEmailVerificationForUserId;
 };
@@ -279,6 +300,7 @@ export {
   deleteSessionsForUserId,
   getUserForUserId,
   getVerifiedUserForUserId,
+  listIdentities,
   listUsers,
   updateEmailVerificationForUserId,
 };

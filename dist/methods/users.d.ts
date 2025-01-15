@@ -59,7 +59,7 @@ export type GetUserForUserIdParams = {
 /**
  * Parameters for listing users.
  */
-export type ListUsersParams = {
+export type ListParams = {
     /**
      * Queries for filtering the user list.
      */
@@ -109,7 +109,11 @@ declare const getVerifiedUserForUserId: ({ userId, }: GetUserForUserIdParams) =>
 /**
  * Lists users with optional filters and search parameters.
  */
-declare const listUsers: ({ queries, search, }: ListUsersParams) => Promise<Models.UserList<Models.Preferences>>;
+declare const listIdentities: ({ queries, search, }: ListParams) => Promise<Models.IdentityList>;
+/**
+ * Lists users with optional filters and search parameters.
+ */
+declare const listUsers: ({ queries, search, }: ListParams) => Promise<Models.UserList<Models.Preferences>>;
 /**
  * Updates the email verification status for a user.
  */
@@ -120,8 +124,10 @@ export type UserFunctions = {
     deleteSessionForUserId: typeof deleteSessionForUserId;
     deleteSessionsForUserId: typeof deleteSessionsForUserId;
     getUserForUserId: typeof getUserForUserId;
+    getVerifiedUserForUserId: typeof getVerifiedUserForUserId;
+    listIdentities: typeof listIdentities;
     listUsers: typeof listUsers;
     updateEmailVerificationForUserId: typeof updateEmailVerificationForUserId;
 };
-export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, getVerifiedUserForUserId, listUsers, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, updateEmailVerificationForUserId, };
 //# sourceMappingURL=users.d.ts.map

@@ -34,18 +34,18 @@ declare const getFlag: ({ code, width, height, quality, }: GetFlagParams) => Pro
  */
 declare const getImageFromUrl: ({ url, width, height, }: GetImageFromUrlParams) => Promise<string>;
 /**
- * Retrieves user initials as an avatar image.
- */
-declare const getUserInitials: ({ name, width, height, background, }: GetUserInitialsParams) => Promise<string>;
-/**
  * Retrieves a QR code as an image.
  */
 declare const getQrCodeFromString: ({ text, size, margin, download, }: GetQrCodeFromStringParams) => Promise<string>;
+/**
+ * Retrieves user initials as an avatar image.
+ */
+declare const getUserInitials: ({ name, width, height, background, }: GetUserInitialsParams) => Promise<string>;
 export type AvatarFunctions = {
     getFlag: typeof getFlag;
     getImageFromUrl: typeof getImageFromUrl;
-    getUserInitials: typeof getUserInitials;
     getQrCodeFromString: typeof getQrCodeFromString;
+    getUserInitials: typeof getUserInitials;
 };
-export { getFlag, getImageFromUrl, getUserInitials, getQrCodeFromString };
+export { getFlag, getImageFromUrl, getQrCodeFromString, getUserInitials };
 //# sourceMappingURL=avatars.d.ts.map

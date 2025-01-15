@@ -77,28 +77,6 @@ const getImageFromUrl = async ({
 };
 
 /**
- * Retrieves user initials as an avatar image.
- */
-const getUserInitials = async ({
-  name,
-  width = 100,
-  height = 100,
-  background,
-}: GetUserInitialsParams): Promise<string> => {
-  try {
-    const { avatars } = await createAdminClient();
-    const buffer = await avatars.getInitials(name, width, height, background);
-    return Buffer.from(buffer).toString("base64");
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/avatars): Error executing getUserInitials():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
  * Retrieves a QR code as an image.
  */
 const getQrCodeFromString = async ({
@@ -120,11 +98,33 @@ const getQrCodeFromString = async ({
   }
 };
 
+/**
+ * Retrieves user initials as an avatar image.
+ */
+const getUserInitials = async ({
+  name,
+  width = 100,
+  height = 100,
+  background,
+}: GetUserInitialsParams): Promise<string> => {
+  try {
+    const { avatars } = await createAdminClient();
+    const buffer = await avatars.getInitials(name, width, height, background);
+    return Buffer.from(buffer).toString("base64");
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/avatars): Error executing getUserInitials():",
+      err
+    );
+    throw err;
+  }
+};
+
 export type AvatarFunctions = {
   getFlag: typeof getFlag;
   getImageFromUrl: typeof getImageFromUrl;
-  getUserInitials: typeof getUserInitials;
   getQrCodeFromString: typeof getQrCodeFromString;
+  getUserInitials: typeof getUserInitials;
 };
 
-export { getFlag, getImageFromUrl, getUserInitials, getQrCodeFromString };
+export { getFlag, getImageFromUrl, getQrCodeFromString, getUserInitials };

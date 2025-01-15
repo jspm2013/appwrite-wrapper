@@ -29,20 +29,6 @@ const getImageFromUrl = async ({ url, width = 400, height = 400, }) => {
     }
 };
 /**
- * Retrieves user initials as an avatar image.
- */
-const getUserInitials = async ({ name, width = 100, height = 100, background, }) => {
-    try {
-        const { avatars } = await createAdminClient();
-        const buffer = await avatars.getInitials(name, width, height, background);
-        return Buffer.from(buffer).toString("base64");
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/avatars): Error executing getUserInitials():", err);
-        throw err;
-    }
-};
-/**
  * Retrieves a QR code as an image.
  */
 const getQrCodeFromString = async ({ text, size = 400, margin = 1, download = false, }) => {
@@ -56,4 +42,18 @@ const getQrCodeFromString = async ({ text, size = 400, margin = 1, download = fa
         throw err;
     }
 };
-export { getFlag, getImageFromUrl, getUserInitials, getQrCodeFromString };
+/**
+ * Retrieves user initials as an avatar image.
+ */
+const getUserInitials = async ({ name, width = 100, height = 100, background, }) => {
+    try {
+        const { avatars } = await createAdminClient();
+        const buffer = await avatars.getInitials(name, width, height, background);
+        return Buffer.from(buffer).toString("base64");
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/avatars): Error executing getUserInitials():", err);
+        throw err;
+    }
+};
+export { getFlag, getImageFromUrl, getQrCodeFromString, getUserInitials };

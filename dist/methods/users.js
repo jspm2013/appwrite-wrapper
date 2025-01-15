@@ -99,6 +99,20 @@ const getVerifiedUserForUserId = async ({ userId, }) => {
 /**
  * Lists users with optional filters and search parameters.
  */
+const listIdentities = async ({ queries, search, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const identitiesList = await users.listIdentities(queries, search);
+        return identitiesList;
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/users): Error executing listIdentities():", err);
+        throw err;
+    }
+};
+/**
+ * Lists users with optional filters and search parameters.
+ */
 const listUsers = async ({ queries, search, }) => {
     try {
         const { users } = await createAdminClient();
@@ -127,4 +141,4 @@ const updateEmailVerificationForUserId = async ({ userId, status, }) => {
         throw err;
     }
 };
-export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, getVerifiedUserForUserId, listUsers, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, updateEmailVerificationForUserId, };

@@ -380,19 +380,20 @@ const createSession = async ({
 
 export type AccountFunctions = {
   createAccount: typeof createAccount;
-  createJWT: typeof createJWT;
-  createVerification: typeof createVerification;
-  deleteSession: typeof deleteSession;
-  listSessions: typeof listSessions;
-  deleteSessions: typeof deleteSessions;
-  getUser: typeof getUser;
-  deletePrefs: typeof deletePrefs;
-  getPrefs: typeof getPrefs;
-  setPrefs: typeof setPrefs;
-  updateVerification: typeof updateVerification;
   createEmailPasswordSession: typeof createEmailPasswordSession;
+  createJWT: typeof createJWT;
   createOAuth2Token: typeof createOAuth2Token;
   createSession: typeof createSession;
+  createVerification: typeof createVerification;
+  deletePrefs: typeof deletePrefs;
+  deleteSession: typeof deleteSession;
+  deleteSessions: typeof deleteSessions;
+  getPrefs: typeof getPrefs;
+  getUser: typeof getUser;
+  getVerifiedUser: typeof getVerifiedUser;
+  listSessions: typeof listSessions;
+  setPrefs: typeof setPrefs;
+  updateVerification: typeof updateVerification;
 };
 
 export {

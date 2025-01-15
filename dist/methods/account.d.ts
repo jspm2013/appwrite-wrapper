@@ -118,19 +118,20 @@ declare const createOAuth2Token: ({ provider, successPath, failurePath, }: Creat
 declare const createSession: ({ userId, secret, }: CreateSessionParams) => Promise<Models.Session>;
 export type AccountFunctions = {
     createAccount: typeof createAccount;
-    createJWT: typeof createJWT;
-    createVerification: typeof createVerification;
-    deleteSession: typeof deleteSession;
-    listSessions: typeof listSessions;
-    deleteSessions: typeof deleteSessions;
-    getUser: typeof getUser;
-    deletePrefs: typeof deletePrefs;
-    getPrefs: typeof getPrefs;
-    setPrefs: typeof setPrefs;
-    updateVerification: typeof updateVerification;
     createEmailPasswordSession: typeof createEmailPasswordSession;
+    createJWT: typeof createJWT;
     createOAuth2Token: typeof createOAuth2Token;
     createSession: typeof createSession;
+    createVerification: typeof createVerification;
+    deletePrefs: typeof deletePrefs;
+    deleteSession: typeof deleteSession;
+    deleteSessions: typeof deleteSessions;
+    getPrefs: typeof getPrefs;
+    getUser: typeof getUser;
+    getVerifiedUser: typeof getVerifiedUser;
+    listSessions: typeof listSessions;
+    setPrefs: typeof setPrefs;
+    updateVerification: typeof updateVerification;
 };
 export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getUser, getVerifiedUser, listSessions, setPrefs, updateVerification, };
 //# sourceMappingURL=account.d.ts.map

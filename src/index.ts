@@ -6,27 +6,27 @@ import { cookieName } from "./appwriteConfig";
 // Importing individual functions and objects from methods
 import {
   createAccount,
-  createJWT,
-  createVerification,
-  deleteSession,
-  listSessions,
-  deleteSessions,
-  getUser,
-  getVerifiedUser,
-  deletePrefs,
-  getPrefs,
-  setPrefs,
-  updateVerification,
   createEmailPasswordSession,
+  createJWT,
   createOAuth2Token,
   createSession,
+  createVerification,
+  deletePrefs,
+  deleteSession,
+  deleteSessions,
+  getPrefs,
+  getUser,
+  getVerifiedUser,
+  listSessions,
+  setPrefs,
+  updateVerification,
 } from "./methods/account";
 
 import {
   getFlag,
   getImageFromUrl,
-  getUserInitials,
   getQrCodeFromString,
+  getUserInitials,
 } from "./methods/avatars";
 
 import {
@@ -44,6 +44,7 @@ import {
   deleteSessionsForUserId,
   getUserForUserId,
   getVerifiedUserForUserId,
+  listIdentities,
   listUsers,
   updateEmailVerificationForUserId,
 } from "./methods/users";
@@ -56,21 +57,20 @@ export const getCookieName = async (): Promise<string> => cookieName;
 export {
   // Account functions
   createAccount,
-  createJWT,
-  createVerification,
-  deleteSession,
-  listSessions,
-  deleteSessions,
-  getUser,
-  getVerifiedUser,
-  getVerifiedUserForUserId,
-  deletePrefs,
-  getPrefs,
-  setPrefs,
-  updateVerification,
   createEmailPasswordSession,
+  createJWT,
   createOAuth2Token,
   createSession,
+  createVerification,
+  deletePrefs,
+  deleteSession,
+  deleteSessions,
+  getPrefs,
+  getUser,
+  getVerifiedUser,
+  listSessions,
+  setPrefs,
+  updateVerification,
 
   // Avatars functions
   getFlag,
@@ -91,6 +91,8 @@ export {
   deleteSessionForUserId,
   deleteSessionsForUserId,
   getUserForUserId,
+  getVerifiedUserForUserId,
+  listIdentities,
   listUsers,
   updateEmailVerificationForUserId,
 };

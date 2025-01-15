@@ -1,11 +1,13 @@
 "use server";
-import { ID } from "node-appwrite";
 import { createAdminClient } from "../appwriteClients";
 /**
  * Creates a session for a user by their ID.
  */
-const createSessionForUserId = async ({ userId = ID.unique(), }) => {
+const createSessionForUserId = async ({ userId, }) => {
     try {
+        if (!userId) {
+            throw new Error("Invalid param 'userId'");
+        }
         const { users } = await createAdminClient();
         const session = await users.createSession(userId);
         return session;

@@ -98,9 +98,12 @@ export type UpdateEmailVerificationForUserIdParams = {
  * Creates a session for a user by their ID.
  */
 const createSessionForUserId = async ({
-  userId = ID.unique(),
+  userId,
 }: CreateSessionForUserIdParams): Promise<Models.Session> => {
   try {
+    if (!userId) {
+      throw new Error("Invalid param 'userId'");
+    }
     const { users } = await createAdminClient();
     const session = await users.createSession(userId);
     return session;

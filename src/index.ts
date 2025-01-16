@@ -2,6 +2,7 @@
 
 import { host, origin } from "./host";
 import { cookieName } from "./appwriteConfig";
+import { Models, ID } from "node-appwrite";
 
 // Importing individual functions and objects from methods
 import {
@@ -53,6 +54,8 @@ import {
 export const getHost = async (): Promise<string> => host;
 export const getOrigin = async (): Promise<string> => origin;
 export const getCookieName = async (): Promise<string> => cookieName;
+
+export { Models, ID };
 
 export {
   // Account functions

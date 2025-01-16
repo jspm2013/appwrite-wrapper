@@ -1,6 +1,7 @@
 "use server";
 import { host, origin } from "./host";
 import { cookieName } from "./appwriteConfig";
+import { ID } from "node-appwrite";
 // Importing individual functions and objects from methods
 import { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getUser, getVerifiedUser, listSessions, setPrefs, updateVerification, } from "./methods/account";
 import { getFlag, getImageFromUrl, getQrCodeFromString, getUserInitials, } from "./methods/avatars";
@@ -10,6 +11,7 @@ import { createSessionForUserId, createToken, deleteSessionForUserId, deleteSess
 export const getHost = async () => host;
 export const getOrigin = async () => origin;
 export const getCookieName = async () => cookieName;
+export { ID };
 export { 
 // Account functions
 createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getUser, getVerifiedUser, listSessions, setPrefs, updateVerification, 

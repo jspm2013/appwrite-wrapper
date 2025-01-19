@@ -1,5 +1,3 @@
-"use server";
-
 import { host, origin } from "./host";
 import { cookieName } from "./appwriteConfig";
 export { Models, ID } from "node-appwrite";

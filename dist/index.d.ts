@@ -13,8 +13,5 @@ export type { DatabasesFunctionTypes } from "./methods/databases";
 export type { StorageFunctionTypes } from "./methods/storage";
 export type { TeamsFunctionTypes } from "./methods/teams";
 export type { UsersFunctionTypes } from "./methods/users";
-export declare const getHost: () => Promise<string>;
-export declare const getOrigin: () => Promise<string>;
-export declare const getCookieName: () => Promise<string>;
 export { host, origin, cookieName };
 //# sourceMappingURL=index.d.ts.map

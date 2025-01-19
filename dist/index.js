@@ -19,8 +19,5 @@ createTeam, createTeamMembership, deleteTeam, deleteTeamMembership, getTeam, get
 export { 
 // Users functions
 createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, updateEmailVerificationForUserId, } from "./methods/users";
-// Appwrite config
-export const getHost = async () => host;
-export const getOrigin = async () => origin;
-export const getCookieName = async () => cookieName;
+// ApwWrapper Config
 export { host, origin, cookieName };

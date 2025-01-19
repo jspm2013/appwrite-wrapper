@@ -131,9 +131,5 @@ export type { StorageFunctionTypes } from "./methods/storage";
 export type { TeamsFunctionTypes } from "./methods/teams";
 export type { UsersFunctionTypes } from "./methods/users";
 
-// Appwrite config
-export const getHost = async (): Promise<string> => host;
-export const getOrigin = async (): Promise<string> => origin;
-export const getCookieName = async (): Promise<string> => cookieName;
-
+// ApwWrapper Config
 export { host, origin, cookieName };

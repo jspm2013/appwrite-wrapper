@@ -1,6 +1,6 @@
 import { host, origin } from "./host";
 import { cookieName } from "./appwriteConfig";
-export { ID } from "node-appwrite";
+export { ID, Query } from "node-appwrite";
 export { 
 // Account functions
 createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getSession, getUser, getVerifiedUser, listSessions, setPrefs, updateSession, updateVerification, } from "./methods/account";

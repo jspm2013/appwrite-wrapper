@@ -1,6 +1,6 @@
 import { host, origin } from "./host";
 import { cookieName } from "./appwriteConfig";
-export { Models, ID } from "node-appwrite";
+export { Models, ID, Query } from "node-appwrite";
 
 export {
   // Account functions

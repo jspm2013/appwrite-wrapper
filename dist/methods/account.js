@@ -59,6 +59,34 @@ const deleteSession = async (params = {}) => {
     }
 };
 /**
+ * Getting a specific session or the current session.
+ */
+const getSession = async (params = {}) => {
+    const { sessionId = "current" } = params;
+    try {
+        const { account } = await createSessionClient();
+        await account.getSession(sessionId);
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/account): Error executing getSession():", err);
+        throw err;
+    }
+};
+/**
+ * Updates a specific session or the current session.
+ */
+const updateSession = async (params = {}) => {
+    const { sessionId = "current" } = params;
+    try {
+        const { account } = await createSessionClient();
+        await account.updateSession(sessionId);
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/account): Error executing updateSession():", err);
+        throw err;
+    }
+};
+/**
  * Lists all sessions for the current user.
  */
 const listSessions = async () => {
@@ -240,4 +268,4 @@ const createSession = async ({ userId, secret, }) => {
         throw err;
     }
 };
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getUser, getVerifiedUser, listSessions, setPrefs, updateVerification, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getSession, getUser, getVerifiedUser, listSessions, setPrefs, updateSession, updateVerification, };

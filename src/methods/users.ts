@@ -7,92 +7,8 @@ import { createAdminClient } from "../appwriteClients";
  * Parameters for creating a session for a user.
  */
 export type CreateSessionForUserIdParams = {
-  /**
-   * The unique user ID. Defaults to `ID.unique()`.
-   */
   userId?: string;
 };
-
-/**
- * Parameters for creating a token for a user.
- */
-export type CreateTokenParams = {
-  /**
-   * The user ID.
-   */
-  userId: string;
-  /**
-   * The token length. Defaults to `32`.
-   */
-  length?: number;
-  /**
-   * The token expiration time in seconds. Defaults to `180` (3 minutes).
-   */
-  expire?: number;
-};
-
-/**
- * Parameters for deleting a specific session for a user.
- */
-export type DeleteSessionForUserIdParams = {
-  /**
-   * The user ID.
-   */
-  userId: string;
-  /**
-   * The session ID to delete.
-   */
-  sessionId: string;
-};
-
-/**
- * Parameters for deleting all sessions for a user.
- */
-export type DeleteSessionsForUserIdParams = {
-  /**
-   * The user ID.
-   */
-  userId: string;
-};
-
-/**
- * Parameters for retrieving a user by their ID.
- */
-export type GetUserForUserIdParams = {
-  /**
-   * The user ID.
-   */
-  userId: string;
-};
-
-/**
- * Parameters for listing users.
- */
-export type ListParams = {
-  /**
-   * Queries for filtering the user list.
-   */
-  queries?: string[];
-  /**
-   * Search term to filter users.
-   */
-  search?: string;
-};
-
-/**
- * Parameters for updating email verification for a user.
- */
-export type UpdateEmailVerificationForUserIdParams = {
-  /**
-   * The user ID.
-   */
-  userId: string;
-  /**
-   * The email verification status (true or false).
-   */
-  status: boolean;
-};
-
 /**
  * Creates a session for a user by their ID.
  */
@@ -116,6 +32,14 @@ const createSessionForUserId = async ({
 };
 
 /**
+ * Parameters for creating a token for a user.
+ */
+export type CreateTokenParams = {
+  userId: string;
+  length?: number;
+  expire?: number;
+};
+/**
  * Creates a token for a user.
  */
 const createToken = async ({
@@ -137,6 +61,13 @@ const createToken = async ({
 };
 
 /**
+ * Parameters for deleting a specific session for a user.
+ */
+export type DeleteSessionForUserIdParams = {
+  userId: string;
+  sessionId: string;
+};
+/**
  * Deletes a specific session for a user by their ID.
  */
 const deleteSessionForUserId = async ({
@@ -156,6 +87,12 @@ const deleteSessionForUserId = async ({
 };
 
 /**
+ * Parameters for deleting all sessions for a user.
+ */
+export type DeleteSessionsForUserIdParams = {
+  userId: string;
+};
+/**
  * Deletes all sessions for a user by their ID.
  */
 const deleteSessionsForUserId = async ({
@@ -173,6 +110,12 @@ const deleteSessionsForUserId = async ({
   }
 };
 
+/**
+ * Parameters for retrieving a user by their ID.
+ */
+export type GetUserForUserIdParams = {
+  userId: string;
+};
 /**
  * Retrieves a user by their ID.
  */
@@ -217,6 +160,13 @@ const getVerifiedUserForUserId = async ({
 };
 
 /**
+ * Parameters for listing users.
+ */
+export type ListParams = {
+  queries?: string[];
+  search?: string;
+};
+/**
  * Lists users with optional filters and search parameters.
  */
 const listIdentities = async ({
@@ -257,6 +207,13 @@ const listUsers = async ({
 };
 
 /**
+ * Parameters for updating email verification for a user.
+ */
+export type UpdateEmailVerificationForUserIdParams = {
+  userId: string;
+  status: boolean;
+};
+/**
  * Updates the email verification status for a user.
  */
 const updateEmailVerificationForUserId = async ({
@@ -281,7 +238,7 @@ const updateEmailVerificationForUserId = async ({
   }
 };
 
-export type UserFunctions = {
+export type UsersFunctionTypes = {
   createSessionForUserId: typeof createSessionForUserId;
   createToken: typeof createToken;
   deleteSessionForUserId: typeof deleteSessionForUserId;

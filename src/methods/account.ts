@@ -20,61 +20,6 @@ export type CreateAccountParams = {
   password: string;
   name?: string;
 };
-
-/**
- * Parameters for deleting preferences.
- */
-export type DeletePrefsParams = {
-  key: string;
-};
-
-/**
- * Parameters for updating verification.
- */
-export type UpdateVerificationParams = {
-  userId: string;
-  secret: string;
-};
-
-/**
- * Parameters for creating an OAuth2 token.
- */
-export type CreateOAuth2TokenParams = {
-  provider: keyof typeof OAuthProvider;
-  successPath?: string;
-  failurePath?: string;
-};
-
-/**
- * Parameters for setting preferences.
- */
-export type SetPrefsParams = {
-  newPrefs: Record<string, unknown>;
-};
-
-/**
- * Parameters for creating a session with email and password.
- */
-export type CreateEmailPasswordSessionParams = {
-  email: string;
-  password: string;
-};
-
-/**
- * Parameters for creating a session with user ID and secret.
- */
-export type CreateSessionParams = {
-  userId: string;
-  secret: string;
-};
-
-/**
- * Parameters for deleting a session.
- */
-export type DeleteSessionParams = {
-  sessionId?: string;
-};
-
 /**
  * Creates a new account.
  */
@@ -112,11 +57,17 @@ const createJWT = async (): Promise<Models.Jwt> => {
 };
 
 /**
+ * Parameters for creating an account.
+ */
+export type CreateVerificationParams = {
+  verificationUrl?: string;
+};
+/**
  * Creates an email verification token.
  */
 const createVerification = async ({
   verificationUrl = `${host}/${verificationPath}`,
-}): Promise<Models.Token> => {
+}: CreateVerificationParams): Promise<Models.Token> => {
   try {
     const { account } = await createSessionClient();
     return await account.createVerification(verificationUrl);
@@ -130,6 +81,12 @@ const createVerification = async ({
 };
 
 /**
+ * Parameters for deleting a session.
+ */
+export type DeleteSessionParams = {
+  sessionId?: string;
+};
+/**
  * Deletes a specific session or the current session.
  */
 const deleteSession = async (
@@ -142,6 +99,54 @@ const deleteSession = async (
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/account): Error executing deleteSession():",
+      err
+    );
+    throw err;
+  }
+};
+
+/**
+ * Parameters for getting a session.
+ */
+export type GetSessionParams = {
+  sessionId?: string;
+};
+/**
+ * Getting a specific session or the current session.
+ */
+const getSession = async (params: GetSessionParams = {}): Promise<void> => {
+  const { sessionId = "current" } = params;
+  try {
+    const { account } = await createSessionClient();
+    await account.getSession(sessionId);
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/account): Error executing getSession():",
+      err
+    );
+    throw err;
+  }
+};
+
+/**
+ * Parameters for updating a session.
+ */
+export type UpdateSessionParams = {
+  sessionId?: string;
+};
+/**
+ * Updates a specific session or the current session.
+ */
+const updateSession = async (
+  params: UpdateSessionParams = {}
+): Promise<void> => {
+  const { sessionId = "current" } = params;
+  try {
+    const { account } = await createSessionClient();
+    await account.updateSession(sessionId);
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/account): Error executing updateSession():",
       err
     );
     throw err;
@@ -220,6 +225,12 @@ const getVerifiedUser =
   };
 
 /**
+ * Parameters for deleting preferences.
+ */
+export type DeletePrefsParams = {
+  key: string;
+};
+/**
  * Deletes a specific preference key for the current user.
  */
 const deletePrefs = async ({
@@ -260,6 +271,12 @@ const getPrefs = async (): Promise<Models.Preferences> => {
 };
 
 /**
+ * Parameters for setting preferences.
+ */
+export type SetPrefsParams = {
+  newPrefs: Record<string, unknown>;
+};
+/**
  * Updates preferences for the current user.
  */
 const setPrefs = async ({ newPrefs }: SetPrefsParams): Promise<void> => {
@@ -283,6 +300,13 @@ const setPrefs = async ({ newPrefs }: SetPrefsParams): Promise<void> => {
 };
 
 /**
+ * Parameters for updating verification.
+ */
+export type UpdateVerificationParams = {
+  userId: string;
+  secret: string;
+};
+/**
  * Updates the email verification for a specific user.
  */
 const updateVerification = async ({
@@ -301,6 +325,13 @@ const updateVerification = async ({
   }
 };
 
+/**
+ * Parameters for creating a session with email and password.
+ */
+export type CreateEmailPasswordSessionParams = {
+  email: string;
+  password: string;
+};
 /**
  * Creates a session for a user using email and password.
  */
@@ -328,6 +359,14 @@ const createEmailPasswordSession = async ({
 };
 
 /**
+ * Parameters for creating an OAuth2 token.
+ */
+export type CreateOAuth2TokenParams = {
+  provider: keyof typeof OAuthProvider;
+  successPath?: string;
+  failurePath?: string;
+};
+/**
  * Creates an OAuth2 token for the user.
  */
 const createOAuth2Token = async ({
@@ -352,6 +391,13 @@ const createOAuth2Token = async ({
   }
 };
 
+/**
+ * Parameters for creating a session with user ID and secret.
+ */
+export type CreateSessionParams = {
+  userId: string;
+  secret: string;
+};
 /**
  * Creates a session for a user by their ID and secret.
  */
@@ -378,7 +424,7 @@ const createSession = async ({
   }
 };
 
-export type AccountFunctions = {
+export type AccountFunctionTypes = {
   createAccount: typeof createAccount;
   createEmailPasswordSession: typeof createEmailPasswordSession;
   createJWT: typeof createJWT;
@@ -394,6 +440,8 @@ export type AccountFunctions = {
   listSessions: typeof listSessions;
   setPrefs: typeof setPrefs;
   updateVerification: typeof updateVerification;
+  updateSession: typeof updateSession;
+  getSession: typeof getSession;
 };
 
 export {
@@ -407,9 +455,11 @@ export {
   deleteSession,
   deleteSessions,
   getPrefs,
+  getSession,
   getUser,
   getVerifiedUser,
   listSessions,
   setPrefs,
+  updateSession,
   updateVerification,
 };

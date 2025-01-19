@@ -4,33 +4,13 @@ import { Flag } from "node-appwrite";
 import { createAdminClient } from "../appwriteClients";
 
 /**
- * Types for the `avatars` module.
+ * Parameters for retrieving a country flag image, including optional width, height, and quality settings.
  */
 export type GetFlagParams = {
   code: Flag;
   width?: number;
   height?: number;
   quality?: number;
-};
-
-export type GetImageFromUrlParams = {
-  url: string;
-  width?: number;
-  height?: number;
-};
-
-export type GetUserInitialsParams = {
-  name: string;
-  width?: number;
-  height?: number;
-  background?: string;
-};
-
-export type GetQrCodeFromStringParams = {
-  text: string;
-  size?: number;
-  margin?: number;
-  download?: boolean;
 };
 
 /**
@@ -56,6 +36,15 @@ const getFlag = async ({
 };
 
 /**
+ * Parameters for retrieving an image from a URL, with optional width and height settings.
+ */
+export type GetImageFromUrlParams = {
+  url: string;
+  width?: number;
+  height?: number;
+};
+
+/**
  * Retrieves an image from a URL.
  */
 const getImageFromUrl = async ({
@@ -74,6 +63,16 @@ const getImageFromUrl = async ({
     );
     throw err;
   }
+};
+
+/**
+ * Parameters for retrieving a QR code as an image, with optional size, margin, and download settings.
+ */
+export type GetQrCodeFromStringParams = {
+  text: string;
+  size?: number;
+  margin?: number;
+  download?: boolean;
 };
 
 /**
@@ -99,6 +98,16 @@ const getQrCodeFromString = async ({
 };
 
 /**
+ * Parameters for retrieving user initials as an avatar image, including optional width, height, and background color settings.
+ */
+export type GetUserInitialsParams = {
+  name: string;
+  width?: number;
+  height?: number;
+  background?: string;
+};
+
+/**
  * Retrieves user initials as an avatar image.
  */
 const getUserInitials = async ({
@@ -120,7 +129,7 @@ const getUserInitials = async ({
   }
 };
 
-export type AvatarFunctions = {
+export type AvatarsFunctionTypes = {
   getFlag: typeof getFlag;
   getImageFromUrl: typeof getImageFromUrl;
   getQrCodeFromString: typeof getQrCodeFromString;

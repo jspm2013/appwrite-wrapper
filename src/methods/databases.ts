@@ -225,19 +225,26 @@ const createCollection = async ({
 };
 
 /**
- * Parameters for the createCollection function.
+ * Parameters for the createCollectionWithSchema function.
  */
-export type CreateCollectionWithSchemaParams = {
+type CommonParams = {
   dbId: string;
-  collId: string;
   name: string;
   permissions?: string[];
   documentSecurity?: boolean;
   enabled?: boolean;
-  idEqualsName: boolean;
 };
+type WithCollId = CommonParams & {
+  collId: string;
+  nameAsId?: never;
+};
+type WithoutCollId = CommonParams & {
+  collId?: never;
+  nameAsId: boolean;
+};
+export type CreateCollectionWithSchemaParams = WithCollId | WithoutCollId;
 /**
- * Create a new collection in a specific database.
+ * Create a new collection according to a specific schema in a specific database.
  * @param params - Parameters for creating the collection.
  * @returns The created collection details.
  */
@@ -248,7 +255,7 @@ const createCollectionWithSchema = async ({
   permissions,
   documentSecurity,
   enabled,
-  idEqualsName = true,
+  nameAsId,
 }: CreateCollectionWithSchemaParams): Promise<Models.Collection> => {
   try {
     const { databases } = await createAdminClient();
@@ -260,12 +267,8 @@ const createCollectionWithSchema = async ({
 
     if (!coll) {
       const schema = await getSchema(name);
-      const collectionId =
-        collId && collId.trim() !== ""
-          ? collId
-          : idEqualsName
-          ? name
-          : ID.unique();
+      const collectionId = collId ?? (nameAsId ? name : ID.unique());
+
       coll = await databases.createCollection(
         dbId,
         collectionId,
@@ -274,13 +277,15 @@ const createCollectionWithSchema = async ({
         documentSecurity ?? schema.documentSecurity,
         enabled ?? schema.enabled
       );
+
       for (const attr of schema.attributes) {
-        await createAttribute(dbId, collId, attr);
+        await createAttribute(dbId, collectionId, attr);
       }
+
       for (const index of schema.indexes) {
         await databases.createIndex(
           dbId,
-          collId,
+          collectionId,
           index.key,
           index.type,
           index.attributes,

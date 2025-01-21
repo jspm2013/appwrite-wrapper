@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import dynamic from "next/dynamic";
 import { schemasPath } from "../appwriteConfig";
 import { CollectionSchema } from "./types";
 
@@ -18,7 +19,8 @@ export const getSchema = async (schema: string): Promise<CollectionSchema> => {
     const filePath = path.join(SCHEMAS_FOLDER, file);
 
     // Dynamically import the file
-    const module = await import(filePath);
+    const module = dynamic(() => import(schemasPath));
+    //const module = await import(filePath);
 
     // Iterate over the exports and filter valid schemas
     for (const [exportName, exportValue] of Object.entries(module)) {

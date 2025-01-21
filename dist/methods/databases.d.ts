@@ -97,23 +97,30 @@ export type CreateCollectionParams = {
  */
 declare const createCollection: ({ dbId, collId, name, permissions, documentSecurity, enabled, }: CreateCollectionParams) => Promise<Models.Collection>;
 /**
- * Parameters for the createCollection function.
+ * Parameters for the createCollectionWithSchema function.
  */
-export type CreateCollectionWithSchemaParams = {
+type CommonParams = {
     dbId: string;
-    collId: string;
     name: string;
     permissions?: string[];
     documentSecurity?: boolean;
     enabled?: boolean;
-    idEqualsName: boolean;
 };
+type WithCollId = CommonParams & {
+    collId: string;
+    nameAsId?: never;
+};
+type WithoutCollId = CommonParams & {
+    collId?: never;
+    nameAsId: boolean;
+};
+export type CreateCollectionWithSchemaParams = WithCollId | WithoutCollId;
 /**
- * Create a new collection in a specific database.
+ * Create a new collection according to a specific schema in a specific database.
  * @param params - Parameters for creating the collection.
  * @returns The created collection details.
  */
-declare const createCollectionWithSchema: ({ dbId, collId, name, permissions, documentSecurity, enabled, idEqualsName, }: CreateCollectionWithSchemaParams) => Promise<Models.Collection>;
+declare const createCollectionWithSchema: ({ dbId, collId, name, permissions, documentSecurity, enabled, nameAsId, }: CreateCollectionWithSchemaParams) => Promise<Models.Collection>;
 /**
  * Parameters for the getCollection function.
  */

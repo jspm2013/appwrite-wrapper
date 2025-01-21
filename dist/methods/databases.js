@@ -114,28 +114,24 @@ const createCollection = async ({ dbId, collId, name, permissions, documentSecur
     }
 };
 /**
- * Create a new collection in a specific database.
+ * Create a new collection according to a specific schema in a specific database.
  * @param params - Parameters for creating the collection.
  * @returns The created collection details.
  */
-const createCollectionWithSchema = async ({ dbId, collId, name, permissions, documentSecurity, enabled, idEqualsName = true, }) => {
+const createCollectionWithSchema = async ({ dbId, collId, name, permissions, documentSecurity, enabled, nameAsId, }) => {
     try {
         const { databases } = await createAdminClient();
         const collList = await databases.listCollections(dbId);
         let coll = collList.collections.find((collection) => collection.name === name);
         if (!coll) {
             const schema = await getSchema(name);
-            const collectionId = collId && collId.trim() !== ""
-                ? collId
-                : idEqualsName
-                    ? name
-                    : ID.unique();
+            const collectionId = collId ?? (nameAsId ? name : ID.unique());
             coll = await databases.createCollection(dbId, collectionId, name, permissions ?? schema.permissions, documentSecurity ?? schema.documentSecurity, enabled ?? schema.enabled);
             for (const attr of schema.attributes) {
-                await createAttribute(dbId, collId, attr);
+                await createAttribute(dbId, collectionId, attr);
             }
             for (const index of schema.indexes) {
-                await databases.createIndex(dbId, collId, index.key, index.type, index.attributes, index.orders);
+                await databases.createIndex(dbId, collectionId, index.key, index.type, index.attributes, index.orders);
             }
         }
         return coll;

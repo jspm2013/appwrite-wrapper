@@ -8,7 +8,7 @@ import { type CreateRelationshipAttributeParams } from "src/methods/databases";
  *
  *
  */
-export { type CreateRelationshipAttributeParams };
+export { Models, IndexType, type CreateRelationshipAttributeParams };
 
 export type Attribute =
   | Models.AttributeString

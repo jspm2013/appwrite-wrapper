@@ -2,6 +2,7 @@ import {
   Attribute,
   AttributeHandler,
   CreateRelationshipAttributeParams,
+  Models,
 } from "./types";
 import {
   createBooleanAttribute,
@@ -14,8 +15,7 @@ import {
   createRelationshipAttribute,
   createStringAttribute,
   createUrlAttribute,
-} from "src/methods/databases";
-import { Models } from "node-appwrite";
+} from "../index";
 
 const attributeHandlers: Record<string, AttributeHandler> = {
   string: async (dbId, collId, attr: Models.AttributeString, encrypt = false) =>

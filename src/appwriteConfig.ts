@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 if (!process.env.APP_DOMAIN) {
   throw new Error(
     "APW-WRAPPER - Error: Missing required environment variable: APP_DOMAIN"

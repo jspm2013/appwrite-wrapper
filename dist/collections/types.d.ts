@@ -9,6 +9,7 @@ export type Index = {
     orders?: ("ASC" | "DESC")[];
 };
 export type CollectionSchema = {
+    name: string;
     permissions: string[];
     documentSecurity: boolean;
     enabled: boolean;

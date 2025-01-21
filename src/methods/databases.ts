@@ -267,6 +267,7 @@ const createCollectionWithSchema = async ({
 
     if (!coll) {
       const schema = await getSchema(name);
+
       const collectionId = collId ?? (nameAsId ? name : ID.unique());
 
       coll = await databases.createCollection(

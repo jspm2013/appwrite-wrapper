@@ -30,6 +30,7 @@ export type Index = {
 };
 
 export type CollectionSchema = {
+  name: string;
   permissions: string[];
   documentSecurity: boolean;
   enabled: boolean;

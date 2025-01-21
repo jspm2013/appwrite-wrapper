@@ -1,40 +1,31 @@
 import fs from "fs/promises";
 import path from "path";
-import dynamic from "next/dynamic";
 import { schemasPath } from "../appwriteConfig";
 import { CollectionSchema } from "./types";
 
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
-//const SCHEMAS_FOLDER = path.resolve(__dirname, "./CollectionSchemas");
 
 export const getSchema = async (schema: string): Promise<CollectionSchema> => {
   const files = await fs.readdir(SCHEMAS_FOLDER);
 
-  const schemas: { [key: string]: CollectionSchema } = {};
+  try {
+    for (const file of files) {
+      const fileName = path.parse(file).name;
+      const fileExt = path.parse(file).ext;
+      if (fileExt !== ".json" || fileName !== schema) continue;
 
-  for (const file of files) {
-    // Check for JavaScript or TypeScript files only
-    if (!file.endsWith(".js") && !file.endsWith(".ts")) continue;
+      const filePath = path.join(SCHEMAS_FOLDER, file);
+      const module = JSON.parse(await fs.readFile(filePath, "utf-8"));
 
-    const filePath = path.join(SCHEMAS_FOLDER, file);
-
-    // Dynamically import the file
-    const module = dynamic(() => import(schemasPath));
-    //const module = await import(filePath);
-
-    // Iterate over the exports and filter valid schemas
-    for (const [exportName, exportValue] of Object.entries(module)) {
-      if (isCollectionSchema(exportValue)) {
-        schemas[exportName] = exportValue;
+      if (isCollectionSchema(module) && module.name === schema) {
+        return module;
       }
     }
-  }
-
-  // Find the schema matching the input
-  if (schemas[schema]) {
-    return schemas[schema];
-  } else {
-    throw new Error(`Unsupported attribute template: ${schema}`);
+    throw new Error("schema object not valid or schema file (.json) not found");
+  } catch (error: any) {
+    throw new Error(
+      `Error importing schema '${schema}': ${JSON.stringify(error)}`
+    );
   }
 };
 
@@ -42,6 +33,8 @@ export const getSchema = async (schema: string): Promise<CollectionSchema> => {
 const isCollectionSchema = (obj: any): obj is CollectionSchema => {
   return (
     obj &&
+    typeof obj.name === "string" &&
+    obj.name.length > 0 &&
     Array.isArray(obj.permissions) &&
     typeof obj.documentSecurity === "boolean" &&
     typeof obj.enabled === "boolean" &&

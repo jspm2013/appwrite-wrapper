@@ -1,38 +1,32 @@
 import fs from "fs/promises";
 import path from "path";
-import dynamic from "next/dynamic";
 import { schemasPath } from "../appwriteConfig";
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
-//const SCHEMAS_FOLDER = path.resolve(__dirname, "./CollectionSchemas");
 export const getSchema = async (schema) => {
     const files = await fs.readdir(SCHEMAS_FOLDER);
-    const schemas = {};
-    for (const file of files) {
-        // Check for JavaScript or TypeScript files only
-        if (!file.endsWith(".js") && !file.endsWith(".ts"))
-            continue;
-        const filePath = path.join(SCHEMAS_FOLDER, file);
-        // Dynamically import the file
-        const module = dynamic(() => import(schemasPath));
-        //const module = await import(filePath);
-        // Iterate over the exports and filter valid schemas
-        for (const [exportName, exportValue] of Object.entries(module)) {
-            if (isCollectionSchema(exportValue)) {
-                schemas[exportName] = exportValue;
+    try {
+        for (const file of files) {
+            const fileName = path.parse(file).name;
+            const fileExt = path.parse(file).ext;
+            if (fileExt !== ".json" || fileName !== schema)
+                continue;
+            const filePath = path.join(SCHEMAS_FOLDER, file);
+            const module = JSON.parse(await fs.readFile(filePath, "utf-8"));
+            if (isCollectionSchema(module) && module.name === schema) {
+                return module;
             }
         }
+        throw new Error("schema object not valid or schema file (.json) not found");
     }
-    // Find the schema matching the input
-    if (schemas[schema]) {
-        return schemas[schema];
-    }
-    else {
-        throw new Error(`Unsupported attribute template: ${schema}`);
+    catch (error) {
+        throw new Error(`Error importing schema '${schema}': ${JSON.stringify(error)}`);
     }
 };
 // Type guard to validate the structure of the schema
 const isCollectionSchema = (obj) => {
     return (obj &&
+        typeof obj.name === "string" &&
+        obj.name.length > 0 &&
         Array.isArray(obj.permissions) &&
         typeof obj.documentSecurity === "boolean" &&
         typeof obj.enabled === "boolean" &&

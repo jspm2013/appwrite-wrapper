@@ -1,6 +1,6 @@
 import { Models, IndexType } from "node-appwrite";
 import { type CreateRelationshipAttributeParams } from "src/methods/databases";
-export { type CreateRelationshipAttributeParams };
+export { Models, IndexType, type CreateRelationshipAttributeParams };
 export type Attribute = Models.AttributeString | Models.AttributeInteger | Models.AttributeFloat | Models.AttributeBoolean | Models.AttributeEmail | Models.AttributeEnum | Models.AttributeUrl | Models.AttributeIp | Models.AttributeDatetime | Models.AttributeRelationship;
 export type Index = {
     key: string;

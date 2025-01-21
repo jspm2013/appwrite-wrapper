@@ -1,4 +1,4 @@
-import { createBooleanAttribute, createDatetimeAttribute, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, } from "src/methods/databases";
+import { createBooleanAttribute, createDatetimeAttribute, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, } from "../index";
 const attributeHandlers = {
     string: async (dbId, collId, attr, encrypt = false) => await createStringAttribute({
         databaseId: dbId,

@@ -1,4 +1,3 @@
-require("dotenv").config();
 if (!process.env.APP_DOMAIN) {
     throw new Error("APW-WRAPPER - Error: Missing required environment variable: APP_DOMAIN");
 }
@@ -17,7 +16,6 @@ if (!process.env.APPWRITE_API_KEY_SSR) {
  * User defined: using env vars
  *
  */
-export const appDomain = process.env.APP_DOMAIN;
 export const projectId = process.env.APPWRITE_PROJECT_ID;
 export const endpoint = process.env.APPWRITE_ENDPOINT;
 export const apiKeySsr = process.env.APPWRITE_API_KEY_SSR;
@@ -27,7 +25,6 @@ export const apiKeySsr = process.env.APPWRITE_API_KEY_SSR;
  * Pre-defined: optionally customizable, using env vars
  *
  */
-export const port = process.env.PORT || 3000;
 export const schemasPath = process.env.APPWRITE_SCHEMAS_PATH || "lib/appwrite/schemas";
 export const i18nPath = process.env.APPWRITE_I18N_PATH || "messages/appwrite";
 export const oauthSuccessPath = process.env.APPWRITE_OAUTH_SUCCESS_PATH || "api/oauth";

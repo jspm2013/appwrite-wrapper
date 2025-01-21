@@ -1,3 +1,4 @@
+export declare const port: string | number;
 export declare const localeOrigin: string;
 export declare const localeHost: string;
 export declare const liveOrigin: string;

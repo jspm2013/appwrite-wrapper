@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import { schemasPath } from "../appwriteConfig";
 import { CollectionSchema } from "./types";
@@ -7,7 +7,7 @@ const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
 //const SCHEMAS_FOLDER = path.resolve(__dirname, "./CollectionSchemas");
 
 export const getSchema = async (schema: string): Promise<CollectionSchema> => {
-  const files = fs.readdirSync(SCHEMAS_FOLDER);
+  const files = await fs.readdir(SCHEMAS_FOLDER);
 
   const schemas: { [key: string]: CollectionSchema } = {};
 

@@ -1,10 +1,10 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import { schemasPath } from "../appwriteConfig";
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
 //const SCHEMAS_FOLDER = path.resolve(__dirname, "./CollectionSchemas");
 export const getSchema = async (schema) => {
-    const files = fs.readdirSync(SCHEMAS_FOLDER);
+    const files = await fs.readdir(SCHEMAS_FOLDER);
     const schemas = {};
     for (const file of files) {
         // Check for JavaScript or TypeScript files only

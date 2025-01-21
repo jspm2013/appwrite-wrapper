@@ -1,4 +1,5 @@
-import { Models, RelationshipType, RelationMutate, IndexType } from "node-appwrite";
+import { Models } from "node-appwrite";
+import { RelationshipType, RelationMutate, IndexType } from "../enums";
 /**
  * Parameters for the listDatabases function.
  */
@@ -95,6 +96,24 @@ export type CreateCollectionParams = {
  * @returns The created collection details.
  */
 declare const createCollection: ({ dbId, collId, name, permissions, documentSecurity, enabled, }: CreateCollectionParams) => Promise<Models.Collection>;
+/**
+ * Parameters for the createCollection function.
+ */
+export type CreateCollectionWithSchemaParams = {
+    dbId: string;
+    collId: string;
+    name: string;
+    permissions?: string[];
+    documentSecurity?: boolean;
+    enabled?: boolean;
+    idEqualsName: boolean;
+};
+/**
+ * Create a new collection in a specific database.
+ * @param params - Parameters for creating the collection.
+ * @returns The created collection details.
+ */
+declare const createCollectionWithSchema: ({ dbId, collId, name, permissions, documentSecurity, enabled, idEqualsName, }: CreateCollectionWithSchemaParams) => Promise<Models.Collection>;
 /**
  * Parameters for the getCollection function.
  */
@@ -668,6 +687,7 @@ declare const updateRelationshipAttribute: ({ databaseId, collectionId, key, onD
 export type DatabasesFunctionTypes = {
     createBooleanAttribute: typeof createBooleanAttribute;
     createCollection: typeof createCollection;
+    createCollectionWithSchema: typeof createCollectionWithSchema;
     createDatabase: typeof createDatabase;
     createDatetimeAttribute: typeof createDatetimeAttribute;
     createDocument: typeof createDocument;
@@ -712,5 +732,5 @@ export type DatabasesFunctionTypes = {
 /**
  * Export all created functions.
  */
-export { createBooleanAttribute, createCollection, createDatabase, createDatetimeAttribute, createDocument, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIndex, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, deleteAttribute, deleteCollection, deleteDatabase, deleteDocument, deleteIndex, getAttribute, getCollection, getDatabase, getDocument, getIndex, listAttributes, listCollections, listDatabases, listDocuments, listIndexes, updateBooleanAttribute, updateCollection, updateDatabase, updateDatetimeAttribute, updateDocument, updateEmailAttribute, updateEnumAttribute, updateFloatAttribute, updateIntegerAttribute, updateIpAttribute, updateRelationshipAttribute, updateStringAttribute, updateUrlAttribute, };
+export { createBooleanAttribute, createCollection, createCollectionWithSchema, createDatabase, createDatetimeAttribute, createDocument, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIndex, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, deleteAttribute, deleteCollection, deleteDatabase, deleteDocument, deleteIndex, getAttribute, getCollection, getDatabase, getDocument, getIndex, listAttributes, listCollections, listDatabases, listDocuments, listIndexes, updateBooleanAttribute, updateCollection, updateDatabase, updateDatetimeAttribute, updateDocument, updateEmailAttribute, updateEnumAttribute, updateFloatAttribute, updateIntegerAttribute, updateIpAttribute, updateRelationshipAttribute, updateStringAttribute, updateUrlAttribute, };
 //# sourceMappingURL=databases.d.ts.map

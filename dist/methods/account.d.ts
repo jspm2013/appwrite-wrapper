@@ -1,4 +1,5 @@
-import { OAuthProvider, Models } from "node-appwrite";
+import { Models } from "node-appwrite";
+import { OAuthProvider } from "../enums";
 /**
  * Parameters for creating an account.
  */

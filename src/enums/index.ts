@@ -17,6 +17,7 @@ import {
   RelationshipType,
   Runtime,
   SmtpEncryption,
+  UploadProgress,
 } from "node-appwrite";
 
 export {
@@ -38,4 +39,5 @@ export {
   RelationshipType,
   Runtime,
   SmtpEncryption,
+  UploadProgress,
 };

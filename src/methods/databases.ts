@@ -1,12 +1,8 @@
 "use server";
 
-import {
-  ID,
-  Models,
-  RelationshipType,
-  RelationMutate,
-  IndexType,
-} from "node-appwrite";
+import { ID, Models } from "node-appwrite";
+import { createAttribute, getSchema } from "../collections";
+import { RelationshipType, RelationMutate, IndexType } from "../enums";
 import { createAdminClient } from "../appwriteClients";
 
 /**
@@ -222,6 +218,81 @@ const createCollection = async ({
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/databases): Error executing createCollection():",
+      err
+    );
+    throw err;
+  }
+};
+
+/**
+ * Parameters for the createCollection function.
+ */
+export type CreateCollectionWithSchemaParams = {
+  dbId: string;
+  collId: string;
+  name: string;
+  permissions?: string[];
+  documentSecurity?: boolean;
+  enabled?: boolean;
+  idEqualsName: boolean;
+};
+/**
+ * Create a new collection in a specific database.
+ * @param params - Parameters for creating the collection.
+ * @returns The created collection details.
+ */
+const createCollectionWithSchema = async ({
+  dbId,
+  collId,
+  name,
+  permissions,
+  documentSecurity,
+  enabled,
+  idEqualsName = true,
+}: CreateCollectionWithSchemaParams): Promise<Models.Collection> => {
+  try {
+    const { databases } = await createAdminClient();
+
+    const collList = await databases.listCollections(dbId);
+    let coll = collList.collections.find(
+      (collection: Models.Collection) => collection.name === name
+    );
+
+    if (!coll) {
+      const schema = await getSchema(name);
+      const collectionId =
+        collId && collId.trim() !== ""
+          ? collId
+          : idEqualsName
+          ? name
+          : ID.unique();
+      coll = await databases.createCollection(
+        dbId,
+        collectionId,
+        name,
+        permissions ?? schema.permissions,
+        documentSecurity ?? schema.documentSecurity,
+        enabled ?? schema.enabled
+      );
+      for (const attr of schema.attributes) {
+        await createAttribute(dbId, collId, attr);
+      }
+      for (const index of schema.indexes) {
+        await databases.createIndex(
+          dbId,
+          collId,
+          index.key,
+          index.type,
+          index.attributes,
+          index.orders
+        );
+      }
+    }
+
+    return coll;
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/databases): Error executing createCollectionWithSchema():",
       err
     );
     throw err;
@@ -1652,6 +1723,7 @@ const updateRelationshipAttribute = async ({
 export type DatabasesFunctionTypes = {
   createBooleanAttribute: typeof createBooleanAttribute;
   createCollection: typeof createCollection;
+  createCollectionWithSchema: typeof createCollectionWithSchema;
   createDatabase: typeof createDatabase;
   createDatetimeAttribute: typeof createDatetimeAttribute;
   createDocument: typeof createDocument;
@@ -1700,6 +1772,7 @@ export type DatabasesFunctionTypes = {
 export {
   createBooleanAttribute,
   createCollection,
+  createCollectionWithSchema,
   createDatabase,
   createDatetimeAttribute,
   createDocument,

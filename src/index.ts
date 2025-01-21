@@ -35,6 +35,7 @@ export {
   // Databases functions
   createBooleanAttribute,
   createCollection,
+  createCollectionWithSchema,
   createDatabase,
   createDatetimeAttribute,
   createDocument,
@@ -124,6 +125,7 @@ export {
   updateEmailVerificationForUserId,
 } from "./methods/users";
 
+// Function Types
 export type { AccountFunctionTypes } from "./methods/account";
 export type { AvatarsFunctionTypes } from "./methods/avatars";
 export type { DatabasesFunctionTypes } from "./methods/databases";
@@ -131,5 +133,9 @@ export type { StorageFunctionTypes } from "./methods/storage";
 export type { TeamsFunctionTypes } from "./methods/teams";
 export type { UsersFunctionTypes } from "./methods/users";
 
-// ApwWrapper Config
-export { host, origin, cookieName };
+export {
+  // ApwWrapper Config
+  host,
+  origin,
+  cookieName,
+};

@@ -1,5 +1,6 @@
 "use server";
-import { ID, OAuthProvider } from "node-appwrite";
+import { ID } from "node-appwrite";
+import { OAuthProvider } from "../enums";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
 import { cookieName, oauthSuccessPath, oauthFailurePath, verificationPath, } from "../appwriteConfig";

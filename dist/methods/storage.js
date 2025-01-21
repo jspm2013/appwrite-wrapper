@@ -1,6 +1,7 @@
 "use server";
 import fs from "fs";
-import { ID, Compression, } from "node-appwrite";
+import { ID } from "node-appwrite";
+import { Compression, } from "../enums";
 import { createAdminClient } from "../appwriteClients";
 const oneMb = 1024 * 1024;
 /**

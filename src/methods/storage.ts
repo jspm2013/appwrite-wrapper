@@ -1,14 +1,13 @@
 "use server";
 
 import fs from "fs";
+import { ID, Models } from "node-appwrite";
 import {
-  ID,
-  Models,
   Compression,
   ImageFormat,
   ImageGravity,
   UploadProgress,
-} from "node-appwrite";
+} from "../enums";
 import { createAdminClient } from "../appwriteClients";
 
 const oneMb: number = 1024 * 1024;

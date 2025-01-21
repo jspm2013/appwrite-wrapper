@@ -1,4 +1,5 @@
-import { Models, Compression, ImageFormat, ImageGravity, UploadProgress } from "node-appwrite";
+import { Models } from "node-appwrite";
+import { Compression, ImageFormat, ImageGravity, UploadProgress } from "../enums";
 /**
  * Parameters for the listFiles function.
  */

@@ -1,5 +1,6 @@
 "use server";
-import { ID, } from "node-appwrite";
+import { ID } from "node-appwrite";
+import { createAttribute, getSchema } from "../collections";
 import { createAdminClient } from "../appwriteClients";
 /**
  * List all databases in the Appwrite project.
@@ -109,6 +110,38 @@ const createCollection = async ({ dbId, collId, name, permissions, documentSecur
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/databases): Error executing createCollection():", err);
+        throw err;
+    }
+};
+/**
+ * Create a new collection in a specific database.
+ * @param params - Parameters for creating the collection.
+ * @returns The created collection details.
+ */
+const createCollectionWithSchema = async ({ dbId, collId, name, permissions, documentSecurity, enabled, idEqualsName = true, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const collList = await databases.listCollections(dbId);
+        let coll = collList.collections.find((collection) => collection.name === name);
+        if (!coll) {
+            const schema = await getSchema(name);
+            const collectionId = collId && collId.trim() !== ""
+                ? collId
+                : idEqualsName
+                    ? name
+                    : ID.unique();
+            coll = await databases.createCollection(dbId, collectionId, name, permissions ?? schema.permissions, documentSecurity ?? schema.documentSecurity, enabled ?? schema.enabled);
+            for (const attr of schema.attributes) {
+                await createAttribute(dbId, collId, attr);
+            }
+            for (const index of schema.indexes) {
+                await databases.createIndex(dbId, collId, index.key, index.type, index.attributes, index.orders);
+            }
+        }
+        return coll;
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/databases): Error executing createCollectionWithSchema():", err);
         throw err;
     }
 };
@@ -671,4 +704,4 @@ const updateRelationshipAttribute = async ({ databaseId, collectionId, key, onDe
 /**
  * Export all created functions.
  */
-export { createBooleanAttribute, createCollection, createDatabase, createDatetimeAttribute, createDocument, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIndex, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, deleteAttribute, deleteCollection, deleteDatabase, deleteDocument, deleteIndex, getAttribute, getCollection, getDatabase, getDocument, getIndex, listAttributes, listCollections, listDatabases, listDocuments, listIndexes, updateBooleanAttribute, updateCollection, updateDatabase, updateDatetimeAttribute, updateDocument, updateEmailAttribute, updateEnumAttribute, updateFloatAttribute, updateIntegerAttribute, updateIpAttribute, updateRelationshipAttribute, updateStringAttribute, updateUrlAttribute, };
+export { createBooleanAttribute, createCollection, createCollectionWithSchema, createDatabase, createDatetimeAttribute, createDocument, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIndex, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, deleteAttribute, deleteCollection, deleteDatabase, deleteDocument, deleteIndex, getAttribute, getCollection, getDatabase, getDocument, getIndex, listAttributes, listCollections, listDatabases, listDocuments, listIndexes, updateBooleanAttribute, updateCollection, updateDatabase, updateDatetimeAttribute, updateDocument, updateEmailAttribute, updateEnumAttribute, updateFloatAttribute, updateIntegerAttribute, updateIpAttribute, updateRelationshipAttribute, updateStringAttribute, updateUrlAttribute, };

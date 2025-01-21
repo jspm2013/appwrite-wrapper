@@ -1,5 +1,5 @@
 import { host, origin } from "./host";
-import { cookieName } from "./appwriteConfig";
+import { cookieName, envCheck } from "./appwriteConfig";
 export { ID, Query } from "node-appwrite";
 export { 
 // Account functions
@@ -21,4 +21,4 @@ export {
 createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, updateEmailVerificationForUserId, } from "./methods/users";
 export { 
 // ApwWrapper Config
-host, origin, cookieName, };
+host, origin, cookieName, envCheck, };

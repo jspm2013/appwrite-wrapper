@@ -1,5 +1,5 @@
 import { host, origin } from "./host";
-import { cookieName } from "./appwriteConfig";
+import { cookieName, envCheck } from "./appwriteConfig";
 export { Models, ID, Query } from "node-appwrite";
 
 export {
@@ -138,4 +138,5 @@ export {
   host,
   origin,
   cookieName,
+  envCheck,
 };

@@ -16,10 +16,10 @@ export const getSchema = async (schema) => {
                 return module;
             }
         }
-        throw new Error("schema object not valid or schema file (.json) not found");
+        throw new Error(`schema object not valid or schema file not found (${schema}.json)`);
     }
     catch (error) {
-        throw new Error(`Error importing schema '${schema}': ${JSON.stringify(error)}`);
+        throw new Error(`Error importing schema '${schema}': ${error.message}`);
     }
 };
 // Type guard to validate the structure of the schema

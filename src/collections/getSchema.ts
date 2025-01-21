@@ -21,11 +21,11 @@ export const getSchema = async (schema: string): Promise<CollectionSchema> => {
         return module;
       }
     }
-    throw new Error("schema object not valid or schema file (.json) not found");
-  } catch (error: any) {
     throw new Error(
-      `Error importing schema '${schema}': ${JSON.stringify(error)}`
+      `schema object not valid or schema file not found (${schema}.json)`
     );
+  } catch (error: any) {
+    throw new Error(`Error importing schema '${schema}': ${error.message}`);
   }
 };
 

@@ -24,6 +24,8 @@ if (!process.env.APPWRITE_API_KEY_SSR) {
   );
 }
 
+export const schemasPath =
+  process.env.APPWRITE_SCHEMAS_PATH || "lib/appwrite/schemas";
 export const i18nPath = process.env.APPWRITE_I18N_PATH || "messages/appwrite";
 export const projectId = process.env.APPWRITE_PROJECT_ID;
 export const endpoint = process.env.APPWRITE_ENDPOINT;

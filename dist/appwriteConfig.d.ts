@@ -1,3 +1,4 @@
+export declare const schemasPath: string;
 export declare const i18nPath: string;
 export declare const projectId: string;
 export declare const endpoint: string;

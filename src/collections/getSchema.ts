@@ -1,15 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { schemasPath } from "../appwriteConfig";
-import { Attribute, Index, CreateRelationshipAttributeParams } from "./types";
-
-interface CollectionSchema {
-  permissions: string[];
-  documentSecurity: boolean;
-  enabled: boolean;
-  attributes: Attribute[] | CreateRelationshipAttributeParams[];
-  indexes: Index[];
-}
+import { CollectionSchema } from "./types";
 
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
 //const SCHEMAS_FOLDER = path.resolve(__dirname, "./CollectionSchemas");

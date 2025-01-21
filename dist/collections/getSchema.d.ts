@@ -1,11 +1,3 @@
-import { Attribute, Index, CreateRelationshipAttributeParams } from "./types";
-interface CollectionSchema {
-    permissions: string[];
-    documentSecurity: boolean;
-    enabled: boolean;
-    attributes: Attribute[] | CreateRelationshipAttributeParams[];
-    indexes: Index[];
-}
+import { CollectionSchema } from "./types";
 export declare const getSchema: (schema: string) => Promise<CollectionSchema>;
-export {};
 //# sourceMappingURL=getSchema.d.ts.map

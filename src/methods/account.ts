@@ -115,11 +115,13 @@ export type GetSessionParams = {
 /**
  * Getting a specific session or the current session.
  */
-const getSession = async (params: GetSessionParams = {}): Promise<void> => {
+const getSession = async (
+  params: GetSessionParams = {}
+): Promise<Models.Session> => {
   const { sessionId = "current" } = params;
   try {
     const { account } = await createSessionClient();
-    await account.getSession(sessionId);
+    return await account.getSession(sessionId);
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/account): Error executing getSession():",
@@ -140,11 +142,11 @@ export type UpdateSessionParams = {
  */
 const updateSession = async (
   params: UpdateSessionParams = {}
-): Promise<void> => {
+): Promise<Models.Session> => {
   const { sessionId = "current" } = params;
   try {
     const { account } = await createSessionClient();
-    await account.updateSession(sessionId);
+    return await account.updateSession(sessionId);
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/account): Error executing updateSession():",

@@ -66,7 +66,7 @@ const getSession = async (params = {}) => {
     const { sessionId = "current" } = params;
     try {
         const { account } = await createSessionClient();
-        await account.getSession(sessionId);
+        return await account.getSession(sessionId);
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/account): Error executing getSession():", err);
@@ -80,7 +80,7 @@ const updateSession = async (params = {}) => {
     const { sessionId = "current" } = params;
     try {
         const { account } = await createSessionClient();
-        await account.updateSession(sessionId);
+        return await account.updateSession(sessionId);
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/account): Error executing updateSession():", err);

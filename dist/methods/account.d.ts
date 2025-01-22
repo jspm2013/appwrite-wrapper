@@ -45,7 +45,7 @@ export type GetSessionParams = {
 /**
  * Getting a specific session or the current session.
  */
-declare const getSession: (params?: GetSessionParams) => Promise<void>;
+declare const getSession: (params?: GetSessionParams) => Promise<Models.Session>;
 /**
  * Parameters for updating a session.
  */
@@ -55,7 +55,7 @@ export type UpdateSessionParams = {
 /**
  * Updates a specific session or the current session.
  */
-declare const updateSession: (params?: UpdateSessionParams) => Promise<void>;
+declare const updateSession: (params?: UpdateSessionParams) => Promise<Models.Session>;
 /**
  * Lists all sessions for the current user.
  */

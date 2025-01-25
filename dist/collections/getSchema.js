@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { schemasPath } from "../appwriteConfig";
+import { createTypeFile } from "./createTypeFile";
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
 export const getSchema = async (schema) => {
     const files = await fs.readdir(SCHEMAS_FOLDER);
@@ -13,6 +14,7 @@ export const getSchema = async (schema) => {
             const filePath = path.join(SCHEMAS_FOLDER, file);
             const module = JSON.parse(await fs.readFile(filePath, "utf-8"));
             if (isCollectionSchema(module) && module.name === schema) {
+                await createTypeFile(module, filePath);
                 return module;
             }
         }

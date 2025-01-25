@@ -1648,6 +1648,7 @@ export type CreateRelationshipAttributeParams = {
   key?: string;
   twoWayKey?: string;
   onDelete?: RelationMutate;
+  required?: boolean;
 };
 /**
  * Create a relationship attribute in a collection.

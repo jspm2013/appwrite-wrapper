@@ -15,7 +15,7 @@ declare const getFlag: ({ code, width, height, quality, }: GetFlagParams) => Pro
 /**
  * Parameters for retrieving an image from a URL, with optional width and height settings.
  */
-export type GetImageFromUrlParams = {
+export type GetImageParams = {
     url: string;
     width?: number;
     height?: number;
@@ -23,11 +23,11 @@ export type GetImageFromUrlParams = {
 /**
  * Retrieves an image from a URL.
  */
-declare const getImageFromUrl: ({ url, width, height, }: GetImageFromUrlParams) => Promise<string>;
+declare const getImage: ({ url, width, height, }: GetImageParams) => Promise<string>;
 /**
  * Parameters for retrieving a QR code as an image, with optional size, margin, and download settings.
  */
-export type GetQrCodeFromStringParams = {
+export type GetQrParams = {
     text: string;
     size?: number;
     margin?: number;
@@ -36,11 +36,11 @@ export type GetQrCodeFromStringParams = {
 /**
  * Retrieves a QR code as an image.
  */
-declare const getQrCodeFromString: ({ text, size, margin, download, }: GetQrCodeFromStringParams) => Promise<string>;
+declare const getQr: ({ text, size, margin, download, }: GetQrParams) => Promise<string>;
 /**
  * Parameters for retrieving user initials as an avatar image, including optional width, height, and background color settings.
  */
-export type GetUserInitialsParams = {
+export type GetInitialsParams = {
     name: string;
     width?: number;
     height?: number;
@@ -49,12 +49,12 @@ export type GetUserInitialsParams = {
 /**
  * Retrieves user initials as an avatar image.
  */
-declare const getUserInitials: ({ name, width, height, background, }: GetUserInitialsParams) => Promise<string>;
+declare const getInitials: ({ name, width, height, background, }: GetInitialsParams) => Promise<string>;
 export type AvatarsFunctionTypes = {
     getFlag: typeof getFlag;
-    getImageFromUrl: typeof getImageFromUrl;
-    getQrCodeFromString: typeof getQrCodeFromString;
-    getUserInitials: typeof getUserInitials;
+    getImage: typeof getImage;
+    getQr: typeof getQr;
+    getInitials: typeof getInitials;
 };
-export { getFlag, getImageFromUrl, getQrCodeFromString, getUserInitials };
+export { getFlag, getImage, getQr, getInitials };
 //# sourceMappingURL=avatars.d.ts.map

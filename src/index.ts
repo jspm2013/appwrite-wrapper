@@ -26,9 +26,9 @@ export {
 export {
   // Avatars functions
   getFlag,
-  getImageFromUrl,
-  getQrCodeFromString,
-  getUserInitials,
+  getImage,
+  getQr,
+  getInitials,
 } from "./methods/avatars";
 
 export {

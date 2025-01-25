@@ -141,6 +141,12 @@ const getVerifiedUser = async () => {
         const { databases } = await createAdminClient();
         const user = await account.get();
         if (user.emailVerification || user.phoneVerification) {
+            const { attributes } = await databases.listAttributes(databaseId, userCollectionId);
+            // Dynamically build the custom attributes type
+            const customUserAttributes = {};
+            attributes.forEach((attr) => {
+                customUserAttributes[attr.key] = attr.default ?? null;
+            });
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", user.$id)]);
             if (total) {
                 return { ...user, ...documents[0] };

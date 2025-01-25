@@ -1,6 +1,12 @@
 import { Models } from "node-appwrite";
 import { OAuthProvider } from "../enums";
 /**
+ * Basic/native appwrite user type + empty custom attributes type.
+ */
+export type UserType = Models.User<Models.Preferences>;
+export type CustomUserAttributes = Record<string, any>;
+export type VerifiedUserType = UserType & CustomUserAttributes;
+/**
  * Parameters for creating an account.
  */
 export type CreateAccountParams = {
@@ -11,7 +17,7 @@ export type CreateAccountParams = {
 /**
  * Creates a new account.
  */
-declare const createAccount: ({ email, password, name, }: CreateAccountParams) => Promise<Models.User<Models.Preferences>>;
+declare const createAccount: ({ email, password, name, }: CreateAccountParams) => Promise<UserType>;
 /**
  * Creates a JWT token.
  */
@@ -67,11 +73,11 @@ declare const deleteSessions: () => Promise<string>;
 /**
  * Retrieves the current user.
  */
-declare const getUser: () => Promise<Models.User<Models.Preferences> | null>;
+declare const getUser: () => Promise<UserType | null>;
 /**
  * Retrieves the current verified user.
  */
-declare const getVerifiedUser: () => Promise<Models.User<Models.Preferences> | null>;
+declare const getVerifiedUser: () => Promise<VerifiedUserType | null>;
 /**
  * Parameters for deleting preferences.
  */

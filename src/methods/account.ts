@@ -17,6 +17,13 @@ import { cookies } from "next/headers";
 import { host } from "../host";
 
 /**
+ * Basic/native appwrite user type + empty custom attributes type.
+ */
+export type UserType = Models.User<Models.Preferences>;
+export type CustomUserAttributes = Record<string, any>;
+export type VerifiedUserType = UserType & CustomUserAttributes;
+
+/**
  * Parameters for creating an account.
  */
 export type CreateAccountParams = {
@@ -31,7 +38,7 @@ const createAccount = async ({
   email,
   password,
   name,
-}: CreateAccountParams): Promise<Models.User<Models.Preferences>> => {
+}: CreateAccountParams): Promise<UserType> => {
   try {
     const { account } = await createSessionClient();
     return await account.create(ID.unique(), email, password, name);
@@ -196,7 +203,7 @@ const deleteSessions = async (): Promise<string> => {
 /**
  * Retrieves the current user.
  */
-const getUser = async (): Promise<Models.User<Models.Preferences> | null> => {
+const getUser = async (): Promise<UserType | null> => {
   try {
     const { account } = await createSessionClient();
     return await account.get();
@@ -213,33 +220,45 @@ const getUser = async (): Promise<Models.User<Models.Preferences> | null> => {
 /**
  * Retrieves the current verified user.
  */
-const getVerifiedUser =
-  async (): Promise<Models.User<Models.Preferences> | null> => {
-    try {
-      const { account } = await createSessionClient();
-      const { databases } = await createAdminClient();
-      const user = await account.get();
-      if (user.emailVerification || user.phoneVerification) {
-        const { total, documents } = await databases.listDocuments(
-          databaseId,
-          userCollectionId,
-          [Query.equal("user_id", user.$id)]
-        );
+const getVerifiedUser = async (): Promise<VerifiedUserType | null> => {
+  try {
+    const { account } = await createSessionClient();
+    const { databases } = await createAdminClient();
 
-        if (total) {
-          return { ...user, ...documents[0] };
-        }
+    const user = await account.get();
+
+    if (user.emailVerification || user.phoneVerification) {
+      const { attributes } = await databases.listAttributes(
+        databaseId,
+        userCollectionId
+      );
+
+      // Dynamically build the custom attributes type
+      const customUserAttributes: CustomUserAttributes = {};
+      attributes.forEach((attr: any) => {
+        customUserAttributes[attr.key] = attr.default ?? null;
+      });
+
+      const { total, documents } = await databases.listDocuments(
+        databaseId,
+        userCollectionId,
+        [Query.equal("user_id", user.$id)]
+      );
+
+      if (total) {
+        return { ...user, ...documents[0] } as VerifiedUserType;
       }
-      return null;
-    } catch (err) {
-      /*
-       * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
-       */
-      return null;
-      //console.error("APW-WRAPPER - Error (methods/account): Error executing getVerifiedUser():", err);
-      //throw err;
     }
-  };
+    return null;
+  } catch (err) {
+    /*
+     * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
+     */
+    return null;
+    //console.error("APW-WRAPPER - Error (methods/account): Error executing getVerifiedUser():", err);
+    //throw err;
+  }
+};
 
 /**
  * Parameters for deleting preferences.

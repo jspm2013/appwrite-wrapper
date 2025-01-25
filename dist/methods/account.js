@@ -3,7 +3,7 @@ import { ID } from "node-appwrite";
 import { OAuthProvider } from "../enums";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
-import { cookieName, oauthSuccessPath, oauthFailurePath, verificationPath, } from "../appwriteConfig";
+import { cookieName, oauthSuccessPath, oauthFailurePath, verificationPath, signInPath, } from "../appwriteConfig";
 import { cookies } from "next/headers";
 import { host } from "../host";
 /**
@@ -53,6 +53,7 @@ const deleteSession = async (params = {}) => {
     try {
         const { account } = await createSessionClient();
         await account.deleteSession(sessionId);
+        return signInPath;
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/account): Error executing deleteSession():", err);
@@ -107,6 +108,7 @@ const deleteSessions = async () => {
     try {
         const { account } = await createSessionClient();
         await account.deleteSessions();
+        return signInPath;
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/account): Error executing deleteSessions():", err);

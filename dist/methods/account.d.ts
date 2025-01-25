@@ -35,7 +35,7 @@ export type DeleteSessionParams = {
 /**
  * Deletes a specific session or the current session.
  */
-declare const deleteSession: (params?: DeleteSessionParams) => Promise<void>;
+declare const deleteSession: (params?: DeleteSessionParams) => Promise<string>;
 /**
  * Parameters for getting a session.
  */
@@ -63,7 +63,7 @@ declare const listSessions: () => Promise<Models.SessionList>;
 /**
  * Deletes all sessions for the current user.
  */
-declare const deleteSessions: () => Promise<void>;
+declare const deleteSessions: () => Promise<string>;
 /**
  * Retrieves the current user.
  */

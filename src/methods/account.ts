@@ -9,6 +9,7 @@ import {
   oauthSuccessPath,
   oauthFailurePath,
   verificationPath,
+  signInPath,
 } from "../appwriteConfig";
 import { cookies } from "next/headers";
 import { host } from "../host";
@@ -92,11 +93,12 @@ export type DeleteSessionParams = {
  */
 const deleteSession = async (
   params: DeleteSessionParams = {}
-): Promise<void> => {
+): Promise<string> => {
   const { sessionId = "current" } = params;
   try {
     const { account } = await createSessionClient();
     await account.deleteSession(sessionId);
+    return signInPath;
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/account): Error executing deleteSession():",
@@ -175,10 +177,11 @@ const listSessions = async (): Promise<Models.SessionList> => {
 /**
  * Deletes all sessions for the current user.
  */
-const deleteSessions = async (): Promise<void> => {
+const deleteSessions = async (): Promise<string> => {
   try {
     const { account } = await createSessionClient();
     await account.deleteSessions();
+    return signInPath;
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/account): Error executing deleteSessions():",

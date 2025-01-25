@@ -8,6 +8,8 @@ const appDomain = process.env.APP_DOMAIN;
 const endpoint = process.env.APPWRITE_ENDPOINT;
 const projectId = process.env.APPWRITE_PROJECT_ID;
 const apiKeySsr = process.env.APPWRITE_API_KEY_SSR;
+const databaseId = process.env.APPWRITE_DB_ID || "";
+const userCollectionId = process.env.APPWRITE_USER_COLL_ID || "";
 const liveEnvVarName = process.env.APPWRITE_LIVE_ENV_VAR_NAME;
 
 /*
@@ -54,6 +56,16 @@ const envCheck = () => {
       "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_API_KEY_SSR"
     );
   }
+  if (!process.env.APPWRITE_DB_ID) {
+    throw new Error(
+      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_DB_ID"
+    );
+  }
+  if (!process.env.APPWRITE_USER_COLL_ID) {
+    throw new Error(
+      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_USER_COLL_ID"
+    );
+  }
   if (!process.env.APPWRITE_LIVE_ENV_VAR_NAME) {
     throw new Error(
       "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_LIVE_ENV_VAR_NAME"
@@ -63,18 +75,20 @@ const envCheck = () => {
 
 export {
   envCheck,
-  appDomain,
-  endpoint,
-  projectId,
   apiKeySsr,
-  liveEnvVarName,
-  port,
-  schemasPath,
-  i18nPath,
-  signInPath,
-  oauthSuccessPath,
-  oauthFailurePath,
-  verificationPath,
+  appDomain,
   cookiePrefix,
   cookieName,
+  databaseId,
+  endpoint,
+  i18nPath,
+  liveEnvVarName,
+  oauthSuccessPath,
+  oauthFailurePath,
+  projectId,
+  port,
+  schemasPath,
+  signInPath,
+  userCollectionId,
+  verificationPath,
 };

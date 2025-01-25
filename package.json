@@ -1,6 +1,6 @@
 {
   "name": "@jspm2013/appwrite-wrapper",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Wrapper library to handle Appwrite methods including server handling using SSR with NextJS v15 (useActionState...)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -135,20 +135,22 @@ export type { UsersFunctionTypes } from "./methods/users";
 export {
   // ApwWrapper Config
   envCheck,
-  appDomain,
-  endpoint,
-  projectId,
   apiKeySsr,
-  liveEnvVarName,
-  port,
-  schemasPath,
-  i18nPath,
-  signInPath,
-  oauthSuccessPath,
-  oauthFailurePath,
-  verificationPath,
+  appDomain,
   cookiePrefix,
   cookieName,
+  databaseId,
+  endpoint,
+  i18nPath,
+  liveEnvVarName,
+  oauthSuccessPath,
+  oauthFailurePath,
+  projectId,
+  port,
+  schemasPath,
+  signInPath,
+  userCollectionId,
+  verificationPath,
 } from "./appwriteConfig";
 
 export { host, origin };

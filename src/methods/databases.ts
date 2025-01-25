@@ -4,6 +4,7 @@ import { ID, Models } from "node-appwrite";
 import { createAttribute, getSchema } from "../collections";
 import { RelationshipType, RelationMutate, IndexType } from "../enums";
 import { createAdminClient } from "../appwriteClients";
+import { databaseId, userCollectionId } from "../appwriteConfig";
 
 /**
  * Parameters for the listDatabases function.
@@ -38,7 +39,7 @@ const listDatabases = async ({
  * Parameters for the createDatabase function.
  */
 export type CreateDatabaseParams = {
-  dbId: string;
+  dbId?: string;
   name: string;
   enabled?: boolean;
 };
@@ -48,7 +49,7 @@ export type CreateDatabaseParams = {
  * @returns The created database details.
  */
 const createDatabase = async ({
-  dbId,
+  dbId = databaseId,
   name,
   enabled,
 }: CreateDatabaseParams): Promise<Models.Database> => {
@@ -77,7 +78,7 @@ export type GetDatabaseParams = {
  * @returns The database details.
  */
 const getDatabase = async ({
-  dbId,
+  dbId = databaseId,
 }: GetDatabaseParams): Promise<Models.Database> => {
   try {
     const { databases } = await createAdminClient();
@@ -153,7 +154,7 @@ const deleteDatabase = async ({
  * Parameters for the listCollections function.
  */
 export type ListCollectionsParams = {
-  dbId: string;
+  dbId?: string;
   queries?: string[];
   search?: string;
 };
@@ -163,7 +164,7 @@ export type ListCollectionsParams = {
  * @returns The list of collections.
  */
 const listCollections = async ({
-  dbId,
+  dbId = databaseId,
   queries = [],
   search,
 }: ListCollectionsParams): Promise<Models.CollectionList> => {
@@ -184,8 +185,8 @@ const listCollections = async ({
  * Parameters for the createCollection function.
  */
 export type CreateCollectionParams = {
-  dbId: string;
-  collId: string;
+  dbId?: string;
+  collId?: string;
   name: string;
   permissions?: string[];
   documentSecurity?: boolean;
@@ -197,8 +198,8 @@ export type CreateCollectionParams = {
  * @returns The created collection details.
  */
 const createCollection = async ({
-  dbId,
-  collId,
+  dbId = databaseId,
+  collId = userCollectionId,
   name,
   permissions,
   documentSecurity,
@@ -228,7 +229,7 @@ const createCollection = async ({
  * Parameters for the createCollectionWithSchema function.
  */
 type CommonParams = {
-  dbId: string;
+  dbId?: string;
   name: string;
   permissions?: string[];
   documentSecurity?: boolean;
@@ -236,10 +237,10 @@ type CommonParams = {
 };
 type WithCollId = CommonParams & {
   collId: string;
-  nameAsId?: never;
+  nameAsId: never;
 };
 type WithoutCollId = CommonParams & {
-  collId?: never;
+  collId: never;
   nameAsId: boolean;
 };
 export type CreateCollectionWithSchemaParams = WithCollId | WithoutCollId;
@@ -249,7 +250,7 @@ export type CreateCollectionWithSchemaParams = WithCollId | WithoutCollId;
  * @returns The created collection details.
  */
 const createCollectionWithSchema = async ({
-  dbId,
+  dbId = databaseId,
   collId,
   name,
   permissions,
@@ -309,8 +310,8 @@ const createCollectionWithSchema = async ({
  * Parameters for the getCollection function.
  */
 export type GetCollectionParams = {
-  dbId: string;
-  collId: string;
+  dbId?: string;
+  collId?: string;
 };
 /**
  * Get details of a specific collection by its ID.
@@ -318,8 +319,8 @@ export type GetCollectionParams = {
  * @returns The collection details.
  */
 const getCollection = async ({
-  dbId,
-  collId,
+  dbId = databaseId,
+  collId = userCollectionId,
 }: GetCollectionParams): Promise<Models.Collection> => {
   try {
     const { databases } = await createAdminClient();
@@ -410,8 +411,8 @@ const deleteCollection = async ({
  * Parameters for the listDocuments function.
  */
 export type ListDocumentsParams = {
-  dbId: string;
-  collId: string;
+  dbId?: string;
+  collId?: string;
   queries?: string[];
 };
 /**
@@ -420,8 +421,8 @@ export type ListDocumentsParams = {
  * @returns The list of documents.
  */
 const listDocuments = async ({
-  dbId,
-  collId,
+  dbId = databaseId,
+  collId = userCollectionId,
   queries = [],
 }: ListDocumentsParams): Promise<Models.DocumentList<Models.Document>> => {
   try {
@@ -441,8 +442,8 @@ const listDocuments = async ({
  * Parameters for the createDocument function.
  */
 export type CreateDocumentParams = {
-  dbId: string;
-  collId: string;
+  dbId?: string;
+  collId?: string;
   documentId?: string;
   data: Record<string, any>;
   permissions?: string[];
@@ -453,8 +454,8 @@ export type CreateDocumentParams = {
  * @returns The created document details.
  */
 const createDocument = async ({
-  dbId,
-  collId,
+  dbId = databaseId,
+  collId = userCollectionId,
   documentId = ID.unique(),
   data,
   permissions,
@@ -482,8 +483,8 @@ const createDocument = async ({
  * Parameters for the getDocument function.
  */
 export type GetDocumentParams = {
-  dbId: string;
-  collId: string;
+  dbId?: string;
+  collId?: string;
   documentId: string;
 };
 /**
@@ -492,8 +493,8 @@ export type GetDocumentParams = {
  * @returns The document details.
  */
 const getDocument = async ({
-  dbId,
-  collId,
+  dbId = databaseId,
+  collId = userCollectionId,
   documentId,
 }: GetDocumentParams): Promise<Models.Document> => {
   try {
@@ -584,8 +585,8 @@ const deleteDocument = async ({
  * Parameters for the listIndexes function.
  */
 export type ListIndexesParams = {
-  dbId: string;
-  collId: string;
+  dbId?: string;
+  collId?: string;
 };
 /**
  * List all indexes in a specific collection.
@@ -593,8 +594,8 @@ export type ListIndexesParams = {
  * @returns The list of indexes.
  */
 const listIndexes = async ({
-  dbId,
-  collId,
+  dbId = databaseId,
+  collId = userCollectionId,
 }: ListIndexesParams): Promise<Models.IndexList> => {
   try {
     const { databases } = await createAdminClient();
@@ -613,8 +614,8 @@ const listIndexes = async ({
  * Parameters for the createIndex function.
  */
 export type CreateIndexParams = {
-  dbId: string;
-  collId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
   type: IndexType;
   attributes: string[];
@@ -626,8 +627,8 @@ export type CreateIndexParams = {
  * @returns The created index details.
  */
 const createIndex = async ({
-  dbId,
-  collId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
   type,
   attributes,
@@ -657,8 +658,8 @@ const createIndex = async ({
  * Parameters for the getIndex function.
  */
 export type GetIndexParams = {
-  dbId: string;
-  collId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
 };
 /**
@@ -667,8 +668,8 @@ export type GetIndexParams = {
  * @returns The index details.
  */
 const getIndex = async ({
-  dbId,
-  collId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
 }: GetIndexParams): Promise<Models.Index> => {
   try {

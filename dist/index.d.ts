@@ -12,6 +12,6 @@ export type { DatabasesFunctionTypes } from "./methods/databases";
 export type { StorageFunctionTypes } from "./methods/storage";
 export type { TeamsFunctionTypes } from "./methods/teams";
 export type { UsersFunctionTypes } from "./methods/users";
-export { envCheck, appDomain, endpoint, projectId, apiKeySsr, liveEnvVarName, port, schemasPath, i18nPath, signInPath, oauthSuccessPath, oauthFailurePath, verificationPath, cookiePrefix, cookieName, } from "./appwriteConfig";
+export { envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, schemasPath, signInPath, userCollectionId, verificationPath, } from "./appwriteConfig";
 export { host, origin };
 //# sourceMappingURL=index.d.ts.map

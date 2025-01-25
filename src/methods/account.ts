@@ -1,6 +1,6 @@
 "use server";
 
-import { ID, Models } from "node-appwrite";
+import { ID, Models, Query } from "node-appwrite";
 import { OAuthProvider } from "../enums";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
@@ -10,6 +10,8 @@ import {
   oauthFailurePath,
   verificationPath,
   signInPath,
+  databaseId,
+  userCollectionId,
 } from "../appwriteConfig";
 import { cookies } from "next/headers";
 import { host } from "../host";
@@ -215,9 +217,18 @@ const getVerifiedUser =
   async (): Promise<Models.User<Models.Preferences> | null> => {
     try {
       const { account } = await createSessionClient();
+      const { databases } = await createAdminClient();
       const user = await account.get();
-      if (user.emailVerification) {
-        return user;
+      if (user.emailVerification || user.phoneVerification) {
+        const { total, documents } = await databases.listDocuments(
+          databaseId,
+          userCollectionId,
+          [Query.equal("user_id", user.$id)]
+        );
+
+        if (total) {
+          return { ...user, ...documents[0] };
+        }
       }
       return null;
     } catch (err) {

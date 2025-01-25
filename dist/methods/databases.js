@@ -2,6 +2,7 @@
 import { ID } from "node-appwrite";
 import { createAttribute, getSchema } from "../collections";
 import { createAdminClient } from "../appwriteClients";
+import { databaseId, userCollectionId } from "../appwriteConfig";
 /**
  * List all databases in the Appwrite project.
  * @param params - Parameters for listing the databases.
@@ -23,7 +24,7 @@ const listDatabases = async ({ queries = [], search = undefined, }) => {
  * @param params - Parameters for creating the database.
  * @returns The created database details.
  */
-const createDatabase = async ({ dbId, name, enabled, }) => {
+const createDatabase = async ({ dbId = databaseId, name, enabled, }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.create(dbId, name, enabled);
@@ -39,7 +40,7 @@ const createDatabase = async ({ dbId, name, enabled, }) => {
  * @param params - Parameters for getting the database.
  * @returns The database details.
  */
-const getDatabase = async ({ dbId, }) => {
+const getDatabase = async ({ dbId = databaseId, }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.get(dbId);
@@ -86,7 +87,7 @@ const deleteDatabase = async ({ dbId, }) => {
  * @param params - Parameters for listing the collections.
  * @returns The list of collections.
  */
-const listCollections = async ({ dbId, queries = [], search, }) => {
+const listCollections = async ({ dbId = databaseId, queries = [], search, }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.listCollections(dbId, queries, search);
@@ -102,7 +103,7 @@ const listCollections = async ({ dbId, queries = [], search, }) => {
  * @param params - Parameters for creating the collection.
  * @returns The created collection details.
  */
-const createCollection = async ({ dbId, collId, name, permissions, documentSecurity, enabled, }) => {
+const createCollection = async ({ dbId = databaseId, collId = userCollectionId, name, permissions, documentSecurity, enabled, }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.createCollection(dbId, collId, name, permissions, documentSecurity, enabled);
@@ -118,7 +119,7 @@ const createCollection = async ({ dbId, collId, name, permissions, documentSecur
  * @param params - Parameters for creating the collection.
  * @returns The created collection details.
  */
-const createCollectionWithSchema = async ({ dbId, collId, name, permissions, documentSecurity, enabled, nameAsId, }) => {
+const createCollectionWithSchema = async ({ dbId = databaseId, collId, name, permissions, documentSecurity, enabled, nameAsId, }) => {
     try {
         const { databases } = await createAdminClient();
         const collList = await databases.listCollections(dbId);
@@ -146,7 +147,7 @@ const createCollectionWithSchema = async ({ dbId, collId, name, permissions, doc
  * @param params - Parameters for getting the collection.
  * @returns The collection details.
  */
-const getCollection = async ({ dbId, collId, }) => {
+const getCollection = async ({ dbId = databaseId, collId = userCollectionId, }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.getCollection(dbId, collId);
@@ -193,7 +194,7 @@ const deleteCollection = async ({ dbId, collId, }) => {
  * @param params - Parameters for listing the documents.
  * @returns The list of documents.
  */
-const listDocuments = async ({ dbId, collId, queries = [], }) => {
+const listDocuments = async ({ dbId = databaseId, collId = userCollectionId, queries = [], }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.listDocuments(dbId, collId, queries);
@@ -209,7 +210,7 @@ const listDocuments = async ({ dbId, collId, queries = [], }) => {
  * @param params - Parameters for creating the document.
  * @returns The created document details.
  */
-const createDocument = async ({ dbId, collId, documentId = ID.unique(), data, permissions, }) => {
+const createDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId = ID.unique(), data, permissions, }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.createDocument(dbId, collId, documentId, data, permissions);
@@ -225,7 +226,7 @@ const createDocument = async ({ dbId, collId, documentId = ID.unique(), data, pe
  * @param params - Parameters for getting the document.
  * @returns The document details.
  */
-const getDocument = async ({ dbId, collId, documentId, }) => {
+const getDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId, }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.getDocument(dbId, collId, documentId);
@@ -272,7 +273,7 @@ const deleteDocument = async ({ dbId, collId, documentId, }) => {
  * @param params - Parameters for listing the indexes.
  * @returns The list of indexes.
  */
-const listIndexes = async ({ dbId, collId, }) => {
+const listIndexes = async ({ dbId = databaseId, collId = userCollectionId, }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.listIndexes(dbId, collId);
@@ -288,7 +289,7 @@ const listIndexes = async ({ dbId, collId, }) => {
  * @param params - Parameters for creating the index.
  * @returns The created index details.
  */
-const createIndex = async ({ dbId, collId, key, type, attributes, orders, }) => {
+const createIndex = async ({ dbId = databaseId, collId = userCollectionId, key, type, attributes, orders, }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.createIndex(dbId, collId, key, type, attributes, orders);
@@ -304,7 +305,7 @@ const createIndex = async ({ dbId, collId, key, type, attributes, orders, }) => 
  * @param params - Parameters for getting the index.
  * @returns The index details.
  */
-const getIndex = async ({ dbId, collId, key, }) => {
+const getIndex = async ({ dbId = databaseId, collId = userCollectionId, key, }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.getIndex(dbId, collId, key);

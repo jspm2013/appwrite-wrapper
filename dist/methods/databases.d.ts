@@ -17,7 +17,7 @@ declare const listDatabases: ({ queries, search, }: ListDatabasesParams) => Prom
  * Parameters for the createDatabase function.
  */
 export type CreateDatabaseParams = {
-    dbId: string;
+    dbId?: string;
     name: string;
     enabled?: boolean;
 };
@@ -69,7 +69,7 @@ declare const deleteDatabase: ({ dbId, }: DeleteDatabaseParams) => Promise<void>
  * Parameters for the listCollections function.
  */
 export type ListCollectionsParams = {
-    dbId: string;
+    dbId?: string;
     queries?: string[];
     search?: string;
 };
@@ -83,8 +83,8 @@ declare const listCollections: ({ dbId, queries, search, }: ListCollectionsParam
  * Parameters for the createCollection function.
  */
 export type CreateCollectionParams = {
-    dbId: string;
-    collId: string;
+    dbId?: string;
+    collId?: string;
     name: string;
     permissions?: string[];
     documentSecurity?: boolean;
@@ -100,7 +100,7 @@ declare const createCollection: ({ dbId, collId, name, permissions, documentSecu
  * Parameters for the createCollectionWithSchema function.
  */
 type CommonParams = {
-    dbId: string;
+    dbId?: string;
     name: string;
     permissions?: string[];
     documentSecurity?: boolean;
@@ -108,10 +108,10 @@ type CommonParams = {
 };
 type WithCollId = CommonParams & {
     collId: string;
-    nameAsId?: never;
+    nameAsId: never;
 };
 type WithoutCollId = CommonParams & {
-    collId?: never;
+    collId: never;
     nameAsId: boolean;
 };
 export type CreateCollectionWithSchemaParams = WithCollId | WithoutCollId;
@@ -125,8 +125,8 @@ declare const createCollectionWithSchema: ({ dbId, collId, name, permissions, do
  * Parameters for the getCollection function.
  */
 export type GetCollectionParams = {
-    dbId: string;
-    collId: string;
+    dbId?: string;
+    collId?: string;
 };
 /**
  * Get details of a specific collection by its ID.
@@ -168,8 +168,8 @@ declare const deleteCollection: ({ dbId, collId, }: DeleteCollectionParams) => P
  * Parameters for the listDocuments function.
  */
 export type ListDocumentsParams = {
-    dbId: string;
-    collId: string;
+    dbId?: string;
+    collId?: string;
     queries?: string[];
 };
 /**
@@ -182,8 +182,8 @@ declare const listDocuments: ({ dbId, collId, queries, }: ListDocumentsParams) =
  * Parameters for the createDocument function.
  */
 export type CreateDocumentParams = {
-    dbId: string;
-    collId: string;
+    dbId?: string;
+    collId?: string;
     documentId?: string;
     data: Record<string, any>;
     permissions?: string[];
@@ -198,8 +198,8 @@ declare const createDocument: ({ dbId, collId, documentId, data, permissions, }:
  * Parameters for the getDocument function.
  */
 export type GetDocumentParams = {
-    dbId: string;
-    collId: string;
+    dbId?: string;
+    collId?: string;
     documentId: string;
 };
 /**
@@ -242,8 +242,8 @@ declare const deleteDocument: ({ dbId, collId, documentId, }: DeleteDocumentPara
  * Parameters for the listIndexes function.
  */
 export type ListIndexesParams = {
-    dbId: string;
-    collId: string;
+    dbId?: string;
+    collId?: string;
 };
 /**
  * List all indexes in a specific collection.
@@ -255,8 +255,8 @@ declare const listIndexes: ({ dbId, collId, }: ListIndexesParams) => Promise<Mod
  * Parameters for the createIndex function.
  */
 export type CreateIndexParams = {
-    dbId: string;
-    collId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
     type: IndexType;
     attributes: string[];
@@ -272,8 +272,8 @@ declare const createIndex: ({ dbId, collId, key, type, attributes, orders, }: Cr
  * Parameters for the getIndex function.
  */
 export type GetIndexParams = {
-    dbId: string;
-    collId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
 };
 /**

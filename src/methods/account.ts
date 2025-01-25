@@ -21,7 +21,9 @@ import { host } from "../host";
  */
 export type UserType = Models.User<Models.Preferences>;
 export type CustomUserAttributes = Record<string, any>;
-export type VerifiedUserType = UserType & CustomUserAttributes;
+export type VerifiedUserType = UserType & {
+  customUser?: CustomUserAttributes;
+};
 
 /**
  * Parameters for creating an account.
@@ -233,12 +235,6 @@ const getVerifiedUser = async (): Promise<VerifiedUserType | null> => {
         userCollectionId
       );
 
-      // Dynamically build the custom attributes type
-      const customUserAttributes: CustomUserAttributes = {};
-      attributes.forEach((attr: any) => {
-        customUserAttributes[attr.key] = attr.default ?? null;
-      });
-
       const { total, documents } = await databases.listDocuments(
         databaseId,
         userCollectionId,
@@ -246,7 +242,14 @@ const getVerifiedUser = async (): Promise<VerifiedUserType | null> => {
       );
 
       if (total) {
-        return { ...user, ...documents[0] } as VerifiedUserType;
+        // Dynamically build the custom attributes type
+        let customUserAttributes: CustomUserAttributes = {};
+        attributes.forEach((attr: any) => {
+          customUserAttributes[attr.key] = attr.default ?? null;
+        });
+
+        // Return verified user, enriched for the custom attributes
+        return { ...user, customUser: documents[0] } as VerifiedUserType;
       }
     }
     return null;

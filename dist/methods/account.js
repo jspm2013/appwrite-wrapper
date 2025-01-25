@@ -142,14 +142,15 @@ const getVerifiedUser = async () => {
         const user = await account.get();
         if (user.emailVerification || user.phoneVerification) {
             const { attributes } = await databases.listAttributes(databaseId, userCollectionId);
-            // Dynamically build the custom attributes type
-            const customUserAttributes = {};
-            attributes.forEach((attr) => {
-                customUserAttributes[attr.key] = attr.default ?? null;
-            });
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", user.$id)]);
             if (total) {
-                return { ...user, ...documents[0] };
+                // Dynamically build the custom attributes type
+                let customUserAttributes = {};
+                attributes.forEach((attr) => {
+                    customUserAttributes[attr.key] = attr.default ?? null;
+                });
+                // Return verified user, enriched for the custom attributes
+                return { ...user, customUser: documents[0] };
             }
         }
         return null;

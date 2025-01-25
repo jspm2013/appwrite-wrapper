@@ -237,10 +237,10 @@ type CommonParams = {
 };
 type WithCollId = CommonParams & {
   collId: string;
-  nameAsId: never;
+  nameAsId?: never;
 };
 type WithoutCollId = CommonParams & {
-  collId: never;
+  collId?: never;
   nameAsId: boolean;
 };
 export type CreateCollectionWithSchemaParams = WithCollId | WithoutCollId;

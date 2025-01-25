@@ -22,7 +22,7 @@ import { host } from "../host";
 export type UserType = Models.User<Models.Preferences>;
 export type CustomUserAttributes = Record<string, any>;
 export type VerifiedUserType = UserType & {
-  customUser?: CustomUserAttributes;
+  customUser: CustomUserAttributes;
 };
 
 /**

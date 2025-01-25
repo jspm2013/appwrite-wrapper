@@ -6,7 +6,7 @@ import { OAuthProvider } from "../enums";
 export type UserType = Models.User<Models.Preferences>;
 export type CustomUserAttributes = Record<string, any>;
 export type VerifiedUserType = UserType & {
-    customUser?: CustomUserAttributes;
+    customUser: CustomUserAttributes;
 };
 /**
  * Parameters for creating an account.

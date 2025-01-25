@@ -20,10 +20,11 @@ export const port = process.env.PORT || 3000;
 export const schemasPath =
   process.env.APPWRITE_SCHEMAS_PATH || "lib/appwrite/schemas";
 export const i18nPath = process.env.APPWRITE_I18N_PATH || "messages/appwrite";
+export const signInPath = process.env.APPWRITE_SIGN_IN_PATH || "sign-in";
 export const oauthSuccessPath =
   process.env.APPWRITE_OAUTH_SUCCESS_PATH || "api/oauth";
 export const oauthFailurePath =
-  process.env.APPWRITE_OAUTH_FAILURE_PATH || "sign-in";
+  process.env.APPWRITE_OAUTH_FAILURE_PATH || signInPath;
 export const verificationPath =
   process.env.APPWRITE_VERIFICATION_PATH || "verification";
 export const cookiePrefix =

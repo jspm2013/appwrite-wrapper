@@ -300,21 +300,21 @@ declare const deleteIndex: ({ dbId, collId, key, }: DeleteIndexParams) => Promis
  * Parameters for the listAttributes function.
  */
 export type ListAttributesParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
 };
 /**
  * List all attributes in a specific collection.
  * @param params - Parameters for listing the attributes.
  * @returns The list of attributes.
  */
-declare const listAttributes: ({ databaseId, collectionId, }: ListAttributesParams) => Promise<any>;
+declare const listAttributes: ({ dbId, collId, }: ListAttributesParams) => Promise<any>;
 /**
  * Parameters for the createBooleanAttribute function.
  */
 export type CreateBooleanAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
     required: boolean;
     xdefault?: boolean;
@@ -325,13 +325,13 @@ export type CreateBooleanAttributeParams = {
  * @param params - Parameters for creating the boolean attribute.
  * @returns The created attribute details.
  */
-declare const createBooleanAttribute: ({ databaseId, collectionId, key, required, xdefault, xarray, }: CreateBooleanAttributeParams) => Promise<any>;
+declare const createBooleanAttribute: ({ dbId, collId, key, required, xdefault, xarray, }: CreateBooleanAttributeParams) => Promise<any>;
 /**
  * Parameters for the updateBooleanAttribute function.
  */
 export type UpdateBooleanAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId: string;
+    collId: string;
     key: string;
     required: boolean;
     xdefault?: boolean;
@@ -342,13 +342,13 @@ export type UpdateBooleanAttributeParams = {
  * @param params - Parameters for updating the boolean attribute.
  * @returns The updated attribute details.
  */
-declare const updateBooleanAttribute: ({ databaseId, collectionId, key, required, xdefault, newKey, }: UpdateBooleanAttributeParams) => Promise<any>;
+declare const updateBooleanAttribute: ({ dbId, collId, key, required, xdefault, newKey, }: UpdateBooleanAttributeParams) => Promise<any>;
 /**
  * Parameters for the createDatetimeAttribute function.
  */
 export type CreateDatetimeAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
     required: boolean;
     xdefault?: string;
@@ -359,13 +359,13 @@ export type CreateDatetimeAttributeParams = {
  * @param params - Parameters for creating the datetime attribute.
  * @returns The created attribute details.
  */
-declare const createDatetimeAttribute: ({ databaseId, collectionId, key, required, xdefault, xarray, }: CreateDatetimeAttributeParams) => Promise<any>;
+declare const createDatetimeAttribute: ({ dbId, collId, key, required, xdefault, xarray, }: CreateDatetimeAttributeParams) => Promise<any>;
 /**
  * Parameters for the updateDatetimeAttribute function.
  */
 export type UpdateDatetimeAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId: string;
+    collId: string;
     key: string;
     required: boolean;
     xdefault?: string;
@@ -376,13 +376,13 @@ export type UpdateDatetimeAttributeParams = {
  * @param params - Parameters for updating the datetime attribute.
  * @returns The updated attribute details.
  */
-declare const updateDatetimeAttribute: ({ databaseId, collectionId, key, required, xdefault, newKey, }: UpdateDatetimeAttributeParams) => Promise<any>;
+declare const updateDatetimeAttribute: ({ dbId, collId, key, required, xdefault, newKey, }: UpdateDatetimeAttributeParams) => Promise<any>;
 /**
  * Parameters for the createEmailAttribute function.
  */
 export type CreateEmailAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
     required: boolean;
     xdefault?: string;
@@ -393,13 +393,13 @@ export type CreateEmailAttributeParams = {
  * @param params - Parameters for creating the email attribute.
  * @returns The created attribute details.
  */
-declare const createEmailAttribute: ({ databaseId, collectionId, key, required, xdefault, xarray, }: CreateEmailAttributeParams) => Promise<any>;
+declare const createEmailAttribute: ({ dbId, collId, key, required, xdefault, xarray, }: CreateEmailAttributeParams) => Promise<any>;
 /**
  * Parameters for the updateEmailAttribute function.
  */
 export type UpdateEmailAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId: string;
+    collId: string;
     key: string;
     required: boolean;
     xdefault?: string;
@@ -410,13 +410,13 @@ export type UpdateEmailAttributeParams = {
  * @param params - Parameters for updating the email attribute.
  * @returns The updated attribute details.
  */
-declare const updateEmailAttribute: ({ databaseId, collectionId, key, required, xdefault, newKey, }: UpdateEmailAttributeParams) => Promise<any>;
+declare const updateEmailAttribute: ({ dbId, collId, key, required, xdefault, newKey, }: UpdateEmailAttributeParams) => Promise<any>;
 /**
  * Parameters for the createEnumAttribute function.
  */
 export type CreateEnumAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
     elements: string[];
     required: boolean;
@@ -428,13 +428,13 @@ export type CreateEnumAttributeParams = {
  * @param params - Parameters for creating the enum attribute.
  * @returns The created attribute details.
  */
-declare const createEnumAttribute: ({ databaseId, collectionId, key, elements, required, xdefault, xarray, }: CreateEnumAttributeParams) => Promise<any>;
+declare const createEnumAttribute: ({ dbId, collId, key, elements, required, xdefault, xarray, }: CreateEnumAttributeParams) => Promise<any>;
 /**
  * Parameters for the updateEnumAttribute function.
  */
 export type UpdateEnumAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId: string;
+    collId: string;
     key: string;
     elements: string[];
     required: boolean;
@@ -446,13 +446,13 @@ export type UpdateEnumAttributeParams = {
  * @param params - Parameters for updating the enum attribute.
  * @returns The updated attribute details.
  */
-declare const updateEnumAttribute: ({ databaseId, collectionId, key, elements, required, xdefault, newKey, }: UpdateEnumAttributeParams) => Promise<any>;
+declare const updateEnumAttribute: ({ dbId, collId, key, elements, required, xdefault, newKey, }: UpdateEnumAttributeParams) => Promise<any>;
 /**
  * Parameters for the createFloatAttribute function.
  */
 export type CreateFloatAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
     required: boolean;
     min?: number;
@@ -465,13 +465,13 @@ export type CreateFloatAttributeParams = {
  * @param params - Parameters for creating the float attribute.
  * @returns The created attribute details.
  */
-declare const createFloatAttribute: ({ databaseId, collectionId, key, required, min, max, xdefault, xarray, }: CreateFloatAttributeParams) => Promise<any>;
+declare const createFloatAttribute: ({ dbId, collId, key, required, min, max, xdefault, xarray, }: CreateFloatAttributeParams) => Promise<any>;
 /**
  * Parameters for the updateFloatAttribute function.
  */
 export type UpdateFloatAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId: string;
+    collId: string;
     key: string;
     required: boolean;
     min: number;
@@ -484,13 +484,13 @@ export type UpdateFloatAttributeParams = {
  * @param params - Parameters for updating the float attribute.
  * @returns The updated attribute details.
  */
-declare const updateFloatAttribute: ({ databaseId, collectionId, key, required, min, max, xdefault, newKey, }: UpdateFloatAttributeParams) => Promise<any>;
+declare const updateFloatAttribute: ({ dbId, collId, key, required, min, max, xdefault, newKey, }: UpdateFloatAttributeParams) => Promise<any>;
 /**
  * Parameters for the createIntegerAttribute function.
  */
 export type CreateIntegerAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
     required: boolean;
     min?: number;
@@ -503,13 +503,13 @@ export type CreateIntegerAttributeParams = {
  * @param params - Parameters for creating the integer attribute.
  * @returns The created attribute details.
  */
-declare const createIntegerAttribute: ({ databaseId, collectionId, key, required, min, max, xdefault, xarray, }: CreateIntegerAttributeParams) => Promise<any>;
+declare const createIntegerAttribute: ({ dbId, collId, key, required, min, max, xdefault, xarray, }: CreateIntegerAttributeParams) => Promise<any>;
 /**
  * Parameters for the updateIntegerAttribute function.
  */
 export type UpdateIntegerAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId: string;
+    collId: string;
     key: string;
     required: boolean;
     min: number;
@@ -522,13 +522,13 @@ export type UpdateIntegerAttributeParams = {
  * @param params - Parameters for updating the integer attribute.
  * @returns The updated attribute details.
  */
-declare const updateIntegerAttribute: ({ databaseId, collectionId, key, required, min, max, xdefault, newKey, }: UpdateIntegerAttributeParams) => Promise<any>;
+declare const updateIntegerAttribute: ({ dbId, collId, key, required, min, max, xdefault, newKey, }: UpdateIntegerAttributeParams) => Promise<any>;
 /**
  * Parameters for the createIpAttribute function.
  */
 export type CreateIpAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
     required: boolean;
     xdefault?: string;
@@ -539,13 +539,13 @@ export type CreateIpAttributeParams = {
  * @param params - Parameters for creating the IP address attribute.
  * @returns The created attribute details.
  */
-declare const createIpAttribute: ({ databaseId, collectionId, key, required, xdefault, xarray, }: CreateIpAttributeParams) => Promise<any>;
+declare const createIpAttribute: ({ dbId, collId, key, required, xdefault, xarray, }: CreateIpAttributeParams) => Promise<any>;
 /**
  * Parameters for the updateIpAttribute function.
  */
 export type UpdateIpAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId: string;
+    collId: string;
     key: string;
     required: boolean;
     xdefault?: string;
@@ -556,13 +556,13 @@ export type UpdateIpAttributeParams = {
  * @param params - Parameters for updating the IP address attribute.
  * @returns The updated attribute details.
  */
-declare const updateIpAttribute: ({ databaseId, collectionId, key, required, xdefault, newKey, }: UpdateIpAttributeParams) => Promise<any>;
+declare const updateIpAttribute: ({ dbId, collId, key, required, xdefault, newKey, }: UpdateIpAttributeParams) => Promise<any>;
 /**
  * Parameters for the createStringAttribute function.
  */
 export type CreateStringAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
     size: number;
     required: boolean;
@@ -575,13 +575,13 @@ export type CreateStringAttributeParams = {
  * @param params - Parameters for creating the string attribute.
  * @returns The created attribute details.
  */
-declare const createStringAttribute: ({ databaseId, collectionId, key, size, required, xdefault, xarray, encrypt, }: CreateStringAttributeParams) => Promise<any>;
+declare const createStringAttribute: ({ dbId, collId, key, size, required, xdefault, xarray, encrypt, }: CreateStringAttributeParams) => Promise<any>;
 /**
  * Parameters for the updateStringAttribute function.
  */
 export type UpdateStringAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId: string;
+    collId: string;
     key: string;
     required: boolean;
     xdefault?: string;
@@ -593,13 +593,13 @@ export type UpdateStringAttributeParams = {
  * @param params - Parameters for updating the string attribute.
  * @returns The updated attribute details.
  */
-declare const updateStringAttribute: ({ databaseId, collectionId, key, required, xdefault, size, newKey, }: UpdateStringAttributeParams) => Promise<any>;
+declare const updateStringAttribute: ({ dbId, collId, key, required, xdefault, size, newKey, }: UpdateStringAttributeParams) => Promise<any>;
 /**
  * Parameters for the createUrlAttribute function.
  */
 export type CreateUrlAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
     required: boolean;
     xdefault?: string;
@@ -610,13 +610,13 @@ export type CreateUrlAttributeParams = {
  * @param params - Parameters for creating the URL attribute.
  * @returns The created attribute details.
  */
-declare const createUrlAttribute: ({ databaseId, collectionId, key, required, xdefault, xarray, }: CreateUrlAttributeParams) => Promise<any>;
+declare const createUrlAttribute: ({ dbId, collId, key, required, xdefault, xarray, }: CreateUrlAttributeParams) => Promise<any>;
 /**
  * Parameters for the updateUrlAttribute function.
  */
 export type UpdateUrlAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId: string;
+    collId: string;
     key: string;
     required: boolean;
     xdefault?: string;
@@ -627,13 +627,13 @@ export type UpdateUrlAttributeParams = {
  * @param params - Parameters for updating the URL attribute.
  * @returns The updated attribute details.
  */
-declare const updateUrlAttribute: ({ databaseId, collectionId, key, required, xdefault, newKey, }: UpdateUrlAttributeParams) => Promise<any>;
+declare const updateUrlAttribute: ({ dbId, collId, key, required, xdefault, newKey, }: UpdateUrlAttributeParams) => Promise<any>;
 /**
  * Parameters for the getAttribute function.
  */
 export type GetAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
     key: string;
 };
 /**
@@ -641,13 +641,13 @@ export type GetAttributeParams = {
  * @param params - Parameters for getting the attribute.
  * @returns The attribute details.
  */
-declare const getAttribute: ({ databaseId, collectionId, key, }: GetAttributeParams) => Promise<any>;
+declare const getAttribute: ({ dbId, collId, key, }: GetAttributeParams) => Promise<any>;
 /**
  * Parameters for the deleteAttribute function.
  */
 export type DeleteAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId: string;
+    collId: string;
     key: string;
 };
 /**
@@ -655,13 +655,13 @@ export type DeleteAttributeParams = {
  * @param params - Parameters for deleting the attribute.
  * @returns Confirmation of deletion.
  */
-declare const deleteAttribute: ({ databaseId, collectionId, key, }: DeleteAttributeParams) => Promise<void>;
+declare const deleteAttribute: ({ dbId, collId, key, }: DeleteAttributeParams) => Promise<void>;
 /**
  * Parameters for the createRelationshipAttribute function.
  */
 export type CreateRelationshipAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId?: string;
+    collId?: string;
     relatedCollectionId: string;
     type: RelationshipType;
     twoWay?: boolean;
@@ -675,13 +675,13 @@ export type CreateRelationshipAttributeParams = {
  * @param params - Parameters for creating the relationship attribute.
  * @returns The created attribute details.
  */
-declare const createRelationshipAttribute: ({ databaseId, collectionId, relatedCollectionId, type, twoWay, key, twoWayKey, onDelete, }: CreateRelationshipAttributeParams) => Promise<any>;
+declare const createRelationshipAttribute: ({ dbId, collId, relatedCollectionId, type, twoWay, key, twoWayKey, onDelete, }: CreateRelationshipAttributeParams) => Promise<any>;
 /**
  * Parameters for the updateRelationshipAttribute function.
  */
 export type UpdateRelationshipAttributeParams = {
-    databaseId: string;
-    collectionId: string;
+    dbId: string;
+    collId: string;
     key: string;
     onDelete?: RelationMutate;
     newKey?: string;
@@ -691,7 +691,7 @@ export type UpdateRelationshipAttributeParams = {
  * @param params - Parameters for updating the relationship attribute.
  * @returns The updated attribute details.
  */
-declare const updateRelationshipAttribute: ({ databaseId, collectionId, key, onDelete, newKey, }: UpdateRelationshipAttributeParams) => Promise<any>;
+declare const updateRelationshipAttribute: ({ dbId, collId, key, onDelete, newKey, }: UpdateRelationshipAttributeParams) => Promise<any>;
 export type DatabasesFunctionTypes = {
     createBooleanAttribute: typeof createBooleanAttribute;
     createCollection: typeof createCollection;

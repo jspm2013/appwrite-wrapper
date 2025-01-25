@@ -719,8 +719,8 @@ const deleteIndex = async ({
  * Parameters for the listAttributes function.
  */
 export type ListAttributesParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
 };
 /**
  * List all attributes in a specific collection.
@@ -728,12 +728,12 @@ export type ListAttributesParams = {
  * @returns The list of attributes.
  */
 const listAttributes = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
 }: ListAttributesParams): Promise<any> => {
   try {
     const { databases } = await createAdminClient();
-    const result = await databases.listAttributes(databaseId, collectionId);
+    const result = await databases.listAttributes(dbId, collId);
     return result;
   } catch (err) {
     console.error(
@@ -748,8 +748,8 @@ const listAttributes = async ({
  * Parameters for the createBooleanAttribute function.
  */
 export type CreateBooleanAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
   required: boolean;
   xdefault?: boolean;
@@ -761,8 +761,8 @@ export type CreateBooleanAttributeParams = {
  * @returns The created attribute details.
  */
 const createBooleanAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
   required,
   xdefault,
@@ -771,8 +771,8 @@ const createBooleanAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.createBooleanAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       xdefault,
@@ -792,8 +792,8 @@ const createBooleanAttribute = async ({
  * Parameters for the updateBooleanAttribute function.
  */
 export type UpdateBooleanAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId: string;
+  collId: string;
   key: string;
   required: boolean;
   xdefault?: boolean;
@@ -805,8 +805,8 @@ export type UpdateBooleanAttributeParams = {
  * @returns The updated attribute details.
  */
 const updateBooleanAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId,
+  collId,
   key,
   required,
   xdefault,
@@ -815,8 +815,8 @@ const updateBooleanAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.updateBooleanAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       xdefault,
@@ -836,8 +836,8 @@ const updateBooleanAttribute = async ({
  * Parameters for the createDatetimeAttribute function.
  */
 export type CreateDatetimeAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
   required: boolean;
   xdefault?: string;
@@ -849,8 +849,8 @@ export type CreateDatetimeAttributeParams = {
  * @returns The created attribute details.
  */
 const createDatetimeAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
   required,
   xdefault,
@@ -859,8 +859,8 @@ const createDatetimeAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.createDatetimeAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       xdefault,
@@ -880,8 +880,8 @@ const createDatetimeAttribute = async ({
  * Parameters for the updateDatetimeAttribute function.
  */
 export type UpdateDatetimeAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId: string;
+  collId: string;
   key: string;
   required: boolean;
   xdefault?: string;
@@ -893,8 +893,8 @@ export type UpdateDatetimeAttributeParams = {
  * @returns The updated attribute details.
  */
 const updateDatetimeAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId,
+  collId,
   key,
   required,
   xdefault,
@@ -903,8 +903,8 @@ const updateDatetimeAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.updateDatetimeAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       xdefault,
@@ -924,8 +924,8 @@ const updateDatetimeAttribute = async ({
  * Parameters for the createEmailAttribute function.
  */
 export type CreateEmailAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
   required: boolean;
   xdefault?: string;
@@ -937,8 +937,8 @@ export type CreateEmailAttributeParams = {
  * @returns The created attribute details.
  */
 const createEmailAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
   required,
   xdefault,
@@ -947,8 +947,8 @@ const createEmailAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.createEmailAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       xdefault,
@@ -968,8 +968,8 @@ const createEmailAttribute = async ({
  * Parameters for the updateEmailAttribute function.
  */
 export type UpdateEmailAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId: string;
+  collId: string;
   key: string;
   required: boolean;
   xdefault?: string;
@@ -981,8 +981,8 @@ export type UpdateEmailAttributeParams = {
  * @returns The updated attribute details.
  */
 const updateEmailAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId,
+  collId,
   key,
   required,
   xdefault,
@@ -991,8 +991,8 @@ const updateEmailAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.updateEmailAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       xdefault,
@@ -1012,8 +1012,8 @@ const updateEmailAttribute = async ({
  * Parameters for the createEnumAttribute function.
  */
 export type CreateEnumAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
   elements: string[];
   required: boolean;
@@ -1026,8 +1026,8 @@ export type CreateEnumAttributeParams = {
  * @returns The created attribute details.
  */
 const createEnumAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
   elements,
   required,
@@ -1037,8 +1037,8 @@ const createEnumAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.createEnumAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       elements,
       required,
@@ -1059,8 +1059,8 @@ const createEnumAttribute = async ({
  * Parameters for the updateEnumAttribute function.
  */
 export type UpdateEnumAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId: string;
+  collId: string;
   key: string;
   elements: string[];
   required: boolean;
@@ -1073,8 +1073,8 @@ export type UpdateEnumAttributeParams = {
  * @returns The updated attribute details.
  */
 const updateEnumAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId,
+  collId,
   key,
   elements,
   required,
@@ -1084,8 +1084,8 @@ const updateEnumAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.updateEnumAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       elements,
       required,
@@ -1106,8 +1106,8 @@ const updateEnumAttribute = async ({
  * Parameters for the createFloatAttribute function.
  */
 export type CreateFloatAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
   required: boolean;
   min?: number;
@@ -1121,8 +1121,8 @@ export type CreateFloatAttributeParams = {
  * @returns The created attribute details.
  */
 const createFloatAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
   required,
   min,
@@ -1133,8 +1133,8 @@ const createFloatAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.createFloatAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       min,
@@ -1156,8 +1156,8 @@ const createFloatAttribute = async ({
  * Parameters for the updateFloatAttribute function.
  */
 export type UpdateFloatAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId: string;
+  collId: string;
   key: string;
   required: boolean;
   min: number;
@@ -1171,8 +1171,8 @@ export type UpdateFloatAttributeParams = {
  * @returns The updated attribute details.
  */
 const updateFloatAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId,
+  collId,
   key,
   required,
   min,
@@ -1183,8 +1183,8 @@ const updateFloatAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.updateFloatAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       min,
@@ -1206,8 +1206,8 @@ const updateFloatAttribute = async ({
  * Parameters for the createIntegerAttribute function.
  */
 export type CreateIntegerAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
   required: boolean;
   min?: number;
@@ -1221,8 +1221,8 @@ export type CreateIntegerAttributeParams = {
  * @returns The created attribute details.
  */
 const createIntegerAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
   required,
   min,
@@ -1233,8 +1233,8 @@ const createIntegerAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.createIntegerAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       min,
@@ -1256,8 +1256,8 @@ const createIntegerAttribute = async ({
  * Parameters for the updateIntegerAttribute function.
  */
 export type UpdateIntegerAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId: string;
+  collId: string;
   key: string;
   required: boolean;
   min: number;
@@ -1271,8 +1271,8 @@ export type UpdateIntegerAttributeParams = {
  * @returns The updated attribute details.
  */
 const updateIntegerAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId,
+  collId,
   key,
   required,
   min,
@@ -1283,8 +1283,8 @@ const updateIntegerAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.updateIntegerAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       min,
@@ -1306,8 +1306,8 @@ const updateIntegerAttribute = async ({
  * Parameters for the createIpAttribute function.
  */
 export type CreateIpAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
   required: boolean;
   xdefault?: string;
@@ -1319,8 +1319,8 @@ export type CreateIpAttributeParams = {
  * @returns The created attribute details.
  */
 const createIpAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
   required,
   xdefault,
@@ -1329,8 +1329,8 @@ const createIpAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.createIpAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       xdefault,
@@ -1350,8 +1350,8 @@ const createIpAttribute = async ({
  * Parameters for the updateIpAttribute function.
  */
 export type UpdateIpAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId: string;
+  collId: string;
   key: string;
   required: boolean;
   xdefault?: string;
@@ -1363,8 +1363,8 @@ export type UpdateIpAttributeParams = {
  * @returns The updated attribute details.
  */
 const updateIpAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId,
+  collId,
   key,
   required,
   xdefault,
@@ -1373,8 +1373,8 @@ const updateIpAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.updateIpAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       xdefault,
@@ -1394,8 +1394,8 @@ const updateIpAttribute = async ({
  * Parameters for the createStringAttribute function.
  */
 export type CreateStringAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
   size: number;
   required: boolean;
@@ -1409,8 +1409,8 @@ export type CreateStringAttributeParams = {
  * @returns The created attribute details.
  */
 const createStringAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
   size,
   required,
@@ -1421,8 +1421,8 @@ const createStringAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.createStringAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       size,
       required,
@@ -1444,8 +1444,8 @@ const createStringAttribute = async ({
  * Parameters for the updateStringAttribute function.
  */
 export type UpdateStringAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId: string;
+  collId: string;
   key: string;
   required: boolean;
   xdefault?: string;
@@ -1458,8 +1458,8 @@ export type UpdateStringAttributeParams = {
  * @returns The updated attribute details.
  */
 const updateStringAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId,
+  collId,
   key,
   required,
   xdefault,
@@ -1469,8 +1469,8 @@ const updateStringAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.updateStringAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       xdefault,
@@ -1491,8 +1491,8 @@ const updateStringAttribute = async ({
  * Parameters for the createUrlAttribute function.
  */
 export type CreateUrlAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
   required: boolean;
   xdefault?: string;
@@ -1504,8 +1504,8 @@ export type CreateUrlAttributeParams = {
  * @returns The created attribute details.
  */
 const createUrlAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
   required,
   xdefault,
@@ -1514,8 +1514,8 @@ const createUrlAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.createUrlAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       xdefault,
@@ -1535,8 +1535,8 @@ const createUrlAttribute = async ({
  * Parameters for the updateUrlAttribute function.
  */
 export type UpdateUrlAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId: string;
+  collId: string;
   key: string;
   required: boolean;
   xdefault?: string;
@@ -1548,8 +1548,8 @@ export type UpdateUrlAttributeParams = {
  * @returns The updated attribute details.
  */
 const updateUrlAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId,
+  collId,
   key,
   required,
   xdefault,
@@ -1558,8 +1558,8 @@ const updateUrlAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.updateUrlAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       required,
       xdefault,
@@ -1579,8 +1579,8 @@ const updateUrlAttribute = async ({
  * Parameters for the getAttribute function.
  */
 export type GetAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
   key: string;
 };
 /**
@@ -1589,13 +1589,13 @@ export type GetAttributeParams = {
  * @returns The attribute details.
  */
 const getAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
   key,
 }: GetAttributeParams): Promise<any> => {
   try {
     const { databases } = await createAdminClient();
-    const result = await databases.getAttribute(databaseId, collectionId, key);
+    const result = await databases.getAttribute(dbId, collId, key);
     return result;
   } catch (err) {
     console.error(
@@ -1610,8 +1610,8 @@ const getAttribute = async ({
  * Parameters for the deleteAttribute function.
  */
 export type DeleteAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId: string;
+  collId: string;
   key: string;
 };
 /**
@@ -1620,13 +1620,13 @@ export type DeleteAttributeParams = {
  * @returns Confirmation of deletion.
  */
 const deleteAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId,
+  collId,
   key,
 }: DeleteAttributeParams): Promise<void> => {
   try {
     const { databases } = await createAdminClient();
-    await databases.deleteAttribute(databaseId, collectionId, key);
+    await databases.deleteAttribute(dbId, collId, key);
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/databases): Error executing deleteAttribute():",
@@ -1640,8 +1640,8 @@ const deleteAttribute = async ({
  * Parameters for the createRelationshipAttribute function.
  */
 export type CreateRelationshipAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId?: string;
+  collId?: string;
   relatedCollectionId: string;
   type: RelationshipType;
   twoWay?: boolean;
@@ -1656,8 +1656,8 @@ export type CreateRelationshipAttributeParams = {
  * @returns The created attribute details.
  */
 const createRelationshipAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId = databaseId,
+  collId = userCollectionId,
   relatedCollectionId,
   type,
   twoWay,
@@ -1668,8 +1668,8 @@ const createRelationshipAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.createRelationshipAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       relatedCollectionId,
       type,
       twoWay,
@@ -1691,8 +1691,8 @@ const createRelationshipAttribute = async ({
  * Parameters for the updateRelationshipAttribute function.
  */
 export type UpdateRelationshipAttributeParams = {
-  databaseId: string;
-  collectionId: string;
+  dbId: string;
+  collId: string;
   key: string;
   onDelete?: RelationMutate;
   newKey?: string;
@@ -1703,8 +1703,8 @@ export type UpdateRelationshipAttributeParams = {
  * @returns The updated attribute details.
  */
 const updateRelationshipAttribute = async ({
-  databaseId,
-  collectionId,
+  dbId,
+  collId,
   key,
   onDelete,
   newKey,
@@ -1712,8 +1712,8 @@ const updateRelationshipAttribute = async ({
   try {
     const { databases } = await createAdminClient();
     const result = await databases.updateRelationshipAttribute(
-      databaseId,
-      collectionId,
+      dbId,
+      collId,
       key,
       onDelete,
       newKey

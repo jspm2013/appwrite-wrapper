@@ -336,10 +336,10 @@ const deleteIndex = async ({ dbId, collId, key, }) => {
  * @param params - Parameters for listing the attributes.
  * @returns The list of attributes.
  */
-const listAttributes = async ({ databaseId, collectionId, }) => {
+const listAttributes = async ({ dbId = databaseId, collId = userCollectionId, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.listAttributes(databaseId, collectionId);
+        const result = await databases.listAttributes(dbId, collId);
         return result;
     }
     catch (err) {
@@ -352,10 +352,10 @@ const listAttributes = async ({ databaseId, collectionId, }) => {
  * @param params - Parameters for creating the boolean attribute.
  * @returns The created attribute details.
  */
-const createBooleanAttribute = async ({ databaseId, collectionId, key, required, xdefault, xarray, }) => {
+const createBooleanAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createBooleanAttribute(databaseId, collectionId, key, required, xdefault, xarray);
+        const result = await databases.createBooleanAttribute(dbId, collId, key, required, xdefault, xarray);
         return result;
     }
     catch (err) {
@@ -368,10 +368,10 @@ const createBooleanAttribute = async ({ databaseId, collectionId, key, required,
  * @param params - Parameters for updating the boolean attribute.
  * @returns The updated attribute details.
  */
-const updateBooleanAttribute = async ({ databaseId, collectionId, key, required, xdefault, newKey, }) => {
+const updateBooleanAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateBooleanAttribute(databaseId, collectionId, key, required, xdefault, newKey);
+        const result = await databases.updateBooleanAttribute(dbId, collId, key, required, xdefault, newKey);
         return result;
     }
     catch (err) {
@@ -384,10 +384,10 @@ const updateBooleanAttribute = async ({ databaseId, collectionId, key, required,
  * @param params - Parameters for creating the datetime attribute.
  * @returns The created attribute details.
  */
-const createDatetimeAttribute = async ({ databaseId, collectionId, key, required, xdefault, xarray, }) => {
+const createDatetimeAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createDatetimeAttribute(databaseId, collectionId, key, required, xdefault, xarray);
+        const result = await databases.createDatetimeAttribute(dbId, collId, key, required, xdefault, xarray);
         return result;
     }
     catch (err) {
@@ -400,10 +400,10 @@ const createDatetimeAttribute = async ({ databaseId, collectionId, key, required
  * @param params - Parameters for updating the datetime attribute.
  * @returns The updated attribute details.
  */
-const updateDatetimeAttribute = async ({ databaseId, collectionId, key, required, xdefault, newKey, }) => {
+const updateDatetimeAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateDatetimeAttribute(databaseId, collectionId, key, required, xdefault, newKey);
+        const result = await databases.updateDatetimeAttribute(dbId, collId, key, required, xdefault, newKey);
         return result;
     }
     catch (err) {
@@ -416,10 +416,10 @@ const updateDatetimeAttribute = async ({ databaseId, collectionId, key, required
  * @param params - Parameters for creating the email attribute.
  * @returns The created attribute details.
  */
-const createEmailAttribute = async ({ databaseId, collectionId, key, required, xdefault, xarray, }) => {
+const createEmailAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createEmailAttribute(databaseId, collectionId, key, required, xdefault, xarray);
+        const result = await databases.createEmailAttribute(dbId, collId, key, required, xdefault, xarray);
         return result;
     }
     catch (err) {
@@ -432,10 +432,10 @@ const createEmailAttribute = async ({ databaseId, collectionId, key, required, x
  * @param params - Parameters for updating the email attribute.
  * @returns The updated attribute details.
  */
-const updateEmailAttribute = async ({ databaseId, collectionId, key, required, xdefault, newKey, }) => {
+const updateEmailAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateEmailAttribute(databaseId, collectionId, key, required, xdefault, newKey);
+        const result = await databases.updateEmailAttribute(dbId, collId, key, required, xdefault, newKey);
         return result;
     }
     catch (err) {
@@ -448,10 +448,10 @@ const updateEmailAttribute = async ({ databaseId, collectionId, key, required, x
  * @param params - Parameters for creating the enum attribute.
  * @returns The created attribute details.
  */
-const createEnumAttribute = async ({ databaseId, collectionId, key, elements, required, xdefault, xarray, }) => {
+const createEnumAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, elements, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createEnumAttribute(databaseId, collectionId, key, elements, required, xdefault, xarray);
+        const result = await databases.createEnumAttribute(dbId, collId, key, elements, required, xdefault, xarray);
         return result;
     }
     catch (err) {
@@ -464,10 +464,10 @@ const createEnumAttribute = async ({ databaseId, collectionId, key, elements, re
  * @param params - Parameters for updating the enum attribute.
  * @returns The updated attribute details.
  */
-const updateEnumAttribute = async ({ databaseId, collectionId, key, elements, required, xdefault, newKey, }) => {
+const updateEnumAttribute = async ({ dbId, collId, key, elements, required, xdefault, newKey, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateEnumAttribute(databaseId, collectionId, key, elements, required, xdefault, newKey);
+        const result = await databases.updateEnumAttribute(dbId, collId, key, elements, required, xdefault, newKey);
         return result;
     }
     catch (err) {
@@ -480,10 +480,10 @@ const updateEnumAttribute = async ({ databaseId, collectionId, key, elements, re
  * @param params - Parameters for creating the float attribute.
  * @returns The created attribute details.
  */
-const createFloatAttribute = async ({ databaseId, collectionId, key, required, min, max, xdefault, xarray, }) => {
+const createFloatAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, min, max, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createFloatAttribute(databaseId, collectionId, key, required, min, max, xdefault, xarray);
+        const result = await databases.createFloatAttribute(dbId, collId, key, required, min, max, xdefault, xarray);
         return result;
     }
     catch (err) {
@@ -496,10 +496,10 @@ const createFloatAttribute = async ({ databaseId, collectionId, key, required, m
  * @param params - Parameters for updating the float attribute.
  * @returns The updated attribute details.
  */
-const updateFloatAttribute = async ({ databaseId, collectionId, key, required, min, max, xdefault, newKey, }) => {
+const updateFloatAttribute = async ({ dbId, collId, key, required, min, max, xdefault, newKey, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateFloatAttribute(databaseId, collectionId, key, required, min, max, xdefault, newKey);
+        const result = await databases.updateFloatAttribute(dbId, collId, key, required, min, max, xdefault, newKey);
         return result;
     }
     catch (err) {
@@ -512,10 +512,10 @@ const updateFloatAttribute = async ({ databaseId, collectionId, key, required, m
  * @param params - Parameters for creating the integer attribute.
  * @returns The created attribute details.
  */
-const createIntegerAttribute = async ({ databaseId, collectionId, key, required, min, max, xdefault, xarray, }) => {
+const createIntegerAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, min, max, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createIntegerAttribute(databaseId, collectionId, key, required, min, max, xdefault, xarray);
+        const result = await databases.createIntegerAttribute(dbId, collId, key, required, min, max, xdefault, xarray);
         return result;
     }
     catch (err) {
@@ -528,10 +528,10 @@ const createIntegerAttribute = async ({ databaseId, collectionId, key, required,
  * @param params - Parameters for updating the integer attribute.
  * @returns The updated attribute details.
  */
-const updateIntegerAttribute = async ({ databaseId, collectionId, key, required, min, max, xdefault, newKey, }) => {
+const updateIntegerAttribute = async ({ dbId, collId, key, required, min, max, xdefault, newKey, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateIntegerAttribute(databaseId, collectionId, key, required, min, max, xdefault, newKey);
+        const result = await databases.updateIntegerAttribute(dbId, collId, key, required, min, max, xdefault, newKey);
         return result;
     }
     catch (err) {
@@ -544,10 +544,10 @@ const updateIntegerAttribute = async ({ databaseId, collectionId, key, required,
  * @param params - Parameters for creating the IP address attribute.
  * @returns The created attribute details.
  */
-const createIpAttribute = async ({ databaseId, collectionId, key, required, xdefault, xarray, }) => {
+const createIpAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createIpAttribute(databaseId, collectionId, key, required, xdefault, xarray);
+        const result = await databases.createIpAttribute(dbId, collId, key, required, xdefault, xarray);
         return result;
     }
     catch (err) {
@@ -560,10 +560,10 @@ const createIpAttribute = async ({ databaseId, collectionId, key, required, xdef
  * @param params - Parameters for updating the IP address attribute.
  * @returns The updated attribute details.
  */
-const updateIpAttribute = async ({ databaseId, collectionId, key, required, xdefault, newKey, }) => {
+const updateIpAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateIpAttribute(databaseId, collectionId, key, required, xdefault, newKey);
+        const result = await databases.updateIpAttribute(dbId, collId, key, required, xdefault, newKey);
         return result;
     }
     catch (err) {
@@ -576,10 +576,10 @@ const updateIpAttribute = async ({ databaseId, collectionId, key, required, xdef
  * @param params - Parameters for creating the string attribute.
  * @returns The created attribute details.
  */
-const createStringAttribute = async ({ databaseId, collectionId, key, size, required, xdefault, xarray, encrypt, }) => {
+const createStringAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, size, required, xdefault, xarray, encrypt, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createStringAttribute(databaseId, collectionId, key, size, required, xdefault, xarray, encrypt);
+        const result = await databases.createStringAttribute(dbId, collId, key, size, required, xdefault, xarray, encrypt);
         return result;
     }
     catch (err) {
@@ -592,10 +592,10 @@ const createStringAttribute = async ({ databaseId, collectionId, key, size, requ
  * @param params - Parameters for updating the string attribute.
  * @returns The updated attribute details.
  */
-const updateStringAttribute = async ({ databaseId, collectionId, key, required, xdefault, size, newKey, }) => {
+const updateStringAttribute = async ({ dbId, collId, key, required, xdefault, size, newKey, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateStringAttribute(databaseId, collectionId, key, required, xdefault, size, newKey);
+        const result = await databases.updateStringAttribute(dbId, collId, key, required, xdefault, size, newKey);
         return result;
     }
     catch (err) {
@@ -608,10 +608,10 @@ const updateStringAttribute = async ({ databaseId, collectionId, key, required, 
  * @param params - Parameters for creating the URL attribute.
  * @returns The created attribute details.
  */
-const createUrlAttribute = async ({ databaseId, collectionId, key, required, xdefault, xarray, }) => {
+const createUrlAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createUrlAttribute(databaseId, collectionId, key, required, xdefault, xarray);
+        const result = await databases.createUrlAttribute(dbId, collId, key, required, xdefault, xarray);
         return result;
     }
     catch (err) {
@@ -624,10 +624,10 @@ const createUrlAttribute = async ({ databaseId, collectionId, key, required, xde
  * @param params - Parameters for updating the URL attribute.
  * @returns The updated attribute details.
  */
-const updateUrlAttribute = async ({ databaseId, collectionId, key, required, xdefault, newKey, }) => {
+const updateUrlAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateUrlAttribute(databaseId, collectionId, key, required, xdefault, newKey);
+        const result = await databases.updateUrlAttribute(dbId, collId, key, required, xdefault, newKey);
         return result;
     }
     catch (err) {
@@ -640,10 +640,10 @@ const updateUrlAttribute = async ({ databaseId, collectionId, key, required, xde
  * @param params - Parameters for getting the attribute.
  * @returns The attribute details.
  */
-const getAttribute = async ({ databaseId, collectionId, key, }) => {
+const getAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.getAttribute(databaseId, collectionId, key);
+        const result = await databases.getAttribute(dbId, collId, key);
         return result;
     }
     catch (err) {
@@ -656,10 +656,10 @@ const getAttribute = async ({ databaseId, collectionId, key, }) => {
  * @param params - Parameters for deleting the attribute.
  * @returns Confirmation of deletion.
  */
-const deleteAttribute = async ({ databaseId, collectionId, key, }) => {
+const deleteAttribute = async ({ dbId, collId, key, }) => {
     try {
         const { databases } = await createAdminClient();
-        await databases.deleteAttribute(databaseId, collectionId, key);
+        await databases.deleteAttribute(dbId, collId, key);
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/databases): Error executing deleteAttribute():", err);
@@ -671,10 +671,10 @@ const deleteAttribute = async ({ databaseId, collectionId, key, }) => {
  * @param params - Parameters for creating the relationship attribute.
  * @returns The created attribute details.
  */
-const createRelationshipAttribute = async ({ databaseId, collectionId, relatedCollectionId, type, twoWay, key, twoWayKey, onDelete, }) => {
+const createRelationshipAttribute = async ({ dbId = databaseId, collId = userCollectionId, relatedCollectionId, type, twoWay, key, twoWayKey, onDelete, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createRelationshipAttribute(databaseId, collectionId, relatedCollectionId, type, twoWay, key, twoWayKey, onDelete);
+        const result = await databases.createRelationshipAttribute(dbId, collId, relatedCollectionId, type, twoWay, key, twoWayKey, onDelete);
         return result;
     }
     catch (err) {
@@ -687,10 +687,10 @@ const createRelationshipAttribute = async ({ databaseId, collectionId, relatedCo
  * @param params - Parameters for updating the relationship attribute.
  * @returns The updated attribute details.
  */
-const updateRelationshipAttribute = async ({ databaseId, collectionId, key, onDelete, newKey, }) => {
+const updateRelationshipAttribute = async ({ dbId, collId, key, onDelete, newKey, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateRelationshipAttribute(databaseId, collectionId, key, onDelete, newKey);
+        const result = await databases.updateRelationshipAttribute(dbId, collId, key, onDelete, newKey);
         return result;
     }
     catch (err) {

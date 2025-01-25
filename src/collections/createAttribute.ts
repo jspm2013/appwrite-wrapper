@@ -20,8 +20,8 @@ import {
 const attributeHandlers: Record<string, AttributeHandler> = {
   string: async (dbId, collId, attr: Models.AttributeString, encrypt = false) =>
     await createStringAttribute({
-      databaseId: dbId,
-      collectionId: collId,
+      dbId,
+      collId,
       key: attr.key,
       size: attr.size,
       required: attr.required,
@@ -31,8 +31,8 @@ const attributeHandlers: Record<string, AttributeHandler> = {
     }),
   integer: async (dbId, collId, attr: Models.AttributeInteger) =>
     await createIntegerAttribute({
-      databaseId: dbId,
-      collectionId: collId,
+      dbId,
+      collId,
       key: attr.key,
       required: attr.required,
       min: attr.min,
@@ -42,8 +42,8 @@ const attributeHandlers: Record<string, AttributeHandler> = {
     }),
   float: async (dbId, collId, attr: Models.AttributeFloat) =>
     await createFloatAttribute({
-      databaseId: dbId,
-      collectionId: collId,
+      dbId,
+      collId,
       key: attr.key,
       required: attr.required,
       min: attr.min,
@@ -53,8 +53,8 @@ const attributeHandlers: Record<string, AttributeHandler> = {
     }),
   boolean: async (dbId, collId, attr: Models.AttributeBoolean) =>
     await createBooleanAttribute({
-      databaseId: dbId,
-      collectionId: collId,
+      dbId,
+      collId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.default,
@@ -62,8 +62,8 @@ const attributeHandlers: Record<string, AttributeHandler> = {
     }),
   email: async (dbId, collId, attr: Models.AttributeEmail) =>
     await createEmailAttribute({
-      databaseId: dbId,
-      collectionId: collId,
+      dbId,
+      collId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.default,
@@ -71,8 +71,8 @@ const attributeHandlers: Record<string, AttributeHandler> = {
     }),
   enum: async (dbId, collId, attr: Models.AttributeEnum) =>
     await createEnumAttribute({
-      databaseId: dbId,
-      collectionId: collId,
+      dbId,
+      collId,
       key: attr.key,
       elements: attr.elements,
       required: attr.required,
@@ -81,8 +81,8 @@ const attributeHandlers: Record<string, AttributeHandler> = {
     }),
   url: async (dbId, collId, attr: Models.AttributeUrl) =>
     await createUrlAttribute({
-      databaseId: dbId,
-      collectionId: collId,
+      dbId,
+      collId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.default,
@@ -90,8 +90,8 @@ const attributeHandlers: Record<string, AttributeHandler> = {
     }),
   ip: async (dbId, collId, attr: Models.AttributeIp) =>
     await createIpAttribute({
-      databaseId: dbId,
-      collectionId: collId,
+      dbId,
+      collId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.default,
@@ -99,8 +99,8 @@ const attributeHandlers: Record<string, AttributeHandler> = {
     }),
   datetime: async (dbId, collId, attr: Models.AttributeDatetime) =>
     await createDatetimeAttribute({
-      databaseId: dbId,
-      collectionId: collId,
+      dbId,
+      collId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.default,
@@ -108,8 +108,8 @@ const attributeHandlers: Record<string, AttributeHandler> = {
     }),
   relationship: async (dbId, collId, attr: CreateRelationshipAttributeParams) =>
     await createRelationshipAttribute({
-      databaseId: dbId,
-      collectionId: collId,
+      dbId,
+      collId,
       relatedCollectionId: attr.relatedCollectionId,
       type: attr.type,
       twoWay: attr.twoWay,

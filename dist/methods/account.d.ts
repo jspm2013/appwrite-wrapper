@@ -98,7 +98,7 @@ declare const getPrefs: () => Promise<Models.Preferences>;
  * Parameters for setting preferences.
  */
 export type SetPrefsParams = {
-    newPrefs: Record<string, unknown>;
+    newPrefs: Models.Preferences;
 };
 /**
  * Updates preferences for the current user.

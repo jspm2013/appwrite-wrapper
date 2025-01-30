@@ -61,6 +61,38 @@ const createToken = async ({
 };
 
 /**
+ * Parameters for deleting a specific preference key for a user by their ID.
+ */
+export type DeletePrefsForUserIdParams = {
+  userId: string;
+  key: string;
+};
+/**
+ * Deletes a specific preference key for a user by their ID.
+ */
+const deletePrefsForUserId = async ({
+  userId,
+  key,
+}: DeletePrefsForUserIdParams): Promise<Models.Preferences> => {
+  try {
+    const { users } = await createAdminClient();
+    const prefs = await users.getPrefs(userId);
+    if (Object.prototype.hasOwnProperty.call(prefs, key)) {
+      const { [key]: _, ...newPrefs } = prefs;
+      const user = await users.updatePrefs(userId, newPrefs);
+      return user.prefs;
+    }
+    return prefs;
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/users): Error executing deletePrefsForUserId():",
+      err
+    );
+    throw err;
+  }
+};
+
+/**
  * Parameters for deleting a specific session for a user.
  */
 export type DeleteSessionForUserIdParams = {
@@ -293,6 +325,7 @@ const updateEmailVerificationForUserId = async ({
 export type UsersFunctionTypes = {
   createSessionForUserId: typeof createSessionForUserId;
   createToken: typeof createToken;
+  deletePrefsForUserId: typeof deletePrefsForUserId;
   deleteSessionForUserId: typeof deleteSessionForUserId;
   deleteSessionsForUserId: typeof deleteSessionsForUserId;
   getPrefsForUserId: typeof getPrefsForUserId;
@@ -307,6 +340,7 @@ export type UsersFunctionTypes = {
 export {
   createSessionForUserId,
   createToken,
+  deletePrefsForUserId,
   deleteSessionForUserId,
   deleteSessionsForUserId,
   getPrefsForUserId,

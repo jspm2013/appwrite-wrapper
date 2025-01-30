@@ -22,6 +22,17 @@ export type CreateTokenParams = {
  */
 declare const createToken: ({ userId, length, expire, }: CreateTokenParams) => Promise<Models.Token>;
 /**
+ * Parameters for deleting a specific preference key for a user by their ID.
+ */
+export type DeletePrefsForUserIdParams = {
+    userId: string;
+    key: string;
+};
+/**
+ * Deletes a specific preference key for a user by their ID.
+ */
+declare const deletePrefsForUserId: ({ userId, key, }: DeletePrefsForUserIdParams) => Promise<Models.Preferences>;
+/**
  * Parameters for deleting a specific session for a user.
  */
 export type DeleteSessionForUserIdParams = {
@@ -106,6 +117,7 @@ declare const updateEmailVerificationForUserId: ({ userId, status, }: UpdateEmai
 export type UsersFunctionTypes = {
     createSessionForUserId: typeof createSessionForUserId;
     createToken: typeof createToken;
+    deletePrefsForUserId: typeof deletePrefsForUserId;
     deleteSessionForUserId: typeof deleteSessionForUserId;
     deleteSessionsForUserId: typeof deleteSessionsForUserId;
     getPrefsForUserId: typeof getPrefsForUserId;
@@ -116,5 +128,5 @@ export type UsersFunctionTypes = {
     setPrefsForUserId: typeof setPrefsForUserId;
     updateEmailVerificationForUserId: typeof updateEmailVerificationForUserId;
 };
-export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
 //# sourceMappingURL=users.d.ts.map

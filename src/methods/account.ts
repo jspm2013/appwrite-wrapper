@@ -280,8 +280,8 @@ const deletePrefs = async ({
     const prefs = await account.getPrefs();
     if (Object.prototype.hasOwnProperty.call(prefs, key)) {
       const { [key]: _, ...newPrefs } = prefs;
-      const updatedUser = await account.updatePrefs(newPrefs);
-      return updatedUser;
+      const user = await account.updatePrefs(newPrefs);
+      return user.prefs;
     }
     return prefs;
   } catch (err) {
@@ -314,7 +314,7 @@ const getPrefs = async (): Promise<Models.Preferences> => {
  * Parameters for setting preferences.
  */
 export type SetPrefsParams = {
-  newPrefs: Record<string, unknown>;
+  newPrefs: Models.Preferences;
 };
 /**
  * Updates preferences for the current user.
@@ -326,10 +326,10 @@ const setPrefs = async ({
     if (isValidJsonObject(newPrefs)) {
       const { account } = await createSessionClient();
       const prefs = await account.getPrefs();
-      const updatedPrefs = await account.updatePrefs(
+      const user = await account.updatePrefs(
         isEmptyKeyValuePair(prefs) ? newPrefs : { ...prefs, ...newPrefs }
       );
-      return updatedPrefs;
+      return user.prefs;
     } else {
       throw new Error("Invalid JSON object");
     }

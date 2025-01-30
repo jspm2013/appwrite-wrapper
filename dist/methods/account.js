@@ -173,8 +173,8 @@ const deletePrefs = async ({ key, }) => {
         const prefs = await account.getPrefs();
         if (Object.prototype.hasOwnProperty.call(prefs, key)) {
             const { [key]: _, ...newPrefs } = prefs;
-            const updatedUser = await account.updatePrefs(newPrefs);
-            return updatedUser;
+            const user = await account.updatePrefs(newPrefs);
+            return user.prefs;
         }
         return prefs;
     }
@@ -205,8 +205,8 @@ const setPrefs = async ({ newPrefs, }) => {
         if (isValidJsonObject(newPrefs)) {
             const { account } = await createSessionClient();
             const prefs = await account.getPrefs();
-            const updatedPrefs = await account.updatePrefs(isEmptyKeyValuePair(prefs) ? newPrefs : { ...prefs, ...newPrefs });
-            return updatedPrefs;
+            const user = await account.updatePrefs(isEmptyKeyValuePair(prefs) ? newPrefs : { ...prefs, ...newPrefs });
+            return user.prefs;
         }
         else {
             throw new Error("Invalid JSON object");

@@ -32,6 +32,25 @@ const createToken = async ({ userId, length = 32, expire = 60 * 3, }) => {
     }
 };
 /**
+ * Deletes a specific preference key for a user by their ID.
+ */
+const deletePrefsForUserId = async ({ userId, key, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const prefs = await users.getPrefs(userId);
+        if (Object.prototype.hasOwnProperty.call(prefs, key)) {
+            const { [key]: _, ...newPrefs } = prefs;
+            const user = await users.updatePrefs(userId, newPrefs);
+            return user.prefs;
+        }
+        return prefs;
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/users): Error executing deletePrefsForUserId():", err);
+        throw err;
+    }
+};
+/**
  * Deletes a specific session for a user by their ID.
  */
 const deleteSessionForUserId = async ({ userId, sessionId, }) => {
@@ -169,4 +188,4 @@ const updateEmailVerificationForUserId = async ({ userId, status, }) => {
         throw err;
     }
 };
-export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };

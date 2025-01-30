@@ -115,6 +115,7 @@ export {
   // Users functions
   createSessionForUserId,
   createToken,
+  deletePrefsForUserId,
   deleteSessionForUserId,
   deleteSessionsForUserId,
   getPrefsForUserId,

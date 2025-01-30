@@ -277,13 +277,13 @@ const deletePrefs = async ({
 }: DeletePrefsParams): Promise<Models.Preferences> => {
   try {
     const { account } = await createSessionClient();
-    const oldPrefs = await account.getPrefs();
-    if (Object.prototype.hasOwnProperty.call(oldPrefs, key)) {
-      const { [key]: _, ...newPrefs } = oldPrefs;
-      await account.updatePrefs(newPrefs);
-      return newPrefs;
+    const prefs = await account.getPrefs();
+    if (Object.prototype.hasOwnProperty.call(prefs, key)) {
+      const { [key]: _, ...newPrefs } = prefs;
+      const updatedUser = await account.updatePrefs(newPrefs);
+      return updatedUser;
     }
-    return oldPrefs;
+    return prefs;
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/account): Error executing deletePrefs():",
@@ -299,7 +299,8 @@ const deletePrefs = async ({
 const getPrefs = async (): Promise<Models.Preferences> => {
   try {
     const { account } = await createSessionClient();
-    return await account.getPrefs();
+    const prefs = await account.getPrefs();
+    return prefs;
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/account): Error executing getPrefs():",
@@ -318,14 +319,17 @@ export type SetPrefsParams = {
 /**
  * Updates preferences for the current user.
  */
-const setPrefs = async ({ newPrefs }: SetPrefsParams): Promise<void> => {
+const setPrefs = async ({
+  newPrefs,
+}: SetPrefsParams): Promise<Models.Preferences> => {
   try {
     if (isValidJsonObject(newPrefs)) {
       const { account } = await createSessionClient();
-      const oldPrefs = await account.getPrefs();
-      await account.updatePrefs(
-        isEmptyKeyValuePair(oldPrefs) ? newPrefs : { ...oldPrefs, ...newPrefs }
+      const prefs = await account.getPrefs();
+      const updatedPrefs = await account.updatePrefs(
+        isEmptyKeyValuePair(prefs) ? newPrefs : { ...prefs, ...newPrefs }
       );
+      return updatedPrefs;
     } else {
       throw new Error("Invalid JSON object");
     }

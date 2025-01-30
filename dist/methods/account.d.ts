@@ -103,7 +103,7 @@ export type SetPrefsParams = {
 /**
  * Updates preferences for the current user.
  */
-declare const setPrefs: ({ newPrefs }: SetPrefsParams) => Promise<void>;
+declare const setPrefs: ({ newPrefs, }: SetPrefsParams) => Promise<Models.Preferences>;
 /**
  * Parameters for updating verification.
  */

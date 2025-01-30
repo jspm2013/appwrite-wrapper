@@ -43,6 +43,16 @@ export type DeleteSessionsForUserIdParams = {
  */
 declare const deleteSessionsForUserId: ({ userId, }: DeleteSessionsForUserIdParams) => Promise<void>;
 /**
+ * Parameters for getting prefs for a user.
+ */
+export type GetPrefsForUserIdParams = {
+    userId: string;
+};
+/**
+ * Gets prefs for a user by their ID.
+ */
+declare const getPrefsForUserId: ({ userId, }: GetPrefsForUserIdParams) => Promise<Models.Preferences>;
+/**
  * Parameters for retrieving a user by their ID.
  */
 export type GetUserForUserIdParams = {
@@ -72,6 +82,17 @@ declare const listIdentities: ({ queries, search, }: ListParams) => Promise<Mode
  */
 declare const listUsers: ({ queries, search, }: ListParams) => Promise<Models.UserList<Models.Preferences>>;
 /**
+ * Parameters for setting prefs for a user.
+ */
+export type SetPrefsForUserIdParams = {
+    userId: string;
+    prefsObj: object;
+};
+/**
+ * Sets the prefs for a user by their ID.
+ */
+declare const setPrefsForUserId: ({ userId, prefsObj, }: SetPrefsForUserIdParams) => Promise<Models.Preferences>;
+/**
  * Parameters for updating email verification for a user.
  */
 export type UpdateEmailVerificationForUserIdParams = {
@@ -79,7 +100,7 @@ export type UpdateEmailVerificationForUserIdParams = {
     status: boolean;
 };
 /**
- * Updates the email verification status for a user.
+ * Updates the email verification status for a user by their ID.
  */
 declare const updateEmailVerificationForUserId: ({ userId, status, }: UpdateEmailVerificationForUserIdParams) => Promise<Models.User<Models.Preferences>>;
 export type UsersFunctionTypes = {
@@ -87,11 +108,13 @@ export type UsersFunctionTypes = {
     createToken: typeof createToken;
     deleteSessionForUserId: typeof deleteSessionForUserId;
     deleteSessionsForUserId: typeof deleteSessionsForUserId;
+    getPrefsForUserId: typeof getPrefsForUserId;
     getUserForUserId: typeof getUserForUserId;
     getVerifiedUserForUserId: typeof getVerifiedUserForUserId;
     listIdentities: typeof listIdentities;
     listUsers: typeof listUsers;
+    setPrefsForUserId: typeof setPrefsForUserId;
     updateEmailVerificationForUserId: typeof updateEmailVerificationForUserId;
 };
-export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
 //# sourceMappingURL=users.d.ts.map

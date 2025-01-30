@@ -117,10 +117,12 @@ export {
   createToken,
   deleteSessionForUserId,
   deleteSessionsForUserId,
+  getPrefsForUserId,
   getUserForUserId,
   getVerifiedUserForUserId,
   listIdentities,
   listUsers,
+  setPrefsForUserId,
   updateEmailVerificationForUserId,
 } from "./methods/users";
 

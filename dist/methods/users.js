@@ -58,6 +58,20 @@ const deleteSessionsForUserId = async ({ userId, }) => {
     }
 };
 /**
+ * Gets prefs for a user by their ID.
+ */
+const getPrefsForUserId = async ({ userId, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const prefs = await users.getPrefs(userId);
+        return prefs;
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/users): Error executing getPrefsForUserId():", err);
+        throw err;
+    }
+};
+/**
  * Retrieves a user by their ID.
  */
 const getUserForUserId = async ({ userId, }) => {
@@ -125,7 +139,21 @@ const listUsers = async ({ queries, search, }) => {
     }
 };
 /**
- * Updates the email verification status for a user.
+ * Sets the prefs for a user by their ID.
+ */
+const setPrefsForUserId = async ({ userId, prefsObj, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const prefs = await users.updatePrefs(userId, prefsObj);
+        return prefs;
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/users): Error executing setPrefsForUserId():", err);
+        throw err;
+    }
+};
+/**
+ * Updates the email verification status for a user by their ID.
  */
 const updateEmailVerificationForUserId = async ({ userId, status, }) => {
     try {
@@ -141,4 +169,4 @@ const updateEmailVerificationForUserId = async ({ userId, status, }) => {
         throw err;
     }
 };
-export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deleteSessionForUserId, deleteSessionsForUserId, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };

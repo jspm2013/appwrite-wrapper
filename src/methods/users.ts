@@ -111,6 +111,31 @@ const deleteSessionsForUserId = async ({
 };
 
 /**
+ * Parameters for getting prefs for a user.
+ */
+export type GetPrefsForUserIdParams = {
+  userId: string;
+};
+/**
+ * Gets prefs for a user by their ID.
+ */
+const getPrefsForUserId = async ({
+  userId,
+}: GetPrefsForUserIdParams): Promise<Models.Preferences> => {
+  try {
+    const { users } = await createAdminClient();
+    const prefs = await users.getPrefs(userId);
+    return prefs;
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/users): Error executing getPrefsForUserId():",
+      err
+    );
+    throw err;
+  }
+};
+
+/**
  * Parameters for retrieving a user by their ID.
  */
 export type GetUserForUserIdParams = {
@@ -207,6 +232,33 @@ const listUsers = async ({
 };
 
 /**
+ * Parameters for setting prefs for a user.
+ */
+export type SetPrefsForUserIdParams = {
+  userId: string;
+  prefsObj: object;
+};
+/**
+ * Sets the prefs for a user by their ID.
+ */
+const setPrefsForUserId = async ({
+  userId,
+  prefsObj,
+}: SetPrefsForUserIdParams): Promise<Models.Preferences> => {
+  try {
+    const { users } = await createAdminClient();
+    const prefs = await users.updatePrefs(userId, prefsObj);
+    return prefs;
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/users): Error executing setPrefsForUserId():",
+      err
+    );
+    throw err;
+  }
+};
+
+/**
  * Parameters for updating email verification for a user.
  */
 export type UpdateEmailVerificationForUserIdParams = {
@@ -214,7 +266,7 @@ export type UpdateEmailVerificationForUserIdParams = {
   status: boolean;
 };
 /**
- * Updates the email verification status for a user.
+ * Updates the email verification status for a user by their ID.
  */
 const updateEmailVerificationForUserId = async ({
   userId,
@@ -243,10 +295,12 @@ export type UsersFunctionTypes = {
   createToken: typeof createToken;
   deleteSessionForUserId: typeof deleteSessionForUserId;
   deleteSessionsForUserId: typeof deleteSessionsForUserId;
+  getPrefsForUserId: typeof getPrefsForUserId;
   getUserForUserId: typeof getUserForUserId;
   getVerifiedUserForUserId: typeof getVerifiedUserForUserId;
   listIdentities: typeof listIdentities;
   listUsers: typeof listUsers;
+  setPrefsForUserId: typeof setPrefsForUserId;
   updateEmailVerificationForUserId: typeof updateEmailVerificationForUserId;
 };
 
@@ -255,9 +309,11 @@ export {
   createToken,
   deleteSessionForUserId,
   deleteSessionsForUserId,
+  getPrefsForUserId,
   getUserForUserId,
   getVerifiedUserForUserId,
   listIdentities,
   listUsers,
+  setPrefsForUserId,
   updateEmailVerificationForUserId,
 };

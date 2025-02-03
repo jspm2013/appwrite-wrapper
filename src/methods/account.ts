@@ -238,10 +238,15 @@ const getVerifiedUser = async (): Promise<VerifiedUserType | null> => {
       const { total, documents } = await databases.listDocuments(
         databaseId,
         userCollectionId,
-        [Query.equal("user_id", user.$id)]
+        [
+          Query.and([
+            Query.equal("user_id", user.$id),
+            Query.equal("deleted", [false]),
+          ]),
+        ]
       );
 
-      if (total) {
+      if (total > 0) {
         // Dynamically build the custom attributes type
         let customUserAttributes: CustomUserAttributes = {};
         attributes.forEach((attr: any) => {

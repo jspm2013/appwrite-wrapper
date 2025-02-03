@@ -1,5 +1,7 @@
 "use server";
+import { Query } from "node-appwrite";
 import { createAdminClient } from "../appwriteClients";
+import { databaseId, userCollectionId } from "src/appwriteConfig";
 /**
  * Creates a session for a user by their ID.
  */
@@ -114,9 +116,25 @@ const getUserForUserId = async ({ userId, }) => {
 const getVerifiedUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
+        const { databases } = await createAdminClient();
         const user = await users.get(userId);
-        if (user.emailVerification) {
-            return user;
+        if (user.emailVerification || user.phoneVerification) {
+            const { attributes } = await databases.listAttributes(databaseId, userCollectionId);
+            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
+                Query.and([
+                    Query.equal("user_id", user.$id),
+                    Query.equal("deleted", [false]),
+                ]),
+            ]);
+            if (total > 0) {
+                // Dynamically build the custom attributes type
+                let customUserAttributes = {};
+                attributes.forEach((attr) => {
+                    customUserAttributes[attr.key] = attr.default ?? null;
+                });
+                // Return verified user, enriched for the custom attributes
+                return { ...user, customUser: documents[0] };
+            }
         }
         return null;
     }

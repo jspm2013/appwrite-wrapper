@@ -74,6 +74,14 @@ export type GetUserForUserIdParams = {
  */
 declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<Models.User<Models.Preferences> | null>;
 /**
+ * Basic/native appwrite user type + empty custom attributes type.
+ */
+export type UserType = Models.User<Models.Preferences>;
+export type CustomUserAttributes = Record<string, any>;
+export type VerifiedUserType = UserType & {
+    customUser: CustomUserAttributes;
+};
+/**
  * Retrieves a verified user by their ID.
  */
 declare const getVerifiedUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<Models.User<Models.Preferences> | null>;

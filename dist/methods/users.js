@@ -1,7 +1,7 @@
 "use server";
 import { Query } from "node-appwrite";
 import { createAdminClient } from "../appwriteClients";
-import { databaseId, userCollectionId } from "src/appwriteConfig";
+import { databaseId, userCollectionId } from "../appwriteConfig";
 /**
  * Creates a session for a user by their ID.
  */

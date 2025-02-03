@@ -2,7 +2,7 @@
 
 import { Models, Query } from "node-appwrite";
 import { createAdminClient } from "../appwriteClients";
-import { databaseId, userCollectionId } from "src/appwriteConfig";
+import { databaseId, userCollectionId } from "../appwriteConfig";
 
 /**
  * Parameters for creating a session for a user.

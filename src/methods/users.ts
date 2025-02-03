@@ -225,7 +225,7 @@ const getVerifiedUserForUserId = async ({
         userCollectionId,
         [
           Query.and([
-            Query.equal("user_id", user.$id),
+            Query.equal("user_id", userId),
             Query.equal("deleted", [false]),
           ]),
         ]

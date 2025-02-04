@@ -84,7 +84,7 @@ export type VerifiedUserType = UserType & {
 /**
  * Retrieves a verified user by their ID.
  */
-declare const getVerifiedUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<Models.User<Models.Preferences> | null>;
+declare const getVerifiedUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<VerifiedUserType | null>;
 /**
  * Parameters for listing users.
  */

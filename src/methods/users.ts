@@ -207,7 +207,7 @@ export type VerifiedUserType = UserType & {
  */
 const getVerifiedUserForUserId = async ({
   userId,
-}: GetUserForUserIdParams): Promise<Models.User<Models.Preferences> | null> => {
+}: GetUserForUserIdParams): Promise<VerifiedUserType | null> => {
   try {
     const { users } = await createAdminClient();
     const { databases } = await createAdminClient();

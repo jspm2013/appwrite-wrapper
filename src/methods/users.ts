@@ -226,7 +226,7 @@ const getVerifiedUserForUserId = async ({
         [
           Query.and([
             Query.equal("user_id", userId),
-            Query.equal("deleted", [false]),
+            Query.equal("deleted", false),
           ]),
         ]
       );

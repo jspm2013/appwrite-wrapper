@@ -241,7 +241,7 @@ const getVerifiedUser = async (): Promise<VerifiedUserType | null> => {
         [
           Query.and([
             Query.equal("user_id", user.$id),
-            Query.equal("deleted", [false]),
+            Query.equal("deleted", false),
           ]),
         ]
       );

@@ -145,7 +145,7 @@ const getVerifiedUser = async () => {
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
                 Query.and([
                     Query.equal("user_id", user.$id),
-                    Query.equal("deleted", [false]),
+                    Query.equal("deleted", false),
                 ]),
             ]);
             if (total > 0) {

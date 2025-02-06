@@ -1,4 +1,4 @@
-import { host, origin } from "./host";
+import { host, live, origin } from "./host";
 export { Models, ID, Query } from "node-appwrite";
 export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getSession, getUser, getVerifiedUser, listSessions, setPrefs, updateSession, updateVerification, } from "./methods/account";
 export { getFlag, getImage, getQr, getInitials, } from "./methods/avatars";
@@ -13,5 +13,5 @@ export type { StorageFunctionTypes } from "./methods/storage";
 export type { TeamsFunctionTypes } from "./methods/teams";
 export type { UsersFunctionTypes } from "./methods/users";
 export { envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, schemasPath, signInPath, userCollectionId, verificationPath, } from "./appwriteConfig";
-export { host, origin };
+export { host, live, origin };
 //# sourceMappingURL=index.d.ts.map

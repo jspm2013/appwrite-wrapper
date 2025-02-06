@@ -1,4 +1,4 @@
-import { host, live, origin } from "./host";
+import { hostInternal, hostExternal, live, originInternal, originExternal, } from "./host";
 export { ID, Query } from "node-appwrite";
 export { 
 // Account functions
@@ -21,4 +21,4 @@ createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserI
 export { 
 // ApwWrapper Config
 envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, schemasPath, signInPath, userCollectionId, verificationPath, } from "./appwriteConfig";
-export { host, live, origin };
+export { hostInternal, hostExternal, live, originInternal, originExternal };

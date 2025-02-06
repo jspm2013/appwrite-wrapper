@@ -1,4 +1,10 @@
-import { host, live, origin } from "./host";
+import {
+  hostInternal,
+  hostExternal,
+  live,
+  originInternal,
+  originExternal,
+} from "./host";
 export { Models, ID, Query } from "node-appwrite";
 
 export {
@@ -156,4 +162,4 @@ export {
   verificationPath,
 } from "./appwriteConfig";
 
-export { host, live, origin };
+export { hostInternal, hostExternal, live, originInternal, originExternal };

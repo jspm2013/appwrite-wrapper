@@ -11,6 +11,7 @@ import { host } from "../host";
  */
 const createAccount = async ({ email, password, name, }) => {
     try {
+        console.log("APW-WRAPPER_-_COOLIFY-LOG - createAccount", email, password, name);
         const { account } = await createSessionClient();
         return await account.create(ID.unique(), email, password, name);
     }
@@ -260,7 +261,7 @@ const createEmailPasswordSession = async ({ email, password, }) => {
  */
 const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, failurePath = oauthFailurePath, }) => {
     try {
-        console.log("APW-WRAPPER_-_COOLIFY-LOG - ", `${host}/${successPath}`, `${host}/${failurePath}`);
+        console.log("APW-WRAPPER_-_COOLIFY-LOG - createOAuth2Token", `${host}/${successPath}`, `${host}/${failurePath}`);
         const { account } = await createAdminClient();
         const url = await account.createOAuth2Token(OAuthProvider[provider], `${host}/${successPath}`, `${host}/${failurePath}`);
         return url;

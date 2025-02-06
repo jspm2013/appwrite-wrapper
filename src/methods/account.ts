@@ -42,6 +42,12 @@ const createAccount = async ({
   name,
 }: CreateAccountParams): Promise<UserType> => {
   try {
+    console.log(
+      "APW-WRAPPER_-_COOLIFY-LOG - createAccount",
+      email,
+      password,
+      name
+    );
     const { account } = await createSessionClient();
     return await account.create(ID.unique(), email, password, name);
   } catch (err) {
@@ -424,7 +430,7 @@ const createOAuth2Token = async ({
 }: CreateOAuth2TokenParams): Promise<string> => {
   try {
     console.log(
-      "APW-WRAPPER_-_COOLIFY-LOG - ",
+      "APW-WRAPPER_-_COOLIFY-LOG - createOAuth2Token",
       `${host}/${successPath}`,
       `${host}/${failurePath}`
     );

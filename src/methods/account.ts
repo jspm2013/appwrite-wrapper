@@ -423,6 +423,11 @@ const createOAuth2Token = async ({
   failurePath = oauthFailurePath,
 }: CreateOAuth2TokenParams): Promise<string> => {
   try {
+    console.log(
+      "APW-WRAPPER_-_COOLIFY-LOG - ",
+      `${host}/${successPath}`,
+      `${host}/${failurePath}`
+    );
     const { account } = await createAdminClient();
     const url = await account.createOAuth2Token(
       OAuthProvider[provider],

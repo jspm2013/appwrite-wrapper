@@ -260,6 +260,7 @@ const createEmailPasswordSession = async ({ email, password, }) => {
  */
 const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, failurePath = oauthFailurePath, }) => {
     try {
+        console.log("APW-WRAPPER_-_COOLIFY-LOG - ", `${host}/${successPath}`, `${host}/${failurePath}`);
         const { account } = await createAdminClient();
         const url = await account.createOAuth2Token(OAuthProvider[provider], `${host}/${successPath}`, `${host}/${failurePath}`);
         return url;

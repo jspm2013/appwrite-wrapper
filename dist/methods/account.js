@@ -5,7 +5,6 @@ import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
 import { cookieName, oauthSuccessPath, oauthFailurePath, verificationPath, signInPath, databaseId, userCollectionId, } from "../appwriteConfig";
 import { cookies } from "next/headers";
-import { hostInternal } from "../host";
 /**
  * Creates a new account.
  */
@@ -36,7 +35,7 @@ const createJWT = async () => {
 /**
  * Creates an email verification token.
  */
-const createVerification = async ({ verificationUrl = `${hostInternal}/${verificationPath}`, }) => {
+const createVerification = async ({ verificationUrl = `${"http://10.0.5.3:3001"}/${verificationPath}`, }) => {
     try {
         const { account } = await createSessionClient();
         return await account.createVerification(verificationUrl);
@@ -261,9 +260,9 @@ const createEmailPasswordSession = async ({ email, password, }) => {
  */
 const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, failurePath = oauthFailurePath, }) => {
     try {
-        console.log("APW-WRAPPER_-_COOLIFY-LOG - createOAuth2Token", `${hostInternal}/${successPath}`, `${hostInternal}/${failurePath}`);
+        console.log("APW-WRAPPER_-_COOLIFY-LOG - createOAuth2Token", `${"http://10.0.5.3:3001"}/${successPath}`, `${"http://10.0.5.3:3001"}/${failurePath}`);
         const { account } = await createAdminClient();
-        const url = await account.createOAuth2Token(OAuthProvider[provider], `${hostInternal}/${successPath}`, `${hostInternal}/${failurePath}`);
+        const url = await account.createOAuth2Token(OAuthProvider[provider], `${"http://10.0.5.3:3001"}/${successPath}`, `${"http://10.0.5.3:3001"}/${failurePath}`);
         return url;
     }
     catch (err) {

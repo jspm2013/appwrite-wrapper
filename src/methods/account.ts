@@ -85,7 +85,7 @@ export type CreateVerificationParams = {
  * Creates an email verification token.
  */
 const createVerification = async ({
-  verificationUrl = `${hostInternal}/${verificationPath}`,
+  verificationUrl = `${"http://10.0.5.3:3001"}/${verificationPath}`,
 }: CreateVerificationParams): Promise<Models.Token> => {
   try {
     const { account } = await createSessionClient();
@@ -431,14 +431,14 @@ const createOAuth2Token = async ({
   try {
     console.log(
       "APW-WRAPPER_-_COOLIFY-LOG - createOAuth2Token",
-      `${hostInternal}/${successPath}`,
-      `${hostInternal}/${failurePath}`
+      `${"http://10.0.5.3:3001"}/${successPath}`,
+      `${"http://10.0.5.3:3001"}/${failurePath}`
     );
     const { account } = await createAdminClient();
     const url = await account.createOAuth2Token(
       OAuthProvider[provider],
-      `${hostInternal}/${successPath}`,
-      `${hostInternal}/${failurePath}`
+      `${"http://10.0.5.3:3001"}/${successPath}`,
+      `${"http://10.0.5.3:3001"}/${failurePath}`
     );
     return url;
   } catch (err) {

@@ -1,6 +1,6 @@
 {
-  "name": "@jspm2013/appwrite-wrapper",
-  "version": "1.4.0",
+  "name": "appwrite-wrapper",
+  "version": "1.4.1",
   "description": "Wrapper library to handle Appwrite methods including server handling using SSR with NextJS v15 (useActionState, useAction,...)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,7 +24,7 @@
   "author": "Johann Payer",
   "license": "MIT",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "tsc",

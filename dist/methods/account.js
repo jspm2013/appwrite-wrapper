@@ -5,13 +5,12 @@ import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
 import { cookieName, oauthSuccessPath, oauthFailurePath, verificationPath, signInPath, databaseId, userCollectionId, } from "../appwriteConfig";
 import { cookies } from "next/headers";
-import { hostExternal } from "../host";
+import { hostInternal } from "../host";
 /**
  * Creates a new account.
  */
 const createAccount = async ({ email, password, name, }) => {
     try {
-        console.log("APW-WRAPPER_-_COOLIFY-LOG - createAccount", email, password, name);
         const { account } = await createSessionClient();
         return await account.create(ID.unique(), email, password, name);
     }
@@ -36,7 +35,7 @@ const createJWT = async () => {
 /**
  * Creates an email verification token.
  */
-const createVerification = async ({ verificationUrl = `${hostExternal}/${verificationPath}`, }) => {
+const createVerification = async ({ verificationUrl = `${hostInternal}/${verificationPath}`, }) => {
     try {
         const { account } = await createSessionClient();
         return await account.createVerification(verificationUrl);
@@ -261,9 +260,9 @@ const createEmailPasswordSession = async ({ email, password, }) => {
  */
 const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, failurePath = oauthFailurePath, }) => {
     try {
-        console.log("APW-WRAPPER_-_COOLIFY-LOG - createOAuth2Token", `${hostExternal}/${successPath}`, `${hostExternal}/${failurePath}`);
+        console.log("APW-WRAPPER_-_COOLIFY-LOG - createOAuth2Token", `${hostInternal}/${successPath}`, `${hostInternal}/${failurePath}`);
         const { account } = await createAdminClient();
-        const url = await account.createOAuth2Token(OAuthProvider[provider], `${hostExternal}/${successPath}`, `${hostExternal}/${failurePath}`);
+        const url = await account.createOAuth2Token(OAuthProvider[provider], `${hostInternal}/${successPath}`, `${hostInternal}/${failurePath}`);
         return url;
     }
     catch (err) {

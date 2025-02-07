@@ -3,7 +3,6 @@ import path from "path";
 import { schemasPath } from "../appwriteConfig";
 import { createTypeFile } from "./createTypeFile";
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
-console.log("SCHEMAS_FOLDER", SCHEMAS_FOLDER);
 export const getSchema = async (schema) => {
     const files = await fs.readdir(SCHEMAS_FOLDER);
     try {

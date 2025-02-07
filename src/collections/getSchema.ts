@@ -5,7 +5,6 @@ import { CollectionSchema } from "./types";
 import { createTypeFile } from "./createTypeFile";
 
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
-console.log("SCHEMAS_FOLDER", SCHEMAS_FOLDER);
 
 export const getSchema = async (schema: string): Promise<CollectionSchema> => {
   const files = await fs.readdir(SCHEMAS_FOLDER);

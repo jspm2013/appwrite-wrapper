@@ -14,7 +14,7 @@ import {
   userCollectionId,
 } from "../appwriteConfig";
 import { cookies } from "next/headers";
-import { hostInternal } from "../host";
+import { hostExternal } from "../host";
 
 /**
  * Basic/native appwrite user type + empty custom attributes type.
@@ -79,7 +79,7 @@ export type CreateVerificationParams = {
  * Creates an email verification token.
  */
 const createVerification = async ({
-  verificationUrl = `${hostInternal}/${verificationPath}`,
+  verificationUrl = `${hostExternal}/${verificationPath}`,
 }: CreateVerificationParams): Promise<Models.Token> => {
   try {
     const { account } = await createSessionClient();
@@ -425,14 +425,14 @@ const createOAuth2Token = async ({
   try {
     console.log(
       "APW-WRAPPER_-_COOLIFY-LOG - createOAuth2Token",
-      `${hostInternal}/${successPath}`,
-      `${hostInternal}/${failurePath}`
+      `${hostExternal}/${successPath}`,
+      `${hostExternal}/${failurePath}`
     );
     const { account } = await createAdminClient();
     const url = await account.createOAuth2Token(
       OAuthProvider[provider],
-      `${hostInternal}/${successPath}`,
-      `${hostInternal}/${failurePath}`
+      `${hostExternal}/${successPath}`,
+      `${hostExternal}/${failurePath}`
     );
     return url;
   } catch (err) {

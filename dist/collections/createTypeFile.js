@@ -42,6 +42,11 @@ export const createTypeFile = async (schema, schemaFilePath) => {
     const typeDefinition = `export interface ${typeName} {\n${fields}\n}`;
     // Write the type definition to a file in the same folder as the schema
     const typeFilePath = path.join(path.dirname(schemaFilePath), `${name}.ts`);
+    console.log("typeName: ", typeName);
+    console.log("fields: ", fields);
+    console.log("attributes: ", attributes);
+    console.log("typeDefinition: ", typeDefinition);
+    console.log("typeFilePath: ", typeFilePath);
     await fs.writeFile(typeFilePath, typeDefinition, "utf-8");
     console.log(`Type definition for schema '${name}' created at ${typeFilePath}`);
 };

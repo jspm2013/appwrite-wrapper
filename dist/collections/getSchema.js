@@ -3,16 +3,21 @@ import path from "path";
 import { schemasPath } from "../appwriteConfig";
 import { createTypeFile } from "./createTypeFile";
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
+console.log("SCHEMAS_FOLDER", SCHEMAS_FOLDER);
 export const getSchema = async (schema) => {
     const files = await fs.readdir(SCHEMAS_FOLDER);
     try {
         for (const file of files) {
             const fileName = path.parse(file).name;
             const fileExt = path.parse(file).ext;
+            console.log("fileName", fileName);
+            console.log("fileExt", fileExt);
             if (fileExt !== ".json" || fileName !== schema)
                 continue;
             const filePath = path.join(SCHEMAS_FOLDER, file);
             const module = JSON.parse(await fs.readFile(filePath, "utf-8"));
+            console.log("module", module);
+            console.log("isCollectionSchema(module)", isCollectionSchema(module));
             if (isCollectionSchema(module) && module.name === schema) {
                 await createTypeFile(module, filePath);
                 return module;

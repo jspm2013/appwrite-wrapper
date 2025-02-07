@@ -15,15 +15,11 @@ export const getSchema = async (schema: string): Promise<CollectionSchema> => {
       const fileName = path.parse(file).name;
       const fileExt = path.parse(file).ext;
 
-      console.log("fileName", fileName);
-      console.log("fileExt", fileExt);
       if (fileExt !== ".json" || fileName !== schema) continue;
 
       const filePath = path.join(SCHEMAS_FOLDER, file);
       const module = JSON.parse(await fs.readFile(filePath, "utf-8"));
 
-      console.log("module", module);
-      console.log("isCollectionSchema(module)", isCollectionSchema(module));
       if (isCollectionSchema(module) && module.name === schema) {
         await createTypeFile(module, filePath);
         return module;

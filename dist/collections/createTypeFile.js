@@ -31,7 +31,7 @@ const mapAttributeToType = (attribute) => {
 };
 export const createTypeFile = async (schema, schemaFilePath) => {
     const { name, attributes } = schema;
-    const typeName = `${name.charAt(0).toUpperCase() + name.slice(1)}Collection`;
+    const typeName = `${name.charAt(0).toUpperCase() + name.slice(1)}Type`;
     const fields = attributes
         .map((attr) => {
         const type = mapAttributeToType(attr);

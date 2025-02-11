@@ -442,7 +442,10 @@ const getCustomUsers = async <
       combinedQueries
     );
 
-    return documents as unknown as TCustomUsers;
+    return {
+      total: total ?? 0,
+      documents: documents ?? [],
+    } as unknown as TCustomUsers;
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/users): Error executing getCustomUsers():",

@@ -245,7 +245,10 @@ const getCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
             Query.equal("deleted", includingDeleted),
         ];
         const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, combinedQueries);
-        return documents;
+        return {
+            total: total ?? 0,
+            documents: documents ?? [],
+        };
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/users): Error executing getCustomUsers():", err);

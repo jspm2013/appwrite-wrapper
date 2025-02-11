@@ -213,6 +213,7 @@ const deleteUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
         await users.delete(userId);
+        return userId;
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/users): Error executing deleteUserId():", err);

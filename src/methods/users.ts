@@ -370,10 +370,11 @@ export type DeleteUserByIdParams = {
  */
 const deleteUserId = async ({
   userId,
-}: DeleteUserByIdParams): Promise<void> => {
+}: DeleteUserByIdParams): Promise<string> => {
   try {
     const { users } = await createAdminClient();
     await users.delete(userId);
+    return userId;
   } catch (err) {
     console.error(
       "APW-WRAPPER - Error (methods/users): Error executing deleteUserId():",

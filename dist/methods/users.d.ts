@@ -131,7 +131,7 @@ export type DeleteUserByIdParams = {
 /**
  * Deletes a user by their ID.
  */
-declare const deleteUserId: ({ userId, }: DeleteUserByIdParams) => Promise<void>;
+declare const deleteUserId: ({ userId, }: DeleteUserByIdParams) => Promise<string>;
 export type UsersFunctionTypes = {
     createSessionForUserId: typeof createSessionForUserId;
     createToken: typeof createToken;

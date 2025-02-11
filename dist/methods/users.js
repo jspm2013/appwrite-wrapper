@@ -206,4 +206,17 @@ const updateEmailVerificationForUserId = async ({ userId, status, }) => {
         throw err;
     }
 };
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
+/**
+ * Deletes a user by their ID.
+ */
+const deleteUserId = async ({ userId, }) => {
+    try {
+        const { users } = await createAdminClient();
+        await users.delete(userId);
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/users): Error executing deleteUserId():", err);
+        throw err;
+    }
+};
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };

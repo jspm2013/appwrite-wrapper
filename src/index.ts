@@ -124,6 +124,7 @@ export {
   deletePrefsForUserId,
   deleteSessionForUserId,
   deleteSessionsForUserId,
+  deleteUserId,
   getPrefsForUserId,
   getUserForUserId,
   getVerifiedUserForUserId,

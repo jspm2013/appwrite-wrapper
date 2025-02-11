@@ -359,12 +359,37 @@ const updateEmailVerificationForUserId = async ({
   }
 };
 
+/**
+ * Parameters for deleting a user by their ID.
+ */
+export type DeleteUserByIdParams = {
+  userId: string;
+};
+/**
+ * Deletes a user by their ID.
+ */
+const deleteUserId = async ({
+  userId,
+}: DeleteUserByIdParams): Promise<void> => {
+  try {
+    const { users } = await createAdminClient();
+    await users.delete(userId);
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/users): Error executing deleteUserId():",
+      err
+    );
+    throw err;
+  }
+};
+
 export type UsersFunctionTypes = {
   createSessionForUserId: typeof createSessionForUserId;
   createToken: typeof createToken;
   deletePrefsForUserId: typeof deletePrefsForUserId;
   deleteSessionForUserId: typeof deleteSessionForUserId;
   deleteSessionsForUserId: typeof deleteSessionsForUserId;
+  deleteUserId: typeof deleteUserId;
   getPrefsForUserId: typeof getPrefsForUserId;
   getUserForUserId: typeof getUserForUserId;
   getVerifiedUserForUserId: typeof getVerifiedUserForUserId;
@@ -380,6 +405,7 @@ export {
   deletePrefsForUserId,
   deleteSessionForUserId,
   deleteSessionsForUserId,
+  deleteUserId,
   getPrefsForUserId,
   getUserForUserId,
   getVerifiedUserForUserId,

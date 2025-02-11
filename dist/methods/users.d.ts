@@ -132,6 +132,17 @@ export type DeleteUserByIdParams = {
  * Deletes a user by their ID.
  */
 declare const deleteUserId: ({ userId, }: DeleteUserByIdParams) => Promise<string>;
+/**
+ * Parameters for deleting a user by their ID.
+ */
+export type GetCustomUsersParams = {
+    queries?: string[];
+    search?: string;
+};
+/**
+ * Retrieves a list of custom users, allowing a dynamic type override.
+ */
+declare const getCustomUsers: <TCustomUsers extends Models.DocumentList<Models.Document>>({ queries, search, }: GetCustomUsersParams) => Promise<TCustomUsers>;
 export type UsersFunctionTypes = {
     createSessionForUserId: typeof createSessionForUserId;
     createToken: typeof createToken;
@@ -139,6 +150,7 @@ export type UsersFunctionTypes = {
     deleteSessionForUserId: typeof deleteSessionForUserId;
     deleteSessionsForUserId: typeof deleteSessionsForUserId;
     deleteUserId: typeof deleteUserId;
+    getCustomUsers: typeof getCustomUsers;
     getPrefsForUserId: typeof getPrefsForUserId;
     getUserForUserId: typeof getUserForUserId;
     getVerifiedUserForUserId: typeof getVerifiedUserForUserId;
@@ -147,5 +159,5 @@ export type UsersFunctionTypes = {
     setPrefsForUserId: typeof setPrefsForUserId;
     updateEmailVerificationForUserId: typeof updateEmailVerificationForUserId;
 };
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
 //# sourceMappingURL=users.d.ts.map

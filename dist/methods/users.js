@@ -220,4 +220,12 @@ const deleteUserId = async ({ userId, }) => {
         throw err;
     }
 };
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
+/**
+ * Retrieves a list of custom users, allowing a dynamic type override.
+ */
+const getCustomUsers = async ({ queries = [], search = undefined, }) => {
+    const { users } = await createAdminClient();
+    const response = await users.list(queries, search);
+    return response;
+};
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };

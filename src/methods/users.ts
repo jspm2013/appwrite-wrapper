@@ -384,6 +384,28 @@ const deleteUserId = async ({
   }
 };
 
+/**
+ * Parameters for deleting a user by their ID.
+ */
+export type GetCustomUsersParams = {
+  queries?: string[];
+  search?: string;
+};
+/**
+ * Retrieves a list of custom users, allowing a dynamic type override.
+ */
+const getCustomUsers = async <
+  TCustomUsers extends Models.DocumentList<Models.Document>
+>({
+  queries = [],
+  search = undefined,
+}: GetCustomUsersParams): Promise<TCustomUsers> => {
+  const { users } = await createAdminClient();
+  const response = await users.list(queries, search);
+
+  return response as unknown as TCustomUsers;
+};
+
 export type UsersFunctionTypes = {
   createSessionForUserId: typeof createSessionForUserId;
   createToken: typeof createToken;
@@ -391,6 +413,7 @@ export type UsersFunctionTypes = {
   deleteSessionForUserId: typeof deleteSessionForUserId;
   deleteSessionsForUserId: typeof deleteSessionsForUserId;
   deleteUserId: typeof deleteUserId;
+  getCustomUsers: typeof getCustomUsers;
   getPrefsForUserId: typeof getPrefsForUserId;
   getUserForUserId: typeof getUserForUserId;
   getVerifiedUserForUserId: typeof getVerifiedUserForUserId;
@@ -407,6 +430,7 @@ export {
   deleteSessionForUserId,
   deleteSessionsForUserId,
   deleteUserId,
+  getCustomUsers,
   getPrefsForUserId,
   getUserForUserId,
   getVerifiedUserForUserId,

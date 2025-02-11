@@ -40,6 +40,7 @@ export const createTypeFile = async (
 
   const typeName = `${name.charAt(0).toUpperCase() + name.slice(1)}Type`;
 
+  // Ensure every generated type extends `Models.Document`
   const fields = attributes
     .map((attr) => {
       const type = mapAttributeToType(attr);
@@ -48,7 +49,7 @@ export const createTypeFile = async (
     })
     .join("\n");
 
-  const typeDefinition = `export interface ${typeName} {\n${fields}\n}`;
+  const typeDefinition = `import { Models } from "node-appwrite";\n\nexport interface ${typeName} extends Models.Document {\n${fields}\n}`;
 
   // Write the type definition to a file in the same folder as the schema
   const typeFilePath = path.join(path.dirname(schemaFilePath), `${name}.ts`);

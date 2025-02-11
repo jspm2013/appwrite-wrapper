@@ -133,16 +133,27 @@ export type DeleteUserByIdParams = {
  */
 declare const deleteUserId: ({ userId, }: DeleteUserByIdParams) => Promise<string>;
 /**
- * Parameters for deleting a user by their ID.
+ * Parameters for getting users list (NATIVE appwrite users)
  */
-export type GetCustomUsersParams = {
+export type GetUsersParams = {
     queries?: string[];
     search?: string;
 };
 /**
- * Retrieves a list of custom users, allowing a dynamic type override.
+ * Gets users list (NATIVE appwrite users)
  */
-declare const getCustomUsers: <TCustomUsers extends Models.DocumentList<Models.Document>>({ queries, search, }: GetCustomUsersParams) => Promise<TCustomUsers>;
+declare const getUsers: ({ queries, search, }: GetUsersParams) => Promise<Models.UserList<Models.Preferences>>;
+/**
+ * Parameters for getting CUSTOM users list
+ */
+export type GetCustomUsersParams = {
+    queries?: string[];
+    includingDeleted?: boolean;
+};
+/**
+ * Gets CUSTOM users list
+ */
+declare const getCustomUsers: <TCustomUsers extends Models.DocumentList<Models.Document>>({ queries, includingDeleted, }: GetCustomUsersParams) => Promise<TCustomUsers>;
 export type UsersFunctionTypes = {
     createSessionForUserId: typeof createSessionForUserId;
     createToken: typeof createToken;
@@ -153,11 +164,12 @@ export type UsersFunctionTypes = {
     getCustomUsers: typeof getCustomUsers;
     getPrefsForUserId: typeof getPrefsForUserId;
     getUserForUserId: typeof getUserForUserId;
+    getUsers: typeof getUsers;
     getVerifiedUserForUserId: typeof getVerifiedUserForUserId;
     listIdentities: typeof listIdentities;
     listUsers: typeof listUsers;
     setPrefsForUserId: typeof setPrefsForUserId;
     updateEmailVerificationForUserId: typeof updateEmailVerificationForUserId;
 };
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
 //# sourceMappingURL=users.d.ts.map

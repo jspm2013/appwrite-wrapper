@@ -385,25 +385,71 @@ const deleteUserId = async ({
 };
 
 /**
- * Parameters for deleting a user by their ID.
+ * Parameters for getting users list (NATIVE appwrite users)
  */
-export type GetCustomUsersParams = {
+export type GetUsersParams = {
   queries?: string[];
   search?: string;
 };
 /**
- * Retrieves a list of custom users, allowing a dynamic type override.
+ * Gets users list (NATIVE appwrite users)
+ */
+const getUsers = async ({
+  queries = [],
+  search = undefined,
+}: GetUsersParams): Promise<Models.UserList<Models.Preferences>> => {
+  try {
+    const { users } = await createAdminClient();
+    const response = await users.list(queries, search);
+
+    return response;
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/users): Error executing getUsers():",
+      err
+    );
+    throw err;
+  }
+};
+
+/**
+ * Parameters for getting CUSTOM users list
+ */
+export type GetCustomUsersParams = {
+  queries?: string[];
+  includingDeleted?: boolean;
+};
+/**
+ * Gets CUSTOM users list
  */
 const getCustomUsers = async <
   TCustomUsers extends Models.DocumentList<Models.Document>
 >({
   queries = [],
-  search = undefined,
+  includingDeleted = false,
 }: GetCustomUsersParams): Promise<TCustomUsers> => {
-  const { users } = await createAdminClient();
-  const response = await users.list(queries, search);
+  try {
+    const { databases } = await createAdminClient();
 
-  return response as unknown as TCustomUsers;
+    const combinedQueries = [
+      ...queries,
+      Query.equal("deleted", includingDeleted),
+    ];
+
+    const { total, documents } = await databases.listDocuments(
+      databaseId,
+      userCollectionId,
+      combinedQueries
+    );
+
+    return documents as unknown as TCustomUsers;
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/users): Error executing getCustomUsers():",
+      err
+    );
+    throw err;
+  }
 };
 
 export type UsersFunctionTypes = {
@@ -416,6 +462,7 @@ export type UsersFunctionTypes = {
   getCustomUsers: typeof getCustomUsers;
   getPrefsForUserId: typeof getPrefsForUserId;
   getUserForUserId: typeof getUserForUserId;
+  getUsers: typeof getUsers;
   getVerifiedUserForUserId: typeof getVerifiedUserForUserId;
   listIdentities: typeof listIdentities;
   listUsers: typeof listUsers;
@@ -433,6 +480,7 @@ export {
   getCustomUsers,
   getPrefsForUserId,
   getUserForUserId,
+  getUsers,
   getVerifiedUserForUserId,
   listIdentities,
   listUsers,

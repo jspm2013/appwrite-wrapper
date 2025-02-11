@@ -128,6 +128,7 @@ export {
   getCustomUsers,
   getPrefsForUserId,
   getUserForUserId,
+  getUsers,
   getVerifiedUserForUserId,
   listIdentities,
   listUsers,

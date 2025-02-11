@@ -221,11 +221,35 @@ const deleteUserId = async ({ userId, }) => {
     }
 };
 /**
- * Retrieves a list of custom users, allowing a dynamic type override.
+ * Gets users list (NATIVE appwrite users)
  */
-const getCustomUsers = async ({ queries = [], search = undefined, }) => {
-    const { users } = await createAdminClient();
-    const response = await users.list(queries, search);
-    return response;
+const getUsers = async ({ queries = [], search = undefined, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const response = await users.list(queries, search);
+        return response;
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/users): Error executing getUsers():", err);
+        throw err;
+    }
 };
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
+/**
+ * Gets CUSTOM users list
+ */
+const getCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const combinedQueries = [
+            ...queries,
+            Query.equal("deleted", includingDeleted),
+        ];
+        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, combinedQueries);
+        return documents;
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/users): Error executing getCustomUsers():", err);
+        throw err;
+    }
+};
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };

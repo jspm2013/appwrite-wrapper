@@ -289,4 +289,43 @@ const createSession = async ({ userId, secret, }) => {
         throw err;
     }
 };
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getSession, getUser, getVerifiedUser, listSessions, setPrefs, updateSession, updateVerification, };
+/**
+ * Updates the email for the current user.
+ */
+const updateEmail = async ({ email, password, }) => {
+    try {
+        const { account } = await createSessionClient();
+        return await account.updateEmail(email, password);
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/account): Error executing updateEmail():", err);
+        throw err;
+    }
+};
+/**
+ * Updates the phone number for the current user.
+ */
+const updatePhone = async ({ phone, password, }) => {
+    try {
+        const { account } = await createSessionClient();
+        return await account.updatePhone(phone, password);
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/account): Error executing updatePhone():", err);
+        throw err;
+    }
+};
+/**
+ * Updates the name for the current user.
+ */
+const updateName = async ({ name }) => {
+    try {
+        const { account } = await createSessionClient();
+        return await account.updateName(name);
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/account): Error executing updateName():", err);
+        throw err;
+    }
+};
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getSession, getUser, getVerifiedUser, listSessions, setPrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, };

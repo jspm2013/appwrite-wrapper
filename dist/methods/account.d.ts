@@ -149,6 +149,38 @@ export type CreateSessionParams = {
  * Creates a session for a user by their ID and secret.
  */
 declare const createSession: ({ userId, secret, }: CreateSessionParams) => Promise<Models.Session>;
+/**
+ * Parameters for updating the user's email.
+ */
+export type UpdateEmailParams = {
+    email: string;
+    password: string;
+};
+/**
+ * Updates the email for the current user.
+ */
+declare const updateEmail: ({ email, password, }: UpdateEmailParams) => Promise<UserType>;
+/**
+ * Parameters for updating the user's phone number.
+ */
+export type UpdatePhoneParams = {
+    phone: string;
+    password: string;
+};
+/**
+ * Updates the phone number for the current user.
+ */
+declare const updatePhone: ({ phone, password, }: UpdatePhoneParams) => Promise<UserType>;
+/**
+ * Parameters for updating the user's name.
+ */
+export type UpdateNameParams = {
+    name: string;
+};
+/**
+ * Updates the name for the current user.
+ */
+declare const updateName: ({ name }: UpdateNameParams) => Promise<UserType>;
 export type AccountFunctionTypes = {
     createAccount: typeof createAccount;
     createEmailPasswordSession: typeof createEmailPasswordSession;
@@ -164,9 +196,12 @@ export type AccountFunctionTypes = {
     getVerifiedUser: typeof getVerifiedUser;
     listSessions: typeof listSessions;
     setPrefs: typeof setPrefs;
-    updateVerification: typeof updateVerification;
     updateSession: typeof updateSession;
+    updateVerification: typeof updateVerification;
     getSession: typeof getSession;
+    updateEmail: typeof updateEmail;
+    updatePhone: typeof updatePhone;
+    updateName: typeof updateName;
 };
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getSession, getUser, getVerifiedUser, listSessions, setPrefs, updateSession, updateVerification, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getSession, getUser, getVerifiedUser, listSessions, setPrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, };
 //# sourceMappingURL=account.d.ts.map

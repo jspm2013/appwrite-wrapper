@@ -26,6 +26,9 @@ export {
   setPrefs,
   updateSession,
   updateVerification,
+  updateEmail,
+  updatePhone,
+  updateName,
 } from "./methods/account";
 
 export {

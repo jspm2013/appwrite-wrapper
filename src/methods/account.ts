@@ -472,6 +472,80 @@ const createSession = async ({
   }
 };
 
+/**
+ * Parameters for updating the user's email.
+ */
+export type UpdateEmailParams = {
+  email: string;
+  password: string;
+};
+/**
+ * Updates the email for the current user.
+ */
+const updateEmail = async ({
+  email,
+  password,
+}: UpdateEmailParams): Promise<UserType> => {
+  try {
+    const { account } = await createSessionClient();
+    return await account.updateEmail(email, password);
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/account): Error executing updateEmail():",
+      err
+    );
+    throw err;
+  }
+};
+
+/**
+ * Parameters for updating the user's phone number.
+ */
+export type UpdatePhoneParams = {
+  phone: string;
+  password: string;
+};
+/**
+ * Updates the phone number for the current user.
+ */
+const updatePhone = async ({
+  phone,
+  password,
+}: UpdatePhoneParams): Promise<UserType> => {
+  try {
+    const { account } = await createSessionClient();
+    return await account.updatePhone(phone, password);
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/account): Error executing updatePhone():",
+      err
+    );
+    throw err;
+  }
+};
+
+/**
+ * Parameters for updating the user's name.
+ */
+export type UpdateNameParams = {
+  name: string;
+};
+/**
+ * Updates the name for the current user.
+ */
+const updateName = async ({ name }: UpdateNameParams): Promise<UserType> => {
+  try {
+    const { account } = await createSessionClient();
+    return await account.updateName(name);
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/account): Error executing updateName():",
+      err
+    );
+    throw err;
+  }
+};
+
 export type AccountFunctionTypes = {
   createAccount: typeof createAccount;
   createEmailPasswordSession: typeof createEmailPasswordSession;
@@ -487,9 +561,12 @@ export type AccountFunctionTypes = {
   getVerifiedUser: typeof getVerifiedUser;
   listSessions: typeof listSessions;
   setPrefs: typeof setPrefs;
-  updateVerification: typeof updateVerification;
   updateSession: typeof updateSession;
+  updateVerification: typeof updateVerification;
   getSession: typeof getSession;
+  updateEmail: typeof updateEmail;
+  updatePhone: typeof updatePhone;
+  updateName: typeof updateName;
 };
 
 export {
@@ -510,4 +587,7 @@ export {
   setPrefs,
   updateSession,
   updateVerification,
+  updateEmail,
+  updatePhone,
+  updateName,
 };

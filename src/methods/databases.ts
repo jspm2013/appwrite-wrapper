@@ -526,8 +526,8 @@ export type UpdateDocumentParams = {
  * @returns The updated document details.
  */
 const updateDocument = async ({
-  dbId,
-  collId,
+  dbId = databaseId,
+  collId = userCollectionId,
   documentId,
   data,
   permissions,
@@ -565,8 +565,8 @@ export type DeleteDocumentParams = {
  * @returns Confirmation of deletion.
  */
 const deleteDocument = async ({
-  dbId,
-  collId,
+  dbId = databaseId,
+  collId = userCollectionId,
   documentId,
 }: DeleteDocumentParams): Promise<void> => {
   try {

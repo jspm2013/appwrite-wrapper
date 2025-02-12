@@ -242,7 +242,7 @@ const getDocument = async ({ dbId = databaseId, collId = userCollectionId, docum
  * @param params - Parameters for updating the document.
  * @returns The updated document details.
  */
-const updateDocument = async ({ dbId, collId, documentId, data, permissions, }) => {
+const updateDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId, data, permissions, }) => {
     try {
         const { databases } = await createAdminClient();
         const result = await databases.updateDocument(dbId, collId, documentId, data, permissions);
@@ -258,7 +258,7 @@ const updateDocument = async ({ dbId, collId, documentId, data, permissions, }) 
  * @param params - Parameters for deleting the document.
  * @returns Confirmation of deletion.
  */
-const deleteDocument = async ({ dbId, collId, documentId, }) => {
+const deleteDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId, }) => {
     try {
         const { databases } = await createAdminClient();
         await databases.deleteDocument(dbId, collId, documentId);

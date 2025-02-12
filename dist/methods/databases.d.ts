@@ -212,8 +212,8 @@ declare const getDocument: ({ dbId, collId, documentId, }: GetDocumentParams) =>
  * Parameters for the updateDocument function.
  */
 export type UpdateDocumentParams = {
-    dbId: string;
-    collId: string;
+    dbId?: string;
+    collId?: string;
     documentId: string;
     data?: Record<string, any>;
     permissions?: string[];
@@ -228,8 +228,8 @@ declare const updateDocument: ({ dbId, collId, documentId, data, permissions, }:
  * Parameters for the deleteDocument function.
  */
 export type DeleteDocumentParams = {
-    dbId: string;
-    collId: string;
+    dbId?: string;
+    collId?: string;
     documentId: string;
 };
 /**

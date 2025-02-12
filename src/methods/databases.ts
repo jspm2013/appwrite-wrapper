@@ -514,8 +514,8 @@ const getDocument = async ({
  * Parameters for the updateDocument function.
  */
 export type UpdateDocumentParams = {
-  dbId: string;
-  collId: string;
+  dbId?: string;
+  collId?: string;
   documentId: string;
   data?: Record<string, any>;
   permissions?: string[];
@@ -555,8 +555,8 @@ const updateDocument = async ({
  * Parameters for the deleteDocument function.
  */
 export type DeleteDocumentParams = {
-  dbId: string;
-  collId: string;
+  dbId?: string;
+  collId?: string;
   documentId: string;
 };
 /**

@@ -44,28 +44,58 @@ const listFiles = async ({
 };
 
 /**
- * Parameters for the getFile function.
+ * Get a file by its unique ID.
+ * This endpoint response returns a JSON object with the file metadata.
  */
-export type GetFileDetailsParams = {
+export type GetFileParams = {
   bucketId: string;
   fileId: string;
 };
 /**
- * Get details of a file by its unique ID.
+ * Get metadata of a file by its unique ID.
  * @param params - Parameters for getting the file.
- * @returns The file details.
+ * @returns The file metadata.
  */
-const getFileDetails = async ({
-  bucketId,
-  fileId,
-}: GetFileDetailsParams): Promise<any> => {
+const getFile = async ({ bucketId, fileId }: GetFileParams): Promise<any> => {
   try {
     const { storage } = await createAdminClient();
-    const result = await storage.getFile(bucketId, fileId);
+    const { getFile: fetchFile } = storage;
+    const result = await fetchFile(bucketId, fileId);
     return result;
   } catch (err) {
     console.error(
-      "APW-WRAPPER - Error (methods/storage): Error executing getFileDetails():",
+      "APW-WRAPPER - Error (methods/storage): Error executing getFile():",
+      err
+    );
+    throw err;
+  }
+};
+
+/**
+ * Get a file content by its unique ID.
+ * This endpoint is similar to the download method but returns with no 'Content-Disposition: attachment' header.
+ */
+export type GetFileViewParams = {
+  bucketId: string;
+  fileId: string;
+};
+/**
+ * Get file content of a file by its unique ID.
+ * @param params - Parameters for getting the file.
+ * @returns The file content.
+ */
+const getFileView = async ({
+  bucketId,
+  fileId,
+}: GetFileViewParams): Promise<any> => {
+  try {
+    const { storage } = await createAdminClient();
+    const { getFileView: fetchFileView } = storage;
+    const result = await fetchFileView(bucketId, fileId);
+    return result;
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/storage): Error executing getFileView():",
       err
     );
     throw err;
@@ -529,9 +559,10 @@ export type StorageFunctionTypes = {
   createBucket: typeof createBucket;
   deleteBucket: typeof deleteBucket;
   getBucket: typeof getBucket;
-  getFileDetails: typeof getFileDetails;
+  getFile: typeof getFile;
   getFileDownload: typeof getFileDownload;
   getFilePreview: typeof getFilePreview;
+  getFileView: typeof getFileView;
   deleteFile: typeof deleteFile;
   listBuckets: typeof listBuckets;
   listFiles: typeof listFiles;
@@ -545,9 +576,10 @@ export {
   createBucket,
   deleteBucket,
   getBucket,
-  getFileDetails,
+  getFile,
   getFileDownload,
   getFilePreview,
+  getFileView,
   deleteFile,
   listBuckets,
   listFiles,

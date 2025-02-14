@@ -15,18 +15,33 @@ export type ListFilesParams = {
  */
 declare const listFiles: ({ bucketId, queries, search, }: ListFilesParams) => Promise<any>;
 /**
- * Parameters for the getFile function.
+ * Get a file by its unique ID.
+ * This endpoint response returns a JSON object with the file metadata.
  */
-export type GetFileDetailsParams = {
+export type GetFileParams = {
     bucketId: string;
     fileId: string;
 };
 /**
- * Get details of a file by its unique ID.
+ * Get metadata of a file by its unique ID.
  * @param params - Parameters for getting the file.
- * @returns The file details.
+ * @returns The file metadata.
  */
-declare const getFileDetails: ({ bucketId, fileId, }: GetFileDetailsParams) => Promise<any>;
+declare const getFile: ({ bucketId, fileId }: GetFileParams) => Promise<any>;
+/**
+ * Get a file content by its unique ID.
+ * This endpoint is similar to the download method but returns with no 'Content-Disposition: attachment' header.
+ */
+export type GetFileViewParams = {
+    bucketId: string;
+    fileId: string;
+};
+/**
+ * Get file content of a file by its unique ID.
+ * @param params - Parameters for getting the file.
+ * @returns The file content.
+ */
+declare const getFileView: ({ bucketId, fileId, }: GetFileViewParams) => Promise<any>;
 /**
  * Parameters for the updateFile function.
  */
@@ -206,9 +221,10 @@ export type StorageFunctionTypes = {
     createBucket: typeof createBucket;
     deleteBucket: typeof deleteBucket;
     getBucket: typeof getBucket;
-    getFileDetails: typeof getFileDetails;
+    getFile: typeof getFile;
     getFileDownload: typeof getFileDownload;
     getFilePreview: typeof getFilePreview;
+    getFileView: typeof getFileView;
     deleteFile: typeof deleteFile;
     listBuckets: typeof listBuckets;
     listFiles: typeof listFiles;
@@ -217,5 +233,5 @@ export type StorageFunctionTypes = {
     uploadFile: typeof uploadFile;
     uploadFileFromPath: typeof uploadFileFromPath;
 };
-export { createBucket, deleteBucket, getBucket, getFileDetails, getFileDownload, getFilePreview, deleteFile, listBuckets, listFiles, updateBucket, updateFile, uploadFile, uploadFileFromPath, };
+export { createBucket, deleteBucket, getBucket, getFile, getFileDownload, getFilePreview, getFileView, deleteFile, listBuckets, listFiles, updateBucket, updateFile, uploadFile, uploadFileFromPath, };
 //# sourceMappingURL=storage.d.ts.map

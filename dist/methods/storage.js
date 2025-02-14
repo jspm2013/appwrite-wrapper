@@ -21,18 +21,36 @@ const listFiles = async ({ bucketId, queries, search, }) => {
     }
 };
 /**
- * Get details of a file by its unique ID.
+ * Get metadata of a file by its unique ID.
  * @param params - Parameters for getting the file.
- * @returns The file details.
+ * @returns The file metadata.
  */
-const getFileDetails = async ({ bucketId, fileId, }) => {
+const getFile = async ({ bucketId, fileId }) => {
     try {
         const { storage } = await createAdminClient();
-        const result = await storage.getFile(bucketId, fileId);
+        const { getFile: fetchFile } = storage;
+        const result = await fetchFile(bucketId, fileId);
         return result;
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/storage): Error executing getFileDetails():", err);
+        console.error("APW-WRAPPER - Error (methods/storage): Error executing getFile():", err);
+        throw err;
+    }
+};
+/**
+ * Get file content of a file by its unique ID.
+ * @param params - Parameters for getting the file.
+ * @returns The file content.
+ */
+const getFileView = async ({ bucketId, fileId, }) => {
+    try {
+        const { storage } = await createAdminClient();
+        const { getFileView: fetchFileView } = storage;
+        const result = await fetchFileView(bucketId, fileId);
+        return result;
+    }
+    catch (err) {
+        console.error("APW-WRAPPER - Error (methods/storage): Error executing getFileView():", err);
         throw err;
     }
 };
@@ -236,4 +254,4 @@ const deleteBucket = async ({ bucketId }) => {
         throw err;
     }
 };
-export { createBucket, deleteBucket, getBucket, getFileDetails, getFileDownload, getFilePreview, deleteFile, listBuckets, listFiles, updateBucket, updateFile, uploadFile, uploadFileFromPath, };
+export { createBucket, deleteBucket, getBucket, getFile, getFileDownload, getFilePreview, getFileView, deleteFile, listBuckets, listFiles, updateBucket, updateFile, uploadFile, uploadFileFromPath, };

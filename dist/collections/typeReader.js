@@ -12,35 +12,37 @@ const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
 export const getTypeFile = async ({ collName = "users", }) => {
     try {
         const filePath = path.join(SCHEMAS_FOLDER, `${collName}.ts`);
-        // Check if the type file exists
         await fs.access(filePath);
         return filePath;
     }
     catch (err) {
-        console.error(`❌ ERROR: Type file not found - ${err.message}`);
+        console.error(`ERROR: Type file not found - ${err.message}`);
         return null;
     }
 };
 /**
- * Dynamically imports a TypeScript type definition from a generated type file.
+ * Reads a TypeScript file and extracts a specific interface or type.
  *
  * @param {Object} options - Configuration options for fetching the type.
  * @param {string} options.collName - The name of the collection (default: "users").
- * @param {string} options.typeName - The specific type name to import from the type file.
- * @returns {Promise<any | null>} - The imported TypeScript type object if found, otherwise `null`.
+ * @param {string} options.typeName - The specific type name to extract.
+ * @returns {Promise<string | null>} - The extracted type definition as a string, or `null` if not found.
  */
 export const getType = async ({ collName = "users", typeName, }) => {
     try {
         const typeFile = await getTypeFile({ collName });
         if (!typeFile)
             return null;
-        // Get the relative module path and import dynamically
-        const modulePath = path.relative(__dirname, typeFile);
-        const importedModule = await import(modulePath);
-        return importedModule[typeName] || null;
+        const tsContent = await fs.readFile(typeFile, "utf-8");
+        const typeRegex = new RegExp(`export\\s+(?:interface|type)\\s+${typeName}\\s+[^]+?\\n}`, "gs");
+        const match = tsContent.match(typeRegex);
+        if (!match) {
+            throw new Error(`Type '${typeName}' not found in ${typeFile}`);
+        }
+        return match[0];
     }
-    catch (error) {
-        console.error(`ERROR: Failed to import type - ${error.message}`);
+    catch (err) {
+        console.error(`APW-WRAPPER - Error (collections/typeReader): Failed to extract type - ${err.message}`);
         return null;
     }
 };

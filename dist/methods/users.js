@@ -1,5 +1,6 @@
 "use server";
 import { Query } from "node-appwrite";
+import { getType } from "../collections/typeReader";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
 /**
@@ -111,40 +112,42 @@ const getUserForUserId = async ({ userId, }) => {
     }
 };
 /**
- * Retrieves a verified user by their ID.
+ * Retrieves a verified app user by their ID.
  */
-const getVerifiedUserForUserId = async ({ userId, }) => {
+const getAppUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
         const user = await users.get(userId);
+        const AppUserType = await getType({
+            collName: userCollectionId,
+            typeName: "AppUserType",
+        });
+        if (!AppUserType) {
+            throw new Error("No AppUserType found. Returning null");
+        }
         if (user.emailVerification || user.phoneVerification) {
-            const { attributes } = await databases.listAttributes(databaseId, userCollectionId);
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
                 Query.and([
-                    Query.equal("user_id", userId),
+                    Query.equal("user_id", user.$id),
                     Query.equal("deleted", false),
                 ]),
             ]);
             if (total > 0) {
-                // Dynamically build the custom attributes type
-                let customUserAttributes = {};
-                attributes.forEach((attr) => {
-                    customUserAttributes[attr.key] = attr.default ?? null;
-                });
-                // Return verified user, enriched for the custom attributes
-                return { ...user, customUser: documents[0] };
+                return {
+                    ...user,
+                    customUser: documents[0],
+                };
             }
         }
         return null;
     }
     catch (err) {
+        console.error("APW-WRAPPER - Error (methods/users): Error executing getAppUserForUserId():", err);
         /*
-         * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
+         * Appwrite throws Error when the user is not logged in, so we have to return null for that case (instead of returning the error).
          */
         return null;
-        //console.error("APW-WRAPPER - Error (methods/users): Error executing getVerifiedUserForUserId():", err);
-        //throw err;
     }
 };
 /**
@@ -255,4 +258,4 @@ const getCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
         throw err;
     }
 };
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };

@@ -4,10 +4,6 @@ import { OAuthProvider } from "../enums";
  * Basic/native appwrite user type + empty custom attributes type.
  */
 export type UserType = Models.User<Models.Preferences>;
-export type CustomUserAttributes = Record<string, any>;
-export type VerifiedUserType = UserType & {
-    customUser: CustomUserAttributes;
-};
 /**
  * Parameters for creating an account.
  */
@@ -77,9 +73,11 @@ declare const deleteSessions: () => Promise<string>;
  */
 declare const getUser: () => Promise<UserType | null>;
 /**
- * Retrieves the current verified user.
+ * Retrieves the currently authenticated and verified user, dynamically typed based on the generated schema.
+ *
+ * @returns {Promise<any | null>} - The user object enriched with custom user attributes, or `null` if not verified.
  */
-declare const getVerifiedUser: () => Promise<VerifiedUserType | null>;
+declare const getAppUser: () => Promise<any | null>;
 /**
  * Parameters for deleting preferences.
  */
@@ -193,7 +191,7 @@ export type AccountFunctionTypes = {
     deleteSessions: typeof deleteSessions;
     getPrefs: typeof getPrefs;
     getUser: typeof getUser;
-    getVerifiedUser: typeof getVerifiedUser;
+    getAppUser: typeof getAppUser;
     listSessions: typeof listSessions;
     setPrefs: typeof setPrefs;
     updateSession: typeof updateSession;
@@ -203,5 +201,5 @@ export type AccountFunctionTypes = {
     updatePhone: typeof updatePhone;
     updateName: typeof updateName;
 };
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getSession, getUser, getVerifiedUser, listSessions, setPrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, setPrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, };
 //# sourceMappingURL=account.d.ts.map

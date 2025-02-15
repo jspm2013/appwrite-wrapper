@@ -2,6 +2,7 @@
 
 import { ID, Models, Query } from "node-appwrite";
 import { OAuthProvider } from "../enums";
+import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
 import {
@@ -20,10 +21,6 @@ import { hostExternal } from "../host";
  * Basic/native appwrite user type + empty custom attributes type.
  */
 export type UserType = Models.User<Models.Preferences>;
-export type CustomUserAttributes = Record<string, any>;
-export type VerifiedUserType = UserType & {
-  customUser: CustomUserAttributes;
-};
 
 /**
  * Parameters for creating an account.
@@ -210,31 +207,38 @@ const getUser = async (): Promise<UserType | null> => {
     const { account } = await createSessionClient();
     return await account.get();
   } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/account): Error executing getUser():",
+      err
+    );
     /*
-     * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
+     * Appwrite throws Error when the user is not logged in, so we have to return null for that case (instead of returning the error).
      */
     return null;
-    //console.error("APW-WRAPPER - Error (methods/account): Error executing getUser():", err);
-    //throw JSON.parse(JSON.stringify(err));
   }
 };
 
 /**
- * Retrieves the current verified user.
+ * Retrieves the currently authenticated and verified user, dynamically typed based on the generated schema.
+ *
+ * @returns {Promise<any | null>} - The user object enriched with custom user attributes, or `null` if not verified.
  */
-const getVerifiedUser = async (): Promise<VerifiedUserType | null> => {
+const getAppUser = async (): Promise<any | null> => {
   try {
     const { account } = await createSessionClient();
     const { databases } = await createAdminClient();
 
     const user = await account.get();
+    const AppUserType = await getType({
+      collName: userCollectionId,
+      typeName: "AppUserType",
+    });
+
+    if (!AppUserType) {
+      throw new Error("No AppUserType found. Returning null");
+    }
 
     if (user.emailVerification || user.phoneVerification) {
-      const { attributes } = await databases.listAttributes(
-        databaseId,
-        userCollectionId
-      );
-
       const { total, documents } = await databases.listDocuments(
         databaseId,
         userCollectionId,
@@ -247,24 +251,23 @@ const getVerifiedUser = async (): Promise<VerifiedUserType | null> => {
       );
 
       if (total > 0) {
-        // Dynamically build the custom attributes type
-        let customUserAttributes: CustomUserAttributes = {};
-        attributes.forEach((attr: any) => {
-          customUserAttributes[attr.key] = attr.default ?? null;
-        });
-
-        // Return verified user, enriched for the custom attributes
-        return { ...user, customUser: documents[0] } as VerifiedUserType;
+        return {
+          ...user,
+          customUser: documents[0],
+        } as unknown as typeof AppUserType;
       }
     }
+
     return null;
   } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/account): Error executing getAppUser():",
+      err
+    );
     /*
-     * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
+     * Appwrite throws Error when the user is not logged in, so we have to return null for that case (instead of returning the error).
      */
     return null;
-    //console.error("APW-WRAPPER - Error (methods/account): Error executing getVerifiedUser():", err);
-    //throw err;
   }
 };
 
@@ -558,7 +561,7 @@ export type AccountFunctionTypes = {
   deleteSessions: typeof deleteSessions;
   getPrefs: typeof getPrefs;
   getUser: typeof getUser;
-  getVerifiedUser: typeof getVerifiedUser;
+  getAppUser: typeof getAppUser;
   listSessions: typeof listSessions;
   setPrefs: typeof setPrefs;
   updateSession: typeof updateSession;
@@ -579,10 +582,10 @@ export {
   deletePrefs,
   deleteSession,
   deleteSessions,
+  getAppUser,
   getPrefs,
   getSession,
   getUser,
-  getVerifiedUser,
   listSessions,
   setPrefs,
   updateSession,

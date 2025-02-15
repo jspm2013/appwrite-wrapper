@@ -1,6 +1,7 @@
 "use server";
 import { ID, Query } from "node-appwrite";
 import { OAuthProvider } from "../enums";
+import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
 import { cookieName, oauthSuccessPath, oauthFailurePath, verificationPath, signInPath, databaseId, userCollectionId, } from "../appwriteConfig";
@@ -124,24 +125,31 @@ const getUser = async () => {
         return await account.get();
     }
     catch (err) {
+        console.error("APW-WRAPPER - Error (methods/account): Error executing getUser():", err);
         /*
-         * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
+         * Appwrite throws Error when the user is not logged in, so we have to return null for that case (instead of returning the error).
          */
         return null;
-        //console.error("APW-WRAPPER - Error (methods/account): Error executing getUser():", err);
-        //throw JSON.parse(JSON.stringify(err));
     }
 };
 /**
- * Retrieves the current verified user.
+ * Retrieves the currently authenticated and verified user, dynamically typed based on the generated schema.
+ *
+ * @returns {Promise<any | null>} - The user object enriched with custom user attributes, or `null` if not verified.
  */
-const getVerifiedUser = async () => {
+const getAppUser = async () => {
     try {
         const { account } = await createSessionClient();
         const { databases } = await createAdminClient();
         const user = await account.get();
+        const AppUserType = await getType({
+            collName: userCollectionId,
+            typeName: "AppUserType",
+        });
+        if (!AppUserType) {
+            throw new Error("No AppUserType found. Returning null");
+        }
         if (user.emailVerification || user.phoneVerification) {
-            const { attributes } = await databases.listAttributes(databaseId, userCollectionId);
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
                 Query.and([
                     Query.equal("user_id", user.$id),
@@ -149,24 +157,20 @@ const getVerifiedUser = async () => {
                 ]),
             ]);
             if (total > 0) {
-                // Dynamically build the custom attributes type
-                let customUserAttributes = {};
-                attributes.forEach((attr) => {
-                    customUserAttributes[attr.key] = attr.default ?? null;
-                });
-                // Return verified user, enriched for the custom attributes
-                return { ...user, customUser: documents[0] };
+                return {
+                    ...user,
+                    customUser: documents[0],
+                };
             }
         }
         return null;
     }
     catch (err) {
+        console.error("APW-WRAPPER - Error (methods/account): Error executing getAppUser():", err);
         /*
-         * Appwrite throws Error when the user is not logged in, so we have to return null for that case.
+         * Appwrite throws Error when the user is not logged in, so we have to return null for that case (instead of returning the error).
          */
         return null;
-        //console.error("APW-WRAPPER - Error (methods/account): Error executing getVerifiedUser():", err);
-        //throw err;
     }
 };
 /**
@@ -328,4 +332,4 @@ const updateName = async ({ name }) => {
         throw err;
     }
 };
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getSession, getUser, getVerifiedUser, listSessions, setPrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, setPrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, };

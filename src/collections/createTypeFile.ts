@@ -49,7 +49,7 @@ export const createTypeFile = async (
     })
     .join("\n");
 
-  const typeDefinition = `import { Models } from "node-appwrite";\n\nexport interface ${typeName} extends Models.Document {\n${fields}\n}`;
+  const typeDefinition = `import { Models } from "node-appwrite";\n\nexport interface ${typeName} extends Models.Document {\n${fields}\n}\n\nexport interface AppUserType extends Models.User<Models.Preferences> {\ncustomUser: UserType;\n}`;
 
   // Write the type definition to a file in the same folder as the schema
   const typeFilePath = path.join(path.dirname(schemaFilePath), `${name}.ts`);

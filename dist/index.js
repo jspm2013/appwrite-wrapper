@@ -2,7 +2,7 @@ import { hostInternal, hostExternal, live, originInternal, originExternal, } fro
 export { ID, Query } from "node-appwrite";
 export { 
 // Account functions
-createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getSession, getUser, getVerifiedUser, listSessions, setPrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, } from "./methods/account";
+createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getPrefs, getSession, getUser, getAppUser, listSessions, setPrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, } from "./methods/account";
 export { 
 // Avatars functions
 getFlag, getImage, getQr, getInitials, } from "./methods/avatars";
@@ -17,7 +17,7 @@ export {
 createTeam, createTeamMembership, deleteTeam, deleteTeamMembership, getTeam, getTeamMembership, getTeamPreferences, listTeamMemberships, listTeams, updateTeamMembership, updateTeamMembershipStatus, updateTeamName, updateTeamPreferences, } from "./methods/teams";
 export { 
 // Users functions
-createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, } from "./methods/users";
+createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, } from "./methods/users";
 export { 
 // ApwWrapper Config
 envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, schemasPath, signInPath, userCollectionId, verificationPath, } from "./appwriteConfig";

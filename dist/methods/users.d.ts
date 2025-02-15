@@ -74,17 +74,9 @@ export type GetUserForUserIdParams = {
  */
 declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<Models.User<Models.Preferences> | null>;
 /**
- * Basic/native appwrite user type + empty custom attributes type.
+ * Retrieves a verified app user by their ID.
  */
-export type UserType = Models.User<Models.Preferences>;
-export type CustomUserAttributes = Record<string, any>;
-export type VerifiedUserType = UserType & {
-    customUser: CustomUserAttributes;
-};
-/**
- * Retrieves a verified user by their ID.
- */
-declare const getVerifiedUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<VerifiedUserType | null>;
+declare const getAppUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<any | null>;
 /**
  * Parameters for listing users.
  */
@@ -161,15 +153,15 @@ export type UsersFunctionTypes = {
     deleteSessionForUserId: typeof deleteSessionForUserId;
     deleteSessionsForUserId: typeof deleteSessionsForUserId;
     deleteUserId: typeof deleteUserId;
+    getAppUserForUserId: typeof getAppUserForUserId;
     getCustomUsers: typeof getCustomUsers;
     getPrefsForUserId: typeof getPrefsForUserId;
     getUserForUserId: typeof getUserForUserId;
     getUsers: typeof getUsers;
-    getVerifiedUserForUserId: typeof getVerifiedUserForUserId;
     listIdentities: typeof listIdentities;
     listUsers: typeof listUsers;
     setPrefsForUserId: typeof setPrefsForUserId;
     updateEmailVerificationForUserId: typeof updateEmailVerificationForUserId;
 };
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, getVerifiedUserForUserId, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
 //# sourceMappingURL=users.d.ts.map

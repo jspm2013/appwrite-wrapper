@@ -96,12 +96,12 @@ declare const getPrefs: () => Promise<Models.Preferences>;
  * Parameters for updating preferences.
  */
 export type UpdatePrefsParams = {
-    newPrefs: Models.Preferences;
+    prefs: Models.Preferences;
 };
 /**
  * Updates preferences for the current user.
  */
-declare const updatePrefs: ({ newPrefs, }: UpdatePrefsParams) => Promise<Models.Preferences>;
+declare const updatePrefs: ({ prefs, }: UpdatePrefsParams) => Promise<Models.Preferences>;
 /**
  * Parameters for updating verification.
  */

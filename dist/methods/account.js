@@ -209,13 +209,13 @@ const getPrefs = async () => {
 /**
  * Updates preferences for the current user.
  */
-const updatePrefs = async ({ newPrefs, }) => {
+const updatePrefs = async ({ prefs, }) => {
     try {
-        if (isValidJsonObject(newPrefs)) {
+        if (isValidJsonObject(prefs)) {
             const { account } = await createSessionClient();
-            const prefs = await account.getPrefs();
+            const oldPrefs = await account.getPrefs();
             const { updatePrefs: setPrefs } = account;
-            const user = await setPrefs(isEmptyKeyValuePair(prefs) ? newPrefs : { ...prefs, ...newPrefs });
+            const user = await setPrefs(isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs });
             return user.prefs;
         }
         else {

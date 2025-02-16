@@ -322,21 +322,21 @@ const getPrefs = async (): Promise<Models.Preferences> => {
  * Parameters for updating preferences.
  */
 export type UpdatePrefsParams = {
-  newPrefs: Models.Preferences;
+  prefs: Models.Preferences;
 };
 /**
  * Updates preferences for the current user.
  */
 const updatePrefs = async ({
-  newPrefs,
+  prefs,
 }: UpdatePrefsParams): Promise<Models.Preferences> => {
   try {
-    if (isValidJsonObject(newPrefs)) {
+    if (isValidJsonObject(prefs)) {
       const { account } = await createSessionClient();
-      const prefs = await account.getPrefs();
+      const oldPrefs = await account.getPrefs();
       const { updatePrefs: setPrefs } = account;
       const user = await setPrefs(
-        isEmptyKeyValuePair(prefs) ? newPrefs : { ...prefs, ...newPrefs }
+        isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs }
       );
       return user.prefs;
     } else {

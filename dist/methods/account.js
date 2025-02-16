@@ -214,8 +214,7 @@ const updatePrefs = async ({ prefs, }) => {
         if (isValidJsonObject(prefs)) {
             const { account } = await createSessionClient();
             const oldPrefs = await account.getPrefs();
-            const { updatePrefs: setPrefs } = account;
-            const user = await setPrefs(isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs });
+            const user = await account.updatePrefs(isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs });
             return user.prefs;
         }
         else {

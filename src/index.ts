@@ -18,10 +18,10 @@ export {
   deletePrefs,
   deleteSession,
   deleteSessions,
+  getAppUser,
   getPrefs,
   getSession,
   getUser,
-  getAppUser,
   listSessions,
   updatePrefs,
   updateSession,
@@ -29,6 +29,14 @@ export {
   updateEmail,
   updatePhone,
   updateName,
+  updateStatus,
+  updatePassword,
+  createRecovery,
+  updateRecovery,
+  createAnonymousSession,
+  createMagicURLSession,
+  createPhoneVerification,
+  updatePhoneVerification,
 } from "./methods/account";
 
 export {

@@ -179,79 +179,6 @@ export type UpdateNameParams = {
  * Updates the name for the current user.
  */
 declare const updateName: ({ name }: UpdateNameParams) => Promise<UserType>;
-/**
- * Updates the account status (block/unblock user).
- */
-declare const updateStatus: () => Promise<UserType>;
-/**
- * Parameters for updating the user's password.
- */
-export type UpdatePasswordParams = {
-    password: string;
-    oldPassword?: string;
-};
-/**
- * Updates the password for the current user.
- */
-declare const updatePassword: ({ password, oldPassword, }: UpdatePasswordParams) => Promise<UserType>;
-/**
- * Parameters for creating a password recovery request.
- */
-export type CreateRecoveryParams = {
-    email: string;
-    url: string;
-};
-/**
- * Creates a password recovery token.
- */
-declare const createRecovery: ({ email, url, }: CreateRecoveryParams) => Promise<Models.Token>;
-/**
- * Parameters for updating a password recovery.
- */
-export type UpdateRecoveryParams = {
-    userId: string;
-    secret: string;
-    password: string;
-};
-/**
- * Updates the password using a recovery token.
- */
-declare const updateRecovery: ({ userId, secret, password, }: UpdateRecoveryParams) => Promise<Models.Token>;
-/**
- * Creates an anonymous session for the user.
- */
-declare const createAnonymousSession: () => Promise<Models.Session>;
-/**
- * Parameters for creating a Magic URL session.
- */
-export type CreateMagicURLSessionParams = {
-    userId: string;
-    email: string;
-    url?: string;
-    phrase?: boolean;
-};
-/**
- * Creates a Magic URL session for the user.
- */
-declare const createMagicURLSession: ({ userId, email, url, phrase, }: CreateMagicURLSessionParams) => Promise<Models.Token>;
-/**
- * Creates a phone verification token.
- */
-declare const createPhoneVerification: () => Promise<Models.Token>;
-/**
- * Parameters for updating phone verification.
- */
-export type UpdatePhoneVerificationParams = {
-    userId: string;
-    secret: string;
-};
-/**
- * Confirms phone verification.
- */
-declare const updatePhoneVerification: ({ userId, secret, }: UpdatePhoneVerificationParams) => Promise<Models.Token>;
-/**
- * Update the exported account function types.
- */
 export type AccountFunctionTypes = {
     createAccount: typeof createAccount;
     createEmailPasswordSession: typeof createEmailPasswordSession;
@@ -273,17 +200,6 @@ export type AccountFunctionTypes = {
     updateEmail: typeof updateEmail;
     updatePhone: typeof updatePhone;
     updateName: typeof updateName;
-    updateStatus: typeof updateStatus;
-    updatePassword: typeof updatePassword;
-    createRecovery: typeof createRecovery;
-    updateRecovery: typeof updateRecovery;
-    createAnonymousSession: typeof createAnonymousSession;
-    createMagicURLSession: typeof createMagicURLSession;
-    createPhoneVerification: typeof createPhoneVerification;
-    updatePhoneVerification: typeof updatePhoneVerification;
 };
-/**
- * Export all functions
- */
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
-//# sourceMappingURL=account.d.ts.map
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, };
+//# sourceMappingURL=account%20copy.d.ts.map

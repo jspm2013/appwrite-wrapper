@@ -209,12 +209,13 @@ const getPrefs = async () => {
 /**
  * Updates preferences for the current user.
  */
-const setPrefs = async ({ newPrefs, }) => {
+const updatePrefs = async ({ newPrefs, }) => {
     try {
         if (isValidJsonObject(newPrefs)) {
             const { account } = await createSessionClient();
             const prefs = await account.getPrefs();
-            const user = await account.updatePrefs(isEmptyKeyValuePair(prefs) ? newPrefs : { ...prefs, ...newPrefs });
+            const { updatePrefs: setPrefs } = account;
+            const user = await setPrefs(isEmptyKeyValuePair(prefs) ? newPrefs : { ...prefs, ...newPrefs });
             return user.prefs;
         }
         else {
@@ -222,7 +223,7 @@ const setPrefs = async ({ newPrefs, }) => {
         }
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing setPrefs():", err);
+        console.error("APW-WRAPPER - Error (methods/account): Error executing updatePrefs():", err);
         throw err;
     }
 };
@@ -332,4 +333,4 @@ const updateName = async ({ name }) => {
         throw err;
     }
 };
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, setPrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, };

@@ -319,22 +319,23 @@ const getPrefs = async (): Promise<Models.Preferences> => {
 };
 
 /**
- * Parameters for setting preferences.
+ * Parameters for updating preferences.
  */
-export type SetPrefsParams = {
+export type UpdatePrefsParams = {
   newPrefs: Models.Preferences;
 };
 /**
  * Updates preferences for the current user.
  */
-const setPrefs = async ({
+const updatePrefs = async ({
   newPrefs,
-}: SetPrefsParams): Promise<Models.Preferences> => {
+}: UpdatePrefsParams): Promise<Models.Preferences> => {
   try {
     if (isValidJsonObject(newPrefs)) {
       const { account } = await createSessionClient();
       const prefs = await account.getPrefs();
-      const user = await account.updatePrefs(
+      const { updatePrefs: setPrefs } = account;
+      const user = await setPrefs(
         isEmptyKeyValuePair(prefs) ? newPrefs : { ...prefs, ...newPrefs }
       );
       return user.prefs;
@@ -343,7 +344,7 @@ const setPrefs = async ({
     }
   } catch (err) {
     console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing setPrefs():",
+      "APW-WRAPPER - Error (methods/account): Error executing updatePrefs():",
       err
     );
     throw err;
@@ -563,7 +564,7 @@ export type AccountFunctionTypes = {
   getUser: typeof getUser;
   getAppUser: typeof getAppUser;
   listSessions: typeof listSessions;
-  setPrefs: typeof setPrefs;
+  updatePrefs: typeof updatePrefs;
   updateSession: typeof updateSession;
   updateVerification: typeof updateVerification;
   getSession: typeof getSession;
@@ -587,7 +588,7 @@ export {
   getSession,
   getUser,
   listSessions,
-  setPrefs,
+  updatePrefs,
   updateSession,
   updateVerification,
   updateEmail,

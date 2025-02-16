@@ -93,15 +93,15 @@ declare const deletePrefs: ({ key, }: DeletePrefsParams) => Promise<Models.Prefe
  */
 declare const getPrefs: () => Promise<Models.Preferences>;
 /**
- * Parameters for setting preferences.
+ * Parameters for updating preferences.
  */
-export type SetPrefsParams = {
+export type UpdatePrefsParams = {
     newPrefs: Models.Preferences;
 };
 /**
  * Updates preferences for the current user.
  */
-declare const setPrefs: ({ newPrefs, }: SetPrefsParams) => Promise<Models.Preferences>;
+declare const updatePrefs: ({ newPrefs, }: UpdatePrefsParams) => Promise<Models.Preferences>;
 /**
  * Parameters for updating verification.
  */
@@ -193,7 +193,7 @@ export type AccountFunctionTypes = {
     getUser: typeof getUser;
     getAppUser: typeof getAppUser;
     listSessions: typeof listSessions;
-    setPrefs: typeof setPrefs;
+    updatePrefs: typeof updatePrefs;
     updateSession: typeof updateSession;
     updateVerification: typeof updateVerification;
     getSession: typeof getSession;
@@ -201,5 +201,5 @@ export type AccountFunctionTypes = {
     updatePhone: typeof updatePhone;
     updateName: typeof updateName;
 };
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, setPrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, };
 //# sourceMappingURL=account.d.ts.map

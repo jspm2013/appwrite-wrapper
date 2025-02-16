@@ -23,7 +23,7 @@ export {
   getUser,
   getAppUser,
   listSessions,
-  setPrefs,
+  updatePrefs,
   updateSession,
   updateVerification,
   updateEmail,

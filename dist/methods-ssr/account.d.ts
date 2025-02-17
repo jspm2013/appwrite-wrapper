@@ -12,8 +12,8 @@ interface ErrorObject {
     description: string;
 }
 interface ReturnObject<T> {
-    error?: ErrorObject | undefined;
-    data?: T | undefined;
+    error?: ErrorObject;
+    data?: T;
 }
 /**
  * Parameters for creating an account.

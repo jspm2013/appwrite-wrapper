@@ -277,18 +277,20 @@ const useCreateOAuth2Token = () => {
     return useActionState(async (_prevState, params) => {
         try {
             const { account } = await createAdminClient();
-            return (await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`));
+            const data = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`);
+            return { data: data };
         }
         catch (err) {
-            const error = {
-                message: admin
-                    ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
-                    : "Account Error",
-                description: JSON.stringify(err),
+            return {
+                error: {
+                    message: admin
+                        ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
+                        : "Account Error",
+                    description: JSON.stringify(err),
+                },
             };
-            return error;
         }
-    }, null);
+    }, {});
 };
 /**
  * Creates a session for a user by their ID and secret.

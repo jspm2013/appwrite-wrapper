@@ -29,12 +29,13 @@ export type UserType = Models.User<Models.Preferences>;
  * Basic appwrite-wrapper return object
  */
 interface ErrorObject {
-  error: {
-    message: string;
-    description: string;
-  };
+  message: string;
+  description: string;
 }
-type ReturnObject<T> = T | ErrorObject;
+interface ReturnObject<T> {
+  error?: ErrorObject | undefined;
+  data?: T | undefined;
+}
 
 /**
  * Parameters for creating an account.
@@ -455,22 +456,25 @@ const useCreateOAuth2Token = <T = string>() => {
     ): Promise<ReturnObject<T>> => {
       try {
         const { account } = await createAdminClient();
-        return (await account.createOAuth2Token(
+        const data = await account.createOAuth2Token(
           OAuthProvider[params.provider],
           `${hostExternal}/${params.successPath || oauthSuccessPath}`,
           `${hostExternal}/${params.failurePath || oauthFailurePath}`
-        )) as T;
+        );
+
+        return { data: data as T };
       } catch (err: any) {
-        const error = {
-          message: admin
-            ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
-            : "Account Error",
-          description: JSON.stringify(err),
+        return {
+          error: {
+            message: admin
+              ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
+              : "Account Error",
+            description: JSON.stringify(err),
+          },
         };
-        return error as T;
       }
     },
-    null as any
+    {} as ReturnObject<T>
   );
 };
 

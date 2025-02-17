@@ -32,7 +32,7 @@ interface ErrorObject {
   message: string;
   description: string;
 }
-type ReturnObject<T> = T | ErrorObject;
+type ReturnObject<T> = T | { error: ErrorObject };
 
 /**
  * Parameters for creating an account.
@@ -459,12 +459,13 @@ const useCreateOAuth2Token = <T = string>() => {
           `${hostExternal}/${params.failurePath || oauthFailurePath}`
         )) as T;
       } catch (err: any) {
-        return {
+        const error = {
           message: admin
             ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
             : "Account Error",
           description: JSON.stringify(err),
-        } as ErrorObject;
+        };
+        return error as T;
       }
     },
     null as any

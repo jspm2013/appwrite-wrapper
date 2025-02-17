@@ -26,12 +26,13 @@ const admin: boolean = !live;
 export type UserType = Models.User<Models.Preferences>;
 
 /**
- * Basic appwrite-wrapper error object
+ * Basic appwrite-wrapper return object
  */
-export type ErrorObject = {
+interface ErrorObject {
   message: string;
   description: string;
-};
+}
+type ReturnObject<T> = T | { error: ErrorObject };
 
 /**
  * Parameters for creating an account.
@@ -444,28 +445,29 @@ const createOAuth2Token = async ({
     throw err;
   }
 };
-const useCreateOAuth2Token = () => {
-  return useActionState(
-    async (_prevState: any, params: CreateOAuth2TokenParams): Promise<any> => {
+const useCreateOAuth2Token = <T>() => {
+  return useActionState<T | ErrorObject, CreateOAuth2TokenParams>(
+    async (
+      _prevState: T | ErrorObject,
+      params: CreateOAuth2TokenParams
+    ): Promise<T | ErrorObject> => {
       try {
         const { account } = await createAdminClient();
-        const url = await account.createOAuth2Token(
+        return (await account.createOAuth2Token(
           OAuthProvider[params.provider],
           `${hostExternal}/${params.successPath || oauthSuccessPath}`,
           `${hostExternal}/${params.failurePath || oauthFailurePath}`
-        );
-        return url;
+        )) as T;
       } catch (err: any) {
-        const error = {
+        throw {
           message: admin
-            ? "APW-Wrapper - Error (methods/account): createOAuth2Token()"
+            ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
             : "Account Error",
           description: JSON.stringify(err),
-        };
-        return { error };
+        } as ErrorObject;
       }
     },
-    {}
+    null as any
   );
 };
 

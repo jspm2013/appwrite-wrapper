@@ -258,11 +258,6 @@ const createEmailPasswordSession = async ({ email, password, }) => {
         throw err;
     }
 };
-const oAuth2TokenInitial = {
-    provider: "",
-    successPath: oauthSuccessPath,
-    failurePath: oauthFailurePath,
-};
 /**
  * Creates an OAuth2 token for the user.
  */
@@ -277,11 +272,11 @@ const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, fai
         throw err;
     }
 };
-const createOAuth2TokenTest = async () => {
+const useOAuth2Token = () => {
     return useActionState(async (_prevState, params) => {
         try {
             const { account } = await createAdminClient();
-            const url = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath}`, `${hostExternal}/${params.failurePath}`);
+            const url = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`);
             return { data: url, error: null };
         }
         catch (error) {
@@ -456,4 +451,4 @@ const updatePhoneVerification = async ({ userId, secret, }) => {
 /**
  * Export all functions
  */
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createOAuth2TokenTest, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, useOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };

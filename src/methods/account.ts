@@ -410,11 +410,6 @@ export type CreateOAuth2TokenParams = {
   successPath?: string;
   failurePath?: string;
 };
-const oAuth2TokenInitial = {
-  provider: "",
-  successPath: oauthSuccessPath,
-  failurePath: oauthFailurePath,
-};
 /**
  * Creates an OAuth2 token for the user.
  */
@@ -439,15 +434,15 @@ const createOAuth2Token = async ({
     throw err;
   }
 };
-const createOAuth2TokenTest = async () => {
+const useOAuth2Token = () => {
   return useActionState(
     async (_prevState: any, params: CreateOAuth2TokenParams) => {
       try {
         const { account } = await createAdminClient();
         const url = await account.createOAuth2Token(
           OAuthProvider[params.provider],
-          `${hostExternal}/${params.successPath}`,
-          `${hostExternal}/${params.failurePath}`
+          `${hostExternal}/${params.successPath || oauthSuccessPath}`,
+          `${hostExternal}/${params.failurePath || oauthFailurePath}`
         );
         return { data: url, error: null };
       } catch (error) {
@@ -757,7 +752,7 @@ export type AccountFunctionTypes = {
   createEmailPasswordSession: typeof createEmailPasswordSession;
   createJWT: typeof createJWT;
   createOAuth2Token: typeof createOAuth2Token;
-  createOAuth2TokenTest: typeof createOAuth2TokenTest;
+  useOAuth2Token: typeof useOAuth2Token;
   createSession: typeof createSession;
   createVerification: typeof createVerification;
   deletePrefs: typeof deletePrefs;
@@ -792,7 +787,7 @@ export {
   createEmailPasswordSession,
   createJWT,
   createOAuth2Token,
-  createOAuth2TokenTest,
+  useOAuth2Token,
   createSession,
   createVerification,
   deletePrefs,

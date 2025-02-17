@@ -13,7 +13,7 @@ export {
   createEmailPasswordSession,
   createJWT,
   createOAuth2Token,
-  createOAuth2TokenTest,
+  useOAuth2Token,
   createSession,
   createVerification,
   deletePrefs,

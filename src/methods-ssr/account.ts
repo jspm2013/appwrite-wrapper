@@ -32,7 +32,7 @@ interface ErrorObject {
   message: string;
   description: string;
 }
-type ReturnObject<T> = T | { error: ErrorObject };
+type ReturnObject<T> = T | ErrorObject;
 
 /**
  * Parameters for creating an account.
@@ -445,12 +445,12 @@ const createOAuth2Token = async ({
     throw err;
   }
 };
-const useCreateOAuth2Token = <T>() => {
-  return useActionState<T | ErrorObject, CreateOAuth2TokenParams>(
+const useCreateOAuth2Token = <T = string>() => {
+  return useActionState<ReturnObject<T>, CreateOAuth2TokenParams>(
     async (
-      _prevState: T | ErrorObject,
+      _prevState: ReturnObject<T>,
       params: CreateOAuth2TokenParams
-    ): Promise<T | ErrorObject> => {
+    ): Promise<ReturnObject<T>> => {
       try {
         const { account } = await createAdminClient();
         return (await account.createOAuth2Token(
@@ -459,7 +459,7 @@ const useCreateOAuth2Token = <T>() => {
           `${hostExternal}/${params.failurePath || oauthFailurePath}`
         )) as T;
       } catch (err: any) {
-        throw {
+        return {
           message: admin
             ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
             : "Account Error",

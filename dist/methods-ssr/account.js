@@ -280,7 +280,7 @@ const useCreateOAuth2Token = () => {
             return (await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`));
         }
         catch (err) {
-            throw {
+            return {
                 message: admin
                     ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
                     : "Account Error",

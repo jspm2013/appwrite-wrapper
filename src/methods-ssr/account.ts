@@ -29,10 +29,12 @@ export type UserType = Models.User<Models.Preferences>;
  * Basic appwrite-wrapper return object
  */
 interface ErrorObject {
-  message: string;
-  description: string;
+  error: {
+    message: string;
+    description: string;
+  };
 }
-type ReturnObject<T> = T | { error: ErrorObject };
+type ReturnObject<T> = T | ErrorObject;
 
 /**
  * Parameters for creating an account.

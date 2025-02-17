@@ -2,7 +2,7 @@ import { hostInternal, hostExternal, live, originInternal, originExternal, } fro
 export { ID, Query } from "node-appwrite";
 export { 
 // Account functions
-createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, useOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, } from "./methods/account";
+createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, } from "./methods/account";
 export { 
 // Avatars functions
 getFlag, getImage, getQr, getInitials, } from "./methods/avatars";

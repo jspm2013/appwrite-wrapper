@@ -13,7 +13,6 @@ export {
   createEmailPasswordSession,
   createJWT,
   createOAuth2Token,
-  useOAuth2Token,
   createSession,
   createVerification,
   deletePrefs,
@@ -148,14 +147,6 @@ export {
   setPrefsForUserId,
   updateEmailVerificationForUserId,
 } from "./methods/users";
-
-// Function Types
-export type { AccountFunctionTypes } from "./methods/account";
-export type { AvatarsFunctionTypes } from "./methods/avatars";
-export type { DatabasesFunctionTypes } from "./methods/databases";
-export type { StorageFunctionTypes } from "./methods/storage";
-export type { TeamsFunctionTypes } from "./methods/teams";
-export type { UsersFunctionTypes } from "./methods/users";
 
 export {
   // ApwWrapper Config

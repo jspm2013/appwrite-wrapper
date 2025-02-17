@@ -2,6 +2,7 @@
 
 import { ID, Models, Query } from "node-appwrite";
 import { OAuthProvider } from "../enums";
+import { useActionState } from "react";
 import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
@@ -16,6 +17,8 @@ import {
 } from "../appwriteConfig";
 import { cookies } from "next/headers";
 import { hostExternal, live } from "../host";
+
+const admin: boolean = !live;
 
 /**
  * Basic/native appwrite user type + empty custom attributes type.
@@ -433,6 +436,31 @@ const createOAuth2Token = async ({
     throw err;
   }
 };
+const useOAuth2Token = () => {
+  return useActionState(
+    async (_prevState: any, params: CreateOAuth2TokenParams): Promise<any> => {
+      try {
+        const { account } = await createAdminClient();
+        const url = await account.createOAuth2Token(
+          OAuthProvider[params.provider],
+          `${hostExternal}/${params.successPath || oauthSuccessPath}`,
+          `${hostExternal}/${params.failurePath || oauthFailurePath}`
+        );
+        return { url };
+      } catch (err: any) {
+        const error = {
+          message: admin
+            ? "APW-Wrapper - Error (methods/account): createOAuth2Token()"
+            : "Account Error",
+          description: JSON.stringify(err),
+          error: err,
+        };
+        return { error };
+      }
+    },
+    {}
+  );
+};
 
 /**
  * Parameters for creating a session with user ID and secret.
@@ -733,6 +761,7 @@ export {
   createEmailPasswordSession,
   createJWT,
   createOAuth2Token,
+  useOAuth2Token,
   createSession,
   createVerification,
   deletePrefs,

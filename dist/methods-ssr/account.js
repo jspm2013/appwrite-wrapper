@@ -278,17 +278,16 @@ const useCreateOAuth2Token = () => {
         try {
             const { account } = await createAdminClient();
             const data = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`);
-            return { data: data };
+            return { data: data, error: null };
         }
         catch (err) {
-            return {
-                error: {
-                    message: admin
-                        ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
-                        : "Account Error",
-                    description: JSON.stringify(err),
-                },
+            const error = {
+                message: admin
+                    ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
+                    : "Account Error",
+                description: JSON.stringify(err),
             };
+            return { data: null, error };
         }
     }, {});
 };

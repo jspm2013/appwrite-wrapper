@@ -242,7 +242,7 @@ const getAppUserForUserId = async ({
       err
     );
     /*
-     * Appwrite throws Error when the user is not logged in, so we have to return null for that case (instead of returning the error).
+     * Appwrite throws Error when the user has no valid (aka is not logged in), so we have to return null for that case (instead of returning the error).
      */
     return null;
   }

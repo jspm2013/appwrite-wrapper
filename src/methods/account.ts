@@ -207,12 +207,8 @@ const getUser = async (): Promise<UserType | null> => {
     const { account } = await createSessionClient();
     return await account.get();
   } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing getUser():",
-      err
-    );
     /*
-     * Appwrite throws Error when the user is not logged in, so we have to return null for that case (instead of returning the error).
+     * Appwrite throws Error when the user has no valid (aka is not logged in), so we have to return null for that case (instead of returning the error).
      */
     return null;
   }
@@ -260,12 +256,8 @@ const getAppUser = async (): Promise<any | null> => {
 
     return null;
   } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing getAppUser():",
-      err
-    );
     /*
-     * Appwrite throws Error when the user is not logged in, so we have to return null for that case (instead of returning the error).
+     * Appwrite throws Error when the user has no valid (aka is not logged in), so we have to return null for that case (instead of returning the error).
      */
     return null;
   }

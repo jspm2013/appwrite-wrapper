@@ -1,9 +1,16 @@
 import { Models } from "node-appwrite";
 import { OAuthProvider } from "../enums";
 /**
- * Basic/native appwrite user type + empty custom attributes type.
+ * Basic native appwrite user type.
  */
 export type UserType = Models.User<Models.Preferences>;
+/**
+ * Basic appwrite-wrapper error object
+ */
+export type ErrorObject = {
+    message: string;
+    description: string;
+};
 /**
  * Parameters for creating an account.
  */
@@ -136,7 +143,7 @@ export type CreateOAuth2TokenParams = {
  * Creates an OAuth2 token for the user.
  */
 declare const createOAuth2Token: ({ provider, successPath, failurePath, }: CreateOAuth2TokenParams) => Promise<string>;
-declare const useOAuth2Token: () => [state: any, dispatch: (payload: CreateOAuth2TokenParams) => void, isPending: boolean];
+declare const useCreateOAuth2Token: () => [state: any, dispatch: (payload: CreateOAuth2TokenParams) => void, isPending: boolean];
 /**
  * Parameters for creating a session with user ID and secret.
  */
@@ -253,5 +260,5 @@ declare const updatePhoneVerification: ({ userId, secret, }: UpdatePhoneVerifica
 /**
  * Export all functions
  */
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, useOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, useCreateOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
 //# sourceMappingURL=account.d.ts.map

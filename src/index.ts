@@ -5,6 +5,7 @@ import {
   originInternal,
   originExternal,
 } from "./host";
+import { useCreateOAuth2Token } from "./methods-ssr/account";
 export { Models, ID, Query } from "node-appwrite";
 
 export {
@@ -38,6 +39,8 @@ export {
   createPhoneVerification,
   updatePhoneVerification,
 } from "./methods/account";
+
+export { useCreateOAuth2Token } from "./methods-ssr/account";
 
 export {
   // Avatars functions

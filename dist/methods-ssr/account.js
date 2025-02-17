@@ -273,12 +273,12 @@ const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, fai
         throw err;
     }
 };
-const useOAuth2Token = () => {
+const useCreateOAuth2Token = () => {
     return useActionState(async (_prevState, params) => {
         try {
             const { account } = await createAdminClient();
             const url = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`);
-            return { url };
+            return url;
         }
         catch (err) {
             const error = {
@@ -286,7 +286,6 @@ const useOAuth2Token = () => {
                     ? "APW-Wrapper - Error (methods/account): createOAuth2Token()"
                     : "Account Error",
                 description: JSON.stringify(err),
-                error: err,
             };
             return { error };
         }
@@ -458,4 +457,4 @@ const updatePhoneVerification = async ({ userId, secret, }) => {
 /**
  * Export all functions
  */
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, useOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, useCreateOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };

@@ -21,9 +21,17 @@ import { hostExternal, live } from "../host";
 const admin: boolean = !live;
 
 /**
- * Basic/native appwrite user type + empty custom attributes type.
+ * Basic native appwrite user type.
  */
 export type UserType = Models.User<Models.Preferences>;
+
+/**
+ * Basic appwrite-wrapper error object
+ */
+export type ErrorObject = {
+  message: string;
+  description: string;
+};
 
 /**
  * Parameters for creating an account.
@@ -436,7 +444,7 @@ const createOAuth2Token = async ({
     throw err;
   }
 };
-const useOAuth2Token = () => {
+const useCreateOAuth2Token = () => {
   return useActionState(
     async (_prevState: any, params: CreateOAuth2TokenParams): Promise<any> => {
       try {
@@ -446,14 +454,13 @@ const useOAuth2Token = () => {
           `${hostExternal}/${params.successPath || oauthSuccessPath}`,
           `${hostExternal}/${params.failurePath || oauthFailurePath}`
         );
-        return { url };
+        return url;
       } catch (err: any) {
         const error = {
           message: admin
             ? "APW-Wrapper - Error (methods/account): createOAuth2Token()"
             : "Account Error",
           description: JSON.stringify(err),
-          error: err,
         };
         return { error };
       }
@@ -761,7 +768,7 @@ export {
   createEmailPasswordSession,
   createJWT,
   createOAuth2Token,
-  useOAuth2Token,
+  useCreateOAuth2Token,
   createSession,
   createVerification,
   deletePrefs,

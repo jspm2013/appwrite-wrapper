@@ -1,6 +1,7 @@
 "use server";
 import { ID, Query } from "node-appwrite";
 import { OAuthProvider } from "../enums";
+import { useActionState } from "react";
 import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
@@ -257,6 +258,11 @@ const createEmailPasswordSession = async ({ email, password, }) => {
         throw err;
     }
 };
+const oAuth2TokenInitial = {
+    provider: "",
+    successPath: oauthSuccessPath,
+    failurePath: oauthFailurePath,
+};
 /**
  * Creates an OAuth2 token for the user.
  */
@@ -270,6 +276,19 @@ const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, fai
         console.error("APW-WRAPPER - Error (methods/account): Error executing createOAuth2Token():", err);
         throw err;
     }
+};
+const createOAuth2TokenTest = async () => {
+    return useActionState(async (_prevState, params) => {
+        try {
+            const { account } = await createAdminClient();
+            const url = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath}`, `${hostExternal}/${params.failurePath}`);
+            return { data: url, error: null };
+        }
+        catch (error) {
+            return { data: null, error };
+        }
+    }, { data: null, error: null } // ✅ Initial state required!
+    );
 };
 /**
  * Creates a session for a user by their ID and secret.
@@ -437,4 +456,4 @@ const updatePhoneVerification = async ({ userId, secret, }) => {
 /**
  * Export all functions
  */
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createOAuth2TokenTest, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };

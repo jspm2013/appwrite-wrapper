@@ -2,6 +2,7 @@
 
 import { ID, Models, Query } from "node-appwrite";
 import { OAuthProvider } from "../enums";
+import { useActionState } from "react";
 import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
@@ -409,6 +410,11 @@ export type CreateOAuth2TokenParams = {
   successPath?: string;
   failurePath?: string;
 };
+const oAuth2TokenInitial = {
+  provider: "",
+  successPath: oauthSuccessPath,
+  failurePath: oauthFailurePath,
+};
 /**
  * Creates an OAuth2 token for the user.
  */
@@ -432,6 +438,24 @@ const createOAuth2Token = async ({
     );
     throw err;
   }
+};
+const createOAuth2TokenTest = async () => {
+  return useActionState(
+    async (_prevState: any, params: CreateOAuth2TokenParams) => {
+      try {
+        const { account } = await createAdminClient();
+        const url = await account.createOAuth2Token(
+          OAuthProvider[params.provider],
+          `${hostExternal}/${params.successPath}`,
+          `${hostExternal}/${params.failurePath}`
+        );
+        return { data: url, error: null };
+      } catch (error) {
+        return { data: null, error };
+      }
+    },
+    { data: null, error: null } // ✅ Initial state required!
+  );
 };
 
 /**
@@ -733,6 +757,7 @@ export type AccountFunctionTypes = {
   createEmailPasswordSession: typeof createEmailPasswordSession;
   createJWT: typeof createJWT;
   createOAuth2Token: typeof createOAuth2Token;
+  createOAuth2TokenTest: typeof createOAuth2TokenTest;
   createSession: typeof createSession;
   createVerification: typeof createVerification;
   deletePrefs: typeof deletePrefs;
@@ -767,6 +792,7 @@ export {
   createEmailPasswordSession,
   createJWT,
   createOAuth2Token,
+  createOAuth2TokenTest,
   createSession,
   createVerification,
   deletePrefs,

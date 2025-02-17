@@ -136,6 +136,13 @@ export type CreateOAuth2TokenParams = {
  * Creates an OAuth2 token for the user.
  */
 declare const createOAuth2Token: ({ provider, successPath, failurePath, }: CreateOAuth2TokenParams) => Promise<string>;
+declare const createOAuth2TokenTest: () => Promise<[state: {
+    data: string;
+    error: null;
+} | {
+    data: null;
+    error: unknown;
+}, dispatch: (payload: CreateOAuth2TokenParams) => void, isPending: boolean]>;
 /**
  * Parameters for creating a session with user ID and secret.
  */
@@ -257,6 +264,7 @@ export type AccountFunctionTypes = {
     createEmailPasswordSession: typeof createEmailPasswordSession;
     createJWT: typeof createJWT;
     createOAuth2Token: typeof createOAuth2Token;
+    createOAuth2TokenTest: typeof createOAuth2TokenTest;
     createSession: typeof createSession;
     createVerification: typeof createVerification;
     deletePrefs: typeof deletePrefs;
@@ -285,5 +293,5 @@ export type AccountFunctionTypes = {
 /**
  * Export all functions
  */
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createOAuth2TokenTest, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
 //# sourceMappingURL=account.d.ts.map

@@ -449,6 +449,7 @@ const createOAuth2Token = async ({
   }
 };
 const useCreateOAuth2Token = <T = string>() => {
+  "use server";
   return useActionState<ReturnObject<T>, CreateOAuth2TokenParams>(
     async (
       _prevState: ReturnObject<T>,

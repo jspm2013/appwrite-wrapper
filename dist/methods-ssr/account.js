@@ -274,6 +274,7 @@ const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, fai
     }
 };
 const useCreateOAuth2Token = () => {
+    "use server";
     return useActionState(async (_prevState, params) => {
         try {
             const { account } = await createAdminClient();

@@ -1,10 +1,6 @@
 import { OAuthProvider } from "../enums";
 import { Models } from "node-appwrite";
 interface ErrorObject {
-    message: string;
-    description: string;
-}
-interface ErrorObjectOld {
     appwrite: boolean;
     header: string;
     type: string;
@@ -14,7 +10,7 @@ interface ErrorObjectOld {
     error?: object;
 }
 interface ReturnObject<T> {
-    error: ErrorObject | ErrorObjectOld | null;
+    error: ErrorObject | null;
     data: T | null;
 }
 /**

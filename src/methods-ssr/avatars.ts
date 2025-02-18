@@ -1,17 +1,17 @@
 "use server";
 
-import { Browser, CreditCard, Flag } from "node-appwrite";
-import { live } from "../host";
+import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
-
-const admin: boolean = !live;
-
-const errMsg = (fn: string) =>
-  admin ? `ApwWrapper Error (methods/avatars): ${fn}()` : "Avatars Error";
+import { Browser, CreditCard, Flag } from "node-appwrite";
 
 interface ErrorObject {
-  message: string;
+  appwrite: boolean;
+  header: string;
+  type: string;
+  code: number;
+  variant: string;
   description: string;
+  error?: object;
 }
 interface ReturnObject<T> {
   error: ErrorObject | null;
@@ -40,13 +40,10 @@ const getBrowserIcon = async ({
     const { avatars } = await createAdminClient();
     const buffer = await avatars.getBrowser(code, width, height, quality);
     return { data: Buffer.from(buffer).toString("base64"), error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getBrowserIcon"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -67,13 +64,10 @@ const getFavicon = async ({
     const { avatars } = await createAdminClient();
     const buffer = await avatars.getFavicon(url);
     return { data: Buffer.from(buffer).toString("base64"), error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getFavicon"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -100,13 +94,10 @@ const getFlag = async ({
     const { avatars } = await createAdminClient();
     const buffer = await avatars.getFlag(code, width, height, quality);
     return { data: Buffer.from(buffer).toString("base64"), error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getFlag"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -134,13 +125,10 @@ const getCreditCardIcon = async ({
     const { avatars } = await createAdminClient();
     const buffer = await avatars.getCreditCard(code, width, height, quality);
     return { data: Buffer.from(buffer).toString("base64"), error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getCreditCardIcon"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -167,13 +155,10 @@ const getInitials = async ({
     const { avatars } = await createAdminClient();
     const buffer = await avatars.getInitials(name, width, height, background);
     return { data: Buffer.from(buffer).toString("base64"), error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getInitials"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -198,13 +183,10 @@ const getImage = async ({
     const { avatars } = await createAdminClient();
     const buffer = await avatars.getImage(url, width, height);
     return { data: Buffer.from(buffer).toString("base64"), error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getImage"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -231,13 +213,10 @@ const getQr = async ({
     const { avatars } = await createAdminClient();
     const buffer = await avatars.getQR(text, size, margin, download);
     return { data: Buffer.from(buffer).toString("base64"), error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getQr"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };

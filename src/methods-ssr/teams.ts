@@ -1,16 +1,17 @@
 "use server";
 
 import { Models } from "node-appwrite";
-import { live } from "../host";
+import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 
-const admin: boolean = !live;
-const errMsg = (fn: string) =>
-  admin ? `ApwWrapper Error (methods/teams): ${fn}()` : "Team Error";
-
 interface ErrorObject {
-  message: string;
+  appwrite: boolean;
+  header: string;
+  type: string;
+  code: number;
+  variant: string;
   description: string;
+  error?: object;
 }
 interface ReturnObject<T> {
   error: ErrorObject | null;
@@ -39,13 +40,10 @@ const createTeam = async ({
     const { teams } = await createAdminClient();
     const data = await teams.create(teamId, name, roles);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createTeam"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -86,13 +84,10 @@ const createTeamMembership = async ({
       name
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createTeamMembership"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -113,13 +108,10 @@ const deleteTeam = async ({
     const { teams } = await createAdminClient();
     await teams.delete(teamId);
     return { data: null, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteTeam"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -142,13 +134,10 @@ const deleteTeamMembership = async ({
     const { teams } = await createAdminClient();
     await teams.deleteMembership(teamId, membershipId);
     return { data: null, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteTeamMembership"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -169,13 +158,10 @@ const getTeam = async ({
     const { teams } = await createAdminClient();
     const data = await teams.get(teamId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getTeam"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -198,13 +184,10 @@ const getTeamMembership = async ({
     const { teams } = await createAdminClient();
     const data = await teams.getMembership(teamId, membershipId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getTeamMembership"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -225,13 +208,10 @@ const getTeamPreferences = async ({
     const { teams } = await createAdminClient();
     const data = await teams.getPrefs(teamId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getTeamPreferences"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -256,13 +236,10 @@ const listTeamMemberships = async ({
     const { teams } = await createAdminClient();
     const data = await teams.listMemberships(teamId, queries, search);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listTeamMemberships"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -284,13 +261,10 @@ const listTeams = async ({
     const { teams } = await createAdminClient();
     const data = await teams.list(queries, search);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listTeams"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -312,13 +286,10 @@ const updateTeamMembership = async ({
     const { teams } = await createAdminClient();
     const data = await teams.updateMembership(teamId, membershipId, roles);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateTeamMembership"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -349,13 +320,10 @@ const updateTeamMembershipStatus = async ({
       secret
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateTeamMembershipStatus"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -375,13 +343,10 @@ const updateTeamName = async ({
     const { teams } = await createAdminClient();
     const data = await teams.updateName(teamId, name);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateTeamName"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -401,13 +366,10 @@ const updateTeamPreferences = async ({
     const { teams } = await createAdminClient();
     const data = await teams.updatePrefs(teamId, prefs);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateTeamPreferences"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };

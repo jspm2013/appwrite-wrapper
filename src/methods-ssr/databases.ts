@@ -7,17 +7,18 @@ import {
   RelationMutate,
   RelationshipType,
 } from "node-appwrite";
-import { live } from "../host";
+import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
 
-const admin: boolean = !live;
-const errMsg = (fn: string) =>
-  admin ? `ApwWrapper Error (methods/databases): ${fn}()` : "Database Error";
-
 interface ErrorObject {
-  message: string;
+  appwrite: boolean;
+  header: string;
+  type: string;
+  code: number;
+  variant: string;
   description: string;
+  error?: object;
 }
 interface ReturnObject<T> {
   error: ErrorObject | null;
@@ -54,13 +55,10 @@ const createBooleanAttribute = async ({
       xarray
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createBooleanAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -95,13 +93,10 @@ const createCollection = async ({
       enabled
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createCollection"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -138,13 +133,10 @@ const createCollectionWithSchema = async ({
       enabled
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createCollectionWithSchema"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -166,13 +158,10 @@ const createDatabase = async ({
     const { databases } = await createAdminClient();
     const data = await databases.create(dbId, name, enabled);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createDatabase"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -207,13 +196,10 @@ const createDatetimeAttribute = async ({
       xarray
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createDatetimeAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -245,13 +231,10 @@ const createDocument = async ({
       permissions
     );
     return { data: document, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createDocument"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -286,13 +269,10 @@ const createEmailAttribute = async ({
       xarray
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createEmailAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -330,13 +310,10 @@ const createEnumAttribute = async ({
       xarray
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createEnumAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -377,13 +354,10 @@ const createFloatAttribute = async ({
       xarray
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createFloatAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -418,13 +392,10 @@ const createIndex = async ({
       orders
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createIndex"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -465,13 +436,10 @@ const createIntegerAttribute = async ({
       xarray
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createIntegerAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -506,13 +474,10 @@ const createIpAttribute = async ({
       xarray
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createIpAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -554,13 +519,10 @@ const createRelationshipAttribute = async ({
       onDelete
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createRelationshipAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -601,13 +563,10 @@ const createStringAttribute = async ({
       encrypt
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createStringAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -642,13 +601,10 @@ const createUrlAttribute = async ({
       xarray
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createUrlAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -670,13 +626,10 @@ const deleteAttribute = async ({
     const { databases } = await createAdminClient();
     await databases.deleteAttribute(dbId, collId, key);
     return { data: undefined, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -696,13 +649,10 @@ const deleteCollection = async ({
     const { databases } = await createAdminClient();
     await databases.deleteCollection(dbId, collId);
     return { data: undefined, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteCollection"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -720,13 +670,10 @@ const deleteDatabase = async ({
     const { databases } = await createAdminClient();
     await databases.delete(dbId);
     return { data: undefined, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteDatabase"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -748,13 +695,10 @@ const deleteDocument = async ({
     const { databases } = await createAdminClient();
     await databases.deleteDocument(dbId, collId, documentId);
     return { data: undefined, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteDocument"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -776,13 +720,10 @@ const deleteIndex = async ({
     const { databases } = await createAdminClient();
     await databases.deleteIndex(dbId, collId, key);
     return { data: undefined, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteIndex"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -804,13 +745,10 @@ const getAttribute = async ({
     const { databases } = await createAdminClient();
     const data = await databases.getAttribute(dbId, collId, key);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -830,13 +768,10 @@ const getCollection = async ({
     const { databases } = await createAdminClient();
     const data = await databases.getCollection(dbId, collId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getCollection"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -854,13 +789,10 @@ const getDatabase = async ({
     const { databases } = await createAdminClient();
     const data = await databases.get(dbId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getDatabase"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -882,13 +814,10 @@ const getDocument = async ({
     const { databases } = await createAdminClient();
     const data = await databases.getDocument(dbId, collId, documentId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getDocument"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -910,13 +839,10 @@ const getIndex = async ({
     const { databases } = await createAdminClient();
     const data = await databases.getIndex(dbId, collId, key);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getIndex"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -936,13 +862,10 @@ const listAttributes = async ({
     const { databases } = await createAdminClient();
     const data = await databases.listAttributes(dbId, collId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listAttributes"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -964,13 +887,10 @@ const listCollections = async ({
     const { databases } = await createAdminClient();
     const data = await databases.listCollections(dbId, queries, search);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listCollections"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -990,13 +910,10 @@ const listDatabases = async ({
     const { databases } = await createAdminClient();
     const data = await databases.list(queries, search);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listDatabases"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1020,13 +937,10 @@ const listDocuments = async ({
     const { databases } = await createAdminClient();
     const data = await databases.listDocuments(dbId, collId, queries);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listDocuments"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1046,13 +960,10 @@ const listIndexes = async ({
     const { databases } = await createAdminClient();
     const data = await databases.listIndexes(dbId, collId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listIndexes"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1087,13 +998,10 @@ const updateBooleanAttribute = async ({
       newKey
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateBooleanAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1128,13 +1036,10 @@ const updateCollection = async ({
       enabled
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateCollection"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1156,13 +1061,10 @@ const updateDatabase = async ({
     const { databases } = await createAdminClient();
     const data = await databases.update(dbId, name, enabled);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateDatabase"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1197,13 +1099,10 @@ const updateDatetimeAttribute = async ({
       newKey
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateDatetimeAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1235,13 +1134,10 @@ const updateDocument = async ({
       permissions
     );
     return { data: updatedData, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateDocument"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1276,13 +1172,10 @@ const updateEmailAttribute = async ({
       newKey
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateEmailAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1320,13 +1213,10 @@ const updateEnumAttribute = async ({
       newKey
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateEnumAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1367,13 +1257,10 @@ const updateFloatAttribute = async ({
       newKey
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateFloatAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1414,13 +1301,10 @@ const updateIntegerAttribute = async ({
       newKey
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateIntegerAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1455,13 +1339,10 @@ const updateIpAttribute = async ({
       newKey
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateIpAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1493,13 +1374,10 @@ const updateRelationshipAttribute = async ({
       newKey
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateRelationshipAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1537,13 +1415,10 @@ const updateStringAttribute = async ({
       newKey
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateStringAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -1578,13 +1453,10 @@ const updateUrlAttribute = async ({
       newKey
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateUrlAttribute"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };

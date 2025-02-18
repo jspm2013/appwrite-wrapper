@@ -1,18 +1,19 @@
 "use server";
 
 import { Models, Query } from "node-appwrite";
-import { live } from "../host";
+import { handleApwError } from "../exceptions";
 import { getType } from "../collections/typeReader";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
 
-const admin: boolean = !live;
-const errMsg = (fn: string) =>
-  admin ? `ApwWrapper Error (methods/users): ${fn}()` : "User Error";
-
 interface ErrorObject {
-  message: string;
+  appwrite: boolean;
+  header: string;
+  type: string;
+  code: number;
+  variant: string;
   description: string;
+  error?: object;
 }
 interface ReturnObject<T> {
   error: ErrorObject | null;
@@ -34,13 +35,10 @@ const createSessionForUserId = async ({
     const { users } = await createAdminClient();
     const data = await users.createSession(userId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createSessionForUserId"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -62,13 +60,10 @@ const createToken = async ({
     const { users } = await createAdminClient();
     const data = await users.createToken(userId, length, expire);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createToken"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -93,13 +88,10 @@ const deletePrefsForUserId = async ({
       return { data: user.prefs, error: null };
     }
     return { data: prefs, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deletePrefsForUserId"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -119,13 +111,10 @@ const deleteSessionForUserId = async ({
     const { users } = await createAdminClient();
     await users.deleteSession(userId, sessionId);
     return { data: undefined, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteSessionForUserId"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -143,13 +132,10 @@ const deleteSessionsForUserId = async ({
     const { users } = await createAdminClient();
     await users.deleteSessions(userId);
     return { data: undefined, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteSessionsForUserId"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -167,13 +153,10 @@ const deleteUserId = async ({
     const { users } = await createAdminClient();
     await users.delete(userId);
     return { data: userId, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteUserId"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -222,13 +205,10 @@ const getAppUserForUserId = async ({
     }
 
     return { data: null, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getAppUserForUserId"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -267,13 +247,10 @@ const getCustomUsers = async <
       } as unknown as TCustomUsers,
       error: null,
     };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getCustomUsers"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -291,13 +268,10 @@ const getPrefsForUserId = async ({
     const { users } = await createAdminClient();
     const data = await users.getPrefs(userId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getPrefsForUserId"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -314,13 +288,10 @@ const getUserForUserId = async ({
     const { users } = await createAdminClient();
     const data = await users.get(userId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getUserForUserId"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -342,13 +313,10 @@ const getUsers = async ({
     const { users } = await createAdminClient();
     const data = await users.list(queries, search);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getUsers"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -368,13 +336,10 @@ const listIdentities = async ({
     const { users } = await createAdminClient();
     const data = await users.listIdentities(queries, search);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listIdentities"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -390,13 +355,10 @@ const listUsers = async ({
     const { users } = await createAdminClient();
     const data = await users.list(queries, search);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listUsers"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -416,13 +378,10 @@ const updatePrefsForUserId = async ({
     const { users } = await createAdminClient();
     const data = await users.updatePrefs(userId, prefsObj);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updatePrefsForUserId"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -447,13 +406,10 @@ const updateEmailVerificationForUserId = async ({
     const { users } = await createAdminClient();
     const data = await users.updateEmailVerification(userId, status);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateEmailVerificationForUserId"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };

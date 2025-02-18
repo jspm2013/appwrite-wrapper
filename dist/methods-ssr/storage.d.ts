@@ -1,8 +1,13 @@
-import { Models } from "node-appwrite";
 import { Compression, ImageFormat, ImageGravity, UploadProgress } from "../enums";
+import { Models } from "node-appwrite";
 interface ErrorObject {
-    message: string;
+    appwrite: boolean;
+    header: string;
+    type: string;
+    code: number;
+    variant: string;
     description: string;
+    error?: object;
 }
 interface ReturnObject<T> {
     error: ErrorObject | null;

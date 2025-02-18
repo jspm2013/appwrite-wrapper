@@ -1,8 +1,6 @@
 "use server";
-import { live } from "../host";
+import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
-const admin = !live;
-const errMsg = (fn) => admin ? `ApwWrapper Error (methods/avatars): ${fn}()` : "Avatars Error";
 /**
  * Retrieves a browser icon image.
  */
@@ -12,13 +10,10 @@ const getBrowserIcon = async ({ code, width = 100, height = 100, quality = 100, 
         const buffer = await avatars.getBrowser(code, width, height, quality);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("getBrowserIcon"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -31,13 +26,10 @@ const getFavicon = async ({ url, }) => {
         const buffer = await avatars.getFavicon(url);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("getFavicon"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -50,13 +42,10 @@ const getFlag = async ({ code, width = 100, height = 100, quality = 100, }) => {
         const buffer = await avatars.getFlag(code, width, height, quality);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("getFlag"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -69,13 +58,10 @@ const getCreditCardIcon = async ({ code, width = 100, height = 100, quality = 10
         const buffer = await avatars.getCreditCard(code, width, height, quality);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("getCreditCardIcon"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -88,13 +74,10 @@ const getInitials = async ({ name, width = 100, height = 100, background, }) => 
         const buffer = await avatars.getInitials(name, width, height, background);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("getInitials"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -107,13 +90,10 @@ const getImage = async ({ url, width = 400, height = 400, }) => {
         const buffer = await avatars.getImage(url, width, height);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("getImage"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -126,13 +106,10 @@ const getQr = async ({ text, size = 400, margin = 1, download = false, }) => {
         const buffer = await avatars.getQR(text, size, margin, download);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("getQr"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };

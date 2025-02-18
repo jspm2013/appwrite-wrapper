@@ -1,25 +1,26 @@
 "use server";
 
-import fs from "fs";
-import { ID, Models } from "node-appwrite";
 import {
   Compression,
   ImageFormat,
   ImageGravity,
   UploadProgress,
 } from "../enums";
+import fs from "fs";
+import { ID, Models } from "node-appwrite";
+import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
-import { live } from "../host";
 
-const admin: boolean = !live;
 const oneMb: number = 1024 * 1024;
 
-const errMsg = (fn: string) =>
-  admin ? `ApwWrapper Error (methods/storage): ${fn}()` : "Storage Error";
-
 interface ErrorObject {
-  message: string;
+  appwrite: boolean;
+  header: string;
+  type: string;
+  code: number;
+  variant: string;
   description: string;
+  error?: object;
 }
 
 interface ReturnObject<T> {
@@ -67,13 +68,10 @@ const createBucket = async ({
       antivirus
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createBucket"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -92,13 +90,10 @@ const deleteBucket = async ({
     const { storage } = await createAdminClient();
     await storage.deleteBucket(bucketId);
     return { data: true, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteBucket"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -117,10 +112,10 @@ const getBucket = async ({
     const { storage } = await createAdminClient();
     const data = await storage.getBucket(bucketId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: { message: errMsg("getBucket"), description: JSON.stringify(err) },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -141,13 +136,10 @@ const deleteFile = async ({
     const { storage } = await createAdminClient();
     await storage.deleteFile(bucketId, fileId);
     return { data: true, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteFile"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -168,10 +160,10 @@ const getFile = async ({
     const { storage } = await createAdminClient();
     const data = await storage.getFile(bucketId, fileId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: { message: errMsg("getFile"), description: JSON.stringify(err) },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -192,13 +184,10 @@ const getFileDownload = async ({
     const { storage } = await createAdminClient();
     const data = await storage.getFileDownload(bucketId, fileId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getFileDownload"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -255,13 +244,10 @@ const getFilePreview = async ({
       output
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getFilePreview"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -282,13 +268,10 @@ const listBuckets = async ({
     const { storage } = await createAdminClient();
     const data = await storage.listBuckets(queries, search);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listBuckets"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -314,13 +297,10 @@ const listFiles = async ({
     const { storage } = await createAdminClient();
     const data = await storage.listFiles(bucketId, queries, search);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listFiles"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -341,13 +321,10 @@ const getFileView = async ({
     const { storage } = await createAdminClient();
     const data = await storage.getFileView(bucketId, fileId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getFileView"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -395,13 +372,10 @@ const updateBucket = async ({
       antivirus
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateBucket"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -426,13 +400,10 @@ const updateFile = async ({
     const { storage } = await createAdminClient();
     const data = await storage.updateFile(bucketId, fileId, name, permissions);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateFile"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -466,13 +437,10 @@ const uploadFile = async ({
       onProgress
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("uploadFile"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -496,13 +464,10 @@ const uploadFileFromPath = async ({
     const file = fs.createReadStream(filePath);
     const result = await uploadFile({ bucketId, fileId, file });
     return { data: result.data, error: result.error };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("uploadFileFromPath"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };

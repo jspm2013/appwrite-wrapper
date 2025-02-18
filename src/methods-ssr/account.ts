@@ -10,23 +10,13 @@ import {
   userCollectionId,
 } from "../appwriteConfig";
 import { cookies } from "next/headers";
+import { hostExternal } from "../host";
 import { OAuthProvider } from "../enums";
-import { hostExternal, live } from "../host";
 import { handleApwError } from "../exceptions";
 import { isEmptyKeyValuePair } from "../utils";
 import { ID, Models, Query } from "node-appwrite";
 import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
-
-const admin: boolean = !live;
-
-const errMsg = (fn: string) =>
-  admin ? `ApwWrapper Error (methods/account): ${fn}()` : "Account Error";
-const errDescr = (err: any) =>
-  admin
-    ? err?.response?.message ??
-      "There was an account error processing your request"
-    : "There was an account error processing your request";
 
 interface ErrorObject {
   message: string;
@@ -62,13 +52,10 @@ const createAccount = async ({
     const { account } = await createSessionClient();
     const data = await account.create(ID.unique(), email, password, name);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createAccount"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -83,13 +70,10 @@ const createAnonymousSession = async (): Promise<
     const { account } = await createSessionClient();
     const data = await account.createAnonymousSession();
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createAnonymousSession"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -114,13 +98,10 @@ const createEmailPasswordSession = async ({
       secure: true,
     });
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createEmailPasswordSession"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -133,13 +114,10 @@ const createJWT = async (): Promise<ReturnObject<Models.Jwt>> => {
     const { account } = await createSessionClient();
     const data = await account.createJWT();
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createJWT"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -167,13 +145,10 @@ const createMagicURLSession = async ({
       phrase
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createMagicURLSession"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -201,13 +176,10 @@ const createOAuth2Token = async ({
       scopes
     );
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createOAuth2Token"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -222,13 +194,10 @@ const createPhoneVerification = async (): Promise<
     const { account } = await createSessionClient();
     const data = await account.createPhoneVerification();
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createPhoneVerification"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -247,13 +216,10 @@ const createRecovery = async ({
     const { account } = await createSessionClient();
     const data = await account.createRecovery(email, url);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createRecovery"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -278,13 +244,10 @@ const createSession = async ({
       secure: true,
     });
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createSession"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -301,13 +264,10 @@ const createVerification = async ({
     const { account } = await createSessionClient();
     const data = await account.createVerification(verificationUrl);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("createVerification"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -329,13 +289,10 @@ const deletePrefs = async ({
       return { data: user.prefs, error: null };
     }
     return { data: prefs, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deletePrefs"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -352,13 +309,10 @@ const deleteSession = async ({
     const { account } = await createSessionClient();
     await account.deleteSession(sessionId);
     return { data: signInPath, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteSession"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -371,13 +325,10 @@ const deleteSessions = async (): Promise<ReturnObject<string>> => {
     const { account } = await createSessionClient();
     await account.deleteSessions();
     return { data: signInPath, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("deleteSessions"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -424,13 +375,10 @@ const getAppUser = async (): Promise<ReturnObject<any>> => {
     }
 
     return { data: null, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getAppUser"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -443,13 +391,10 @@ const getPrefs = async (): Promise<ReturnObject<Models.Preferences>> => {
     const { account } = await createSessionClient();
     const data = await account.getPrefs();
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getPrefs"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -466,13 +411,10 @@ const getSession = async ({
     const { account } = await createSessionClient();
     const data = await account.getSession(sessionId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getSession"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -487,13 +429,10 @@ const getUser = async (): Promise<
     const { account } = await createSessionClient();
     const data = await account.get();
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("getUser"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -506,13 +445,10 @@ const listSessions = async (): Promise<ReturnObject<Models.SessionList>> => {
     const { account } = await createSessionClient();
     const data = await account.listSessions();
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("listSessions"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -532,13 +468,10 @@ const updatePrefs = async ({
       isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs }
     );
     return { data: data.prefs, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updatePrefs"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -557,13 +490,10 @@ const updateEmail = async ({
     const { account } = await createSessionClient();
     const data = await account.updateEmail(email, password);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateEmail"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -580,13 +510,10 @@ const updateName = async ({
     const { account } = await createSessionClient();
     const data = await account.updateName(name);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateName"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -605,13 +532,10 @@ const updatePassword = async ({
     const { account } = await createSessionClient();
     const data = await account.updatePassword(password, oldPassword);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updatePassword"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -630,13 +554,10 @@ const updatePhone = async ({
     const { account } = await createSessionClient();
     const data = await account.updatePhone(phone, password);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updatePhone"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -655,13 +576,10 @@ const updatePhoneVerification = async ({
     const { account } = await createSessionClient();
     const data = await account.updatePhoneVerification(userId, secret);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updatePhoneVerification"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -682,13 +600,10 @@ const updateRecovery = async ({
     const { account } = await createSessionClient();
     const data = await account.updateRecovery(userId, secret, password);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateRecovery"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -705,13 +620,10 @@ const updateSession = async ({
     const { account } = await createSessionClient();
     const data = await account.updateSession(sessionId);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateSession"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -726,13 +638,10 @@ const updateStatus = async (): Promise<
     const { account } = await createSessionClient();
     const data = await account.updateStatus();
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: {
-        message: errMsg("updateStatus"),
-        description: JSON.stringify(err),
-      },
+      error: await handleApwError({ error }),
     };
   }
 };
@@ -751,14 +660,10 @@ const updateVerification = async ({
     const { account } = await createSessionClient();
     const data = await account.updateVerification(userId, secret);
     return { data, error: null };
-  } catch (err: any) {
+  } catch (error: any) {
     return {
       data: null,
-      error: await handleApwError({ error: err, locale: "de", admin }),
-      /* error: {
-        message: errMsg("updateVerification"),
-        description: JSON.stringify(err),
-      }, */
+      error: await handleApwError({ error }),
     };
   }
 };

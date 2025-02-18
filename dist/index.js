@@ -1,5 +1,5 @@
 import { hostInternal, hostExternal, live, originInternal, originExternal, } from "./host";
-import { apwLocale } from "./utils";
+import { apwManager } from "./utils";
 export { ID, Query } from "node-appwrite";
 export { 
 // Account functions
@@ -22,4 +22,4 @@ createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserI
 export { 
 // ApwWrapper Config
 envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, schemasPath, signInPath, userCollectionId, verificationPath, } from "./appwriteConfig";
-export { apwLocale, hostInternal, hostExternal, live, originInternal, originExternal, };
+export { apwManager, hostInternal, hostExternal, live, originInternal, originExternal, };

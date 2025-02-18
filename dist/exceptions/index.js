@@ -1,7 +1,10 @@
-import { apwLocale } from "../utils";
+import { live } from "../host";
+import { apwManager } from "../utils";
 import allExceptions from "./exceptions.json";
-import { configLoader, messagesLoader } from "./loaders";
 import { AppwriteException } from "node-appwrite";
+import { configLoader, messagesLoader } from "./loaders";
+const adminStatus = !live;
+apwManager.setAdmin(adminStatus);
 /**
  * Load the exceptions.
  */
@@ -9,11 +12,9 @@ const exceptions = allExceptions;
 /**
  * Handles Appwrite errors and maps them to a readable format.
  * @param error - The error to handle.
- * @param locale - The locale for error messages (e.g., "en", "de").
- * @param admin - Tells the function to show detailed error messages or not.
  * @returns {object} - Formatted error object.
  */
-export const handleApwError = async ({ error, admin = false, }) => {
+export const handleApwError = async ({ error, }) => {
     /*
      * Define the internal error object.
      */
@@ -29,8 +30,12 @@ export const handleApwError = async ({ error, admin = false, }) => {
      * Load the locales config.
      */
     const config = await configLoader();
+    const locale = apwManager.getLocale();
     const defaultLocale = config.defaultLocale;
-    const locale = apwLocale.getLocale();
+    /**
+     * Load the admin status.
+     */
+    const admin = apwManager.getAdmin();
     /*
      * Check if the provided locale is allowed.
      */

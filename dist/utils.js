@@ -50,22 +50,31 @@ export const isEmptyObject = (obj) => {
 export const isEmptyKeyValuePair = (obj) => {
     return Object.keys(obj).length === 1 && obj[""] === "";
 };
-class LocaleManager {
+class AppwriteManager {
     static instance;
     locale = "de"; // Default locale
-    constructor() { } // Prevent instantiation from outside
+    isAdmin = false; // Default admin state
+    constructor() { } // Prevent direct instantiation
     static getInstance() {
-        if (!LocaleManager.instance) {
-            LocaleManager.instance = new LocaleManager();
+        if (!AppwriteManager.instance) {
+            AppwriteManager.instance = new AppwriteManager();
         }
-        return LocaleManager.instance;
+        return AppwriteManager.instance;
     }
+    // Locale management
     getLocale() {
         return this.locale;
     }
     setLocale(newLocale) {
         this.locale = newLocale;
     }
+    // Admin state management
+    getAdmin() {
+        return this.isAdmin;
+    }
+    setAdmin(isAdmin) {
+        this.isAdmin = isAdmin;
+    }
 }
 // Export a global instance
-export const apwLocale = LocaleManager.getInstance();
+export const apwManager = AppwriteManager.getInstance();

@@ -28,14 +28,17 @@ export declare const isEmptyObject: (obj: object) => boolean;
  * @returns {boolean} - True if the object matches the condition, false otherwise.
  */
 export declare const isEmptyKeyValuePair: (obj: Record<string, any>) => boolean;
-declare class LocaleManager {
+declare class AppwriteManager {
     private static instance;
     private locale;
+    private isAdmin;
     private constructor();
-    static getInstance(): LocaleManager;
+    static getInstance(): AppwriteManager;
     getLocale(): string;
     setLocale(newLocale: string): void;
+    getAdmin(): boolean;
+    setAdmin(isAdmin: boolean): void;
 }
-export declare const apwLocale: LocaleManager;
+export declare const apwManager: AppwriteManager;
 export {};
 //# sourceMappingURL=utils.d.ts.map

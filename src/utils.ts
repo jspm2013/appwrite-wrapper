@@ -56,19 +56,21 @@ export const isEmptyKeyValuePair = (obj: Record<string, any>): boolean => {
   return Object.keys(obj).length === 1 && obj[""] === "";
 };
 
-class LocaleManager {
-  private static instance: LocaleManager;
+class AppwriteManager {
+  private static instance: AppwriteManager;
   private locale: string = "de"; // Default locale
+  private isAdmin: boolean = false; // Default admin state
 
-  private constructor() {} // Prevent instantiation from outside
+  private constructor() {} // Prevent direct instantiation
 
-  public static getInstance(): LocaleManager {
-    if (!LocaleManager.instance) {
-      LocaleManager.instance = new LocaleManager();
+  public static getInstance(): AppwriteManager {
+    if (!AppwriteManager.instance) {
+      AppwriteManager.instance = new AppwriteManager();
     }
-    return LocaleManager.instance;
+    return AppwriteManager.instance;
   }
 
+  // Locale management
   public getLocale(): string {
     return this.locale;
   }
@@ -76,7 +78,16 @@ class LocaleManager {
   public setLocale(newLocale: string): void {
     this.locale = newLocale;
   }
+
+  // Admin state management
+  public getAdmin(): boolean {
+    return this.isAdmin;
+  }
+
+  public setAdmin(isAdmin: boolean): void {
+    this.isAdmin = isAdmin;
+  }
 }
 
 // Export a global instance
-export const apwLocale = LocaleManager.getInstance();
+export const apwManager = AppwriteManager.getInstance();

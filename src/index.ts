@@ -5,7 +5,7 @@ import {
   originInternal,
   originExternal,
 } from "./host";
-import { apwLocale } from "./utils";
+import { apwManager } from "./utils";
 export { Models, ID, Query } from "node-appwrite";
 
 export {
@@ -171,7 +171,7 @@ export {
 } from "./appwriteConfig";
 
 export {
-  apwLocale,
+  apwManager,
   hostInternal,
   hostExternal,
   live,

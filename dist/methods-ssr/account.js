@@ -1,19 +1,13 @@
 "use server";
 import { cookieName, oauthSuccessPath, oauthFailurePath, verificationPath, signInPath, databaseId, userCollectionId, } from "../appwriteConfig";
 import { cookies } from "next/headers";
+import { hostExternal } from "../host";
 import { OAuthProvider } from "../enums";
-import { hostExternal, live } from "../host";
 import { handleApwError } from "../exceptions";
 import { isEmptyKeyValuePair } from "../utils";
 import { ID, Query } from "node-appwrite";
 import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
-const admin = !live;
-const errMsg = (fn) => admin ? `ApwWrapper Error (methods/account): ${fn}()` : "Account Error";
-const errDescr = (err) => admin
-    ? err?.response?.message ??
-        "There was an account error processing your request"
-    : "There was an account error processing your request";
 /**
  * Creates an account.
  */
@@ -23,13 +17,10 @@ const createAccount = async ({ email, password, name, }) => {
         const data = await account.create(ID.unique(), email, password, name);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("createAccount"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -42,13 +33,10 @@ const createAnonymousSession = async () => {
         const data = await account.createAnonymousSession();
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("createAnonymousSession"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -67,13 +55,10 @@ const createEmailPasswordSession = async ({ email, password, }) => {
         });
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("createEmailPasswordSession"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -86,13 +71,10 @@ const createJWT = async () => {
         const data = await account.createJWT();
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("createJWT"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -105,13 +87,10 @@ const createMagicURLSession = async ({ email, url, userId, phrase, }) => {
         const data = await account.createMagicURLToken(userId || ID.unique(), email, url, phrase);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("createMagicURLSession"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -124,13 +103,10 @@ const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, fai
         const data = await account.createOAuth2Token(OAuthProvider[provider], `${hostExternal}/${successPath}`, `${hostExternal}/${failurePath}`, scopes);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("createOAuth2Token"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -143,13 +119,10 @@ const createPhoneVerification = async () => {
         const data = await account.createPhoneVerification();
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("createPhoneVerification"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -162,13 +135,10 @@ const createRecovery = async ({ email, url, }) => {
         const data = await account.createRecovery(email, url);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("createRecovery"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -187,13 +157,10 @@ const createSession = async ({ userId, secret, }) => {
         });
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("createSession"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -206,13 +173,10 @@ const createVerification = async ({ verificationUrl = `${hostExternal}/${verific
         const data = await account.createVerification(verificationUrl);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("createVerification"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -230,13 +194,10 @@ const deletePrefs = async ({ key, }) => {
         }
         return { data: prefs, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("deletePrefs"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -249,13 +210,10 @@ const deleteSession = async ({ sessionId = "current", } = {}) => {
         await account.deleteSession(sessionId);
         return { data: signInPath, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("deleteSession"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -268,13 +226,10 @@ const deleteSessions = async () => {
         await account.deleteSessions();
         return { data: signInPath, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("deleteSessions"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -312,13 +267,10 @@ const getAppUser = async () => {
         }
         return { data: null, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("getAppUser"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -331,13 +283,10 @@ const getPrefs = async () => {
         const data = await account.getPrefs();
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("getPrefs"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -350,13 +299,10 @@ const getSession = async ({ sessionId = "current", } = {}) => {
         const data = await account.getSession(sessionId);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("getSession"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -369,13 +315,10 @@ const getUser = async () => {
         const data = await account.get();
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("getUser"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -388,13 +331,10 @@ const listSessions = async () => {
         const data = await account.listSessions();
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("listSessions"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -408,13 +348,10 @@ const updatePrefs = async ({ prefs, }) => {
         const data = await account.updatePrefs(isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs });
         return { data: data.prefs, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("updatePrefs"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -427,13 +364,10 @@ const updateEmail = async ({ email, password, }) => {
         const data = await account.updateEmail(email, password);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("updateEmail"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -446,13 +380,10 @@ const updateName = async ({ name, }) => {
         const data = await account.updateName(name);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("updateName"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -465,13 +396,10 @@ const updatePassword = async ({ password, oldPassword, }) => {
         const data = await account.updatePassword(password, oldPassword);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("updatePassword"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -484,13 +412,10 @@ const updatePhone = async ({ phone, password, }) => {
         const data = await account.updatePhone(phone, password);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("updatePhone"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -503,13 +428,10 @@ const updatePhoneVerification = async ({ userId, secret, }) => {
         const data = await account.updatePhoneVerification(userId, secret);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("updatePhoneVerification"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -522,13 +444,10 @@ const updateRecovery = async ({ userId, secret, password, }) => {
         const data = await account.updateRecovery(userId, secret, password);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("updateRecovery"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -541,13 +460,10 @@ const updateSession = async ({ sessionId = "current", }) => {
         const data = await account.updateSession(sessionId);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("updateSession"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -560,13 +476,10 @@ const updateStatus = async () => {
         const data = await account.updateStatus();
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: {
-                message: errMsg("updateStatus"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error }),
         };
     }
 };
@@ -579,14 +492,10 @@ const updateVerification = async ({ userId, secret, }) => {
         const data = await account.updateVerification(userId, secret);
         return { data, error: null };
     }
-    catch (err) {
+    catch (error) {
         return {
             data: null,
-            error: await handleApwError({ error: err, locale: "de", admin }),
-            /* error: {
-              message: errMsg("updateVerification"),
-              description: JSON.stringify(err),
-            }, */
+            error: await handleApwError({ error }),
         };
     }
 };

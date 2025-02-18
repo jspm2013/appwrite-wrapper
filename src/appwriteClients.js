@@ -10,7 +10,7 @@ import {
   Users,
   Avatars,
 } from "node-appwrite";
-import { apwLocale } from "./utils";
+import { apwManager } from "./utils";
 import { cookies } from "next/headers";
 import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
 
@@ -20,7 +20,7 @@ import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
 export async function createSessionClient(params = {}) {
   const { selfSigned = false } = params;
 
-  const locale = apwLocale.getLocale();
+  const locale = apwManager.getLocale();
 
   const client = new Client()
     .setEndpoint(endpoint)
@@ -76,7 +76,7 @@ export async function createSessionClient(params = {}) {
 export async function createAdminClient(params = {}) {
   const { selfSigned = false } = params;
 
-  const locale = apwLocale.getLocale();
+  const locale = apwManager.getLocale();
 
   const client = new Client()
     .setEndpoint(endpoint)

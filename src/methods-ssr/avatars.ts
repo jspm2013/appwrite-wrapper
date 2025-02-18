@@ -8,7 +8,6 @@ const admin: boolean = !live;
 
 const errMsg = (fn: string) =>
   admin ? `ApwWrapper Error (methods/avatars): ${fn}()` : "Avatars Error";
-("use server");
 
 interface ErrorObject {
   message: string;

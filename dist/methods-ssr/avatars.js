@@ -3,7 +3,6 @@ import { live } from "../host";
 import { createAdminClient } from "../appwriteClients";
 const admin = !live;
 const errMsg = (fn) => admin ? `ApwWrapper Error (methods/avatars): ${fn}()` : "Avatars Error";
-("use server");
 /**
  * Retrieves a browser icon image.
  */

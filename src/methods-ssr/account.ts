@@ -21,7 +21,6 @@ const admin: boolean = !live;
 
 const errMsg = (fn: string) =>
   admin ? `ApwWrapper Error (methods/account): ${fn}()` : "Account Error";
-("use server");
 
 interface ErrorObject {
   message: string;

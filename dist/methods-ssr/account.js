@@ -9,7 +9,6 @@ import { cookies } from "next/headers";
 import { hostExternal, live } from "../host";
 const admin = !live;
 const errMsg = (fn) => admin ? `ApwWrapper Error (methods/account): ${fn}()` : "Account Error";
-("use server");
 /**
  * Creates an account.
  */

@@ -1,6 +1,7 @@
-import { AppwriteException } from "node-appwrite";
-import { configLoader, messagesLoader } from "./loaders";
+import { apwLocale } from "../utils";
 import allExceptions from "./exceptions.json";
+import { configLoader, messagesLoader } from "./loaders";
+import { AppwriteException } from "node-appwrite";
 
 /*
  * APPWRITE ERROR EXAMPLE, see https://appwrite.io/docs/advanced/platform/response-codes as per 12.01.2024
@@ -60,7 +61,6 @@ const exceptions: ExceptionMap = allExceptions;
  */
 export const handleApwError = async ({
   error,
-  locale,
   admin = false,
 }: ErrorHandler): Promise<ReturnedError> => {
   /*
@@ -80,6 +80,7 @@ export const handleApwError = async ({
    */
   const config = await configLoader();
   const defaultLocale = config.defaultLocale;
+  const locale = apwLocale.getLocale();
 
   /*
    * Check if the provided locale is allowed.
@@ -135,14 +136,7 @@ export const handleApwError = async ({
     const { type, code } = jsonErrorReponse || jsonError;
     const typeLowerCase = type?.toLowerCase();
 
-    const variant =
-      code < 300
-        ? "success"
-        : code < 400
-        ? "info"
-        : code < 500
-        ? "warning"
-        : "error";
+    const variant = code < 300 ? "success" : code < 400 ? "info" : "error";
 
     const header = admin
       ? "APW-WRAPPER - DEV-MSG"

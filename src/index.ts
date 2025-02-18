@@ -5,6 +5,7 @@ import {
   originInternal,
   originExternal,
 } from "./host";
+import { apwLocale } from "./utils";
 export { Models, ID, Query } from "node-appwrite";
 
 export {
@@ -169,4 +170,11 @@ export {
   verificationPath,
 } from "./appwriteConfig";
 
-export { hostInternal, hostExternal, live, originInternal, originExternal };
+export {
+  apwLocale,
+  hostInternal,
+  hostExternal,
+  live,
+  originInternal,
+  originExternal,
+};

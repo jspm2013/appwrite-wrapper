@@ -10,6 +10,7 @@ import {
   Users,
   Avatars,
 } from "node-appwrite";
+import { apwLocale } from "./utils";
 import { cookies } from "next/headers";
 import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
 
@@ -17,7 +18,9 @@ import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
  * Creates a session client for the current user.
  */
 export async function createSessionClient(params = {}) {
-  const { selfSigned = false, locale = "" } = params;
+  const { selfSigned = false } = params;
+
+  const locale = apwLocale.getLocale();
 
   const client = new Client()
     .setEndpoint(endpoint)
@@ -71,7 +74,9 @@ export async function createSessionClient(params = {}) {
  * Creates an admin client with elevated privileges.
  */
 export async function createAdminClient(params = {}) {
-  const { selfSigned = false, locale = "" } = params;
+  const { selfSigned = false } = params;
+
+  const locale = apwLocale.getLocale();
 
   const client = new Client()
     .setEndpoint(endpoint)

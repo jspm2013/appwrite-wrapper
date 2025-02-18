@@ -19,6 +19,6 @@ interface ReturnedError {
  * @param admin - Tells the function to show detailed error messages or not.
  * @returns {object} - Formatted error object.
  */
-export declare const handleApwError: ({ error, locale, admin, }: ErrorHandler) => Promise<ReturnedError>;
+export declare const handleApwError: ({ error, admin, }: ErrorHandler) => Promise<ReturnedError>;
 export {};
 //# sourceMappingURL=index.d.ts.map

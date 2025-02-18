@@ -1,6 +1,7 @@
-import { AppwriteException } from "node-appwrite";
-import { configLoader, messagesLoader } from "./loaders";
+import { apwLocale } from "../utils";
 import allExceptions from "./exceptions.json";
+import { configLoader, messagesLoader } from "./loaders";
+import { AppwriteException } from "node-appwrite";
 /**
  * Load the exceptions.
  */
@@ -12,7 +13,7 @@ const exceptions = allExceptions;
  * @param admin - Tells the function to show detailed error messages or not.
  * @returns {object} - Formatted error object.
  */
-export const handleApwError = async ({ error, locale, admin = false, }) => {
+export const handleApwError = async ({ error, admin = false, }) => {
     /*
      * Define the internal error object.
      */
@@ -29,6 +30,7 @@ export const handleApwError = async ({ error, locale, admin = false, }) => {
      */
     const config = await configLoader();
     const defaultLocale = config.defaultLocale;
+    const locale = apwLocale.getLocale();
     /*
      * Check if the provided locale is allowed.
      */
@@ -78,13 +80,7 @@ export const handleApwError = async ({ error, locale, admin = false, }) => {
         const jsonErrorReponse = jsonError.response; // since response is not a string, we need to stringify it for type satisfaction
         const { type, code } = jsonErrorReponse || jsonError;
         const typeLowerCase = type?.toLowerCase();
-        const variant = code < 300
-            ? "success"
-            : code < 400
-                ? "info"
-                : code < 500
-                    ? "warning"
-                    : "error";
+        const variant = code < 300 ? "success" : code < 400 ? "info" : "error";
         const header = admin
             ? "APW-WRAPPER - DEV-MSG"
             : localizedMessages[typeLowerCase]?.header || "APW-WRAPPER - Error";

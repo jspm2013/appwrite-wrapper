@@ -55,3 +55,28 @@ export const isEmptyObject = (obj: object): boolean => {
 export const isEmptyKeyValuePair = (obj: Record<string, any>): boolean => {
   return Object.keys(obj).length === 1 && obj[""] === "";
 };
+
+class LocaleManager {
+  private static instance: LocaleManager;
+  private locale: string = "de"; // Default locale
+
+  private constructor() {} // Prevent instantiation from outside
+
+  public static getInstance(): LocaleManager {
+    if (!LocaleManager.instance) {
+      LocaleManager.instance = new LocaleManager();
+    }
+    return LocaleManager.instance;
+  }
+
+  public getLocale(): string {
+    return this.locale;
+  }
+
+  public setLocale(newLocale: string): void {
+    this.locale = newLocale;
+  }
+}
+
+// Export a global instance
+export const apwLocale = LocaleManager.getInstance();

@@ -50,3 +50,22 @@ export const isEmptyObject = (obj) => {
 export const isEmptyKeyValuePair = (obj) => {
     return Object.keys(obj).length === 1 && obj[""] === "";
 };
+class LocaleManager {
+    static instance;
+    locale = "de"; // Default locale
+    constructor() { } // Prevent instantiation from outside
+    static getInstance() {
+        if (!LocaleManager.instance) {
+            LocaleManager.instance = new LocaleManager();
+        }
+        return LocaleManager.instance;
+    }
+    getLocale() {
+        return this.locale;
+    }
+    setLocale(newLocale) {
+        this.locale = newLocale;
+    }
+}
+// Export a global instance
+export const apwLocale = LocaleManager.getInstance();

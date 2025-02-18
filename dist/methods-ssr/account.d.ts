@@ -146,7 +146,6 @@ export type CreateOAuth2TokenParams = {
 /**
  * Creates an OAuth2 token for the user.
  */
-declare const useCreateOAuth2Token: <T = string>() => (_prevState: ReturnObject<T>, params: CreateOAuth2TokenParams) => Promise<ReturnObject<T>>;
 declare const createOAuth2Token: (_prevState: ReturnObject<string>, params: CreateOAuth2TokenParams) => Promise<ReturnObject<string>>;
 /**
  * Parameters for creating a session with user ID and secret.
@@ -264,5 +263,5 @@ declare const updatePhoneVerification: ({ userId, secret, }: UpdatePhoneVerifica
 /**
  * Export all functions
  */
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, useCreateOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
 //# sourceMappingURL=account.d.ts.map

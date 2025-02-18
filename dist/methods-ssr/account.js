@@ -282,26 +282,6 @@ const createEmailPasswordSession = async ({ email, password, }) => {
     throw err;
   }
 }; */
-const useCreateOAuth2Token = () => 
-//return useActionState<ReturnObject<T>, CreateOAuth2TokenParams>(
-async (_prevState, params) => {
-    try {
-        const { account } = await createAdminClient();
-        const data = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`);
-        return { data: data, error: null };
-    }
-    catch (err) {
-        const error = {
-            message: admin
-                ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
-                : "Account Error",
-            description: JSON.stringify(err),
-        };
-        return { data: null, error };
-    }
-};
-//{} as ReturnObject<T>
-//);
 const createOAuth2Token = async (_prevState, params) => {
     try {
         const { account } = await createAdminClient();
@@ -486,4 +466,4 @@ const updatePhoneVerification = async ({ userId, secret, }) => {
 /**
  * Export all functions
  */
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, useCreateOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };

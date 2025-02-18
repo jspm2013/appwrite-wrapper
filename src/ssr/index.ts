@@ -4,7 +4,7 @@ import {
   live,
   originInternal,
   originExternal,
-} from "./host";
+} from "../host";
 export { Models, ID, Query } from "node-appwrite";
 
 export {
@@ -37,7 +37,7 @@ export {
   createMagicURLSession,
   createPhoneVerification,
   updatePhoneVerification,
-} from "./methods/account";
+} from "../methods-ssr/account";
 
 export {
   // Avatars functions
@@ -45,7 +45,7 @@ export {
   getImage,
   getQr,
   getInitials,
-} from "./methods/avatars";
+} from "../methods-ssr/avatars";
 
 export {
   // Databases functions
@@ -92,7 +92,7 @@ export {
   updateRelationshipAttribute,
   updateStringAttribute,
   updateUrlAttribute,
-} from "./methods/databases";
+} from "../methods-ssr/databases";
 
 export {
   // Storage functions
@@ -110,7 +110,7 @@ export {
   updateFile,
   uploadFile,
   uploadFileFromPath,
-} from "./methods/storage";
+} from "../methods-ssr/storage";
 
 export {
   // Teams functions
@@ -127,7 +127,7 @@ export {
   updateTeamMembershipStatus,
   updateTeamName,
   updateTeamPreferences,
-} from "./methods/teams";
+} from "../methods-ssr/teams";
 
 export {
   // Users functions
@@ -146,7 +146,7 @@ export {
   listUsers,
   setPrefsForUserId,
   updateEmailVerificationForUserId,
-} from "./methods/users";
+} from "../methods-ssr/users";
 
 export {
   // ApwWrapper Config
@@ -167,6 +167,6 @@ export {
   signInPath,
   userCollectionId,
   verificationPath,
-} from "./appwriteConfig";
+} from "../appwriteConfig";
 
 export { hostInternal, hostExternal, live, originInternal, originExternal };

@@ -448,34 +448,6 @@ export type CreateOAuth2TokenParams = {
     throw err;
   }
 }; */
-const useCreateOAuth2Token =
-  <T = string>() =>
-  //return useActionState<ReturnObject<T>, CreateOAuth2TokenParams>(
-  async (
-    _prevState: ReturnObject<T>,
-    params: CreateOAuth2TokenParams
-  ): Promise<ReturnObject<T>> => {
-    try {
-      const { account } = await createAdminClient();
-      const data = await account.createOAuth2Token(
-        OAuthProvider[params.provider],
-        `${hostExternal}/${params.successPath || oauthSuccessPath}`,
-        `${hostExternal}/${params.failurePath || oauthFailurePath}`
-      );
-
-      return { data: data as T, error: null };
-    } catch (err: any) {
-      const error = {
-        message: admin
-          ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
-          : "Account Error",
-        description: JSON.stringify(err),
-      };
-      return { data: null, error };
-    }
-  };
-//{} as ReturnObject<T>
-//);
 const createOAuth2Token = async (
   _prevState: ReturnObject<string>,
   params: CreateOAuth2TokenParams
@@ -799,7 +771,6 @@ export {
   createEmailPasswordSession,
   createJWT,
   createOAuth2Token,
-  useCreateOAuth2Token,
   createSession,
   createVerification,
   deletePrefs,

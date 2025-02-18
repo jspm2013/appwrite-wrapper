@@ -1,11 +1,20 @@
-import { Models } from "node-appwrite";
 import { OAuthProvider } from "../enums";
+import { Models } from "node-appwrite";
 interface ErrorObject {
     message: string;
     description: string;
 }
+interface ErrorObjectOld {
+    appwrite: boolean;
+    header: string;
+    type: string;
+    code: number;
+    variant: string;
+    description: string;
+    error?: object;
+}
 interface ReturnObject<T> {
-    error: ErrorObject | null;
+    error: ErrorObject | ErrorObjectOld | null;
     data: T | null;
 }
 /**

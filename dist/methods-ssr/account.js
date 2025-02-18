@@ -1,14 +1,19 @@
 "use server";
-import { ID, Query } from "node-appwrite";
-import { OAuthProvider } from "../enums";
-import { createSessionClient, createAdminClient } from "../appwriteClients";
-import { getType } from "../collections/typeReader";
-import { isEmptyKeyValuePair } from "../utils";
 import { cookieName, oauthSuccessPath, oauthFailurePath, verificationPath, signInPath, databaseId, userCollectionId, } from "../appwriteConfig";
 import { cookies } from "next/headers";
+import { OAuthProvider } from "../enums";
 import { hostExternal, live } from "../host";
+import { handleApwError } from "../exceptions";
+import { isEmptyKeyValuePair } from "../utils";
+import { ID, Query } from "node-appwrite";
+import { getType } from "../collections/typeReader";
+import { createSessionClient, createAdminClient } from "../appwriteClients";
 const admin = !live;
 const errMsg = (fn) => admin ? `ApwWrapper Error (methods/account): ${fn}()` : "Account Error";
+const errDescr = (err) => admin
+    ? err?.response?.message ??
+        "There was an account error processing your request"
+    : "There was an account error processing your request";
 /**
  * Creates an account.
  */
@@ -577,10 +582,11 @@ const updateVerification = async ({ userId, secret, }) => {
     catch (err) {
         return {
             data: null,
-            error: {
-                message: errMsg("updateVerification"),
-                description: JSON.stringify(err),
-            },
+            error: await handleApwError({ error: err, locale: "de", admin }),
+            /* error: {
+              message: errMsg("updateVerification"),
+              description: JSON.stringify(err),
+            }, */
         };
     }
 };

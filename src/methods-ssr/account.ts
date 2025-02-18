@@ -1,10 +1,5 @@
 "use server";
 
-import { ID, Models, Query } from "node-appwrite";
-import { OAuthProvider } from "../enums";
-import { createSessionClient, createAdminClient } from "../appwriteClients";
-import { getType } from "../collections/typeReader";
-import { isEmptyKeyValuePair } from "../utils";
 import {
   cookieName,
   oauthSuccessPath,
@@ -15,19 +10,39 @@ import {
   userCollectionId,
 } from "../appwriteConfig";
 import { cookies } from "next/headers";
+import { OAuthProvider } from "../enums";
 import { hostExternal, live } from "../host";
+import { handleApwError } from "../exceptions";
+import { isEmptyKeyValuePair } from "../utils";
+import { ID, Models, Query } from "node-appwrite";
+import { getType } from "../collections/typeReader";
+import { createSessionClient, createAdminClient } from "../appwriteClients";
 
 const admin: boolean = !live;
 
 const errMsg = (fn: string) =>
   admin ? `ApwWrapper Error (methods/account): ${fn}()` : "Account Error";
+const errDescr = (err: any) =>
+  admin
+    ? err?.response?.message ??
+      "There was an account error processing your request"
+    : "There was an account error processing your request";
 
 interface ErrorObject {
   message: string;
   description: string;
 }
+interface ErrorObjectOld {
+  appwrite: boolean;
+  header: string;
+  type: string;
+  code: number;
+  variant: string;
+  description: string;
+  error?: object;
+}
 interface ReturnObject<T> {
-  error: ErrorObject | null;
+  error: ErrorObject | ErrorObjectOld | null;
   data: T | null;
 }
 
@@ -739,10 +754,11 @@ const updateVerification = async ({
   } catch (err: any) {
     return {
       data: null,
-      error: {
+      error: await handleApwError({ error: err, locale: "de", admin }),
+      /* error: {
         message: errMsg("updateVerification"),
         description: JSON.stringify(err),
-      },
+      }, */
     };
   }
 };

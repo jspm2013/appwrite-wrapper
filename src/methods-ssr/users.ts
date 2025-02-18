@@ -414,6 +414,27 @@ const updateEmailVerificationForUserId = async ({
   }
 };
 
+const updateStatus = async ({
+  userId,
+  status,
+}: UpdateEmailVerificationForUserIdParams): Promise<
+  ReturnObject<Models.User<Models.Preferences>>
+> => {
+  try {
+    if (typeof status !== "boolean") {
+      throw new Error("Invalid param 'status'");
+    }
+    const { users } = await createAdminClient();
+    const data = await users.updateStatus(userId, status);
+    return { data, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
 export {
   createSessionForUserId,
   createToken,
@@ -428,6 +449,7 @@ export {
   getUsers,
   listIdentities,
   listUsers,
-  updatePrefsForUserId,
   updateEmailVerificationForUserId,
+  updatePrefsForUserId,
+  updateStatus,
 };

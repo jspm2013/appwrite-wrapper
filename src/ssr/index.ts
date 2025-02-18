@@ -29,7 +29,7 @@ export {
   updateEmail,
   updatePhone,
   updateName,
-  updateStatus,
+  //updateStatus,
   updatePassword,
   createRecovery,
   updateRecovery,
@@ -144,8 +144,9 @@ export {
   getUsers,
   listIdentities,
   listUsers,
-  updatePrefsForUserId,
   updateEmailVerificationForUserId,
+  updatePrefsForUserId,
+  updateStatus,
 } from "../methods-ssr/users";
 
 export {

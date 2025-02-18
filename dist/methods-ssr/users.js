@@ -247,4 +247,20 @@ const updateEmailVerificationForUserId = async ({ userId, status, }) => {
         };
     }
 };
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, updatePrefsForUserId, updateEmailVerificationForUserId, };
+const updateStatus = async ({ userId, status, }) => {
+    try {
+        if (typeof status !== "boolean") {
+            throw new Error("Invalid param 'status'");
+        }
+        const { users } = await createAdminClient();
+        const data = await users.updateStatus(userId, status);
+        return { data, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, updateEmailVerificationForUserId, updatePrefsForUserId, updateStatus, };

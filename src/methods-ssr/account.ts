@@ -449,6 +449,7 @@ export type CreateOAuth2TokenParams = {
   }
 }; */
 const createOAuth2Token = async (
+  _prevState: ReturnObject<string>,
   params: CreateOAuth2TokenParams
 ): Promise<ReturnObject<string>> => {
   try {

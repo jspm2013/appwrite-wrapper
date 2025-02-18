@@ -282,7 +282,7 @@ const createEmailPasswordSession = async ({ email, password, }) => {
     throw err;
   }
 }; */
-const createOAuth2Token = async (_prevState, params) => {
+const createOAuth2Token = async (params) => {
     try {
         const { account } = await createAdminClient();
         const data = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`);

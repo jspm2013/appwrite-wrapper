@@ -1,7 +1,6 @@
 "use server";
 import { ID, Query } from "node-appwrite";
 import { OAuthProvider } from "../enums";
-import { useActionState } from "react";
 import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
@@ -273,24 +272,23 @@ const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, fai
         throw err;
     }
 };
-const useCreateOAuth2Token = () => {
-    "use server";
-    return useActionState(async (_prevState, params) => {
-        try {
-            const { account } = await createAdminClient();
-            const data = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`);
-            return { data: data, error: null };
-        }
-        catch (err) {
-            const error = {
-                message: admin
-                    ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
-                    : "Account Error",
-                description: JSON.stringify(err),
-            };
-            return { data: null, error };
-        }
-    }, {});
+const useCreateOAuth2Token = () => 
+//return useActionState<ReturnObject<T>, CreateOAuth2TokenParams>(
+async (_prevState, params) => {
+    try {
+        const { account } = await createAdminClient();
+        const data = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`);
+        return { data: data, error: null };
+    }
+    catch (err) {
+        const error = {
+            message: admin
+                ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
+                : "Account Error",
+            description: JSON.stringify(err),
+        };
+        return { data: null, error };
+    }
 };
 /**
  * Creates a session for a user by their ID and secret.

@@ -448,36 +448,34 @@ const createOAuth2Token = async ({
     throw err;
   }
 };
-const useCreateOAuth2Token = <T = string>() => {
-  "use server";
-  return useActionState<ReturnObject<T>, CreateOAuth2TokenParams>(
-    async (
-      _prevState: ReturnObject<T>,
-      params: CreateOAuth2TokenParams
-    ): Promise<ReturnObject<T>> => {
-      try {
-        const { account } = await createAdminClient();
-        const data = await account.createOAuth2Token(
-          OAuthProvider[params.provider],
-          `${hostExternal}/${params.successPath || oauthSuccessPath}`,
-          `${hostExternal}/${params.failurePath || oauthFailurePath}`
-        );
+const useCreateOAuth2Token =
+  <T = string>() =>
+  //return useActionState<ReturnObject<T>, CreateOAuth2TokenParams>(
+  async (
+    _prevState: ReturnObject<T>,
+    params: CreateOAuth2TokenParams
+  ): Promise<ReturnObject<T>> => {
+    try {
+      const { account } = await createAdminClient();
+      const data = await account.createOAuth2Token(
+        OAuthProvider[params.provider],
+        `${hostExternal}/${params.successPath || oauthSuccessPath}`,
+        `${hostExternal}/${params.failurePath || oauthFailurePath}`
+      );
 
-        return { data: data as T, error: null };
-      } catch (err: any) {
-        const error = {
-          message: admin
-            ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
-            : "Account Error",
-          description: JSON.stringify(err),
-        };
-        return { data: null, error };
-      }
-    },
-    {} as ReturnObject<T>
-  );
-};
-
+      return { data: data as T, error: null };
+    } catch (err: any) {
+      const error = {
+        message: admin
+          ? "ApwWrapper Error (methods/account): useCreateOAuth2Token()"
+          : "Account Error",
+        description: JSON.stringify(err),
+      };
+      return { data: null, error };
+    }
+  };
+//{} as ReturnObject<T>
+//);
 /**
  * Parameters for creating a session with user ID and secret.
  */

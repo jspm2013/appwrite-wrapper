@@ -147,7 +147,7 @@ export type CreateOAuth2TokenParams = {
  * Creates an OAuth2 token for the user.
  */
 declare const createOAuth2Token: ({ provider, successPath, failurePath, }: CreateOAuth2TokenParams) => Promise<string>;
-declare const useCreateOAuth2Token: <T = string>() => [state: ReturnObject<T>, dispatch: (payload: CreateOAuth2TokenParams) => void, isPending: boolean];
+declare const useCreateOAuth2Token: <T = string>() => (_prevState: ReturnObject<T>, params: CreateOAuth2TokenParams) => Promise<ReturnObject<T>>;
 /**
  * Parameters for creating a session with user ID and secret.
  */

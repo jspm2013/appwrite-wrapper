@@ -2,10 +2,9 @@
 
 import { ID, Models, Query } from "node-appwrite";
 import { OAuthProvider } from "../enums";
-import { useActionState } from "react";
-import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
-import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
+import { getType } from "../collections/typeReader";
+import { isEmptyKeyValuePair } from "../utils";
 import {
   cookieName,
   oauthSuccessPath,
@@ -20,14 +19,10 @@ import { hostExternal, live } from "../host";
 
 const admin: boolean = !live;
 
-/**
- * Basic native appwrite user type.
- */
-export type UserType = Models.User<Models.Preferences>;
+const errMsg = (fn: string) =>
+  admin ? `ApwWrapper Error (methods/account): ${fn}()` : "Account Error";
+("use server");
 
-/**
- * Basic appwrite-wrapper return object
- */
 interface ErrorObject {
   message: string;
   description: string;
@@ -38,203 +33,345 @@ interface ReturnObject<T> {
 }
 
 /**
- * Parameters for creating an account.
- */
-export type CreateAccountParams = {
-  email: string;
-  password: string;
-  name?: string;
-};
-/**
- * Creates a new account.
+ * Creates an account.
  */
 const createAccount = async ({
   email,
   password,
   name,
-}: CreateAccountParams): Promise<UserType> => {
+}: {
+  email: string;
+  password: string;
+  name?: string;
+}): Promise<ReturnObject<Models.User<Models.Preferences>>> => {
   try {
     const { account } = await createSessionClient();
-    return await account.create(ID.unique(), email, password, name);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing createAccount():",
-      err
-    );
-    throw err;
+    const data = await account.create(ID.unique(), email, password, name);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("createAccount"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
+/**
+ * Creates an anonymous session.
+ */
+const createAnonymousSession = async (): Promise<
+  ReturnObject<Models.Session>
+> => {
+  try {
+    const { account } = await createSessionClient();
+    const data = await account.createAnonymousSession();
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("createAnonymousSession"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
+/**
+ * Creates an email-password session.
+ */
+const createEmailPasswordSession = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}): Promise<ReturnObject<Models.Session>> => {
+  try {
+    const { account } = await createAdminClient();
+    const data = await account.createEmailPasswordSession(email, password);
+    (await cookies()).set(cookieName, data.secret, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+    });
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("createEmailPasswordSession"),
+        description: JSON.stringify(err),
+      },
+    };
   }
 };
 
 /**
  * Creates a JWT token.
  */
-const createJWT = async (): Promise<Models.Jwt> => {
+const createJWT = async (): Promise<ReturnObject<Models.Jwt>> => {
   try {
     const { account } = await createSessionClient();
-    return await account.createJWT();
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing createJWT():",
-      err
-    );
-    throw err;
+    const data = await account.createJWT();
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("createJWT"),
+        description: JSON.stringify(err),
+      },
+    };
   }
 };
 
 /**
- * Parameters for creating an account.
+ * Creates a Magic URL session.
  */
-export type CreateVerificationParams = {
-  verificationUrl?: string;
+const createMagicURLSession = async ({
+  email,
+  url,
+  userId,
+  phrase,
+}: {
+  email: string;
+  url?: string;
+  userId?: string;
+  phrase?: boolean;
+}): Promise<ReturnObject<Models.Token>> => {
+  try {
+    const { account } = await createSessionClient();
+    const data = await account.createMagicURLToken(
+      userId || ID.unique(),
+      email,
+      url,
+      phrase
+    );
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("createMagicURLSession"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
 };
+
+/**
+ * Creates an OAuth2 token.
+ */
+const createOAuth2Token = async ({
+  provider,
+  successPath = oauthSuccessPath,
+  failurePath = oauthFailurePath,
+  scopes = [],
+}: {
+  provider: keyof typeof OAuthProvider;
+  successPath?: string;
+  failurePath?: string;
+  scopes?: string[];
+}): Promise<ReturnObject<string>> => {
+  try {
+    const { account } = await createAdminClient();
+    const data = await account.createOAuth2Token(
+      OAuthProvider[provider],
+      `${hostExternal}/${successPath}`,
+      `${hostExternal}/${failurePath}`,
+      scopes
+    );
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("createOAuth2Token"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
+/**
+ * Creates a phone verification token.
+ */
+const createPhoneVerification = async (): Promise<
+  ReturnObject<Models.Token>
+> => {
+  try {
+    const { account } = await createSessionClient();
+    const data = await account.createPhoneVerification();
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("createPhoneVerification"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
+/**
+ * Creates a password recovery token.
+ */
+const createRecovery = async ({
+  email,
+  url,
+}: {
+  email: string;
+  url: string;
+}): Promise<ReturnObject<Models.Token>> => {
+  try {
+    const { account } = await createSessionClient();
+    const data = await account.createRecovery(email, url);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("createRecovery"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
+/**
+ * Creates a session using user ID and secret.
+ */
+const createSession = async ({
+  userId,
+  secret,
+}: {
+  userId: string;
+  secret: string;
+}): Promise<ReturnObject<Models.Session>> => {
+  try {
+    const { account } = await createAdminClient();
+    const data = await account.createSession(userId, secret);
+    (await cookies()).set(cookieName, data.secret, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+    });
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("createSession"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
 /**
  * Creates an email verification token.
  */
 const createVerification = async ({
   verificationUrl = `${hostExternal}/${verificationPath}`,
-}: CreateVerificationParams): Promise<Models.Token> => {
+}: {
+  verificationUrl?: string;
+}): Promise<ReturnObject<Models.Token>> => {
   try {
     const { account } = await createSessionClient();
-    return await account.createVerification(verificationUrl);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing createVerification():",
-      err
-    );
-    throw err;
+    const data = await account.createVerification(verificationUrl);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("createVerification"),
+        description: JSON.stringify(err),
+      },
+    };
   }
 };
 
 /**
- * Parameters for deleting a session.
+ * Deletes preferences.
  */
-export type DeleteSessionParams = {
-  sessionId?: string;
+const deletePrefs = async ({
+  key,
+}: {
+  key: string;
+}): Promise<ReturnObject<Models.Preferences>> => {
+  try {
+    const { account } = await createSessionClient();
+    const prefs = await account.getPrefs();
+    if (Object.prototype.hasOwnProperty.call(prefs, key)) {
+      const { [key]: _, ...newPrefs } = prefs;
+      const user = await account.updatePrefs(newPrefs);
+      return { data: user.prefs, error: null };
+    }
+    return { data: prefs, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("deletePrefs"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
 };
+
 /**
- * Deletes a specific session or the current session.
+ * Deletes a session.
  */
-const deleteSession = async (
-  params: DeleteSessionParams = {}
-): Promise<string> => {
-  const { sessionId = "current" } = params;
+const deleteSession = async ({
+  sessionId = "current",
+}: {
+  sessionId?: string;
+} = {}): Promise<ReturnObject<string>> => {
   try {
     const { account } = await createSessionClient();
     await account.deleteSession(sessionId);
-    return signInPath;
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing deleteSession():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Parameters for getting a session.
- */
-export type GetSessionParams = {
-  sessionId?: string;
-};
-/**
- * Getting a specific session or the current session.
- */
-const getSession = async (
-  params: GetSessionParams = {}
-): Promise<Models.Session> => {
-  const { sessionId = "current" } = params;
-  try {
-    const { account } = await createSessionClient();
-    return await account.getSession(sessionId);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing getSession():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Parameters for updating a session.
- */
-export type UpdateSessionParams = {
-  sessionId?: string;
-};
-/**
- * Updates a specific session or the current session.
- */
-const updateSession = async (
-  params: UpdateSessionParams = {}
-): Promise<Models.Session> => {
-  const { sessionId = "current" } = params;
-  try {
-    const { account } = await createSessionClient();
-    return await account.updateSession(sessionId);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing updateSession():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Lists all sessions for the current user.
- */
-const listSessions = async (): Promise<Models.SessionList> => {
-  try {
-    const { account } = await createSessionClient();
-    return await account.listSessions();
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing listSessions():",
-      err
-    );
-    throw err;
+    return { data: signInPath, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("deleteSession"),
+        description: JSON.stringify(err),
+      },
+    };
   }
 };
 
 /**
  * Deletes all sessions for the current user.
  */
-const deleteSessions = async (): Promise<string> => {
+const deleteSessions = async (): Promise<ReturnObject<string>> => {
   try {
     const { account } = await createSessionClient();
     await account.deleteSessions();
-    return signInPath;
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing deleteSessions():",
-      err
-    );
-    throw err;
+    return { data: signInPath, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("deleteSessions"),
+        description: JSON.stringify(err),
+      },
+    };
   }
 };
 
 /**
- * Retrieves the current user.
+ * Retrieves the authenticated and verified user.
  */
-const getUser = async (): Promise<UserType | null> => {
-  try {
-    const { account } = await createSessionClient();
-    return await account.get();
-  } catch (err) {
-    /*
-     * Appwrite throws Error when the user has no valid (aka is not logged in), so we have to return null for that case (instead of returning the error).
-     */
-    return null;
-  }
-};
-
-/**
- * Retrieves the currently authenticated and verified user, dynamically typed based on the generated schema.
- *
- * @returns {Promise<any | null>} - The user object enriched with custom user attributes, or `null` if not verified.
- */
-const getAppUser = async (): Promise<any | null> => {
+const getAppUser = async (): Promise<ReturnObject<any>> => {
   try {
     const { account } = await createSessionClient();
     const { databases } = await createAdminClient();
@@ -246,7 +383,7 @@ const getAppUser = async (): Promise<any | null> => {
     });
 
     if (!AppUserType) {
-      throw new Error("No AppUserType found. Returning null");
+      throw new Error("No AppUser Type found. Returning null");
     }
 
     if (user.emailVerification || user.phoneVerification) {
@@ -261,399 +398,260 @@ const getAppUser = async (): Promise<any | null> => {
         ]
       );
 
-      if (total > 0) {
+      if (total === 1) {
         return {
-          ...user,
-          customUser: documents[0],
-        } as unknown as typeof AppUserType;
+          data: {
+            ...user,
+            customUser: documents[0],
+          } as unknown as typeof AppUserType,
+          error: null,
+        };
       }
     }
 
-    return null;
-  } catch (err) {
-    /*
-     * Appwrite throws Error when the user has no valid (aka is not logged in), so we have to return null for that case (instead of returning the error).
-     */
-    return null;
-  }
-};
-
-/**
- * Parameters for deleting preferences.
- */
-export type DeletePrefsParams = {
-  key: string;
-};
-/**
- * Deletes a specific preference key for the current user.
- */
-const deletePrefs = async ({
-  key,
-}: DeletePrefsParams): Promise<Models.Preferences> => {
-  try {
-    const { account } = await createSessionClient();
-    const prefs = await account.getPrefs();
-    if (Object.prototype.hasOwnProperty.call(prefs, key)) {
-      const { [key]: _, ...newPrefs } = prefs;
-      const user = await account.updatePrefs(newPrefs);
-      return user.prefs;
-    }
-    return prefs;
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing deletePrefs():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Retrieves all preferences for the current user.
- */
-const getPrefs = async (): Promise<Models.Preferences> => {
-  try {
-    const { account } = await createSessionClient();
-    const prefs = await account.getPrefs();
-    return prefs;
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing getPrefs():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Parameters for updating preferences.
- */
-export type UpdatePrefsParams = {
-  prefs: Models.Preferences;
-};
-/**
- * Updates preferences for the current user.
- */
-const updatePrefs = async ({
-  prefs,
-}: UpdatePrefsParams): Promise<Models.Preferences> => {
-  try {
-    if (isValidJsonObject(prefs)) {
-      const { account } = await createSessionClient();
-      const oldPrefs = await account.getPrefs();
-      const user = await account.updatePrefs(
-        isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs }
-      );
-      return user.prefs;
-    } else {
-      throw new Error("Invalid JSON object");
-    }
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing updatePrefs():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Parameters for updating verification.
- */
-export type UpdateVerificationParams = {
-  userId: string;
-  secret: string;
-};
-/**
- * Updates the email verification for a specific user.
- */
-const updateVerification = async ({
-  userId,
-  secret,
-}: UpdateVerificationParams): Promise<Models.Token> => {
-  try {
-    const { account } = await createSessionClient();
-    return await account.updateVerification(userId, secret);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing updateVerification():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Parameters for creating a session with email and password.
- */
-export type CreateEmailPasswordSessionParams = {
-  email: string;
-  password: string;
-};
-/**
- * Creates a session for a user using email and password.
- */
-const createEmailPasswordSession = async ({
-  email,
-  password,
-}: CreateEmailPasswordSessionParams): Promise<Models.Session> => {
-  try {
-    const { account } = await createAdminClient();
-    const session = await account.createEmailPasswordSession(email, password);
-    (await cookies()).set(cookieName, session.secret, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true,
-    });
-    return session;
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing createEmailPasswordSession():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Parameters for creating an OAuth2 token.
- */
-export type CreateOAuth2TokenParams = {
-  provider: keyof typeof OAuthProvider;
-  successPath?: string;
-  failurePath?: string;
-};
-/**
- * Creates an OAuth2 token for the user.
- */
-/* const createOAuth2Token = async ({
-  provider,
-  successPath = oauthSuccessPath,
-  failurePath = oauthFailurePath,
-}: CreateOAuth2TokenParams): Promise<string> => {
-  try {
-    const { account } = await createAdminClient();
-    const url = await account.createOAuth2Token(
-      OAuthProvider[provider],
-      `${hostExternal}/${successPath}`,
-      `${hostExternal}/${failurePath}`
-    );
-    return url;
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing createOAuth2Token():",
-      err
-    );
-    throw err;
-  }
-}; */
-const createOAuth2Token = async (
-  params: CreateOAuth2TokenParams
-): Promise<ReturnObject<string>> => {
-  try {
-    const { account } = await createAdminClient();
-    const data = await account.createOAuth2Token(
-      OAuthProvider[params.provider],
-      `${hostExternal}/${params.successPath || oauthSuccessPath}`,
-      `${hostExternal}/${params.failurePath || oauthFailurePath}`
-    );
-    return { data, error: null };
+    return { data: null, error: null };
   } catch (err: any) {
     return {
       data: null,
       error: {
-        message: admin
-          ? "ApwWrapper Error (methods/account): createOAuth2Token()"
-          : "Account Error",
+        message: errMsg("getAppUser"),
         description: JSON.stringify(err),
       },
     };
   }
 };
+
 /**
- * Parameters for creating a session with user ID and secret.
+ * Retrieves preferences.
  */
-export type CreateSessionParams = {
-  userId: string;
-  secret: string;
-};
-/**
- * Creates a session for a user by their ID and secret.
- */
-const createSession = async ({
-  userId,
-  secret,
-}: CreateSessionParams): Promise<Models.Session> => {
+const getPrefs = async (): Promise<ReturnObject<Models.Preferences>> => {
   try {
-    const { account } = await createAdminClient();
-    const session = await account.createSession(userId, secret);
-    (await cookies()).set(cookieName, session.secret, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true,
-    });
-    return session;
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing createSession():",
-      err
-    );
-    throw err;
+    const { account } = await createSessionClient();
+    const data = await account.getPrefs();
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("getPrefs"),
+        description: JSON.stringify(err),
+      },
+    };
   }
 };
 
 /**
- * Parameters for updating the user's email.
+ * Retrieves a specific session or the current session.
  */
-export type UpdateEmailParams = {
-  email: string;
-  password: string;
+const getSession = async ({
+  sessionId = "current",
+}: {
+  sessionId?: string;
+} = {}): Promise<ReturnObject<Models.Session>> => {
+  try {
+    const { account } = await createSessionClient();
+    const data = await account.getSession(sessionId);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("getSession"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
 };
+
 /**
- * Updates the email for the current user.
+ * Retrieves user details.
+ */
+const getUser = async (): Promise<
+  ReturnObject<Models.User<Models.Preferences>>
+> => {
+  try {
+    const { account } = await createSessionClient();
+    const data = await account.get();
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("getUser"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
+/**
+ * Lists all sessions for the current user.
+ */
+const listSessions = async (): Promise<ReturnObject<Models.SessionList>> => {
+  try {
+    const { account } = await createSessionClient();
+    const data = await account.listSessions();
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("listSessions"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
+/**
+ * Updates user preferences.
+ */
+const updatePrefs = async ({
+  prefs,
+}: {
+  prefs: Models.Preferences;
+}): Promise<ReturnObject<Models.Preferences>> => {
+  try {
+    const { account } = await createSessionClient();
+    const oldPrefs = await account.getPrefs();
+    const data = await account.updatePrefs(
+      isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs }
+    );
+    return { data: data.prefs, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("updatePrefs"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
+/**
+ * Updates user email.
  */
 const updateEmail = async ({
   email,
   password,
-}: UpdateEmailParams): Promise<UserType> => {
-  try {
-    const { account } = await createSessionClient();
-    return await account.updateEmail(email, password);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing updateEmail():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Parameters for updating the user's phone number.
- */
-export type UpdatePhoneParams = {
-  phone: string;
+}: {
+  email: string;
   password: string;
-};
-/**
- * Updates the phone number for the current user.
- */
-const updatePhone = async ({
-  phone,
-  password,
-}: UpdatePhoneParams): Promise<UserType> => {
+}): Promise<ReturnObject<Models.User<Models.Preferences>>> => {
   try {
     const { account } = await createSessionClient();
-    return await account.updatePhone(phone, password);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing updatePhone():",
-      err
-    );
-    throw err;
+    const data = await account.updateEmail(email, password);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("updateEmail"),
+        description: JSON.stringify(err),
+      },
+    };
   }
 };
 
 /**
- * Parameters for updating the user's name.
+ * Updates user name.
  */
-export type UpdateNameParams = {
+const updateName = async ({
+  name,
+}: {
   name: string;
-};
-/**
- * Updates the name for the current user.
- */
-const updateName = async ({ name }: UpdateNameParams): Promise<UserType> => {
+}): Promise<ReturnObject<Models.User<Models.Preferences>>> => {
   try {
     const { account } = await createSessionClient();
-    return await account.updateName(name);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing updateName():",
-      err
-    );
-    throw err;
+    const data = await account.updateName(name);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("updateName"),
+        description: JSON.stringify(err),
+      },
+    };
   }
 };
 
 /**
- * Updates the account status (block/unblock user).
- */
-const updateStatus = async (): Promise<UserType> => {
-  try {
-    const { account } = await createSessionClient();
-    return await account.updateStatus();
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing updateStatus():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Parameters for updating the user's password.
- */
-export type UpdatePasswordParams = {
-  password: string;
-  oldPassword?: string;
-};
-/**
- * Updates the password for the current user.
+ * Updates user password.
  */
 const updatePassword = async ({
   password,
   oldPassword,
-}: UpdatePasswordParams): Promise<UserType> => {
+}: {
+  password: string;
+  oldPassword?: string;
+}): Promise<ReturnObject<Models.User<Models.Preferences>>> => {
   try {
     const { account } = await createSessionClient();
-    return await account.updatePassword(password, oldPassword);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing updatePassword():",
-      err
-    );
-    throw err;
+    const data = await account.updatePassword(password, oldPassword);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("updatePassword"),
+        description: JSON.stringify(err),
+      },
+    };
   }
 };
 
 /**
- * Parameters for creating a password recovery request.
+ * Updates user phone number.
  */
-export type CreateRecoveryParams = {
-  email: string;
-  url: string;
-};
-/**
- * Creates a password recovery token.
- */
-const createRecovery = async ({
-  email,
-  url,
-}: CreateRecoveryParams): Promise<Models.Token> => {
+const updatePhone = async ({
+  phone,
+  password,
+}: {
+  phone: string;
+  password: string;
+}): Promise<ReturnObject<Models.User<Models.Preferences>>> => {
   try {
     const { account } = await createSessionClient();
-    return await account.createRecovery(email, url);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing createRecovery():",
-      err
-    );
-    throw err;
+    const data = await account.updatePhone(phone, password);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("updatePhone"),
+        description: JSON.stringify(err),
+      },
+    };
   }
 };
 
 /**
- * Parameters for updating a password recovery.
+ * Confirms phone verification.
  */
-export type UpdateRecoveryParams = {
+const updatePhoneVerification = async ({
+  userId,
+  secret,
+}: {
   userId: string;
   secret: string;
-  password: string;
+}): Promise<ReturnObject<Models.Token>> => {
+  try {
+    const { account } = await createSessionClient();
+    const data = await account.updatePhoneVerification(userId, secret);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("updatePhoneVerification"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
 };
+
 /**
  * Updates the password using a recovery token.
  */
@@ -661,115 +659,104 @@ const updateRecovery = async ({
   userId,
   secret,
   password,
-}: UpdateRecoveryParams): Promise<Models.Token> => {
-  try {
-    const { account } = await createSessionClient();
-    return await account.updateRecovery(userId, secret, password);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing updateRecovery():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Creates an anonymous session for the user.
- */
-const createAnonymousSession = async (): Promise<Models.Session> => {
-  try {
-    const { account } = await createSessionClient();
-    return await account.createAnonymousSession();
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing createAnonymousSession():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Parameters for creating a Magic URL session.
- */
-export type CreateMagicURLSessionParams = {
-  userId: string;
-  email: string;
-  url?: string;
-  phrase?: boolean;
-};
-/**
- * Creates a Magic URL session for the user.
- */
-const createMagicURLSession = async ({
-  userId,
-  email,
-  url,
-  phrase,
-}: CreateMagicURLSessionParams): Promise<Models.Token> => {
-  try {
-    const { account } = await createSessionClient();
-    return await account.createMagicURLToken(userId, email, url, phrase);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing createMagicURLSession():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Creates a phone verification token.
- */
-const createPhoneVerification = async (): Promise<Models.Token> => {
-  try {
-    const { account } = await createSessionClient();
-    return await account.createPhoneVerification();
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing createPhoneVerification():",
-      err
-    );
-    throw err;
-  }
-};
-
-/**
- * Parameters for updating phone verification.
- */
-export type UpdatePhoneVerificationParams = {
+}: {
   userId: string;
   secret: string;
-};
-/**
- * Confirms phone verification.
- */
-const updatePhoneVerification = async ({
-  userId,
-  secret,
-}: UpdatePhoneVerificationParams): Promise<Models.Token> => {
+  password: string;
+}): Promise<ReturnObject<Models.Token>> => {
   try {
     const { account } = await createSessionClient();
-    return await account.updatePhoneVerification(userId, secret);
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing updatePhoneVerification():",
-      err
-    );
-    throw err;
+    const data = await account.updateRecovery(userId, secret, password);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("updateRecovery"),
+        description: JSON.stringify(err),
+      },
+    };
   }
 };
 
 /**
- * Export all functions
+ * Updates a specific session or the current session.
  */
+const updateSession = async ({
+  sessionId = "current",
+}: {
+  sessionId?: string;
+}): Promise<ReturnObject<Models.Session>> => {
+  try {
+    const { account } = await createSessionClient();
+    const data = await account.updateSession(sessionId);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("updateSession"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
+/**
+ * Updates user status.
+ */
+const updateStatus = async (): Promise<
+  ReturnObject<Models.User<Models.Preferences>>
+> => {
+  try {
+    const { account } = await createSessionClient();
+    const data = await account.updateStatus();
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("updateStatus"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
+/**
+ * Updates email verification.
+ */
+const updateVerification = async ({
+  userId,
+  secret,
+}: {
+  userId: string;
+  secret: string;
+}): Promise<ReturnObject<Models.Token>> => {
+  try {
+    const { account } = await createSessionClient();
+    const data = await account.updateVerification(userId, secret);
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: errMsg("updateVerification"),
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
+
 export {
   createAccount,
+  createAnonymousSession,
   createEmailPasswordSession,
   createJWT,
+  createMagicURLSession,
   createOAuth2Token,
+  createPhoneVerification,
+  createRecovery,
   createSession,
   createVerification,
   deletePrefs,
@@ -781,17 +768,13 @@ export {
   getUser,
   listSessions,
   updatePrefs,
-  updateSession,
-  updateVerification,
   updateEmail,
-  updatePhone,
   updateName,
-  updateStatus,
   updatePassword,
-  createRecovery,
-  updateRecovery,
-  createAnonymousSession,
-  createMagicURLSession,
-  createPhoneVerification,
+  updatePhone,
   updatePhoneVerification,
+  updateRecovery,
+  updateSession,
+  updateStatus,
+  updateVerification,
 };

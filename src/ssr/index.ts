@@ -144,7 +144,7 @@ export {
   getUsers,
   listIdentities,
   listUsers,
-  setPrefsForUserId,
+  updatePrefsForUserId,
   updateEmailVerificationForUserId,
 } from "../methods-ssr/users";
 

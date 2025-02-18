@@ -1,86 +1,25 @@
 "use server";
+import { live } from "../host";
 import { createAdminClient } from "../appwriteClients";
-/**
- * Lists all teams for the current user, optionally filtered by queries or search terms.
- */
-const listTeams = async ({ queries = [], search, }) => {
-    try {
-        const { teams } = await createAdminClient();
-        const result = await teams.list(queries, search);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing listTeams():", err);
-        throw err;
-    }
-};
+const admin = !live;
+const errMsg = (fn) => admin ? `ApwWrapper Error (methods/teams): ${fn}()` : "Team Error";
 /**
  * Creates a new team with the specified ID, name, and optional roles.
  */
 const createTeam = async ({ teamId, name, roles = [], }) => {
     try {
         const { teams } = await createAdminClient();
-        const result = await teams.create(teamId, name, roles);
-        return result;
+        const data = await teams.create(teamId, name, roles);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing createTeam():", err);
-        throw err;
-    }
-};
-/**
- * Retrieves details of a specific team by its unique ID.
- */
-const getTeam = async ({ teamId, }) => {
-    try {
-        const { teams } = await createAdminClient();
-        const result = await teams.get(teamId);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing getTeam():", err);
-        throw err;
-    }
-};
-/**
- * Updates the name of a specific team by its ID.
- */
-const updateTeamName = async ({ teamId, name, }) => {
-    try {
-        const { teams } = await createAdminClient();
-        const result = await teams.updateName(teamId, name);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing updateTeamName():", err);
-        throw err;
-    }
-};
-/**
- * Deletes a team using its unique ID.
- */
-const deleteTeam = async ({ teamId }) => {
-    try {
-        const { teams } = await createAdminClient();
-        await teams.delete(teamId);
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing deleteTeam():", err);
-        throw err;
-    }
-};
-/**
- * Lists all memberships for a specific team, optionally filtered by queries or search terms.
- */
-const listTeamMemberships = async ({ teamId, queries = [], search, }) => {
-    try {
-        const { teams } = await createAdminClient();
-        const result = await teams.listMemberships(teamId, queries, search);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing listTeamMemberships():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createTeam"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
@@ -89,40 +28,36 @@ const listTeamMemberships = async ({ teamId, queries = [], search, }) => {
 const createTeamMembership = async ({ teamId, roles, email, userId, phone, url, name, }) => {
     try {
         const { teams } = await createAdminClient();
-        const result = await teams.createMembership(teamId, roles, email, userId, phone, url, name);
-        return result;
+        const data = await teams.createMembership(teamId, roles, email, userId, phone, url, name);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing createTeamMembership():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createTeamMembership"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
- * Retrieves details of a specific team membership by its unique ID.
+ * Deletes a team using its unique ID.
  */
-const getTeamMembership = async ({ teamId, membershipId, }) => {
+const deleteTeam = async ({ teamId, }) => {
     try {
         const { teams } = await createAdminClient();
-        const result = await teams.getMembership(teamId, membershipId);
-        return result;
+        await teams.delete(teamId);
+        return { data: null, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing getTeamMembership():", err);
-        throw err;
-    }
-};
-/**
- * Updates the roles of a specific team membership.
- */
-const updateTeamMembership = async ({ teamId, membershipId, roles, }) => {
-    try {
-        const { teams } = await createAdminClient();
-        const result = await teams.updateMembership(teamId, membershipId, roles);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing updateTeamMembership():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("deleteTeam"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
@@ -132,24 +67,54 @@ const deleteTeamMembership = async ({ teamId, membershipId, }) => {
     try {
         const { teams } = await createAdminClient();
         await teams.deleteMembership(teamId, membershipId);
+        return { data: null, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing deleteTeamMembership():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("deleteTeamMembership"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
- * Updates the status of a specific team membership, allowing the user to accept an invitation.
+ * Retrieves details of a specific team by its unique ID.
  */
-const updateTeamMembershipStatus = async ({ teamId, membershipId, userId, secret, }) => {
+const getTeam = async ({ teamId, }) => {
     try {
         const { teams } = await createAdminClient();
-        const result = await teams.updateMembershipStatus(teamId, membershipId, userId, secret);
-        return result;
+        const data = await teams.get(teamId);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing updateTeamMembershipStatus():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("getTeam"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Retrieves details of a specific team membership by its unique ID.
+ */
+const getTeamMembership = async ({ teamId, membershipId, }) => {
+    try {
+        const { teams } = await createAdminClient();
+        const data = await teams.getMembership(teamId, membershipId);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("getTeamMembership"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
@@ -158,26 +123,116 @@ const updateTeamMembershipStatus = async ({ teamId, membershipId, userId, secret
 const getTeamPreferences = async ({ teamId, }) => {
     try {
         const { teams } = await createAdminClient();
-        const result = await teams.getPrefs(teamId);
-        return result;
+        const data = await teams.getPrefs(teamId);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing getTeamPreferences():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("getTeamPreferences"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
- * Updates the shared preferences of a team, replacing any previous values.
+ * Lists all memberships for a specific team, optionally filtered by queries or search terms.
  */
+const listTeamMemberships = async ({ teamId, queries = [], search, }) => {
+    try {
+        const { teams } = await createAdminClient();
+        const data = await teams.listMemberships(teamId, queries, search);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("listTeamMemberships"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const listTeams = async ({ queries = [], search, }) => {
+    try {
+        const { teams } = await createAdminClient();
+        const data = await teams.list(queries, search);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("listTeams"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateTeamMembership = async ({ teamId, membershipId, roles, }) => {
+    try {
+        const { teams } = await createAdminClient();
+        const data = await teams.updateMembership(teamId, membershipId, roles);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateTeamMembership"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateTeamMembershipStatus = async ({ teamId, membershipId, userId, secret, }) => {
+    try {
+        const { teams } = await createAdminClient();
+        const data = await teams.updateMembershipStatus(teamId, membershipId, userId, secret);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateTeamMembershipStatus"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateTeamName = async ({ teamId, name, }) => {
+    try {
+        const { teams } = await createAdminClient();
+        const data = await teams.updateName(teamId, name);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateTeamName"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
 const updateTeamPreferences = async ({ teamId, prefs, }) => {
     try {
         const { teams } = await createAdminClient();
-        const result = await teams.updatePrefs(teamId, prefs);
-        return result;
+        const data = await teams.updatePrefs(teamId, prefs);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/teams): Error executing updateTeamPreferences():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateTeamPreferences"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 export { createTeam, createTeamMembership, deleteTeam, deleteTeamMembership, getTeam, getTeamMembership, getTeamPreferences, listTeamMemberships, listTeams, updateTeamMembership, updateTeamMembershipStatus, updateTeamName, updateTeamPreferences, };

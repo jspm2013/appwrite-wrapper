@@ -1,704 +1,696 @@
 "use server";
-import { ID } from "node-appwrite";
-import { createAttribute, getSchema } from "../collections";
+import { ID, } from "node-appwrite";
+import { live } from "../host";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
-/**
- * List all databases in the Appwrite project.
- * @param params - Parameters for listing the databases.
- * @returns The list of databases.
- */
-const listDatabases = async ({ queries = [], search = undefined, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.list(queries, search);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing listDatabases():", err);
-        throw err;
-    }
-};
-/**
- * Create a new database in the Appwrite project.
- * @param params - Parameters for creating the database.
- * @returns The created database details.
- */
-const createDatabase = async ({ dbId = databaseId, name, enabled, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.create(dbId, name, enabled);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createDatabase():", err);
-        throw err;
-    }
-};
-/**
- * Get details of a specific database by its ID.
- * @param params - Parameters for getting the database.
- * @returns The database details.
- */
-const getDatabase = async ({ dbId = databaseId, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.get(dbId);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing getDatabase():", err);
-        throw err;
-    }
-};
-/**
- * Update details of a database by its ID.
- * @param params - Parameters for updating the database.
- * @returns The updated database details.
- */
-const updateDatabase = async ({ dbId, name, enabled, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.update(dbId, name, enabled);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateDatabase():", err);
-        throw err;
-    }
-};
-/**
- * Delete a database by its ID.
- * @param params - Parameters for deleting the database.
- * @returns Confirmation of deletion.
- */
-const deleteDatabase = async ({ dbId, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        await databases.delete(dbId);
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing deleteDatabase():", err);
-        throw err;
-    }
-};
-/**
- * List all collections in a specific database.
- * @param params - Parameters for listing the collections.
- * @returns The list of collections.
- */
-const listCollections = async ({ dbId = databaseId, queries = [], search, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.listCollections(dbId, queries, search);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing listCollections():", err);
-        throw err;
-    }
-};
-/**
- * Create a new collection in a specific database.
- * @param params - Parameters for creating the collection.
- * @returns The created collection details.
- */
-const createCollection = async ({ dbId = databaseId, collId = userCollectionId, name, permissions, documentSecurity, enabled, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.createCollection(dbId, collId, name, permissions, documentSecurity, enabled);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createCollection():", err);
-        throw err;
-    }
-};
-/**
- * Create a new collection according to a specific schema in a specific database.
- * @param params - Parameters for creating the collection.
- * @returns The created collection details.
- */
-const createCollectionWithSchema = async ({ dbId = databaseId, collId, name, permissions, documentSecurity, enabled, nameAsId, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const collList = await databases.listCollections(dbId);
-        let coll = collList.collections.find((collection) => collection.name === name);
-        if (!coll) {
-            const schema = await getSchema(name);
-            const collectionId = collId ?? (nameAsId ? name : ID.unique());
-            coll = await databases.createCollection(dbId, collectionId, name, permissions ?? schema.permissions, documentSecurity ?? schema.documentSecurity, enabled ?? schema.enabled);
-            for (const attr of schema.attributes) {
-                await createAttribute(dbId, collectionId, attr);
-            }
-            for (const index of schema.indexes) {
-                await databases.createIndex(dbId, collectionId, index.key, index.type, index.attributes, index.orders);
-            }
-        }
-        return coll;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createCollectionWithSchema():", err);
-        throw err;
-    }
-};
-/**
- * Get details of a specific collection by its ID.
- * @param params - Parameters for getting the collection.
- * @returns The collection details.
- */
-const getCollection = async ({ dbId = databaseId, collId = userCollectionId, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.getCollection(dbId, collId);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing getCollection():", err);
-        throw err;
-    }
-};
-/**
- * Update details of a collection by its ID.
- * @param params - Parameters for updating the collection.
- * @returns The updated collection details.
- */
-const updateCollection = async ({ dbId, collId, name, permissions, documentSecurity, enabled, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.updateCollection(dbId, collId, name, permissions, documentSecurity, enabled);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateCollection():", err);
-        throw err;
-    }
-};
-/**
- * Delete a collection by its ID.
- * @param params - Parameters for deleting the collection.
- * @returns Confirmation of deletion.
- */
-const deleteCollection = async ({ dbId, collId, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        await databases.deleteCollection(dbId, collId);
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing deleteCollection():", err);
-        throw err;
-    }
-};
-/**
- * List all documents in a specific collection.
- * @param params - Parameters for listing the documents.
- * @returns The list of documents.
- */
-const listDocuments = async ({ dbId = databaseId, collId = userCollectionId, queries = [], }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.listDocuments(dbId, collId, queries);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing listDocuments():", err);
-        throw err;
-    }
-};
-/**
- * Create a new document in a specific collection.
- * @param params - Parameters for creating the document.
- * @returns The created document details.
- */
-const createDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId = ID.unique(), data, permissions, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.createDocument(dbId, collId, documentId, data, permissions);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createDocument():", err);
-        throw err;
-    }
-};
-/**
- * Get a document by its ID from a specific collection.
- * @param params - Parameters for getting the document.
- * @returns The document details.
- */
-const getDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.getDocument(dbId, collId, documentId);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing getDocument():", err);
-        throw err;
-    }
-};
-/**
- * Update a document by its ID in a specific collection.
- * @param params - Parameters for updating the document.
- * @returns The updated document details.
- */
-const updateDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId, data, permissions, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.updateDocument(dbId, collId, documentId, data, permissions);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateDocument():", err);
-        throw err;
-    }
-};
-/**
- * Delete a document by its ID from a specific collection.
- * @param params - Parameters for deleting the document.
- * @returns Confirmation of deletion.
- */
-const deleteDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        await databases.deleteDocument(dbId, collId, documentId);
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing deleteDocument():", err);
-        throw err;
-    }
-};
-/**
- * List all indexes in a specific collection.
- * @param params - Parameters for listing the indexes.
- * @returns The list of indexes.
- */
-const listIndexes = async ({ dbId = databaseId, collId = userCollectionId, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.listIndexes(dbId, collId);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing listIndexes():", err);
-        throw err;
-    }
-};
-/**
- * Create a new index in a specific collection.
- * @param params - Parameters for creating the index.
- * @returns The created index details.
- */
-const createIndex = async ({ dbId = databaseId, collId = userCollectionId, key, type, attributes, orders, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.createIndex(dbId, collId, key, type, attributes, orders);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createIndex():", err);
-        throw err;
-    }
-};
-/**
- * Get an index by its key from a specific collection.
- * @param params - Parameters for getting the index.
- * @returns The index details.
- */
-const getIndex = async ({ dbId = databaseId, collId = userCollectionId, key, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.getIndex(dbId, collId, key);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing getIndex():", err);
-        throw err;
-    }
-};
-/**
- * Delete an index by its key from a specific collection.
- * @param params - Parameters for deleting the index.
- * @returns Confirmation of deletion.
- */
-const deleteIndex = async ({ dbId, collId, key, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        await databases.deleteIndex(dbId, collId, key);
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing deleteIndex():", err);
-        throw err;
-    }
-};
-/**
- * List all attributes in a specific collection.
- * @param params - Parameters for listing the attributes.
- * @returns The list of attributes.
- */
-const listAttributes = async ({ dbId = databaseId, collId = userCollectionId, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.listAttributes(dbId, collId);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing listAttributes():", err);
-        throw err;
-    }
-};
-/**
- * Create a boolean attribute in a collection.
- * @param params - Parameters for creating the boolean attribute.
- * @returns The created attribute details.
- */
+const admin = !live;
+const errMsg = (fn) => admin ? `ApwWrapper Error (methods/databases): ${fn}()` : "Database Error";
 const createBooleanAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createBooleanAttribute(dbId, collId, key, required, xdefault, xarray);
-        return result;
+        const data = await databases.createBooleanAttribute(dbId, collId, key, required, xdefault, xarray);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createBooleanAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createBooleanAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Update a boolean attribute in a collection.
- * @param params - Parameters for updating the boolean attribute.
- * @returns The updated attribute details.
- */
-const updateBooleanAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
+const createCollection = async ({ dbId = databaseId, collId = userCollectionId, name, permissions, documentSecurity, enabled, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateBooleanAttribute(dbId, collId, key, required, xdefault, newKey);
-        return result;
+        const data = await databases.createCollection(dbId, collId, name, permissions, documentSecurity, enabled);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateBooleanAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createCollection"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Create a datetime attribute in a collection.
- * @param params - Parameters for creating the datetime attribute.
- * @returns The created attribute details.
- */
+const createCollectionWithSchema = async ({ dbId = databaseId, collId, name, permissions, documentSecurity, enabled, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.createCollection(dbId, collId ?? ID.unique(), name, permissions, documentSecurity, enabled);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("createCollectionWithSchema"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const createDatabase = async ({ dbId = databaseId, name, enabled, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.create(dbId, name, enabled);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("createDatabase"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
 const createDatetimeAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createDatetimeAttribute(dbId, collId, key, required, xdefault, xarray);
-        return result;
+        const data = await databases.createDatetimeAttribute(dbId, collId, key, required, xdefault, xarray);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createDatetimeAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createDatetimeAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Update a datetime attribute in a collection.
- * @param params - Parameters for updating the datetime attribute.
- * @returns The updated attribute details.
- */
-const updateDatetimeAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
+const createDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId = ID.unique(), data, permissions, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateDatetimeAttribute(dbId, collId, key, required, xdefault, newKey);
-        return result;
+        const document = await databases.createDocument(dbId, collId, documentId, data, permissions);
+        return { data: document, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateDatetimeAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createDocument"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Create an email attribute in a collection.
- * @param params - Parameters for creating the email attribute.
- * @returns The created attribute details.
- */
 const createEmailAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createEmailAttribute(dbId, collId, key, required, xdefault, xarray);
-        return result;
+        const data = await databases.createEmailAttribute(dbId, collId, key, required, xdefault, xarray);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createEmailAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createEmailAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Update an email attribute in a collection.
- * @param params - Parameters for updating the email attribute.
- * @returns The updated attribute details.
- */
-const updateEmailAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.updateEmailAttribute(dbId, collId, key, required, xdefault, newKey);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateEmailAttribute():", err);
-        throw err;
-    }
-};
-/**
- * Create an enum attribute in a collection.
- * @param params - Parameters for creating the enum attribute.
- * @returns The created attribute details.
- */
 const createEnumAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, elements, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createEnumAttribute(dbId, collId, key, elements, required, xdefault, xarray);
-        return result;
+        const data = await databases.createEnumAttribute(dbId, collId, key, elements, required, xdefault, xarray);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createEnumAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createEnumAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Update an enum attribute in a collection.
- * @param params - Parameters for updating the enum attribute.
- * @returns The updated attribute details.
- */
-const updateEnumAttribute = async ({ dbId, collId, key, elements, required, xdefault, newKey, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.updateEnumAttribute(dbId, collId, key, elements, required, xdefault, newKey);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateEnumAttribute():", err);
-        throw err;
-    }
-};
-/**
- * Create a float attribute in a collection.
- * @param params - Parameters for creating the float attribute.
- * @returns The created attribute details.
- */
 const createFloatAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, min, max, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createFloatAttribute(dbId, collId, key, required, min, max, xdefault, xarray);
-        return result;
+        const data = await databases.createFloatAttribute(dbId, collId, key, required, min, max, xdefault, xarray);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createFloatAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createFloatAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Update a float attribute in a collection.
- * @param params - Parameters for updating the float attribute.
- * @returns The updated attribute details.
- */
-const updateFloatAttribute = async ({ dbId, collId, key, required, min, max, xdefault, newKey, }) => {
+const createIndex = async ({ dbId = databaseId, collId = userCollectionId, key, type, attributes, orders, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateFloatAttribute(dbId, collId, key, required, min, max, xdefault, newKey);
-        return result;
+        const data = await databases.createIndex(dbId, collId, key, type, attributes, orders);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateFloatAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createIndex"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Create an integer attribute in a collection.
- * @param params - Parameters for creating the integer attribute.
- * @returns The created attribute details.
- */
 const createIntegerAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, min, max, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createIntegerAttribute(dbId, collId, key, required, min, max, xdefault, xarray);
-        return result;
+        const data = await databases.createIntegerAttribute(dbId, collId, key, required, min, max, xdefault, xarray);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createIntegerAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createIntegerAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Update an integer attribute in a collection.
- * @param params - Parameters for updating the integer attribute.
- * @returns The updated attribute details.
- */
-const updateIntegerAttribute = async ({ dbId, collId, key, required, min, max, xdefault, newKey, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.updateIntegerAttribute(dbId, collId, key, required, min, max, xdefault, newKey);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateIntegerAttribute():", err);
-        throw err;
-    }
-};
-/**
- * Create an IP address attribute in a collection.
- * @param params - Parameters for creating the IP address attribute.
- * @returns The created attribute details.
- */
 const createIpAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createIpAttribute(dbId, collId, key, required, xdefault, xarray);
-        return result;
+        const data = await databases.createIpAttribute(dbId, collId, key, required, xdefault, xarray);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createIpAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createIpAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Update an IP address attribute in a collection.
- * @param params - Parameters for updating the IP address attribute.
- * @returns The updated attribute details.
- */
-const updateIpAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
+const createRelationshipAttribute = async ({ dbId = databaseId, collId = userCollectionId, relatedCollectionId, type, twoWay, key, twoWayKey, onDelete, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateIpAttribute(dbId, collId, key, required, xdefault, newKey);
-        return result;
+        const data = await databases.createRelationshipAttribute(dbId, collId, relatedCollectionId, type, twoWay, key, twoWayKey, onDelete);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateIpAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createRelationshipAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Create a string attribute in a collection.
- * @param params - Parameters for creating the string attribute.
- * @returns The created attribute details.
- */
 const createStringAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, size, required, xdefault, xarray, encrypt, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createStringAttribute(dbId, collId, key, size, required, xdefault, xarray, encrypt);
-        return result;
+        const data = await databases.createStringAttribute(dbId, collId, key, size, required, xdefault, xarray, encrypt);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createStringAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createStringAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Update a string attribute in a collection.
- * @param params - Parameters for updating the string attribute.
- * @returns The updated attribute details.
- */
-const updateStringAttribute = async ({ dbId, collId, key, required, xdefault, size, newKey, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.updateStringAttribute(dbId, collId, key, required, xdefault, size, newKey);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateStringAttribute():", err);
-        throw err;
-    }
-};
-/**
- * Create a URL attribute in a collection.
- * @param params - Parameters for creating the URL attribute.
- * @returns The created attribute details.
- */
 const createUrlAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createUrlAttribute(dbId, collId, key, required, xdefault, xarray);
-        return result;
+        const data = await databases.createUrlAttribute(dbId, collId, key, required, xdefault, xarray);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createUrlAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createUrlAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Update a URL attribute in a collection.
- * @param params - Parameters for updating the URL attribute.
- * @returns The updated attribute details.
- */
-const updateUrlAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.updateUrlAttribute(dbId, collId, key, required, xdefault, newKey);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateUrlAttribute():", err);
-        throw err;
-    }
-};
-/**
- * Get an attribute by its key from a collection.
- * @param params - Parameters for getting the attribute.
- * @returns The attribute details.
- */
-const getAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const result = await databases.getAttribute(dbId, collId, key);
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing getAttribute():", err);
-        throw err;
-    }
-};
-/**
- * Delete an attribute by its key from a collection.
- * @param params - Parameters for deleting the attribute.
- * @returns Confirmation of deletion.
- */
 const deleteAttribute = async ({ dbId, collId, key, }) => {
     try {
         const { databases } = await createAdminClient();
         await databases.deleteAttribute(dbId, collId, key);
+        return { data: undefined, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing deleteAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("deleteAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Create a relationship attribute in a collection.
- * @param params - Parameters for creating the relationship attribute.
- * @returns The created attribute details.
- */
-const createRelationshipAttribute = async ({ dbId = databaseId, collId = userCollectionId, relatedCollectionId, type, twoWay, key, twoWayKey, onDelete, }) => {
+const deleteCollection = async ({ dbId, collId, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.createRelationshipAttribute(dbId, collId, relatedCollectionId, type, twoWay, key, twoWayKey, onDelete);
-        return result;
+        await databases.deleteCollection(dbId, collId);
+        return { data: undefined, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing createRelationshipAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("deleteCollection"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Update a relationship attribute in a collection.
- * @param params - Parameters for updating the relationship attribute.
- * @returns The updated attribute details.
- */
+const deleteDatabase = async ({ dbId, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        await databases.delete(dbId);
+        return { data: undefined, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("deleteDatabase"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const deleteDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        await databases.deleteDocument(dbId, collId, documentId);
+        return { data: undefined, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("deleteDocument"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const deleteIndex = async ({ dbId, collId, key, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        await databases.deleteIndex(dbId, collId, key);
+        return { data: undefined, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("deleteIndex"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const getAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.getAttribute(dbId, collId, key);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("getAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const getCollection = async ({ dbId = databaseId, collId = userCollectionId, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.getCollection(dbId, collId);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("getCollection"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const getDatabase = async ({ dbId = databaseId, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.get(dbId);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("getDatabase"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const getDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.getDocument(dbId, collId, documentId);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("getDocument"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const getIndex = async ({ dbId = databaseId, collId = userCollectionId, key, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.getIndex(dbId, collId, key);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("getIndex"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const listAttributes = async ({ dbId = databaseId, collId = userCollectionId, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.listAttributes(dbId, collId);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("listAttributes"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const listCollections = async ({ dbId = databaseId, queries = [], search, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.listCollections(dbId, queries, search);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("listCollections"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const listDatabases = async ({ queries = [], search, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.list(queries, search);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("listDatabases"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const listDocuments = async ({ dbId = databaseId, collId = userCollectionId, queries = [], }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.listDocuments(dbId, collId, queries);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("listDocuments"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const listIndexes = async ({ dbId = databaseId, collId = userCollectionId, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.listIndexes(dbId, collId);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("listIndexes"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateBooleanAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.updateBooleanAttribute(dbId, collId, key, required, xdefault, newKey);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateBooleanAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateCollection = async ({ dbId, collId, name, permissions, documentSecurity, enabled, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.updateCollection(dbId, collId, name, permissions, documentSecurity, enabled);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateCollection"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateDatabase = async ({ dbId, name, enabled, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.update(dbId, name, enabled);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateDatabase"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateDatetimeAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.updateDatetimeAttribute(dbId, collId, key, required, xdefault, newKey);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateDatetimeAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateDocument = async ({ dbId = databaseId, collId = userCollectionId, documentId, data, permissions, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const updatedData = await databases.updateDocument(dbId, collId, documentId, data, permissions);
+        return { data: updatedData, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateDocument"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateEmailAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.updateEmailAttribute(dbId, collId, key, required, xdefault, newKey);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateEmailAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateEnumAttribute = async ({ dbId, collId, key, elements, required, xdefault, newKey, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.updateEnumAttribute(dbId, collId, key, elements, required, xdefault, newKey);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateEnumAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateFloatAttribute = async ({ dbId, collId, key, required, min, max, xdefault, newKey, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.updateFloatAttribute(dbId, collId, key, required, min, max, xdefault, newKey);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateFloatAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateIntegerAttribute = async ({ dbId, collId, key, required, min, max, xdefault, newKey, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.updateIntegerAttribute(dbId, collId, key, required, min, max, xdefault, newKey);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateIntegerAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateIpAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.updateIpAttribute(dbId, collId, key, required, xdefault, newKey);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateIpAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
 const updateRelationshipAttribute = async ({ dbId, collId, key, onDelete, newKey, }) => {
     try {
         const { databases } = await createAdminClient();
-        const result = await databases.updateRelationshipAttribute(dbId, collId, key, onDelete, newKey);
-        return result;
+        const data = await databases.updateRelationshipAttribute(dbId, collId, key, onDelete, newKey);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/databases): Error executing updateRelationshipAttribute():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateRelationshipAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
-/**
- * Export all created functions.
- */
+const updateStringAttribute = async ({ dbId, collId, key, required, xdefault, size, newKey, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.updateStringAttribute(dbId, collId, key, required, xdefault, size, newKey);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateStringAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+const updateUrlAttribute = async ({ dbId, collId, key, required, xdefault, newKey, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const data = await databases.updateUrlAttribute(dbId, collId, key, required, xdefault, newKey);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateUrlAttribute"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
 export { createBooleanAttribute, createCollection, createCollectionWithSchema, createDatabase, createDatetimeAttribute, createDocument, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIndex, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, deleteAttribute, deleteCollection, deleteDatabase, deleteDocument, deleteIndex, getAttribute, getCollection, getDatabase, getDocument, getIndex, listAttributes, listCollections, listDatabases, listDocuments, listIndexes, updateBooleanAttribute, updateCollection, updateDatabase, updateDatetimeAttribute, updateDocument, updateEmailAttribute, updateEnumAttribute, updateFloatAttribute, updateIntegerAttribute, updateIpAttribute, updateRelationshipAttribute, updateStringAttribute, updateUrlAttribute, };

@@ -1,24 +1,76 @@
 "use server";
 import { ID, Query } from "node-appwrite";
 import { OAuthProvider } from "../enums";
-import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
-import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
+import { getType } from "../collections/typeReader";
+import { isEmptyKeyValuePair } from "../utils";
 import { cookieName, oauthSuccessPath, oauthFailurePath, verificationPath, signInPath, databaseId, userCollectionId, } from "../appwriteConfig";
 import { cookies } from "next/headers";
 import { hostExternal, live } from "../host";
 const admin = !live;
+const errMsg = (fn) => admin ? `ApwWrapper Error (methods/account): ${fn}()` : "Account Error";
+("use server");
 /**
- * Creates a new account.
+ * Creates an account.
  */
 const createAccount = async ({ email, password, name, }) => {
     try {
         const { account } = await createSessionClient();
-        return await account.create(ID.unique(), email, password, name);
+        const data = await account.create(ID.unique(), email, password, name);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing createAccount():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createAccount"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Creates an anonymous session.
+ */
+const createAnonymousSession = async () => {
+    try {
+        const { account } = await createSessionClient();
+        const data = await account.createAnonymousSession();
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("createAnonymousSession"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Creates an email-password session.
+ */
+const createEmailPasswordSession = async ({ email, password, }) => {
+    try {
+        const { account } = await createAdminClient();
+        const data = await account.createEmailPasswordSession(email, password);
+        (await cookies()).set(cookieName, data.secret, {
+            path: "/",
+            httpOnly: true,
+            sameSite: "strict",
+            secure: true,
+        });
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("createEmailPasswordSession"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
@@ -27,11 +79,118 @@ const createAccount = async ({ email, password, name, }) => {
 const createJWT = async () => {
     try {
         const { account } = await createSessionClient();
-        return await account.createJWT();
+        const data = await account.createJWT();
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing createJWT():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createJWT"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Creates a Magic URL session.
+ */
+const createMagicURLSession = async ({ email, url, userId, phrase, }) => {
+    try {
+        const { account } = await createSessionClient();
+        const data = await account.createMagicURLToken(userId || ID.unique(), email, url, phrase);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("createMagicURLSession"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Creates an OAuth2 token.
+ */
+const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, failurePath = oauthFailurePath, scopes = [], }) => {
+    try {
+        const { account } = await createAdminClient();
+        const data = await account.createOAuth2Token(OAuthProvider[provider], `${hostExternal}/${successPath}`, `${hostExternal}/${failurePath}`, scopes);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("createOAuth2Token"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Creates a phone verification token.
+ */
+const createPhoneVerification = async () => {
+    try {
+        const { account } = await createSessionClient();
+        const data = await account.createPhoneVerification();
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("createPhoneVerification"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Creates a password recovery token.
+ */
+const createRecovery = async ({ email, url, }) => {
+    try {
+        const { account } = await createSessionClient();
+        const data = await account.createRecovery(email, url);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("createRecovery"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Creates a session using user ID and secret.
+ */
+const createSession = async ({ userId, secret, }) => {
+    try {
+        const { account } = await createAdminClient();
+        const data = await account.createSession(userId, secret);
+        (await cookies()).set(cookieName, data.secret, {
+            path: "/",
+            httpOnly: true,
+            sameSite: "strict",
+            secure: true,
+        });
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("createSession"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
@@ -40,67 +199,60 @@ const createJWT = async () => {
 const createVerification = async ({ verificationUrl = `${hostExternal}/${verificationPath}`, }) => {
     try {
         const { account } = await createSessionClient();
-        return await account.createVerification(verificationUrl);
+        const data = await account.createVerification(verificationUrl);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing createVerification():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("createVerification"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
- * Deletes a specific session or the current session.
+ * Deletes preferences.
  */
-const deleteSession = async (params = {}) => {
-    const { sessionId = "current" } = params;
+const deletePrefs = async ({ key, }) => {
+    try {
+        const { account } = await createSessionClient();
+        const prefs = await account.getPrefs();
+        if (Object.prototype.hasOwnProperty.call(prefs, key)) {
+            const { [key]: _, ...newPrefs } = prefs;
+            const user = await account.updatePrefs(newPrefs);
+            return { data: user.prefs, error: null };
+        }
+        return { data: prefs, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("deletePrefs"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Deletes a session.
+ */
+const deleteSession = async ({ sessionId = "current", } = {}) => {
     try {
         const { account } = await createSessionClient();
         await account.deleteSession(sessionId);
-        return signInPath;
+        return { data: signInPath, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing deleteSession():", err);
-        throw err;
-    }
-};
-/**
- * Getting a specific session or the current session.
- */
-const getSession = async (params = {}) => {
-    const { sessionId = "current" } = params;
-    try {
-        const { account } = await createSessionClient();
-        return await account.getSession(sessionId);
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing getSession():", err);
-        throw err;
-    }
-};
-/**
- * Updates a specific session or the current session.
- */
-const updateSession = async (params = {}) => {
-    const { sessionId = "current" } = params;
-    try {
-        const { account } = await createSessionClient();
-        return await account.updateSession(sessionId);
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing updateSession():", err);
-        throw err;
-    }
-};
-/**
- * Lists all sessions for the current user.
- */
-const listSessions = async () => {
-    try {
-        const { account } = await createSessionClient();
-        return await account.listSessions();
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing listSessions():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("deleteSession"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
@@ -110,32 +262,20 @@ const deleteSessions = async () => {
     try {
         const { account } = await createSessionClient();
         await account.deleteSessions();
-        return signInPath;
+        return { data: signInPath, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing deleteSessions():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("deleteSessions"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
- * Retrieves the current user.
- */
-const getUser = async () => {
-    try {
-        const { account } = await createSessionClient();
-        return await account.get();
-    }
-    catch (err) {
-        /*
-         * Appwrite throws Error when the user has no valid (aka is not logged in), so we have to return null for that case (instead of returning the error).
-         */
-        return null;
-    }
-};
-/**
- * Retrieves the currently authenticated and verified user, dynamically typed based on the generated schema.
- *
- * @returns {Promise<any | null>} - The user object enriched with custom user attributes, or `null` if not verified.
+ * Retrieves the authenticated and verified user.
  */
 const getAppUser = async () => {
     try {
@@ -147,7 +287,7 @@ const getAppUser = async () => {
             typeName: "AppUserType",
         });
         if (!AppUserType) {
-            throw new Error("No AppUserType found. Returning null");
+            throw new Error("No AppUser Type found. Returning null");
         }
         if (user.emailVerification || user.phoneVerification) {
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
@@ -156,298 +296,198 @@ const getAppUser = async () => {
                     Query.equal("deleted", false),
                 ]),
             ]);
-            if (total > 0) {
+            if (total === 1) {
                 return {
-                    ...user,
-                    customUser: documents[0],
+                    data: {
+                        ...user,
+                        customUser: documents[0],
+                    },
+                    error: null,
                 };
             }
         }
-        return null;
-    }
-    catch (err) {
-        /*
-         * Appwrite throws Error when the user has no valid (aka is not logged in), so we have to return null for that case (instead of returning the error).
-         */
-        return null;
-    }
-};
-/**
- * Deletes a specific preference key for the current user.
- */
-const deletePrefs = async ({ key, }) => {
-    try {
-        const { account } = await createSessionClient();
-        const prefs = await account.getPrefs();
-        if (Object.prototype.hasOwnProperty.call(prefs, key)) {
-            const { [key]: _, ...newPrefs } = prefs;
-            const user = await account.updatePrefs(newPrefs);
-            return user.prefs;
-        }
-        return prefs;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing deletePrefs():", err);
-        throw err;
-    }
-};
-/**
- * Retrieves all preferences for the current user.
- */
-const getPrefs = async () => {
-    try {
-        const { account } = await createSessionClient();
-        const prefs = await account.getPrefs();
-        return prefs;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing getPrefs():", err);
-        throw err;
-    }
-};
-/**
- * Updates preferences for the current user.
- */
-const updatePrefs = async ({ prefs, }) => {
-    try {
-        if (isValidJsonObject(prefs)) {
-            const { account } = await createSessionClient();
-            const oldPrefs = await account.getPrefs();
-            const user = await account.updatePrefs(isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs });
-            return user.prefs;
-        }
-        else {
-            throw new Error("Invalid JSON object");
-        }
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing updatePrefs():", err);
-        throw err;
-    }
-};
-/**
- * Updates the email verification for a specific user.
- */
-const updateVerification = async ({ userId, secret, }) => {
-    try {
-        const { account } = await createSessionClient();
-        return await account.updateVerification(userId, secret);
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing updateVerification():", err);
-        throw err;
-    }
-};
-/**
- * Creates a session for a user using email and password.
- */
-const createEmailPasswordSession = async ({ email, password, }) => {
-    try {
-        const { account } = await createAdminClient();
-        const session = await account.createEmailPasswordSession(email, password);
-        (await cookies()).set(cookieName, session.secret, {
-            path: "/",
-            httpOnly: true,
-            sameSite: "strict",
-            secure: true,
-        });
-        return session;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing createEmailPasswordSession():", err);
-        throw err;
-    }
-};
-/**
- * Creates an OAuth2 token for the user.
- */
-/* const createOAuth2Token = async ({
-  provider,
-  successPath = oauthSuccessPath,
-  failurePath = oauthFailurePath,
-}: CreateOAuth2TokenParams): Promise<string> => {
-  try {
-    const { account } = await createAdminClient();
-    const url = await account.createOAuth2Token(
-      OAuthProvider[provider],
-      `${hostExternal}/${successPath}`,
-      `${hostExternal}/${failurePath}`
-    );
-    return url;
-  } catch (err) {
-    console.error(
-      "APW-WRAPPER - Error (methods/account): Error executing createOAuth2Token():",
-      err
-    );
-    throw err;
-  }
-}; */
-const createOAuth2Token = async (params) => {
-    try {
-        const { account } = await createAdminClient();
-        const data = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`);
-        return { data, error: null };
+        return { data: null, error: null };
     }
     catch (err) {
         return {
             data: null,
             error: {
-                message: admin
-                    ? "ApwWrapper Error (methods/account): createOAuth2Token()"
-                    : "Account Error",
+                message: errMsg("getAppUser"),
                 description: JSON.stringify(err),
             },
         };
     }
 };
 /**
- * Creates a session for a user by their ID and secret.
+ * Retrieves preferences.
  */
-const createSession = async ({ userId, secret, }) => {
+const getPrefs = async () => {
     try {
-        const { account } = await createAdminClient();
-        const session = await account.createSession(userId, secret);
-        (await cookies()).set(cookieName, session.secret, {
-            path: "/",
-            httpOnly: true,
-            sameSite: "strict",
-            secure: true,
-        });
-        return session;
+        const { account } = await createSessionClient();
+        const data = await account.getPrefs();
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing createSession():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("getPrefs"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
- * Updates the email for the current user.
+ * Retrieves a specific session or the current session.
+ */
+const getSession = async ({ sessionId = "current", } = {}) => {
+    try {
+        const { account } = await createSessionClient();
+        const data = await account.getSession(sessionId);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("getSession"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Retrieves user details.
+ */
+const getUser = async () => {
+    try {
+        const { account } = await createSessionClient();
+        const data = await account.get();
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("getUser"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Lists all sessions for the current user.
+ */
+const listSessions = async () => {
+    try {
+        const { account } = await createSessionClient();
+        const data = await account.listSessions();
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("listSessions"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Updates user preferences.
+ */
+const updatePrefs = async ({ prefs, }) => {
+    try {
+        const { account } = await createSessionClient();
+        const oldPrefs = await account.getPrefs();
+        const data = await account.updatePrefs(isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs });
+        return { data: data.prefs, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updatePrefs"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Updates user email.
  */
 const updateEmail = async ({ email, password, }) => {
     try {
         const { account } = await createSessionClient();
-        return await account.updateEmail(email, password);
+        const data = await account.updateEmail(email, password);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing updateEmail():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateEmail"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
- * Updates the phone number for the current user.
+ * Updates user name.
  */
-const updatePhone = async ({ phone, password, }) => {
+const updateName = async ({ name, }) => {
     try {
         const { account } = await createSessionClient();
-        return await account.updatePhone(phone, password);
+        const data = await account.updateName(name);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing updatePhone():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateName"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
- * Updates the name for the current user.
- */
-const updateName = async ({ name }) => {
-    try {
-        const { account } = await createSessionClient();
-        return await account.updateName(name);
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing updateName():", err);
-        throw err;
-    }
-};
-/**
- * Updates the account status (block/unblock user).
- */
-const updateStatus = async () => {
-    try {
-        const { account } = await createSessionClient();
-        return await account.updateStatus();
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing updateStatus():", err);
-        throw err;
-    }
-};
-/**
- * Updates the password for the current user.
+ * Updates user password.
  */
 const updatePassword = async ({ password, oldPassword, }) => {
     try {
         const { account } = await createSessionClient();
-        return await account.updatePassword(password, oldPassword);
+        const data = await account.updatePassword(password, oldPassword);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing updatePassword():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("updatePassword"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
- * Creates a password recovery token.
+ * Updates user phone number.
  */
-const createRecovery = async ({ email, url, }) => {
+const updatePhone = async ({ phone, password, }) => {
     try {
         const { account } = await createSessionClient();
-        return await account.createRecovery(email, url);
+        const data = await account.updatePhone(phone, password);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing createRecovery():", err);
-        throw err;
-    }
-};
-/**
- * Updates the password using a recovery token.
- */
-const updateRecovery = async ({ userId, secret, password, }) => {
-    try {
-        const { account } = await createSessionClient();
-        return await account.updateRecovery(userId, secret, password);
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing updateRecovery():", err);
-        throw err;
-    }
-};
-/**
- * Creates an anonymous session for the user.
- */
-const createAnonymousSession = async () => {
-    try {
-        const { account } = await createSessionClient();
-        return await account.createAnonymousSession();
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing createAnonymousSession():", err);
-        throw err;
-    }
-};
-/**
- * Creates a Magic URL session for the user.
- */
-const createMagicURLSession = async ({ userId, email, url, phrase, }) => {
-    try {
-        const { account } = await createSessionClient();
-        return await account.createMagicURLToken(userId, email, url, phrase);
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing createMagicURLSession():", err);
-        throw err;
-    }
-};
-/**
- * Creates a phone verification token.
- */
-const createPhoneVerification = async () => {
-    try {
-        const { account } = await createSessionClient();
-        return await account.createPhoneVerification();
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing createPhoneVerification():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("updatePhone"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
@@ -456,14 +496,93 @@ const createPhoneVerification = async () => {
 const updatePhoneVerification = async ({ userId, secret, }) => {
     try {
         const { account } = await createSessionClient();
-        return await account.updatePhoneVerification(userId, secret);
+        const data = await account.updatePhoneVerification(userId, secret);
+        return { data, error: null };
     }
     catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing updatePhoneVerification():", err);
-        throw err;
+        return {
+            data: null,
+            error: {
+                message: errMsg("updatePhoneVerification"),
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**
- * Export all functions
+ * Updates the password using a recovery token.
  */
-export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };
+const updateRecovery = async ({ userId, secret, password, }) => {
+    try {
+        const { account } = await createSessionClient();
+        const data = await account.updateRecovery(userId, secret, password);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateRecovery"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Updates a specific session or the current session.
+ */
+const updateSession = async ({ sessionId = "current", }) => {
+    try {
+        const { account } = await createSessionClient();
+        const data = await account.updateSession(sessionId);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateSession"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Updates user status.
+ */
+const updateStatus = async () => {
+    try {
+        const { account } = await createSessionClient();
+        const data = await account.updateStatus();
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateStatus"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+/**
+ * Updates email verification.
+ */
+const updateVerification = async ({ userId, secret, }) => {
+    try {
+        const { account } = await createSessionClient();
+        const data = await account.updateVerification(userId, secret);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: errMsg("updateVerification"),
+                description: JSON.stringify(err),
+            },
+        };
+    }
+};
+export { createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, };

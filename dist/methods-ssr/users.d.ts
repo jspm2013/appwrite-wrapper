@@ -1,150 +1,119 @@
 import { Models } from "node-appwrite";
-/**
- * Parameters for creating a session for a user.
- */
-export type CreateSessionForUserIdParams = {
-    userId?: string;
-};
+interface ErrorObject {
+    message: string;
+    description: string;
+}
+interface ReturnObject<T> {
+    error: ErrorObject | null;
+    data: T | null;
+}
 /**
  * Creates a session for a user by their ID.
  */
-declare const createSessionForUserId: ({ userId, }: CreateSessionForUserIdParams) => Promise<Models.Session>;
+export type CreateSessionForUserIdParams = {
+    userId: string;
+};
+declare const createSessionForUserId: ({ userId, }: CreateSessionForUserIdParams) => Promise<ReturnObject<Models.Session>>;
 /**
- * Parameters for creating a token for a user.
+ * Creates a token for a user.
  */
 export type CreateTokenParams = {
     userId: string;
     length?: number;
     expire?: number;
 };
+declare const createToken: ({ userId, length, expire, }: CreateTokenParams) => Promise<ReturnObject<Models.Token>>;
 /**
- * Creates a token for a user.
- */
-declare const createToken: ({ userId, length, expire, }: CreateTokenParams) => Promise<Models.Token>;
-/**
- * Parameters for deleting a specific preference key for a user by their ID.
+ * Deletes a specific preference key for a user by their ID.
  */
 export type DeletePrefsForUserIdParams = {
     userId: string;
     key: string;
 };
+declare const deletePrefsForUserId: ({ userId, key, }: DeletePrefsForUserIdParams) => Promise<ReturnObject<Models.Preferences>>;
 /**
- * Deletes a specific preference key for a user by their ID.
- */
-declare const deletePrefsForUserId: ({ userId, key, }: DeletePrefsForUserIdParams) => Promise<Models.Preferences>;
-/**
- * Parameters for deleting a specific session for a user.
+ * Deletes a specific session for a user by their ID.
  */
 export type DeleteSessionForUserIdParams = {
     userId: string;
     sessionId: string;
 };
+declare const deleteSessionForUserId: ({ userId, sessionId, }: DeleteSessionForUserIdParams) => Promise<ReturnObject<void>>;
 /**
- * Deletes a specific session for a user by their ID.
- */
-declare const deleteSessionForUserId: ({ userId, sessionId, }: DeleteSessionForUserIdParams) => Promise<void>;
-/**
- * Parameters for deleting all sessions for a user.
+ * Deletes all sessions for a user by their ID.
  */
 export type DeleteSessionsForUserIdParams = {
     userId: string;
 };
+declare const deleteSessionsForUserId: ({ userId, }: DeleteSessionsForUserIdParams) => Promise<ReturnObject<void>>;
 /**
- * Deletes all sessions for a user by their ID.
- */
-declare const deleteSessionsForUserId: ({ userId, }: DeleteSessionsForUserIdParams) => Promise<void>;
-/**
- * Parameters for getting prefs for a user.
- */
-export type GetPrefsForUserIdParams = {
-    userId: string;
-};
-/**
- * Gets prefs for a user by their ID.
- */
-declare const getPrefsForUserId: ({ userId, }: GetPrefsForUserIdParams) => Promise<Models.Preferences>;
-/**
- * Parameters for retrieving a user by their ID.
- */
-export type GetUserForUserIdParams = {
-    userId: string;
-};
-/**
- * Retrieves a user by their ID.
- */
-declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<Models.User<Models.Preferences> | null>;
-/**
- * Retrieves a verified app user by their ID.
- */
-declare const getAppUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<any | null>;
-/**
- * Parameters for listing users.
- */
-export type ListParams = {
-    queries?: string[];
-    search?: string;
-};
-/**
- * Lists users with optional filters and search parameters.
- */
-declare const listIdentities: ({ queries, search, }: ListParams) => Promise<Models.IdentityList>;
-/**
- * Lists users with optional filters and search parameters.
- */
-declare const listUsers: ({ queries, search, }: ListParams) => Promise<Models.UserList<Models.Preferences>>;
-/**
- * Parameters for setting prefs for a user.
- */
-export type SetPrefsForUserIdParams = {
-    userId: string;
-    prefsObj: object;
-};
-/**
- * Sets the prefs for a user by their ID.
- */
-declare const setPrefsForUserId: ({ userId, prefsObj, }: SetPrefsForUserIdParams) => Promise<Models.Preferences>;
-/**
- * Parameters for updating email verification for a user.
- */
-export type UpdateEmailVerificationForUserIdParams = {
-    userId: string;
-    status: boolean;
-};
-/**
- * Updates the email verification status for a user by their ID.
- */
-declare const updateEmailVerificationForUserId: ({ userId, status, }: UpdateEmailVerificationForUserIdParams) => Promise<Models.User<Models.Preferences>>;
-/**
- * Parameters for deleting a user by their ID.
+ * Deletes a user by their ID.
  */
 export type DeleteUserByIdParams = {
     userId: string;
 };
+declare const deleteUserId: ({ userId, }: DeleteUserByIdParams) => Promise<ReturnObject<string>>;
 /**
- * Deletes a user by their ID.
+ * Retrieves a verified app user by their ID.
  */
-declare const deleteUserId: ({ userId, }: DeleteUserByIdParams) => Promise<string>;
-/**
- * Parameters for getting users list (NATIVE appwrite users)
- */
-export type GetUsersParams = {
-    queries?: string[];
-    search?: string;
+export type GetUserForUserIdParams = {
+    userId: string;
 };
+declare const getAppUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<ReturnObject<any | null>>;
 /**
- * Gets users list (NATIVE appwrite users)
- */
-declare const getUsers: ({ queries, search, }: GetUsersParams) => Promise<Models.UserList<Models.Preferences>>;
-/**
- * Parameters for getting CUSTOM users list
+ * Gets CUSTOM users list.
  */
 export type GetCustomUsersParams = {
     queries?: string[];
     includingDeleted?: boolean;
 };
+declare const getCustomUsers: <TCustomUsers extends Models.DocumentList<Models.Document>>({ queries, includingDeleted, }: GetCustomUsersParams) => Promise<ReturnObject<TCustomUsers>>;
 /**
- * Gets CUSTOM users list
+ * Gets prefs for a user by their ID.
  */
-declare const getCustomUsers: <TCustomUsers extends Models.DocumentList<Models.Document>>({ queries, includingDeleted, }: GetCustomUsersParams) => Promise<TCustomUsers>;
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, setPrefsForUserId, updateEmailVerificationForUserId, };
+export type GetPrefsForUserIdParams = {
+    userId: string;
+};
+declare const getPrefsForUserId: ({ userId, }: GetPrefsForUserIdParams) => Promise<ReturnObject<Models.Preferences>>;
+/**
+ * Retrieves a user by their ID.
+ */
+declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+/**
+ * Gets users list (NATIVE appwrite users).
+ */
+export type GetUsersParams = {
+    queries?: string[];
+    search?: string;
+};
+declare const getUsers: ({ queries, search, }: GetUsersParams) => Promise<ReturnObject<Models.UserList<Models.Preferences>>>;
+/**
+ * Lists user identities with optional filters and search parameters.
+ */
+export type ListParams = {
+    queries?: string[];
+    search?: string;
+};
+declare const listIdentities: ({ queries, search, }: ListParams) => Promise<ReturnObject<Models.IdentityList>>;
+/**
+ * Lists users with optional filters and search parameters.
+ */
+declare const listUsers: ({ queries, search, }: ListParams) => Promise<ReturnObject<Models.UserList<Models.Preferences>>>;
+/**
+ * Sets the prefs for a user by their ID.
+ */
+export type UpdatePrefsForUserIdParams = {
+    userId: string;
+    prefsObj: object;
+};
+declare const updatePrefsForUserId: ({ userId, prefsObj, }: UpdatePrefsForUserIdParams) => Promise<ReturnObject<Models.Preferences>>;
+/**
+ * Updates the email verification status for a user by their ID.
+ */
+export type UpdateEmailVerificationForUserIdParams = {
+    userId: string;
+    status: boolean;
+};
+declare const updateEmailVerificationForUserId: ({ userId, status, }: UpdateEmailVerificationForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, updatePrefsForUserId, updateEmailVerificationForUserId, };
 //# sourceMappingURL=users.d.ts.map

@@ -1,90 +1,68 @@
 import { Models } from "node-appwrite";
 import { Compression, ImageFormat, ImageGravity, UploadProgress } from "../enums";
+interface ErrorObject {
+    message: string;
+    description: string;
+}
+interface ReturnObject<T> {
+    error: ErrorObject | null;
+    data: T | null;
+}
 /**
- * Parameters for the listFiles function.
+ * Creates a new storage bucket.
  */
-export type ListFilesParams = {
-    bucketId: string;
-    queries?: string[];
-    search?: string;
-};
-/**
- * List all files in a specific bucket.
- * @param params - Parameters for listing the files.
- * @returns The list of files.
- */
-declare const listFiles: ({ bucketId, queries, search, }: ListFilesParams) => Promise<any>;
-/**
- * Get a file by its unique ID.
- * This endpoint response returns a JSON object with the file metadata.
- */
-export type GetFileParams = {
-    bucketId: string;
-    fileId: string;
-};
-/**
- * Get metadata of a file by its unique ID.
- * @param params - Parameters for getting the file.
- * @returns The file metadata.
- */
-declare const getFile: ({ bucketId, fileId }: GetFileParams) => Promise<any>;
-/**
- * Get a file content by its unique ID.
- * This endpoint is similar to the download method but returns with no 'Content-Disposition: attachment' header.
- */
-export type GetFileViewParams = {
-    bucketId: string;
-    fileId: string;
-};
-/**
- * Get file content of a file by its unique ID.
- * @param params - Parameters for getting the file.
- * @returns The file content.
- */
-declare const getFileView: ({ bucketId, fileId, }: GetFileViewParams) => Promise<any>;
-/**
- * Parameters for the updateFile function.
- */
-export type UpdateFileParams = {
-    bucketId: string;
-    fileId: string;
-    name?: string;
+export type CreateBucketParams = {
+    bucketName: string;
     permissions?: string[];
+    fileSecurity?: boolean;
+    enabled?: boolean;
+    maxFileSizeInMb?: number;
+    allowedFileExtensions?: string[];
+    compression?: Compression;
+    encryption?: boolean;
+    antivirus?: boolean;
 };
+declare const createBucket: ({ bucketName, permissions, fileSecurity, enabled, maxFileSizeInMb, allowedFileExtensions, compression, encryption, antivirus, }: CreateBucketParams) => Promise<ReturnObject<Models.Bucket>>;
 /**
- * Update a file by its unique ID.
- * @param params - Parameters for updating the file.
- * @returns The updated file details.
+ * Deletes a storage bucket.
  */
-declare const updateFile: ({ bucketId, fileId, name, permissions, }: UpdateFileParams) => Promise<any>;
+export type DeleteBucketParams = {
+    bucketId: string;
+};
+declare const deleteBucket: ({ bucketId, }: DeleteBucketParams) => Promise<ReturnObject<boolean>>;
 /**
- * Parameters for the deleteFile function.
+ * Retrieves a specific bucket by ID.
+ */
+export type GetBucketParams = {
+    bucketId: string;
+};
+declare const getBucket: ({ bucketId, }: GetBucketParams) => Promise<ReturnObject<Models.Bucket>>;
+/**
+ * Deletes a file from storage.
  */
 export type DeleteFileParams = {
     bucketId: string;
     fileId: string;
 };
+declare const deleteFile: ({ bucketId, fileId, }: DeleteFileParams) => Promise<ReturnObject<boolean>>;
 /**
- * Delete a file by its unique ID.
- * @param params - Parameters for deleting the file.
- * @returns Confirmation of deletion.
+ * Retrieves file metadata.
  */
-declare const deleteFile: ({ bucketId, fileId, }: DeleteFileParams) => Promise<any>;
+export type GetFileParams = {
+    bucketId: string;
+    fileId: string;
+};
+declare const getFile: ({ bucketId, fileId, }: GetFileParams) => Promise<ReturnObject<Models.File>>;
 /**
- * Parameters for the getFileDownload function.
+ * Retrieves a downloadable file URL.
  */
 export type GetFileDownloadParams = {
     bucketId: string;
     fileId: string;
 };
+declare const getFileDownload: ({ bucketId, fileId, }: GetFileDownloadParams) => Promise<ReturnObject<ArrayBuffer>>;
 /**
- * Get a file content for download by its unique ID.
- * @param params - Parameters for downloading the file.
- * @returns The file content.
- */
-declare const getFileDownload: ({ bucketId, fileId, }: GetFileDownloadParams) => Promise<any>;
-/**
- * Parameters for the getFilePreview function.
+ * Retrieves a file preview image.
  */
 export type GetFilePreviewParams = {
     bucketId: string;
@@ -101,62 +79,41 @@ export type GetFilePreviewParams = {
     background?: string;
     output?: ImageFormat;
 };
+declare const getFilePreview: ({ bucketId, fileId, width, height, gravity, quality, borderWidth, borderColor, borderRadius, opacity, rotation, background, output, }: GetFilePreviewParams) => Promise<ReturnObject<ArrayBuffer>>;
 /**
- * Get a file preview image.
- * @param params - Parameters for generating the preview.
- * @returns The file preview.
- */
-declare const getFilePreview: ({ bucketId, fileId, width, height, gravity, quality, borderWidth, borderColor, borderRadius, opacity, rotation, background, output, }: GetFilePreviewParams) => Promise<any>;
-/**
- * Parameters for the uploadFile function.
- */
-export type UploadFileParams = {
-    bucketId: string;
-    fileId?: string;
-    file: any;
-    userId?: string;
-    onProgress?: (progress: UploadProgress) => void;
-};
-/**
- * Upload a file to a specific bucket.
- * @param params - Parameters for uploading the file.
- * @returns The uploaded file details.
- */
-declare const uploadFile: ({ bucketId, fileId, file, userId, onProgress, }: UploadFileParams) => Promise<any>;
-/**
- * Parameters for the uploadFileFromPath function.
- */
-export type UploadFileFromPathParams = {
-    bucketId: string;
-    fileId?: string;
-    filePath: string;
-    userId?: string;
-    onProgress?: (progress: UploadProgress) => void;
-};
-/**
- * Upload a file to a bucket using its file path.
- * @param params - Parameters for uploading the file.
- * @returns The uploaded file details.
- */
-declare const uploadFileFromPath: ({ bucketId, fileId, filePath, userId, onProgress, }: UploadFileFromPathParams) => Promise<any>;
-/**
- * Parameters for the listBuckets function.
+ * Lists all storage buckets.
  */
 export type ListBucketsParams = {
     queries?: string[];
     search?: string;
 };
+declare const listBuckets: ({ queries, search, }: ListBucketsParams) => Promise<ReturnObject<Models.BucketList>>;
 /**
- * List all storage buckets.
- * @param params - Parameters for listing the buckets.
- * @returns The list of buckets.
+ * Parameters for listing files in a storage bucket.
  */
-declare const listBuckets: ({ queries, search, }: ListBucketsParams) => Promise<Models.BucketList>;
+export type ListFilesParams = {
+    bucketId: string;
+    queries?: string[];
+    search?: string;
+};
 /**
- * Parameters for the createBucket function.
+ * Lists all files in a specific storage bucket.
  */
-export type CreateBucketParams = {
-    bucketName: string;
+declare const listFiles: ({ bucketId, queries, search, }: ListFilesParams) => Promise<ReturnObject<Models.FileList>>;
+/**
+ * Retrieves file content.
+ */
+export type GetFileViewParams = {
+    bucketId: string;
+    fileId: string;
+};
+declare const getFileView: ({ bucketId, fileId, }: GetFileViewParams) => Promise<ReturnObject<ArrayBuffer>>;
+/**
+ * Updates a storage bucket.
+ */
+export type UpdateBucketParams = {
+    bucketId: string;
+    name: string;
     permissions?: string[];
     fileSecurity?: boolean;
     enabled?: boolean;
@@ -166,56 +123,36 @@ export type CreateBucketParams = {
     encryption?: boolean;
     antivirus?: boolean;
 };
+declare const updateBucket: ({ bucketId, name, permissions, fileSecurity, enabled, maxFileSizeInMb, allowedFileExtensions, compression, encryption, antivirus, }: UpdateBucketParams) => Promise<ReturnObject<Models.Bucket>>;
 /**
- * Create a new storage bucket in Appwrite.
- * @param params - Parameters for creating the bucket.
- * @returns The created bucket.
+ * Updates a file's metadata.
  */
-declare const createBucket: ({ bucketName, permissions, fileSecurity, enabled, maxFileSizeInMb, allowedFileExtensions, compression, encryption, antivirus, }: CreateBucketParams) => Promise<any>;
-/**
- * Parameters for the getBucket function.
- */
-export type GetBucketParams = {
+export type UpdateFileParams = {
     bucketId: string;
-};
-/**
- * Get details of a specific storage bucket.
- * @param params - Parameters for getting the bucket.
- * @returns The bucket details.
- */
-declare const getBucket: ({ bucketId, }: GetBucketParams) => Promise<Models.Bucket>;
-/**
- * Parameters for the updateBucket function.
- */
-export type UpdateBucketParams = {
-    bucketId: string;
-    name: string;
+    fileId: string;
+    name?: string;
     permissions?: string[];
-    fileSecurity?: boolean;
-    enabled?: boolean;
-    maximumFileSize?: number;
-    allowedFileExtensions?: string[];
-    compression?: Compression;
-    encryption?: boolean;
-    antivirus?: boolean;
 };
+declare const updateFile: ({ bucketId, fileId, name, permissions, }: UpdateFileParams) => Promise<ReturnObject<Models.File>>;
 /**
- * Update a storage bucket by its unique ID.
- * @param params - Parameters for updating the bucket.
- * @returns The updated bucket.
+ * Uploads a file to storage.
  */
-declare const updateBucket: ({ bucketId, name, permissions, fileSecurity, enabled, maximumFileSize, allowedFileExtensions, compression, encryption, antivirus, }: UpdateBucketParams) => Promise<any>;
-/**
- * Parameters for the deleteBucket function.
- */
-export type DeleteBucketParams = {
+export type UploadFileParams = {
     bucketId: string;
+    fileId?: string;
+    file: any;
+    userId?: string;
+    onProgress?: (progress: UploadProgress) => void;
 };
+declare const uploadFile: ({ bucketId, fileId, file, userId, onProgress, }: UploadFileParams) => Promise<ReturnObject<Models.File>>;
 /**
- * Delete a storage bucket by its unique ID.
- * @param params - Parameters for deleting the bucket.
- * @returns Confirmation of deletion.
+ * Uploads a file from a local path.
  */
-declare const deleteBucket: ({ bucketId }: DeleteBucketParams) => Promise<any>;
-export { createBucket, deleteBucket, getBucket, getFile, getFileDownload, getFilePreview, getFileView, deleteFile, listBuckets, listFiles, updateBucket, updateFile, uploadFile, uploadFileFromPath, };
+export type UploadFileFromPathParams = {
+    bucketId: string;
+    fileId?: string;
+    filePath: string;
+};
+declare const uploadFileFromPath: ({ bucketId, fileId, filePath, }: UploadFileFromPathParams) => Promise<ReturnObject<Models.File>>;
+export { createBucket, deleteBucket, deleteFile, getBucket, getFile, getFileDownload, getFilePreview, getFileView, listBuckets, listFiles, updateBucket, updateFile, uploadFile, uploadFileFromPath, };
 //# sourceMappingURL=storage.d.ts.map

@@ -427,7 +427,7 @@ export type CreateOAuth2TokenParams = {
 /**
  * Creates an OAuth2 token for the user.
  */
-const createOAuth2Token = async ({
+/* const createOAuth2Token = async ({
   provider,
   successPath = oauthSuccessPath,
   failurePath = oauthFailurePath,
@@ -447,7 +447,7 @@ const createOAuth2Token = async ({
     );
     throw err;
   }
-};
+}; */
 const useCreateOAuth2Token =
   <T = string>() =>
   //return useActionState<ReturnObject<T>, CreateOAuth2TokenParams>(
@@ -476,6 +476,30 @@ const useCreateOAuth2Token =
   };
 //{} as ReturnObject<T>
 //);
+const createOAuth2Token = async (
+  _prevState: ReturnObject<string>,
+  params: CreateOAuth2TokenParams
+): Promise<ReturnObject<string>> => {
+  try {
+    const { account } = await createAdminClient();
+    const data = await account.createOAuth2Token(
+      OAuthProvider[params.provider],
+      `${hostExternal}/${params.successPath || oauthSuccessPath}`,
+      `${hostExternal}/${params.failurePath || oauthFailurePath}`
+    );
+    return { data, error: null };
+  } catch (err: any) {
+    return {
+      data: null,
+      error: {
+        message: admin
+          ? "ApwWrapper Error (methods/account): createOAuth2Token()"
+          : "Account Error",
+        description: JSON.stringify(err),
+      },
+    };
+  }
+};
 /**
  * Parameters for creating a session with user ID and secret.
  */

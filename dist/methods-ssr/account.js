@@ -261,17 +261,27 @@ const createEmailPasswordSession = async ({ email, password, }) => {
 /**
  * Creates an OAuth2 token for the user.
  */
-const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, failurePath = oauthFailurePath, }) => {
-    try {
-        const { account } = await createAdminClient();
-        const url = await account.createOAuth2Token(OAuthProvider[provider], `${hostExternal}/${successPath}`, `${hostExternal}/${failurePath}`);
-        return url;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/account): Error executing createOAuth2Token():", err);
-        throw err;
-    }
-};
+/* const createOAuth2Token = async ({
+  provider,
+  successPath = oauthSuccessPath,
+  failurePath = oauthFailurePath,
+}: CreateOAuth2TokenParams): Promise<string> => {
+  try {
+    const { account } = await createAdminClient();
+    const url = await account.createOAuth2Token(
+      OAuthProvider[provider],
+      `${hostExternal}/${successPath}`,
+      `${hostExternal}/${failurePath}`
+    );
+    return url;
+  } catch (err) {
+    console.error(
+      "APW-WRAPPER - Error (methods/account): Error executing createOAuth2Token():",
+      err
+    );
+    throw err;
+  }
+}; */
 const useCreateOAuth2Token = () => 
 //return useActionState<ReturnObject<T>, CreateOAuth2TokenParams>(
 async (_prevState, params) => {
@@ -288,6 +298,26 @@ async (_prevState, params) => {
             description: JSON.stringify(err),
         };
         return { data: null, error };
+    }
+};
+//{} as ReturnObject<T>
+//);
+const createOAuth2Token = async (_prevState, params) => {
+    try {
+        const { account } = await createAdminClient();
+        const data = await account.createOAuth2Token(OAuthProvider[params.provider], `${hostExternal}/${params.successPath || oauthSuccessPath}`, `${hostExternal}/${params.failurePath || oauthFailurePath}`);
+        return { data, error: null };
+    }
+    catch (err) {
+        return {
+            data: null,
+            error: {
+                message: admin
+                    ? "ApwWrapper Error (methods/account): createOAuth2Token()"
+                    : "Account Error",
+                description: JSON.stringify(err),
+            },
+        };
     }
 };
 /**

@@ -13,7 +13,6 @@ import { cookies } from "next/headers";
 import { hostExternal } from "../host";
 import { OAuthProvider } from "../enums";
 import { handleApwError } from "../exceptions";
-import { isEmptyKeyValuePair } from "../utils";
 import { ID, Models, Query } from "node-appwrite";
 import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
@@ -32,7 +31,40 @@ interface ReturnObject<T> {
   data: T | null;
 }
 
-/**
+/*
+ * Add preferences for a user by their ID.
+ */
+type AddPrefsParams = {
+  prefs: string; // Must be a stringified JSON object
+};
+const addPrefs = async ({
+  prefs,
+}: AddPrefsParams): Promise<ReturnObject<Models.Preferences>> => {
+  try {
+    const { account } = await createSessionClient();
+    const currentPrefs = await account.getPrefs();
+
+    // Ensure prefs is a valid JSON string
+    let newPrefs: Record<string, any> = {};
+    newPrefs = JSON.parse(prefs);
+    if (typeof newPrefs !== "object" || Array.isArray(newPrefs)) {
+      throw new Error(
+        "Invalid prefs format. Must be a stringified JSON object."
+      );
+    }
+
+    const updatedPrefs = { ...currentPrefs, ...newPrefs };
+    const user = await account.updatePrefs(updatedPrefs);
+    return { data: user.prefs, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
  * Creates an account.
  */
 const createAccount = async ({
@@ -45,7 +77,7 @@ const createAccount = async ({
   name?: string;
 }): Promise<ReturnObject<Models.User<Models.Preferences>>> => {
   try {
-    const { account } = await createSessionClient();
+    const { account } = await createAdminClient();
     const data = await account.create(ID.unique(), email, password, name);
     return { data, error: null };
   } catch (error: any) {
@@ -56,14 +88,14 @@ const createAccount = async ({
   }
 };
 
-/**
+/*
  * Creates an anonymous session.
  */
 const createAnonymousSession = async (): Promise<
   ReturnObject<Models.Session>
 > => {
   try {
-    const { account } = await createSessionClient();
+    const { account } = await createAdminClient();
     const data = await account.createAnonymousSession();
     return { data, error: null };
   } catch (error: any) {
@@ -74,7 +106,7 @@ const createAnonymousSession = async (): Promise<
   }
 };
 
-/**
+/*
  * Creates an email-password session.
  */
 const createEmailPasswordSession = async ({
@@ -102,12 +134,12 @@ const createEmailPasswordSession = async ({
   }
 };
 
-/**
+/*
  * Creates a JWT token.
  */
 const createJWT = async (): Promise<ReturnObject<Models.Jwt>> => {
   try {
-    const { account } = await createSessionClient();
+    const { account } = await createAdminClient();
     const data = await account.createJWT();
     return { data, error: null };
   } catch (error: any) {
@@ -118,7 +150,7 @@ const createJWT = async (): Promise<ReturnObject<Models.Jwt>> => {
   }
 };
 
-/**
+/*
  * Creates a Magic URL session.
  */
 const createMagicURLSession = async ({
@@ -133,7 +165,7 @@ const createMagicURLSession = async ({
   phrase?: boolean;
 }): Promise<ReturnObject<Models.Token>> => {
   try {
-    const { account } = await createSessionClient();
+    const { account } = await createAdminClient();
     const data = await account.createMagicURLToken(
       userId || ID.unique(),
       email,
@@ -149,7 +181,7 @@ const createMagicURLSession = async ({
   }
 };
 
-/**
+/*
  * Creates an OAuth2 token.
  */
 const createOAuth2Token = async ({
@@ -180,14 +212,14 @@ const createOAuth2Token = async ({
   }
 };
 
-/**
+/*
  * Creates a phone verification token.
  */
 const createPhoneVerification = async (): Promise<
   ReturnObject<Models.Token>
 > => {
   try {
-    const { account } = await createSessionClient();
+    const { account } = await createAdminClient();
     const data = await account.createPhoneVerification();
     return { data, error: null };
   } catch (error: any) {
@@ -198,8 +230,8 @@ const createPhoneVerification = async (): Promise<
   }
 };
 
-/**
- * Creates a password recovery token.
+/*
+ * Sends a password recovery email.
  */
 const createRecovery = async ({
   email,
@@ -209,7 +241,7 @@ const createRecovery = async ({
   url: string;
 }): Promise<ReturnObject<Models.Token>> => {
   try {
-    const { account } = await createSessionClient();
+    const { account } = await createAdminClient();
     const data = await account.createRecovery(email, url);
     return { data, error: null };
   } catch (error: any) {
@@ -220,7 +252,7 @@ const createRecovery = async ({
   }
 };
 
-/**
+/*
  * Creates a session using user ID and secret.
  */
 const createSession = async ({
@@ -248,7 +280,7 @@ const createSession = async ({
   }
 };
 
-/**
+/*
  * Creates an email verification token.
  */
 const createVerification = async ({
@@ -257,7 +289,7 @@ const createVerification = async ({
   verificationUrl?: string;
 }): Promise<ReturnObject<Models.Token>> => {
   try {
-    const { account } = await createSessionClient();
+    const { account } = await createAdminClient();
     const data = await account.createVerification(verificationUrl);
     return { data, error: null };
   } catch (error: any) {
@@ -268,23 +300,41 @@ const createVerification = async ({
   }
 };
 
-/**
+/*
  * Deletes preferences.
  */
+type DeletePrefsParams = {
+  keys: string | string[]; // Accepts either a single key or an array of keys
+};
 const deletePrefs = async ({
-  key,
-}: {
-  key: string;
-}): Promise<ReturnObject<Models.Preferences>> => {
+  keys,
+}: DeletePrefsParams): Promise<ReturnObject<Models.Preferences>> => {
   try {
     const { account } = await createSessionClient();
     const prefs = await account.getPrefs();
-    if (Object.prototype.hasOwnProperty.call(prefs, key)) {
-      const { [key]: _, ...newPrefs } = prefs;
-      const user = await account.updatePrefs(newPrefs);
-      return { data: user.prefs, error: null };
+
+    // Convert keys to an array if it's a stringified JSON
+    let keysToDelete: string[] = [];
+
+    if (typeof keys === "string") {
+      try {
+        const parsedKeys = JSON.parse(keys);
+        keysToDelete = Array.isArray(parsedKeys) ? parsedKeys : [parsedKeys];
+      } catch {
+        keysToDelete = [keys]; // Treat as a single key if parsing fails
+      }
+    } else {
+      keysToDelete = keys;
     }
-    return { data: prefs, error: null };
+
+    // Filter out the keys that need to be removed
+    const newPrefs = Object.fromEntries(
+      Object.entries(prefs).filter(([key]) => !keysToDelete.includes(key))
+    );
+
+    // Update user preferences
+    const user = await account.updatePrefs(newPrefs);
+    return { data: user.prefs, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -293,7 +343,7 @@ const deletePrefs = async ({
   }
 };
 
-/**
+/*
  * Deletes a session.
  */
 const deleteSession = async ({
@@ -313,7 +363,7 @@ const deleteSession = async ({
   }
 };
 
-/**
+/*
  * Deletes all sessions for the current user.
  */
 const deleteSessions = async (): Promise<ReturnObject<string>> => {
@@ -329,7 +379,7 @@ const deleteSessions = async (): Promise<ReturnObject<string>> => {
   }
 };
 
-/**
+/*
  * Retrieves the authenticated and verified user.
  */
 const getAppUser = async (): Promise<ReturnObject<any>> => {
@@ -338,13 +388,17 @@ const getAppUser = async (): Promise<ReturnObject<any>> => {
     const { databases } = await createAdminClient();
 
     const user = await account.get();
+    if (!user) {
+      throw new Error("No user found in database.");
+    }
+
     const AppUserType = await getType({
       collName: userCollectionId,
       typeName: "AppUserType",
     });
 
     if (!AppUserType) {
-      throw new Error("No AppUser Type found. Returning null");
+      throw new Error("No AppUser Type found.");
     }
 
     if (user.emailVerification || user.phoneVerification) {
@@ -379,14 +433,38 @@ const getAppUser = async (): Promise<ReturnObject<any>> => {
   }
 };
 
-/**
- * Retrieves preferences.
+/*
+ * Retrieves the authenticated and verified user.
  */
-const getPrefs = async (): Promise<ReturnObject<Models.Preferences>> => {
+const getCustomUser = async (): Promise<ReturnObject<Record<string, any>>> => {
   try {
     const { account } = await createSessionClient();
-    const data = await account.getPrefs();
-    return { data, error: null };
+    const { databases } = await createAdminClient();
+
+    const user = await account.get();
+    if (!user) {
+      throw new Error("No user found in database.");
+    }
+
+    const { total, documents } = await databases.listDocuments(
+      databaseId,
+      userCollectionId,
+      [
+        Query.and([
+          Query.equal("user_id", user.$id),
+          Query.equal("deleted", false),
+        ]),
+      ]
+    );
+
+    if (total === 1) {
+      return {
+        data: documents[0],
+        error: null,
+      };
+    }
+
+    return { data: null, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -395,7 +473,7 @@ const getPrefs = async (): Promise<ReturnObject<Models.Preferences>> => {
   }
 };
 
-/**
+/*
  * Retrieves a specific session or the current session.
  */
 const getSession = async ({
@@ -415,7 +493,7 @@ const getSession = async ({
   }
 };
 
-/**
+/*
  * Retrieves user details.
  */
 const getUser = async (): Promise<
@@ -433,7 +511,7 @@ const getUser = async (): Promise<
   }
 };
 
-/**
+/*
  * Lists all sessions for the current user.
  */
 const listSessions = async (): Promise<ReturnObject<Models.SessionList>> => {
@@ -449,30 +527,7 @@ const listSessions = async (): Promise<ReturnObject<Models.SessionList>> => {
   }
 };
 
-/**
- * Updates user preferences.
- */
-const updatePrefs = async ({
-  prefs,
-}: {
-  prefs: Models.Preferences;
-}): Promise<ReturnObject<Models.Preferences>> => {
-  try {
-    const { account } = await createSessionClient();
-    const oldPrefs = await account.getPrefs();
-    const data = await account.updatePrefs(
-      isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs }
-    );
-    return { data: data.prefs, error: null };
-  } catch (error: any) {
-    return {
-      data: null,
-      error: await handleApwError({ error }),
-    };
-  }
-};
-
-/**
+/*
  * Updates user email.
  */
 const updateEmail = async ({
@@ -494,7 +549,7 @@ const updateEmail = async ({
   }
 };
 
-/**
+/*
  * Updates user name.
  */
 const updateName = async ({
@@ -514,7 +569,7 @@ const updateName = async ({
   }
 };
 
-/**
+/*
  * Updates user password.
  */
 const updatePassword = async ({
@@ -536,7 +591,7 @@ const updatePassword = async ({
   }
 };
 
-/**
+/*
  * Updates user phone number.
  */
 const updatePhone = async ({
@@ -558,7 +613,7 @@ const updatePhone = async ({
   }
 };
 
-/**
+/*
  * Confirms phone verification.
  */
 const updatePhoneVerification = async ({
@@ -580,7 +635,7 @@ const updatePhoneVerification = async ({
   }
 };
 
-/**
+/*
  * Updates the password using a recovery token.
  */
 const updateRecovery = async ({
@@ -604,7 +659,7 @@ const updateRecovery = async ({
   }
 };
 
-/**
+/*
  * Updates a specific session or the current session.
  */
 const updateSession = async ({
@@ -624,7 +679,7 @@ const updateSession = async ({
   }
 };
 
-/**
+/*
  * Updates user status.
  */
 const updateStatus = async (): Promise<
@@ -642,7 +697,7 @@ const updateStatus = async (): Promise<
   }
 };
 
-/**
+/*
  * Updates email verification.
  */
 const updateVerification = async ({
@@ -665,6 +720,7 @@ const updateVerification = async ({
 };
 
 export {
+  addPrefs,
   createAccount,
   createAnonymousSession,
   createEmailPasswordSession,
@@ -679,11 +735,10 @@ export {
   deleteSession,
   deleteSessions,
   getAppUser,
-  getPrefs,
+  getCustomUser,
   getSession,
   getUser,
   listSessions,
-  updatePrefs,
   updateEmail,
   updateName,
   updatePassword,
@@ -694,3 +749,17 @@ export {
   updateStatus,
   updateVerification,
 };
+
+/*
+ To use for manipulation/rendering within a STANDARD user-form component:
+  addPrefs,
+  deletePrefs,
+  getAppUser,
+  getCustomUser,
+  getSession, --> ToDo in Form
+  listSessions, --> ToDo in Form
+  deleteSessions, --> ToDo in Form
+  updateName,
+  updateEmail,
+  updatePhone,
+ */

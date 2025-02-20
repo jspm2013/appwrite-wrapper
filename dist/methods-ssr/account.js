@@ -4,16 +4,36 @@ import { cookies } from "next/headers";
 import { hostExternal } from "../host";
 import { OAuthProvider } from "../enums";
 import { handleApwError } from "../exceptions";
-import { isEmptyKeyValuePair } from "../utils";
 import { ID, Query } from "node-appwrite";
 import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
-/**
+const addPrefs = async ({ prefs, }) => {
+    try {
+        const { account } = await createSessionClient();
+        const currentPrefs = await account.getPrefs();
+        // Ensure prefs is a valid JSON string
+        let newPrefs = {};
+        newPrefs = JSON.parse(prefs);
+        if (typeof newPrefs !== "object" || Array.isArray(newPrefs)) {
+            throw new Error("Invalid prefs format. Must be a stringified JSON object.");
+        }
+        const updatedPrefs = { ...currentPrefs, ...newPrefs };
+        const user = await account.updatePrefs(updatedPrefs);
+        return { data: user.prefs, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+/*
  * Creates an account.
  */
 const createAccount = async ({ email, password, name, }) => {
     try {
-        const { account } = await createSessionClient();
+        const { account } = await createAdminClient();
         const data = await account.create(ID.unique(), email, password, name);
         return { data, error: null };
     }
@@ -24,12 +44,12 @@ const createAccount = async ({ email, password, name, }) => {
         };
     }
 };
-/**
+/*
  * Creates an anonymous session.
  */
 const createAnonymousSession = async () => {
     try {
-        const { account } = await createSessionClient();
+        const { account } = await createAdminClient();
         const data = await account.createAnonymousSession();
         return { data, error: null };
     }
@@ -40,7 +60,7 @@ const createAnonymousSession = async () => {
         };
     }
 };
-/**
+/*
  * Creates an email-password session.
  */
 const createEmailPasswordSession = async ({ email, password, }) => {
@@ -62,12 +82,12 @@ const createEmailPasswordSession = async ({ email, password, }) => {
         };
     }
 };
-/**
+/*
  * Creates a JWT token.
  */
 const createJWT = async () => {
     try {
-        const { account } = await createSessionClient();
+        const { account } = await createAdminClient();
         const data = await account.createJWT();
         return { data, error: null };
     }
@@ -78,12 +98,12 @@ const createJWT = async () => {
         };
     }
 };
-/**
+/*
  * Creates a Magic URL session.
  */
 const createMagicURLSession = async ({ email, url, userId, phrase, }) => {
     try {
-        const { account } = await createSessionClient();
+        const { account } = await createAdminClient();
         const data = await account.createMagicURLToken(userId || ID.unique(), email, url, phrase);
         return { data, error: null };
     }
@@ -94,7 +114,7 @@ const createMagicURLSession = async ({ email, url, userId, phrase, }) => {
         };
     }
 };
-/**
+/*
  * Creates an OAuth2 token.
  */
 const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, failurePath = oauthFailurePath, scopes = [], }) => {
@@ -110,12 +130,12 @@ const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, fai
         };
     }
 };
-/**
+/*
  * Creates a phone verification token.
  */
 const createPhoneVerification = async () => {
     try {
-        const { account } = await createSessionClient();
+        const { account } = await createAdminClient();
         const data = await account.createPhoneVerification();
         return { data, error: null };
     }
@@ -126,12 +146,12 @@ const createPhoneVerification = async () => {
         };
     }
 };
-/**
- * Creates a password recovery token.
+/*
+ * Sends a password recovery email.
  */
 const createRecovery = async ({ email, url, }) => {
     try {
-        const { account } = await createSessionClient();
+        const { account } = await createAdminClient();
         const data = await account.createRecovery(email, url);
         return { data, error: null };
     }
@@ -142,7 +162,7 @@ const createRecovery = async ({ email, url, }) => {
         };
     }
 };
-/**
+/*
  * Creates a session using user ID and secret.
  */
 const createSession = async ({ userId, secret, }) => {
@@ -164,12 +184,12 @@ const createSession = async ({ userId, secret, }) => {
         };
     }
 };
-/**
+/*
  * Creates an email verification token.
  */
 const createVerification = async ({ verificationUrl = `${hostExternal}/${verificationPath}`, }) => {
     try {
-        const { account } = await createSessionClient();
+        const { account } = await createAdminClient();
         const data = await account.createVerification(verificationUrl);
         return { data, error: null };
     }
@@ -180,19 +200,29 @@ const createVerification = async ({ verificationUrl = `${hostExternal}/${verific
         };
     }
 };
-/**
- * Deletes preferences.
- */
-const deletePrefs = async ({ key, }) => {
+const deletePrefs = async ({ keys, }) => {
     try {
         const { account } = await createSessionClient();
         const prefs = await account.getPrefs();
-        if (Object.prototype.hasOwnProperty.call(prefs, key)) {
-            const { [key]: _, ...newPrefs } = prefs;
-            const user = await account.updatePrefs(newPrefs);
-            return { data: user.prefs, error: null };
+        // Convert keys to an array if it's a stringified JSON
+        let keysToDelete = [];
+        if (typeof keys === "string") {
+            try {
+                const parsedKeys = JSON.parse(keys);
+                keysToDelete = Array.isArray(parsedKeys) ? parsedKeys : [parsedKeys];
+            }
+            catch {
+                keysToDelete = [keys]; // Treat as a single key if parsing fails
+            }
         }
-        return { data: prefs, error: null };
+        else {
+            keysToDelete = keys;
+        }
+        // Filter out the keys that need to be removed
+        const newPrefs = Object.fromEntries(Object.entries(prefs).filter(([key]) => !keysToDelete.includes(key)));
+        // Update user preferences
+        const user = await account.updatePrefs(newPrefs);
+        return { data: user.prefs, error: null };
     }
     catch (error) {
         return {
@@ -201,7 +231,7 @@ const deletePrefs = async ({ key, }) => {
         };
     }
 };
-/**
+/*
  * Deletes a session.
  */
 const deleteSession = async ({ sessionId = "current", } = {}) => {
@@ -217,7 +247,7 @@ const deleteSession = async ({ sessionId = "current", } = {}) => {
         };
     }
 };
-/**
+/*
  * Deletes all sessions for the current user.
  */
 const deleteSessions = async () => {
@@ -233,7 +263,7 @@ const deleteSessions = async () => {
         };
     }
 };
-/**
+/*
  * Retrieves the authenticated and verified user.
  */
 const getAppUser = async () => {
@@ -241,12 +271,15 @@ const getAppUser = async () => {
         const { account } = await createSessionClient();
         const { databases } = await createAdminClient();
         const user = await account.get();
+        if (!user) {
+            throw new Error("No user found in database.");
+        }
         const AppUserType = await getType({
             collName: userCollectionId,
             typeName: "AppUserType",
         });
         if (!AppUserType) {
-            throw new Error("No AppUser Type found. Returning null");
+            throw new Error("No AppUser Type found.");
         }
         if (user.emailVerification || user.phoneVerification) {
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
@@ -274,14 +307,30 @@ const getAppUser = async () => {
         };
     }
 };
-/**
- * Retrieves preferences.
+/*
+ * Retrieves the authenticated and verified user.
  */
-const getPrefs = async () => {
+const getCustomUser = async () => {
     try {
         const { account } = await createSessionClient();
-        const data = await account.getPrefs();
-        return { data, error: null };
+        const { databases } = await createAdminClient();
+        const user = await account.get();
+        if (!user) {
+            throw new Error("No user found in database.");
+        }
+        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
+            Query.and([
+                Query.equal("user_id", user.$id),
+                Query.equal("deleted", false),
+            ]),
+        ]);
+        if (total === 1) {
+            return {
+                data: documents[0],
+                error: null,
+            };
+        }
+        return { data: null, error: null };
     }
     catch (error) {
         return {
@@ -290,7 +339,7 @@ const getPrefs = async () => {
         };
     }
 };
-/**
+/*
  * Retrieves a specific session or the current session.
  */
 const getSession = async ({ sessionId = "current", } = {}) => {
@@ -306,7 +355,7 @@ const getSession = async ({ sessionId = "current", } = {}) => {
         };
     }
 };
-/**
+/*
  * Retrieves user details.
  */
 const getUser = async () => {
@@ -322,7 +371,7 @@ const getUser = async () => {
         };
     }
 };
-/**
+/*
  * Lists all sessions for the current user.
  */
 const listSessions = async () => {
@@ -338,24 +387,7 @@ const listSessions = async () => {
         };
     }
 };
-/**
- * Updates user preferences.
- */
-const updatePrefs = async ({ prefs, }) => {
-    try {
-        const { account } = await createSessionClient();
-        const oldPrefs = await account.getPrefs();
-        const data = await account.updatePrefs(isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs });
-        return { data: data.prefs, error: null };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-/**
+/*
  * Updates user email.
  */
 const updateEmail = async ({ email, password, }) => {
@@ -371,7 +403,7 @@ const updateEmail = async ({ email, password, }) => {
         };
     }
 };
-/**
+/*
  * Updates user name.
  */
 const updateName = async ({ name, }) => {
@@ -387,7 +419,7 @@ const updateName = async ({ name, }) => {
         };
     }
 };
-/**
+/*
  * Updates user password.
  */
 const updatePassword = async ({ password, oldPassword, }) => {
@@ -403,7 +435,7 @@ const updatePassword = async ({ password, oldPassword, }) => {
         };
     }
 };
-/**
+/*
  * Updates user phone number.
  */
 const updatePhone = async ({ phone, password, }) => {
@@ -419,7 +451,7 @@ const updatePhone = async ({ phone, password, }) => {
         };
     }
 };
-/**
+/*
  * Confirms phone verification.
  */
 const updatePhoneVerification = async ({ userId, secret, }) => {
@@ -435,7 +467,7 @@ const updatePhoneVerification = async ({ userId, secret, }) => {
         };
     }
 };
-/**
+/*
  * Updates the password using a recovery token.
  */
 const updateRecovery = async ({ userId, secret, password, }) => {
@@ -451,7 +483,7 @@ const updateRecovery = async ({ userId, secret, password, }) => {
         };
     }
 };
-/**
+/*
  * Updates a specific session or the current session.
  */
 const updateSession = async ({ sessionId = "current", }) => {
@@ -467,7 +499,7 @@ const updateSession = async ({ sessionId = "current", }) => {
         };
     }
 };
-/**
+/*
  * Updates user status.
  */
 const updateStatus = async () => {
@@ -483,7 +515,7 @@ const updateStatus = async () => {
         };
     }
 };
-/**
+/*
  * Updates email verification.
  */
 const updateVerification = async ({ userId, secret, }) => {
@@ -499,4 +531,4 @@ const updateVerification = async ({ userId, secret, }) => {
         };
     }
 };
-export { createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, };
+export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getCustomUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, };

@@ -12,123 +12,116 @@ interface ReturnObject<T> {
     error: ErrorObject | null;
     data: T | null;
 }
-/**
- * Creates a session for a user by their ID.
- */
-export type CreateSessionForUserIdParams = {
+type AddPrefsForUserIdParams = {
+    userId: string;
+    prefs: string;
+};
+declare const addPrefsForUserId: ({ userId, prefs, }: AddPrefsForUserIdParams) => Promise<ReturnObject<Models.Preferences>>;
+type CreateSessionForUserIdParams = {
     userId: string;
 };
 declare const createSessionForUserId: ({ userId, }: CreateSessionForUserIdParams) => Promise<ReturnObject<Models.Session>>;
-/**
- * Creates a token for a user.
- */
-export type CreateTokenParams = {
+type CreateTokenParams = {
     userId: string;
     length?: number;
     expire?: number;
 };
 declare const createToken: ({ userId, length, expire, }: CreateTokenParams) => Promise<ReturnObject<Models.Token>>;
-/**
- * Deletes a specific preference key for a user by their ID.
- */
-export type DeletePrefsForUserIdParams = {
+type DeletePrefsForUserIdParams = {
     userId: string;
-    key: string;
+    keys: string | string[];
 };
-declare const deletePrefsForUserId: ({ userId, key, }: DeletePrefsForUserIdParams) => Promise<ReturnObject<Models.Preferences>>;
-/**
- * Deletes a specific session for a user by their ID.
- */
-export type DeleteSessionForUserIdParams = {
+declare const deletePrefsForUserId: ({ userId, keys, }: DeletePrefsForUserIdParams) => Promise<ReturnObject<Models.Preferences>>;
+type DeleteSessionForUserIdParams = {
     userId: string;
     sessionId: string;
 };
-declare const deleteSessionForUserId: ({ userId, sessionId, }: DeleteSessionForUserIdParams) => Promise<ReturnObject<void>>;
-/**
- * Deletes all sessions for a user by their ID.
- */
-export type DeleteSessionsForUserIdParams = {
+declare const deleteSessionForUserId: ({ userId, sessionId, }: DeleteSessionForUserIdParams) => Promise<ReturnObject<string>>;
+type DeleteSessionsForUserIdParams = {
     userId: string;
 };
-declare const deleteSessionsForUserId: ({ userId, }: DeleteSessionsForUserIdParams) => Promise<ReturnObject<void>>;
-/**
- * Deletes a user by their ID.
- */
-export type DeleteUserByIdParams = {
+declare const deleteSessionsForUserId: ({ userId, }: DeleteSessionsForUserIdParams) => Promise<ReturnObject<string>>;
+type DeleteUserForUserIdParams = {
     userId: string;
 };
-declare const deleteUserId: ({ userId, }: DeleteUserByIdParams) => Promise<ReturnObject<string>>;
-/**
- * Retrieves a verified app user by their ID.
- */
-export type GetUserForUserIdParams = {
+declare const deleteUserForUserId: ({ userId, }: DeleteUserForUserIdParams) => Promise<ReturnObject<string>>;
+type GetUserForUserIdParams = {
     userId: string;
-};
-declare const getAppUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<ReturnObject<any | null>>;
-/**
- * Gets CUSTOM users list.
- */
-export type GetCustomUsersParams = {
     queries?: string[];
     includingDeleted?: boolean;
 };
-declare const getCustomUsers: <TCustomUsers extends Models.DocumentList<Models.Document>>({ queries, includingDeleted, }: GetCustomUsersParams) => Promise<ReturnObject<TCustomUsers>>;
-/**
- * Gets prefs for a user by their ID.
- */
-export type GetPrefsForUserIdParams = {
-    userId: string;
+declare const getAppUserForUserId: ({ userId, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<any>>;
+declare const getCustomUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<any>>;
+type ListCustomUsersParams = {
+    queries?: string[];
+    includingDeleted?: boolean;
 };
-declare const getPrefsForUserId: ({ userId, }: GetPrefsForUserIdParams) => Promise<ReturnObject<Models.Preferences>>;
-/**
- * Retrieves a user by their ID.
- */
+declare const listCustomUsers: <TCustomUsers extends Models.DocumentList<Models.Document>>({ queries, includingDeleted, }: ListCustomUsersParams) => Promise<ReturnObject<TCustomUsers>>;
 declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
-/**
- * Gets users list (NATIVE appwrite users).
- */
-export type GetUsersParams = {
+type ListIdentitiesParams = {
     queries?: string[];
     search?: string;
 };
-declare const getUsers: ({ queries, search, }: GetUsersParams) => Promise<ReturnObject<Models.UserList<Models.Preferences>>>;
-/**
- * Lists user identities with optional filters and search parameters.
- */
-export type ListParams = {
-    queries?: string[];
-    search?: string;
-};
-declare const listIdentities: ({ queries, search, }: ListParams) => Promise<ReturnObject<Models.IdentityList>>;
-/**
- * Lists users with optional filters and search parameters.
- */
-declare const listUsers: ({ queries, search, }: ListParams) => Promise<ReturnObject<Models.UserList<Models.Preferences>>>;
-/**
- * Sets the prefs for a user by their ID.
- */
-export type UpdatePrefsForUserIdParams = {
+declare const listIdentities: ({ queries, search, }: ListIdentitiesParams) => Promise<ReturnObject<Models.IdentityList>>;
+type ListIdentitiesForUserIdParams = {
     userId: string;
-    prefsObj: object;
+    queries?: string[];
+    search?: string;
 };
-declare const updatePrefsForUserId: ({ userId, prefsObj, }: UpdatePrefsForUserIdParams) => Promise<ReturnObject<Models.Preferences>>;
-/**
- * Updates the email verification status for a user by their ID.
- */
-export type UpdateEmailVerificationForUserIdParams = {
+declare const listIdentitiesForUserId: ({ userId, queries, search, }: ListIdentitiesForUserIdParams) => Promise<ReturnObject<Models.IdentityList>>;
+type ListSessionsForUserIdParams = {
+    userId: string;
+};
+declare const listSessionsForUserId: ({ userId, }: ListSessionsForUserIdParams) => Promise<ReturnObject<Models.SessionList>>;
+type ListUsersParams = {
+    queries?: string[];
+    search?: string;
+};
+declare const listUsers: ({ queries, search, }: ListUsersParams) => Promise<ReturnObject<Models.UserList<Models.Preferences>>>;
+type UpdateEmailForUserIdParams = {
+    userId: string;
+    email: string;
+};
+declare const updateEmailForUserId: ({ userId, email, }: UpdateEmailForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+type UpdateEmailVerificationForUserIdParams = {
     userId: string;
     status: boolean;
 };
 declare const updateEmailVerificationForUserId: ({ userId, status, }: UpdateEmailVerificationForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
-export type UpdateStatusForUserIdParams = {
+type LabelsForUserIdParams = {
+    userId: string;
+    labels: string | string[];
+};
+declare const addLabelsForUserId: ({ userId, labels, }: LabelsForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+declare const deleteLabelsForUserId: ({ userId, labels, }: LabelsForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+type UpdateNameForUserIdParams = {
+    userId: string;
+    name: string;
+};
+declare const updateNameForUserId: ({ userId, name, }: UpdateNameForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+type UpdatePasswordForUserIdParams = {
+    userId: string;
+    password: string;
+};
+declare const updatePasswordForUserId: ({ userId, password, }: UpdatePasswordForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+type UpdatePhoneForUserIdParams = {
+    userId: string;
+    number: string;
+};
+declare const updatePhoneForUserId: ({ userId, number, }: UpdatePhoneForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+type UpdatePhoneVerificationForUserIdParams = {
+    userId: string;
+    name: string;
+};
+declare const updatePhoneVerificationForUserId: ({ userId, name, }: UpdatePhoneVerificationForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+type UpdateStatusForUserIdParams = {
     userId: string;
     status: boolean;
 };
 declare const updateStatusForUserId: ({ userId, status, }: UpdateStatusForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
-export type UpdateLabelsParams = {
-    userId: string;
-    labels: string[];
-};
-declare const updateLabels: ({ userId, labels, }: UpdateLabelsParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, updateEmailVerificationForUserId, updateLabels, updatePrefsForUserId, updateStatusForUserId, };
+export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getAppUserForUserId, // INcl. deleted=false as default
+getCustomUserForUserId, // INcl. deleted=false as default
+getUserForUserId, listCustomUsers, // INcl. deleted=false as default
+listIdentities, listIdentitiesForUserId, listSessionsForUserId, listUsers, // INcl. deleted=false as default
+updateEmailForUserId, updateEmailVerificationForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, };
 //# sourceMappingURL=users.d.ts.map

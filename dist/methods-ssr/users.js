@@ -4,6 +4,27 @@ import { handleApwError } from "../exceptions";
 import { getType } from "../collections/typeReader";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
+const addPrefsForUserId = async ({ userId, prefs, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const currentPrefs = await users.getPrefs(userId);
+        // Ensure prefs is a valid JSON string
+        let newPrefs = {};
+        newPrefs = JSON.parse(prefs);
+        if (typeof newPrefs !== "object" || Array.isArray(newPrefs)) {
+            throw new Error("Invalid prefs format. Must be a stringified JSON object.");
+        }
+        const updatedPrefs = { ...currentPrefs, ...newPrefs };
+        const user = await users.updatePrefs(userId, updatedPrefs);
+        return { data: user.prefs, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
 const createSessionForUserId = async ({ userId, }) => {
     try {
         if (!userId)
@@ -32,16 +53,29 @@ const createToken = async ({ userId, length = 32, expire = 60 * 3, }) => {
         };
     }
 };
-const deletePrefsForUserId = async ({ userId, key, }) => {
+const deletePrefsForUserId = async ({ userId, keys, }) => {
     try {
         const { users } = await createAdminClient();
         const prefs = await users.getPrefs(userId);
-        if (Object.prototype.hasOwnProperty.call(prefs, key)) {
-            const { [key]: _, ...newPrefs } = prefs;
-            const user = await users.updatePrefs(userId, newPrefs);
-            return { data: user.prefs, error: null };
+        // Convert keys to an array if it's a stringified JSON
+        let keysToDelete = [];
+        if (typeof keys === "string") {
+            try {
+                const parsedKeys = JSON.parse(keys);
+                keysToDelete = Array.isArray(parsedKeys) ? parsedKeys : [parsedKeys];
+            }
+            catch {
+                keysToDelete = [keys]; // Treat as a single key if parsing fails
+            }
         }
-        return { data: prefs, error: null };
+        else {
+            keysToDelete = keys;
+        }
+        // Filter out the keys that need to be removed
+        const newPrefs = Object.fromEntries(Object.entries(prefs).filter(([key]) => !keysToDelete.includes(key)));
+        // Update user preferences
+        const user = await users.updatePrefs(userId, newPrefs);
+        return { data: user.prefs, error: null };
     }
     catch (error) {
         return {
@@ -54,7 +88,7 @@ const deleteSessionForUserId = async ({ userId, sessionId, }) => {
     try {
         const { users } = await createAdminClient();
         await users.deleteSession(userId, sessionId);
-        return { data: undefined, error: null };
+        return { data: userId, error: null };
     }
     catch (error) {
         return {
@@ -67,7 +101,7 @@ const deleteSessionsForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
         await users.deleteSessions(userId);
-        return { data: undefined, error: null };
+        return { data: userId, error: null };
     }
     catch (error) {
         return {
@@ -76,7 +110,7 @@ const deleteSessionsForUserId = async ({ userId, }) => {
         };
     }
 };
-const deleteUserId = async ({ userId, }) => {
+const deleteUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
         await users.delete(userId);
@@ -89,7 +123,7 @@ const deleteUserId = async ({ userId, }) => {
         };
     }
 };
-const getAppUserForUserId = async ({ userId, }) => {
+const getAppUserForUserId = async ({ userId, includingDeleted = false, }) => {
     try {
         const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
@@ -104,8 +138,8 @@ const getAppUserForUserId = async ({ userId, }) => {
         if (user.emailVerification || user.phoneVerification) {
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
                 Query.and([
-                    Query.equal("user_id", user.$id),
-                    Query.equal("deleted", false),
+                    Query.equal("user_id", userId),
+                    Query.equal("deleted", includingDeleted),
                 ]),
             ]);
             if (total > 0) {
@@ -124,7 +158,46 @@ const getAppUserForUserId = async ({ userId, }) => {
         };
     }
 };
-const getCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
+/*
+ * Retrieves an App User (native appwrite user extended by custom user (key = customUser)) by their ID.
+ */
+const getCustomUserForUserId = async ({ userId, queries = [], includingDeleted = false, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const { databases } = await createAdminClient();
+        const user = await users.get(userId);
+        const AppUserType = await getType({
+            collName: userCollectionId,
+            typeName: "AppUserType",
+        });
+        if (!AppUserType) {
+            throw new Error("No AppUserType found. Returning null");
+        }
+        if (user.emailVerification || user.phoneVerification) {
+            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
+                Query.and([
+                    ...queries,
+                    Query.equal("user_id", userId),
+                    Query.equal("deleted", includingDeleted),
+                ]),
+            ]);
+            if (total > 0) {
+                return {
+                    data: { ...user, customUser: documents[0] },
+                    error: null,
+                };
+            }
+        }
+        return { data: null, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+const listCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
     try {
         const { databases } = await createAdminClient();
         const combinedQueries = [
@@ -134,8 +207,8 @@ const getCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
         const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, combinedQueries);
         return {
             data: {
-                total: total ?? 0,
-                documents: documents ?? [],
+                total: total,
+                documents: documents,
             },
             error: null,
         };
@@ -147,20 +220,7 @@ const getCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
         };
     }
 };
-const getPrefsForUserId = async ({ userId, }) => {
-    try {
-        const { users } = await createAdminClient();
-        const data = await users.getPrefs(userId);
-        return { data, error: null };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-/**
+/*
  * Retrieves a user by their ID.
  */
 const getUserForUserId = async ({ userId, }) => {
@@ -176,20 +236,7 @@ const getUserForUserId = async ({ userId, }) => {
         };
     }
 };
-const getUsers = async ({ queries = [], search = undefined, }) => {
-    try {
-        const { users } = await createAdminClient();
-        const data = await users.list(queries, search);
-        return { data, error: null };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-const listIdentities = async ({ queries, search, }) => {
+const listIdentities = async ({ queries = [], search, }) => {
     try {
         const { users } = await createAdminClient();
         const data = await users.listIdentities(queries, search);
@@ -202,9 +249,35 @@ const listIdentities = async ({ queries, search, }) => {
         };
     }
 };
-/**
- * Lists users with optional filters and search parameters.
- */
+const listIdentitiesForUserId = async ({ userId, queries = [], search, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const userQueries = [
+            Query.and([...queries, Query.equal("userId", userId)]),
+        ];
+        const data = await users.listIdentities(userQueries, search);
+        return { data, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+const listSessionsForUserId = async ({ userId, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const data = await users.listSessions(userId);
+        return { data, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
 const listUsers = async ({ queries, search, }) => {
     try {
         const { users } = await createAdminClient();
@@ -218,10 +291,10 @@ const listUsers = async ({ queries, search, }) => {
         };
     }
 };
-const updatePrefsForUserId = async ({ userId, prefsObj, }) => {
+const updateEmailForUserId = async ({ userId, email, }) => {
     try {
         const { users } = await createAdminClient();
-        const data = await users.updatePrefs(userId, prefsObj);
+        const data = await users.updateEmail(userId, email);
         return { data, error: null };
     }
     catch (error) {
@@ -247,6 +320,130 @@ const updateEmailVerificationForUserId = async ({ userId, status, }) => {
         };
     }
 };
+const addLabelsForUserId = async ({ userId, labels, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const existingUser = await users.get(userId);
+        const existingLabels = existingUser?.labels || [];
+        let labelsToAdd = [];
+        if (typeof labels === "string" && /^[a-zA-Z0-9]{1,36}$/.test(labels)) {
+            labelsToAdd = [labels];
+        }
+        else if (Array.isArray(labels)) {
+            if (labels.some((label) => typeof label !== "string")) {
+                throw new Error("Invalid param 'labels': Array items must be strings.");
+            }
+            if (labels.some((label) => !/^[a-zA-Z0-9]{1,36}$/.test(label))) {
+                throw new Error("Invalid param 'labels': Labels must be 1-36 alphanumeric characters.");
+            }
+            labelsToAdd = labels;
+        }
+        else {
+            throw new Error("Invalid param 'labels': Must be a string or string array.");
+        }
+        const newLabels = [...existingLabels];
+        labelsToAdd.forEach((label) => {
+            if (!newLabels.includes(label)) {
+                newLabels.push(label);
+            }
+        });
+        const data = await users.updateLabels(userId, newLabels);
+        return { data, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+/*
+ * Removes labels for a user by their ID.
+ */
+const deleteLabelsForUserId = async ({ userId, labels, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const existingUser = await users.get(userId);
+        const existingLabels = existingUser?.labels || [];
+        let labelsToRemove = [];
+        if (typeof labels === "string" && /^[a-zA-Z0-9]{1,36}$/.test(labels)) {
+            labelsToRemove = [labels];
+        }
+        else if (Array.isArray(labels)) {
+            if (labels.some((label) => typeof label !== "string")) {
+                throw new Error("Invalid param 'labels': Array items must be strings.");
+            }
+            if (labels.some((label) => !/^[a-zA-Z0-9]{1,36}$/.test(label))) {
+                throw new Error("Invalid param 'labels': Labels must be 1-36 alphanumeric characters.");
+            }
+            labelsToRemove = labels;
+        }
+        else {
+            throw new Error("Invalid param 'labels': Must be a string or string array.");
+        }
+        const newLabels = existingLabels.filter((label) => !labelsToRemove.includes(label));
+        const data = await users.updateLabels(userId, newLabels);
+        return { data, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+const updateNameForUserId = async ({ userId, name, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const data = await users.updateName(userId, name);
+        return { data, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+const updatePasswordForUserId = async ({ userId, password, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const data = await users.updatePassword(userId, password);
+        return { data, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+const updatePhoneForUserId = async ({ userId, number, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const data = await users.updatePhone(userId, number);
+        return { data, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+const updatePhoneVerificationForUserId = async ({ userId, name, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const data = await users.updateName(userId, name);
+        return { data, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
 const updateStatusForUserId = async ({ userId, status, }) => {
     try {
         if (typeof status !== "boolean") {
@@ -263,67 +460,8 @@ const updateStatusForUserId = async ({ userId, status, }) => {
         };
     }
 };
-const updateLabels = async ({ userId, labels, }) => {
-    try {
-        const { users } = await createAdminClient();
-        let updatedLabels = [];
-        // Check if labels is an array, string, or JSON object
-        if (Array.isArray(labels)) {
-            if (labels.some((label) => typeof label !== "string")) {
-                throw new Error("Invalid param 'labels': Array items must be strings.");
-            }
-            if (labels.some((label) => !/^[a-zA-Z0-9]{1,36}$/.test(label))) {
-                throw new Error("Invalid param 'labels': Labels must be 1-36 alphanumeric characters.");
-            }
-            updatedLabels = labels; // Replace existing labels with the provided array
-        }
-        else if (typeof labels === "string" &&
-            /^[a-zA-Z0-9]{1,36}$/.test(labels)) {
-            // Single string label
-            const existingUser = await users.get(userId);
-            const existingLabels = existingUser?.labels || [];
-            if (!existingLabels.includes(labels)) {
-                updatedLabels = [...existingLabels, labels]; // Add if not exists
-            }
-            else {
-                updatedLabels = existingLabels;
-            }
-        }
-        else if (typeof labels === "object" && labels !== null) {
-            // JSON object for add/remove
-            const key = Object.keys(labels)[0];
-            const value = labels[key];
-            if (typeof value !== "string" || !/^[a-zA-Z0-9]{1,36}$/.test(value)) {
-                throw new Error("Invalid param 'labels': JSON value must be 1-36 alphanumeric characters.");
-            }
-            const existingUser = await users.get(userId);
-            const existingLabels = existingUser?.labels || [];
-            if (key === "add") {
-                if (!existingLabels.includes(value)) {
-                    updatedLabels = [...existingLabels, value];
-                }
-                else {
-                    updatedLabels = existingLabels;
-                }
-            }
-            else if (key === "remove") {
-                updatedLabels = existingLabels.filter((label) => label !== value);
-            }
-            else {
-                throw new Error("Invalid param 'labels': JSON key must be 'add' or 'remove'.");
-            }
-        }
-        else {
-            throw new Error("Invalid param 'labels': Must be an array, string, or JSON object.");
-        }
-        const data = await users.updateLabels(userId, updatedLabels);
-        return { data, error: null };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, updateEmailVerificationForUserId, updateLabels, updatePrefsForUserId, updateStatusForUserId, };
+export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getAppUserForUserId, // INcl. deleted=false as default
+getCustomUserForUserId, // INcl. deleted=false as default
+getUserForUserId, listCustomUsers, // INcl. deleted=false as default
+listIdentities, listIdentitiesForUserId, listSessionsForUserId, listUsers, // INcl. deleted=false as default
+updateEmailForUserId, updateEmailVerificationForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, };

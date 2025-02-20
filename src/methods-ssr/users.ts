@@ -20,10 +20,45 @@ interface ReturnObject<T> {
   data: T | null;
 }
 
-/**
+/*
+ * Add preferences for a user by their ID.
+ */
+type AddPrefsForUserIdParams = {
+  userId: string;
+  prefs: string; // Must be a stringified JSON object
+};
+const addPrefsForUserId = async ({
+  userId,
+  prefs,
+}: AddPrefsForUserIdParams): Promise<ReturnObject<Models.Preferences>> => {
+  try {
+    const { users } = await createAdminClient();
+    const currentPrefs = await users.getPrefs(userId);
+
+    // Ensure prefs is a valid JSON string
+    let newPrefs: Record<string, any> = {};
+    newPrefs = JSON.parse(prefs);
+    if (typeof newPrefs !== "object" || Array.isArray(newPrefs)) {
+      throw new Error(
+        "Invalid prefs format. Must be a stringified JSON object."
+      );
+    }
+
+    const updatedPrefs = { ...currentPrefs, ...newPrefs };
+    const user = await users.updatePrefs(userId, updatedPrefs);
+    return { data: user.prefs, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
  * Creates a session for a user by their ID.
  */
-export type CreateSessionForUserIdParams = {
+type CreateSessionForUserIdParams = {
   userId: string;
 };
 const createSessionForUserId = async ({
@@ -43,10 +78,10 @@ const createSessionForUserId = async ({
   }
 };
 
-/**
+/*
  * Creates a token for a user.
  */
-export type CreateTokenParams = {
+type CreateTokenParams = {
   userId: string;
   length?: number;
   expire?: number;
@@ -68,26 +103,43 @@ const createToken = async ({
   }
 };
 
-/**
- * Deletes a specific preference key for a user by their ID.
+/*
+ * Deletes preferences for a user by their ID.
  */
-export type DeletePrefsForUserIdParams = {
+type DeletePrefsForUserIdParams = {
   userId: string;
-  key: string;
+  keys: string | string[]; // Accepts either a single key or an array of keys
 };
 const deletePrefsForUserId = async ({
   userId,
-  key,
+  keys,
 }: DeletePrefsForUserIdParams): Promise<ReturnObject<Models.Preferences>> => {
   try {
     const { users } = await createAdminClient();
     const prefs = await users.getPrefs(userId);
-    if (Object.prototype.hasOwnProperty.call(prefs, key)) {
-      const { [key]: _, ...newPrefs } = prefs;
-      const user = await users.updatePrefs(userId, newPrefs);
-      return { data: user.prefs, error: null };
+
+    // Convert keys to an array if it's a stringified JSON
+    let keysToDelete: string[] = [];
+
+    if (typeof keys === "string") {
+      try {
+        const parsedKeys = JSON.parse(keys);
+        keysToDelete = Array.isArray(parsedKeys) ? parsedKeys : [parsedKeys];
+      } catch {
+        keysToDelete = [keys]; // Treat as a single key if parsing fails
+      }
+    } else {
+      keysToDelete = keys;
     }
-    return { data: prefs, error: null };
+
+    // Filter out the keys that need to be removed
+    const newPrefs = Object.fromEntries(
+      Object.entries(prefs).filter(([key]) => !keysToDelete.includes(key))
+    );
+
+    // Update user preferences
+    const user = await users.updatePrefs(userId, newPrefs);
+    return { data: user.prefs, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -96,21 +148,22 @@ const deletePrefsForUserId = async ({
   }
 };
 
-/**
- * Deletes a specific session for a user by their ID.
+/*
+ * Deletes a specific session for a user by their ID and the session's ID.
  */
-export type DeleteSessionForUserIdParams = {
+type DeleteSessionForUserIdParams = {
   userId: string;
   sessionId: string;
 };
 const deleteSessionForUserId = async ({
   userId,
   sessionId,
-}: DeleteSessionForUserIdParams): Promise<ReturnObject<void>> => {
+}: DeleteSessionForUserIdParams): Promise<ReturnObject<string>> => {
   try {
     const { users } = await createAdminClient();
+
     await users.deleteSession(userId, sessionId);
-    return { data: undefined, error: null };
+    return { data: userId, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -119,19 +172,20 @@ const deleteSessionForUserId = async ({
   }
 };
 
-/**
+/*
  * Deletes all sessions for a user by their ID.
  */
-export type DeleteSessionsForUserIdParams = {
+type DeleteSessionsForUserIdParams = {
   userId: string;
 };
 const deleteSessionsForUserId = async ({
   userId,
-}: DeleteSessionsForUserIdParams): Promise<ReturnObject<void>> => {
+}: DeleteSessionsForUserIdParams): Promise<ReturnObject<string>> => {
   try {
     const { users } = await createAdminClient();
+
     await users.deleteSessions(userId);
-    return { data: undefined, error: null };
+    return { data: userId, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -140,17 +194,18 @@ const deleteSessionsForUserId = async ({
   }
 };
 
-/**
+/*
  * Deletes a user by their ID.
  */
-export type DeleteUserByIdParams = {
+type DeleteUserForUserIdParams = {
   userId: string;
 };
-const deleteUserId = async ({
+const deleteUserForUserId = async ({
   userId,
-}: DeleteUserByIdParams): Promise<ReturnObject<string>> => {
+}: DeleteUserForUserIdParams): Promise<ReturnObject<string>> => {
   try {
     const { users } = await createAdminClient();
+
     await users.delete(userId);
     return { data: userId, error: null };
   } catch (error: any) {
@@ -161,15 +216,18 @@ const deleteUserId = async ({
   }
 };
 
-/**
- * Retrieves a verified app user by their ID.
+/*
+ * Retrieves an App User (native appwrite user extended by custom user (key = customUser)) by their ID.
  */
-export type GetUserForUserIdParams = {
+type GetUserForUserIdParams = {
   userId: string;
+  queries?: string[];
+  includingDeleted?: boolean;
 };
 const getAppUserForUserId = async ({
   userId,
-}: GetUserForUserIdParams): Promise<ReturnObject<any | null>> => {
+  includingDeleted = false,
+}: GetUserForUserIdParams): Promise<ReturnObject<any>> => {
   try {
     const { users } = await createAdminClient();
     const { databases } = await createAdminClient();
@@ -190,8 +248,8 @@ const getAppUserForUserId = async ({
         userCollectionId,
         [
           Query.and([
-            Query.equal("user_id", user.$id),
-            Query.equal("deleted", false),
+            Query.equal("user_id", userId),
+            Query.equal("deleted", includingDeleted),
           ]),
         ]
       );
@@ -213,19 +271,71 @@ const getAppUserForUserId = async ({
   }
 };
 
-/**
+/*
+ * Retrieves an App User (native appwrite user extended by custom user (key = customUser)) by their ID.
+ */
+const getCustomUserForUserId = async ({
+  userId,
+  queries = [],
+  includingDeleted = false,
+}: GetUserForUserIdParams): Promise<ReturnObject<any>> => {
+  try {
+    const { users } = await createAdminClient();
+    const { databases } = await createAdminClient();
+
+    const user = await users.get(userId);
+    const AppUserType = await getType({
+      collName: userCollectionId,
+      typeName: "AppUserType",
+    });
+
+    if (!AppUserType) {
+      throw new Error("No AppUserType found. Returning null");
+    }
+
+    if (user.emailVerification || user.phoneVerification) {
+      const { total, documents } = await databases.listDocuments(
+        databaseId,
+        userCollectionId,
+        [
+          Query.and([
+            ...queries,
+            Query.equal("user_id", userId),
+            Query.equal("deleted", includingDeleted),
+          ]),
+        ]
+      );
+
+      if (total > 0) {
+        return {
+          data: { ...user, customUser: documents[0] },
+          error: null,
+        };
+      }
+    }
+
+    return { data: null, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
  * Gets CUSTOM users list.
  */
-export type GetCustomUsersParams = {
+type ListCustomUsersParams = {
   queries?: string[];
   includingDeleted?: boolean;
 };
-const getCustomUsers = async <
+const listCustomUsers = async <
   TCustomUsers extends Models.DocumentList<Models.Document>
 >({
   queries = [],
   includingDeleted = false,
-}: GetCustomUsersParams): Promise<ReturnObject<TCustomUsers>> => {
+}: ListCustomUsersParams): Promise<ReturnObject<TCustomUsers>> => {
   try {
     const { databases } = await createAdminClient();
 
@@ -242,9 +352,9 @@ const getCustomUsers = async <
 
     return {
       data: {
-        total: total ?? 0,
-        documents: documents ?? [],
-      } as unknown as TCustomUsers,
+        total: total,
+        documents: documents,
+      } as TCustomUsers,
       error: null,
     };
   } catch (error: any) {
@@ -255,28 +365,7 @@ const getCustomUsers = async <
   }
 };
 
-/**
- * Gets prefs for a user by their ID.
- */
-export type GetPrefsForUserIdParams = {
-  userId: string;
-};
-const getPrefsForUserId = async ({
-  userId,
-}: GetPrefsForUserIdParams): Promise<ReturnObject<Models.Preferences>> => {
-  try {
-    const { users } = await createAdminClient();
-    const data = await users.getPrefs(userId);
-    return { data, error: null };
-  } catch (error: any) {
-    return {
-      data: null,
-      error: await handleApwError({ error }),
-    };
-  }
-};
-
-/**
+/*
  * Retrieves a user by their ID.
  */
 const getUserForUserId = async ({
@@ -286,6 +375,7 @@ const getUserForUserId = async ({
 > => {
   try {
     const { users } = await createAdminClient();
+
     const data = await users.get(userId);
     return { data, error: null };
   } catch (error: any) {
@@ -296,44 +386,20 @@ const getUserForUserId = async ({
   }
 };
 
-/**
- * Gets users list (NATIVE appwrite users).
- */
-export type GetUsersParams = {
-  queries?: string[];
-  search?: string;
-};
-const getUsers = async ({
-  queries = [],
-  search = undefined,
-}: GetUsersParams): Promise<
-  ReturnObject<Models.UserList<Models.Preferences>>
-> => {
-  try {
-    const { users } = await createAdminClient();
-    const data = await users.list(queries, search);
-    return { data, error: null };
-  } catch (error: any) {
-    return {
-      data: null,
-      error: await handleApwError({ error }),
-    };
-  }
-};
-
-/**
+/*
  * Lists user identities with optional filters and search parameters.
  */
-export type ListParams = {
+type ListIdentitiesParams = {
   queries?: string[];
   search?: string;
 };
 const listIdentities = async ({
-  queries,
+  queries = [],
   search,
-}: ListParams): Promise<ReturnObject<Models.IdentityList>> => {
+}: ListIdentitiesParams): Promise<ReturnObject<Models.IdentityList>> => {
   try {
     const { users } = await createAdminClient();
+
     const data = await users.listIdentities(queries, search);
     return { data, error: null };
   } catch (error: any) {
@@ -344,15 +410,76 @@ const listIdentities = async ({
   }
 };
 
-/**
+/*
+ * Lists user identities for a specific user ID with optional filters and search parameters.
+ */
+type ListIdentitiesForUserIdParams = {
+  userId: string; // The user's $id
+  queries?: string[];
+  search?: string;
+};
+const listIdentitiesForUserId = async ({
+  userId,
+  queries = [],
+  search,
+}: ListIdentitiesForUserIdParams): Promise<
+  ReturnObject<Models.IdentityList>
+> => {
+  try {
+    const { users } = await createAdminClient();
+
+    const userQueries = [
+      Query.and([...queries, Query.equal("userId", userId)]),
+    ];
+
+    const data = await users.listIdentities(userQueries, search);
+    return { data, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Lists user sessions for a specific user ID.
+ */
+type ListSessionsForUserIdParams = {
+  userId: string;
+};
+const listSessionsForUserId = async ({
+  userId,
+}: ListSessionsForUserIdParams): Promise<ReturnObject<Models.SessionList>> => {
+  try {
+    const { users } = await createAdminClient();
+
+    const data = await users.listSessions(userId);
+    return { data, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
  * Lists users with optional filters and search parameters.
  */
+type ListUsersParams = {
+  queries?: string[];
+  search?: string;
+};
 const listUsers = async ({
   queries,
   search,
-}: ListParams): Promise<ReturnObject<Models.UserList<Models.Preferences>>> => {
+}: ListUsersParams): Promise<
+  ReturnObject<Models.UserList<Models.Preferences>>
+> => {
   try {
     const { users } = await createAdminClient();
+
     const data = await users.list(queries, search);
     return { data, error: null };
   } catch (error: any) {
@@ -363,20 +490,23 @@ const listUsers = async ({
   }
 };
 
-/**
- * Sets the prefs for a user by their ID.
+/*
+ * Updates the email for a user by their ID.
  */
-export type UpdatePrefsForUserIdParams = {
+type UpdateEmailForUserIdParams = {
   userId: string;
-  prefsObj: object;
+  email: string;
 };
-const updatePrefsForUserId = async ({
+const updateEmailForUserId = async ({
   userId,
-  prefsObj,
-}: UpdatePrefsForUserIdParams): Promise<ReturnObject<Models.Preferences>> => {
+  email,
+}: UpdateEmailForUserIdParams): Promise<
+  ReturnObject<Models.User<Models.Preferences>>
+> => {
   try {
     const { users } = await createAdminClient();
-    const data = await users.updatePrefs(userId, prefsObj);
+
+    const data = await users.updateEmail(userId, email);
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -386,10 +516,10 @@ const updatePrefsForUserId = async ({
   }
 };
 
-/**
+/*
  * Updates the email verification status for a user by their ID.
  */
-export type UpdateEmailVerificationForUserIdParams = {
+type UpdateEmailVerificationForUserIdParams = {
   userId: string;
   status: boolean;
 };
@@ -404,7 +534,213 @@ const updateEmailVerificationForUserId = async ({
       throw new Error("Invalid param 'status'");
     }
     const { users } = await createAdminClient();
+
     const data = await users.updateEmailVerification(userId, status);
+    return { data, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Adds labels for a user by their ID.
+ */
+type LabelsForUserIdParams = {
+  userId: string;
+  labels: string | string[];
+};
+const addLabelsForUserId = async ({
+  userId,
+  labels,
+}: LabelsForUserIdParams): Promise<
+  ReturnObject<Models.User<Models.Preferences>>
+> => {
+  try {
+    const { users } = await createAdminClient();
+    const existingUser = await users.get(userId);
+    const existingLabels = existingUser?.labels || [];
+    let labelsToAdd: string[] = [];
+
+    if (typeof labels === "string" && /^[a-zA-Z0-9]{1,36}$/.test(labels)) {
+      labelsToAdd = [labels];
+    } else if (Array.isArray(labels)) {
+      if (labels.some((label) => typeof label !== "string")) {
+        throw new Error("Invalid param 'labels': Array items must be strings.");
+      }
+      if (labels.some((label) => !/^[a-zA-Z0-9]{1,36}$/.test(label))) {
+        throw new Error(
+          "Invalid param 'labels': Labels must be 1-36 alphanumeric characters."
+        );
+      }
+      labelsToAdd = labels;
+    } else {
+      throw new Error(
+        "Invalid param 'labels': Must be a string or string array."
+      );
+    }
+
+    const newLabels = [...existingLabels];
+    labelsToAdd.forEach((label) => {
+      if (!newLabels.includes(label)) {
+        newLabels.push(label);
+      }
+    });
+
+    const data = await users.updateLabels(userId, newLabels);
+    return { data, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Removes labels for a user by their ID.
+ */
+const deleteLabelsForUserId = async ({
+  userId,
+  labels,
+}: LabelsForUserIdParams): Promise<
+  ReturnObject<Models.User<Models.Preferences>>
+> => {
+  try {
+    const { users } = await createAdminClient();
+    const existingUser = await users.get(userId);
+    const existingLabels = existingUser?.labels || [];
+    let labelsToRemove: string[] = [];
+
+    if (typeof labels === "string" && /^[a-zA-Z0-9]{1,36}$/.test(labels)) {
+      labelsToRemove = [labels];
+    } else if (Array.isArray(labels)) {
+      if (labels.some((label) => typeof label !== "string")) {
+        throw new Error("Invalid param 'labels': Array items must be strings.");
+      }
+      if (labels.some((label) => !/^[a-zA-Z0-9]{1,36}$/.test(label))) {
+        throw new Error(
+          "Invalid param 'labels': Labels must be 1-36 alphanumeric characters."
+        );
+      }
+      labelsToRemove = labels;
+    } else {
+      throw new Error(
+        "Invalid param 'labels': Must be a string or string array."
+      );
+    }
+
+    const newLabels = existingLabels.filter(
+      (label) => !labelsToRemove.includes(label)
+    );
+
+    const data = await users.updateLabels(userId, newLabels);
+    return { data, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Updates the name for a user by their ID.
+ */
+type UpdateNameForUserIdParams = {
+  userId: string;
+  name: string;
+};
+const updateNameForUserId = async ({
+  userId,
+  name,
+}: UpdateNameForUserIdParams): Promise<
+  ReturnObject<Models.User<Models.Preferences>>
+> => {
+  try {
+    const { users } = await createAdminClient();
+
+    const data = await users.updateName(userId, name);
+    return { data, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Updates the password for a user by their ID.
+ */
+type UpdatePasswordForUserIdParams = {
+  userId: string;
+  password: string;
+};
+const updatePasswordForUserId = async ({
+  userId,
+  password,
+}: UpdatePasswordForUserIdParams): Promise<
+  ReturnObject<Models.User<Models.Preferences>>
+> => {
+  try {
+    const { users } = await createAdminClient();
+
+    const data = await users.updatePassword(userId, password);
+    return { data, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Updates the password for a user by their ID.
+ */
+type UpdatePhoneForUserIdParams = {
+  userId: string;
+  number: string;
+};
+const updatePhoneForUserId = async ({
+  userId,
+  number,
+}: UpdatePhoneForUserIdParams): Promise<
+  ReturnObject<Models.User<Models.Preferences>>
+> => {
+  try {
+    const { users } = await createAdminClient();
+
+    const data = await users.updatePhone(userId, number);
+    return { data, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Updates the password for a user by their ID.
+ */
+type UpdatePhoneVerificationForUserIdParams = {
+  userId: string;
+  name: string;
+};
+const updatePhoneVerificationForUserId = async ({
+  userId,
+  name,
+}: UpdatePhoneVerificationForUserIdParams): Promise<
+  ReturnObject<Models.User<Models.Preferences>>
+> => {
+  try {
+    const { users } = await createAdminClient();
+
+    const data = await users.updateName(userId, name);
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -417,7 +753,7 @@ const updateEmailVerificationForUserId = async ({
 /*
  * Updates the status for a user by their ID.
  */
-export type UpdateStatusForUserIdParams = {
+type UpdateStatusForUserIdParams = {
   userId: string;
   status: boolean;
 };
@@ -432,6 +768,7 @@ const updateStatusForUserId = async ({
       throw new Error("Invalid param 'status'");
     }
     const { users } = await createAdminClient();
+
     const data = await users.updateStatus(userId, status);
     return { data, error: null };
   } catch (error: any) {
@@ -442,102 +779,55 @@ const updateStatusForUserId = async ({
   }
 };
 
-export type UpdateLabelsParams = {
-  userId: string;
-  labels: string[];
-};
-const updateLabels = async ({
-  userId,
-  labels,
-}: UpdateLabelsParams): Promise<
-  ReturnObject<Models.User<Models.Preferences>>
-> => {
-  try {
-    const { users } = await createAdminClient();
-    let updatedLabels: string[] = [];
-
-    // Check if labels is an array, string, or JSON object
-    if (Array.isArray(labels)) {
-      if (labels.some((label) => typeof label !== "string")) {
-        throw new Error("Invalid param 'labels': Array items must be strings.");
-      }
-      if (labels.some((label) => !/^[a-zA-Z0-9]{1,36}$/.test(label))) {
-        throw new Error(
-          "Invalid param 'labels': Labels must be 1-36 alphanumeric characters."
-        );
-      }
-      updatedLabels = labels; // Replace existing labels with the provided array
-    } else if (
-      typeof labels === "string" &&
-      /^[a-zA-Z0-9]{1,36}$/.test(labels)
-    ) {
-      // Single string label
-      const existingUser = await users.get(userId);
-      const existingLabels = existingUser?.labels || [];
-      if (!existingLabels.includes(labels)) {
-        updatedLabels = [...existingLabels, labels]; // Add if not exists
-      } else {
-        updatedLabels = existingLabels;
-      }
-    } else if (typeof labels === "object" && labels !== null) {
-      // JSON object for add/remove
-      const key = Object.keys(labels)[0];
-      const value = labels[key];
-
-      if (typeof value !== "string" || !/^[a-zA-Z0-9]{1,36}$/.test(value)) {
-        throw new Error(
-          "Invalid param 'labels': JSON value must be 1-36 alphanumeric characters."
-        );
-      }
-
-      const existingUser = await users.get(userId);
-      const existingLabels = existingUser?.labels || [];
-
-      if (key === "add") {
-        if (!existingLabels.includes(value)) {
-          updatedLabels = [...existingLabels, value];
-        } else {
-          updatedLabels = existingLabels;
-        }
-      } else if (key === "remove") {
-        updatedLabels = existingLabels.filter((label) => label !== value);
-      } else {
-        throw new Error(
-          "Invalid param 'labels': JSON key must be 'add' or 'remove'."
-        );
-      }
-    } else {
-      throw new Error(
-        "Invalid param 'labels': Must be an array, string, or JSON object."
-      );
-    }
-
-    const data = await users.updateLabels(userId, updatedLabels);
-    return { data, error: null };
-  } catch (error: any) {
-    return {
-      data: null,
-      error: await handleApwError({ error }),
-    };
-  }
-};
-
 export {
+  addLabelsForUserId,
+  addPrefsForUserId,
   createSessionForUserId,
   createToken,
+  deleteLabelsForUserId,
   deletePrefsForUserId,
   deleteSessionForUserId,
   deleteSessionsForUserId,
-  deleteUserId,
-  getAppUserForUserId,
-  getCustomUsers,
-  getPrefsForUserId,
+  deleteUserForUserId,
+  getAppUserForUserId, // INcl. deleted=false as default
+  getCustomUserForUserId, // INcl. deleted=false as default
   getUserForUserId,
-  getUsers,
+  listCustomUsers, // INcl. deleted=false as default
   listIdentities,
-  listUsers,
+  listIdentitiesForUserId,
+  listSessionsForUserId,
+  listUsers, // INcl. deleted=false as default
+  updateEmailForUserId,
   updateEmailVerificationForUserId,
-  updateLabels,
-  updatePrefsForUserId,
+  updateNameForUserId,
+  updatePasswordForUserId,
+  updatePhoneForUserId,
+  updatePhoneVerificationForUserId,
   updateStatusForUserId,
 };
+
+/*
+ To use for manipulation/rendering within a ADMIN user-form component:
+  addLabelsForUserId,
+  addPrefsForUserId,
+  deleteLabelsForUserId,
+  deletePrefsForUserId,
+  deleteSessionForUserId, --> ToDo in Form
+  deleteSessionsForUserId, --> ToDo in Form
+  deleteUserForUserId, --> ToDo in Form
+  getAppUserForUserId,
+  getCustomUserForUserId,
+  getUserForUserId,
+  listCustomUsers,
+  listIdentities, --> ToDo in Form
+  listIdentitiesForUserId, --> ToDo in Form
+  listSessionsForUserId, --> ToDo in Form
+  listUsers,
+  updateNameForUserId,
+  updateEmailForUserId,
+  updatePhoneForUserId,
+  updateStatusForUserId,
+  updatePasswordForUserId,
+  updateEmailVerificationForUserId,
+  updatePhoneVerificationForUserId,
+ */

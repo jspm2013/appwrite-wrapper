@@ -1,3 +1,5 @@
+import { randomInt } from "crypto";
+
 /**
  * Converts an ArrayBuffer to a Base64 string.
  * @param buffer - The ArrayBuffer to convert.
@@ -56,6 +58,27 @@ export const isEmptyKeyValuePair = (obj: Record<string, any>): boolean => {
   return Object.keys(obj).length === 1 && obj[""] === "";
 };
 
+/**
+ * Generates a random password of the specified length.
+ */
+export function temporaryPassword(length = 12): string {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let password = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomValue = randomInt(0, charactersLength);
+    password += characters.charAt(randomValue);
+  }
+
+  return password;
+}
+
+/**
+ * Singleton class for managing appwrite state.
+ * @class
+ */
 class AppwriteManager {
   private static instance: AppwriteManager;
   private locale: string = "de"; // Default locale

@@ -28,6 +28,14 @@ export declare const isEmptyObject: (obj: object) => boolean;
  * @returns {boolean} - True if the object matches the condition, false otherwise.
  */
 export declare const isEmptyKeyValuePair: (obj: Record<string, any>) => boolean;
+/**
+ * Generates a random password of the specified length.
+ */
+export declare function temporaryPassword(length?: number): string;
+/**
+ * Singleton class for managing appwrite state.
+ * @class
+ */
 declare class AppwriteManager {
     private static instance;
     private locale;

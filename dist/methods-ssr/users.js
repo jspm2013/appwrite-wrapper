@@ -247,7 +247,7 @@ const updateEmailVerificationForUserId = async ({ userId, status, }) => {
         };
     }
 };
-const updateStatus = async ({ userId, status, }) => {
+const updateStatusForUserId = async ({ userId, status, }) => {
     try {
         if (typeof status !== "boolean") {
             throw new Error("Invalid param 'status'");
@@ -326,4 +326,4 @@ const updateLabels = async ({ userId, labels, }) => {
         };
     }
 };
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, updateEmailVerificationForUserId, updateLabels, updatePrefsForUserId, updateStatus, };
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, updateEmailVerificationForUserId, updateLabels, updatePrefsForUserId, updateStatusForUserId, };

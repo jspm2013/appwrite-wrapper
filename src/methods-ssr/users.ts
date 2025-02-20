@@ -417,14 +417,14 @@ const updateEmailVerificationForUserId = async ({
 /*
  * Updates the status for a user by their ID.
  */
-export type UpdateStatusParams = {
+export type UpdateStatusForUserIdParams = {
   userId: string;
   status: boolean;
 };
-const updateStatus = async ({
+const updateStatusForUserId = async ({
   userId,
   status,
-}: UpdateStatusParams): Promise<
+}: UpdateStatusForUserIdParams): Promise<
   ReturnObject<Models.User<Models.Preferences>>
 > => {
   try {
@@ -539,5 +539,5 @@ export {
   updateEmailVerificationForUserId,
   updateLabels,
   updatePrefsForUserId,
-  updateStatus,
+  updateStatusForUserId,
 };

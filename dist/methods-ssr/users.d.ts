@@ -120,15 +120,15 @@ export type UpdateEmailVerificationForUserIdParams = {
     status: boolean;
 };
 declare const updateEmailVerificationForUserId: ({ userId, status, }: UpdateEmailVerificationForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
-export type UpdateStatusParams = {
+export type UpdateStatusForUserIdParams = {
     userId: string;
     status: boolean;
 };
-declare const updateStatus: ({ userId, status, }: UpdateStatusParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+declare const updateStatusForUserId: ({ userId, status, }: UpdateStatusForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
 export type UpdateLabelsParams = {
     userId: string;
     labels: string[];
 };
 declare const updateLabels: ({ userId, labels, }: UpdateLabelsParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, updateEmailVerificationForUserId, updateLabels, updatePrefsForUserId, updateStatus, };
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, updateEmailVerificationForUserId, updateLabels, updatePrefsForUserId, updateStatusForUserId, };
 //# sourceMappingURL=users.d.ts.map

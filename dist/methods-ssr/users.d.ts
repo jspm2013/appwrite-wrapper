@@ -120,7 +120,11 @@ export type UpdateEmailVerificationForUserIdParams = {
     status: boolean;
 };
 declare const updateEmailVerificationForUserId: ({ userId, status, }: UpdateEmailVerificationForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
-declare const updateStatus: ({ userId, status, }: UpdateEmailVerificationForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+export type UpdateStatusParams = {
+    userId: string;
+    status: boolean;
+};
+declare const updateStatus: ({ userId, status, }: UpdateStatusParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
 export type UpdateLabelsParams = {
     userId: string;
     labels: string[];

@@ -263,4 +263,67 @@ const updateStatus = async ({ userId, status, }) => {
         };
     }
 };
-export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, updateEmailVerificationForUserId, updatePrefsForUserId, updateStatus, };
+const updateLabels = async ({ userId, labels, }) => {
+    try {
+        const { users } = await createAdminClient();
+        let updatedLabels = [];
+        // Check if labels is an array, string, or JSON object
+        if (Array.isArray(labels)) {
+            if (labels.some((label) => typeof label !== "string")) {
+                throw new Error("Invalid param 'labels': Array items must be strings.");
+            }
+            if (labels.some((label) => !/^[a-zA-Z0-9]{1,36}$/.test(label))) {
+                throw new Error("Invalid param 'labels': Labels must be 1-36 alphanumeric characters.");
+            }
+            updatedLabels = labels; // Replace existing labels with the provided array
+        }
+        else if (typeof labels === "string" &&
+            /^[a-zA-Z0-9]{1,36}$/.test(labels)) {
+            // Single string label
+            const existingUser = await users.get(userId);
+            const existingLabels = existingUser?.labels || [];
+            if (!existingLabels.includes(labels)) {
+                updatedLabels = [...existingLabels, labels]; // Add if not exists
+            }
+            else {
+                updatedLabels = existingLabels;
+            }
+        }
+        else if (typeof labels === "object" && labels !== null) {
+            // JSON object for add/remove
+            const key = Object.keys(labels)[0];
+            const value = labels[key];
+            if (typeof value !== "string" || !/^[a-zA-Z0-9]{1,36}$/.test(value)) {
+                throw new Error("Invalid param 'labels': JSON value must be 1-36 alphanumeric characters.");
+            }
+            const existingUser = await users.get(userId);
+            const existingLabels = existingUser?.labels || [];
+            if (key === "add") {
+                if (!existingLabels.includes(value)) {
+                    updatedLabels = [...existingLabels, value];
+                }
+                else {
+                    updatedLabels = existingLabels;
+                }
+            }
+            else if (key === "remove") {
+                updatedLabels = existingLabels.filter((label) => label !== value);
+            }
+            else {
+                throw new Error("Invalid param 'labels': JSON key must be 'add' or 'remove'.");
+            }
+        }
+        else {
+            throw new Error("Invalid param 'labels': Must be an array, string, or JSON object.");
+        }
+        const data = await users.updateLabels(userId, updatedLabels);
+        return { data, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+export { createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserId, getAppUserForUserId, getCustomUsers, getPrefsForUserId, getUserForUserId, getUsers, listIdentities, listUsers, updateEmailVerificationForUserId, updateLabels, updatePrefsForUserId, updateStatus, };

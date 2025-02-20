@@ -41,10 +41,13 @@ export {
 
 export {
   // Avatars functions
+  getBrowserIcon,
+  getCreditCardIcon,
+  getFavicon,
   getFlag,
   getImage,
-  getQr,
   getInitials,
+  getQr,
 } from "../methods-ssr/avatars";
 
 export {

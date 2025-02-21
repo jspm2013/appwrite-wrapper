@@ -418,10 +418,10 @@ const updatePasswordForUserId = async ({ userId, password, }) => {
         };
     }
 };
-const updatePhoneForUserId = async ({ userId, number, }) => {
+const updatePhoneForUserId = async ({ userId, phone, }) => {
     try {
         const { users } = await createAdminClient();
-        const data = await users.updatePhone(userId, number);
+        const data = await users.updatePhone(userId, phone);
         return { data, error: null };
     }
     catch (error) {

@@ -106,9 +106,9 @@ type UpdatePasswordForUserIdParams = {
 declare const updatePasswordForUserId: ({ userId, password, }: UpdatePasswordForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
 type UpdatePhoneForUserIdParams = {
     userId: string;
-    number: string;
+    phone: string;
 };
-declare const updatePhoneForUserId: ({ userId, number, }: UpdatePhoneForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+declare const updatePhoneForUserId: ({ userId, phone, }: UpdatePhoneForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
 type UpdatePhoneVerificationForUserIdParams = {
     userId: string;
     name: string;

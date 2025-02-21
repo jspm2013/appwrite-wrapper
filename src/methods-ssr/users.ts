@@ -703,18 +703,18 @@ const updatePasswordForUserId = async ({
  */
 type UpdatePhoneForUserIdParams = {
   userId: string;
-  number: string;
+  phone: string;
 };
 const updatePhoneForUserId = async ({
   userId,
-  number,
+  phone,
 }: UpdatePhoneForUserIdParams): Promise<
   ReturnObject<Models.User<Models.Preferences>>
 > => {
   try {
     const { users } = await createAdminClient();
 
-    const data = await users.updatePhone(userId, number);
+    const data = await users.updatePhone(userId, phone);
     return { data, error: null };
   } catch (error: any) {
     return {

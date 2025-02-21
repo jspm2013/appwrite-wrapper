@@ -85,11 +85,11 @@ export type DeleteBucketParams = {
 
 const deleteBucket = async ({
   bucketId,
-}: DeleteBucketParams): Promise<ReturnObject<boolean>> => {
+}: DeleteBucketParams): Promise<ReturnObject<{}>> => {
   try {
     const { storage } = await createAdminClient();
-    await storage.deleteBucket(bucketId);
-    return { data: true, error: null };
+    const data = await storage.deleteBucket(bucketId);
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -131,11 +131,11 @@ export type DeleteFileParams = {
 const deleteFile = async ({
   bucketId,
   fileId,
-}: DeleteFileParams): Promise<ReturnObject<boolean>> => {
+}: DeleteFileParams): Promise<ReturnObject<{}>> => {
   try {
     const { storage } = await createAdminClient();
-    await storage.deleteFile(bucketId, fileId);
-    return { data: true, error: null };
+    const data = await storage.deleteFile(bucketId, fileId);
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,

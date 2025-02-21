@@ -21,8 +21,8 @@ const createBucket = async ({ bucketName, permissions, fileSecurity = false, ena
 const deleteBucket = async ({ bucketId, }) => {
     try {
         const { storage } = await createAdminClient();
-        await storage.deleteBucket(bucketId);
-        return { data: true, error: null };
+        const data = await storage.deleteBucket(bucketId);
+        return { data, error: null };
     }
     catch (error) {
         return {
@@ -47,8 +47,8 @@ const getBucket = async ({ bucketId, }) => {
 const deleteFile = async ({ bucketId, fileId, }) => {
     try {
         const { storage } = await createAdminClient();
-        await storage.deleteFile(bucketId, fileId);
-        return { data: true, error: null };
+        const data = await storage.deleteFile(bucketId, fileId);
+        return { data, error: null };
     }
     catch (error) {
         return {

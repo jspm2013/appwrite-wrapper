@@ -34,7 +34,7 @@ declare const createBucket: ({ bucketName, permissions, fileSecurity, enabled, m
 export type DeleteBucketParams = {
     bucketId: string;
 };
-declare const deleteBucket: ({ bucketId, }: DeleteBucketParams) => Promise<ReturnObject<boolean>>;
+declare const deleteBucket: ({ bucketId, }: DeleteBucketParams) => Promise<ReturnObject<{}>>;
 /**
  * Retrieves a specific bucket by ID.
  */
@@ -49,7 +49,7 @@ export type DeleteFileParams = {
     bucketId: string;
     fileId: string;
 };
-declare const deleteFile: ({ bucketId, fileId, }: DeleteFileParams) => Promise<ReturnObject<boolean>>;
+declare const deleteFile: ({ bucketId, fileId, }: DeleteFileParams) => Promise<ReturnObject<{}>>;
 /**
  * Retrieves file metadata.
  */

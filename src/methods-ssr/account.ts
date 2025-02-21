@@ -382,7 +382,7 @@ const deleteSessions = async (): Promise<ReturnObject<string>> => {
 /*
  * Retrieves the authenticated and verified user.
  */
-const getAppUser = async (): Promise<ReturnObject<any>> => {
+const getAppUser = async (): Promise<ReturnObject<any | null>> => {
   try {
     const { account } = await createSessionClient();
     const { databases } = await createAdminClient();

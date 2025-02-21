@@ -60,7 +60,7 @@ declare const deleteSession: ({ sessionId, }?: {
     sessionId?: string;
 }) => Promise<ReturnObject<string>>;
 declare const deleteSessions: () => Promise<ReturnObject<string>>;
-declare const getAppUser: () => Promise<ReturnObject<any>>;
+declare const getAppUser: () => Promise<ReturnObject<any | null>>;
 declare const getCustomUser: () => Promise<ReturnObject<Record<string, any>>>;
 declare const getSession: ({ sessionId, }?: {
     sessionId?: string;

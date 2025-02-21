@@ -1,14 +1,8 @@
 "use server";
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadFileFromPath = exports.uploadFile = exports.updateFile = exports.updateBucket = exports.listFiles = exports.listBuckets = exports.deleteFile = exports.getFileView = exports.getFilePreview = exports.getFileDownload = exports.getFile = exports.getBucket = exports.deleteBucket = exports.createBucket = void 0;
-const fs_1 = __importDefault(require("fs"));
-const node_appwrite_1 = require("node-appwrite");
-const enums_1 = require("../enums");
-const appwriteClients_1 = require("../appwriteClients");
+import fs from "fs";
+import { ID } from "node-appwrite";
+import { Compression, } from "../enums";
+import { createAdminClient } from "../appwriteClients";
 const oneMb = 1024 * 1024;
 /**
  * List all files in a specific bucket.
@@ -17,7 +11,7 @@ const oneMb = 1024 * 1024;
  */
 const listFiles = async ({ bucketId, queries, search, }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const result = await storage.listFiles(bucketId, queries, search);
         return result;
     }
@@ -26,7 +20,6 @@ const listFiles = async ({ bucketId, queries, search, }) => {
         throw err;
     }
 };
-exports.listFiles = listFiles;
 /**
  * Get metadata of a file by its unique ID.
  * @param params - Parameters for getting the file.
@@ -34,7 +27,7 @@ exports.listFiles = listFiles;
  */
 const getFile = async ({ bucketId, fileId }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const { getFile: fetchFile } = storage;
         const result = await fetchFile(bucketId, fileId);
         return result;
@@ -44,7 +37,6 @@ const getFile = async ({ bucketId, fileId }) => {
         throw err;
     }
 };
-exports.getFile = getFile;
 /**
  * Get file content of a file by its unique ID.
  * @param params - Parameters for getting the file.
@@ -52,7 +44,7 @@ exports.getFile = getFile;
  */
 const getFileView = async ({ bucketId, fileId, }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const { getFileView: fetchFileView } = storage;
         const result = await fetchFileView(bucketId, fileId);
         return result;
@@ -62,7 +54,6 @@ const getFileView = async ({ bucketId, fileId, }) => {
         throw err;
     }
 };
-exports.getFileView = getFileView;
 /**
  * Update a file by its unique ID.
  * @param params - Parameters for updating the file.
@@ -70,7 +61,7 @@ exports.getFileView = getFileView;
  */
 const updateFile = async ({ bucketId, fileId, name, permissions, }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const result = await storage.updateFile(bucketId, fileId, name, permissions);
         return result;
     }
@@ -79,7 +70,6 @@ const updateFile = async ({ bucketId, fileId, name, permissions, }) => {
         throw err;
     }
 };
-exports.updateFile = updateFile;
 /**
  * Delete a file by its unique ID.
  * @param params - Parameters for deleting the file.
@@ -87,7 +77,7 @@ exports.updateFile = updateFile;
  */
 const deleteFile = async ({ bucketId, fileId, }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const result = await storage.deleteFile(bucketId, fileId);
         return result;
     }
@@ -96,7 +86,6 @@ const deleteFile = async ({ bucketId, fileId, }) => {
         throw err;
     }
 };
-exports.deleteFile = deleteFile;
 /**
  * Get a file content for download by its unique ID.
  * @param params - Parameters for downloading the file.
@@ -104,7 +93,7 @@ exports.deleteFile = deleteFile;
  */
 const getFileDownload = async ({ bucketId, fileId, }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const result = await storage.getFileDownload(bucketId, fileId);
         return result;
     }
@@ -113,7 +102,6 @@ const getFileDownload = async ({ bucketId, fileId, }) => {
         throw err;
     }
 };
-exports.getFileDownload = getFileDownload;
 /**
  * Get a file preview image.
  * @param params - Parameters for generating the preview.
@@ -121,7 +109,7 @@ exports.getFileDownload = getFileDownload;
  */
 const getFilePreview = async ({ bucketId, fileId, width, height, gravity, quality, borderWidth, borderColor, borderRadius, opacity, rotation, background, output, }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const result = await storage.getFilePreview(bucketId, fileId, width, height, gravity, quality, borderWidth, borderColor, borderRadius, opacity, rotation, background, output);
         return result;
     }
@@ -130,15 +118,14 @@ const getFilePreview = async ({ bucketId, fileId, width, height, gravity, qualit
         throw err;
     }
 };
-exports.getFilePreview = getFilePreview;
 /**
  * Upload a file to a specific bucket.
  * @param params - Parameters for uploading the file.
  * @returns The uploaded file details.
  */
-const uploadFile = async ({ bucketId, fileId = node_appwrite_1.ID.unique(), file, userId, onProgress, }) => {
+const uploadFile = async ({ bucketId, fileId = ID.unique(), file, userId, onProgress, }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const formData = new FormData();
         formData.append("file", file);
         const result = await storage.createFile(bucketId, fileId, file, userId
@@ -151,16 +138,15 @@ const uploadFile = async ({ bucketId, fileId = node_appwrite_1.ID.unique(), file
         throw err;
     }
 };
-exports.uploadFile = uploadFile;
 /**
  * Upload a file to a bucket using its file path.
  * @param params - Parameters for uploading the file.
  * @returns The uploaded file details.
  */
-const uploadFileFromPath = async ({ bucketId, fileId = node_appwrite_1.ID.unique(), filePath, userId, onProgress, }) => {
+const uploadFileFromPath = async ({ bucketId, fileId = ID.unique(), filePath, userId, onProgress, }) => {
     try {
         try {
-            await fs_1.default.promises.access(filePath, fs_1.default.constants.R_OK);
+            await fs.promises.access(filePath, fs.constants.R_OK);
         }
         catch (err) {
             if (err.code === "ENOENT") {
@@ -173,7 +159,7 @@ const uploadFileFromPath = async ({ bucketId, fileId = node_appwrite_1.ID.unique
                 throw new Error(`Unable to access file: ${filePath}, Error: ${err.message}`);
             }
         }
-        const file = fs_1.default.createReadStream(filePath);
+        const file = fs.createReadStream(filePath);
         const result = await uploadFile({
             bucketId,
             fileId,
@@ -188,7 +174,6 @@ const uploadFileFromPath = async ({ bucketId, fileId = node_appwrite_1.ID.unique
         throw err;
     }
 };
-exports.uploadFileFromPath = uploadFileFromPath;
 /**
  * List all storage buckets.
  * @param params - Parameters for listing the buckets.
@@ -196,7 +181,7 @@ exports.uploadFileFromPath = uploadFileFromPath;
  */
 const listBuckets = async ({ queries, search = undefined, }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const result = await storage.listBuckets(queries, search);
         return result;
     }
@@ -205,16 +190,15 @@ const listBuckets = async ({ queries, search = undefined, }) => {
         throw err;
     }
 };
-exports.listBuckets = listBuckets;
 /**
  * Create a new storage bucket in Appwrite.
  * @param params - Parameters for creating the bucket.
  * @returns The created bucket.
  */
-const createBucket = async ({ bucketName, permissions = ['read("any")', 'write("any")', 'delete("any")'], fileSecurity = false, enabled = false, maxFileSizeInMb = 5, allowedFileExtensions = [], compression = enums_1.Compression.Gzip, encryption = true, antivirus = true, }) => {
+const createBucket = async ({ bucketName, permissions = ['read("any")', 'write("any")', 'delete("any")'], fileSecurity = false, enabled = false, maxFileSizeInMb = 5, allowedFileExtensions = [], compression = Compression.Gzip, encryption = true, antivirus = true, }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
-        const result = await storage.createBucket(node_appwrite_1.ID.unique(), bucketName, permissions, fileSecurity, enabled, maxFileSizeInMb * oneMb, allowedFileExtensions, compression, encryption, antivirus);
+        const { storage } = await createAdminClient();
+        const result = await storage.createBucket(ID.unique(), bucketName, permissions, fileSecurity, enabled, maxFileSizeInMb * oneMb, allowedFileExtensions, compression, encryption, antivirus);
         return result;
     }
     catch (err) {
@@ -222,7 +206,6 @@ const createBucket = async ({ bucketName, permissions = ['read("any")', 'write("
         throw err;
     }
 };
-exports.createBucket = createBucket;
 /**
  * Get details of a specific storage bucket.
  * @param params - Parameters for getting the bucket.
@@ -230,7 +213,7 @@ exports.createBucket = createBucket;
  */
 const getBucket = async ({ bucketId, }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const result = await storage.getBucket(bucketId);
         return result;
     }
@@ -239,7 +222,6 @@ const getBucket = async ({ bucketId, }) => {
         throw err;
     }
 };
-exports.getBucket = getBucket;
 /**
  * Update a storage bucket by its unique ID.
  * @param params - Parameters for updating the bucket.
@@ -247,7 +229,7 @@ exports.getBucket = getBucket;
  */
 const updateBucket = async ({ bucketId, name, permissions, fileSecurity, enabled, maximumFileSize, allowedFileExtensions, compression, encryption, antivirus, }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const result = await storage.updateBucket(bucketId, name, permissions, fileSecurity, enabled, maximumFileSize, allowedFileExtensions, compression, encryption, antivirus);
         return result;
     }
@@ -256,7 +238,6 @@ const updateBucket = async ({ bucketId, name, permissions, fileSecurity, enabled
         throw err;
     }
 };
-exports.updateBucket = updateBucket;
 /**
  * Delete a storage bucket by its unique ID.
  * @param params - Parameters for deleting the bucket.
@@ -264,7 +245,7 @@ exports.updateBucket = updateBucket;
  */
 const deleteBucket = async ({ bucketId }) => {
     try {
-        const { storage } = await (0, appwriteClients_1.createAdminClient)();
+        const { storage } = await createAdminClient();
         const result = await storage.deleteBucket(bucketId);
         return result;
     }
@@ -273,4 +254,4 @@ const deleteBucket = async ({ bucketId }) => {
         throw err;
     }
 };
-exports.deleteBucket = deleteBucket;
+export { createBucket, deleteBucket, getBucket, getFile, getFileDownload, getFilePreview, getFileView, deleteFile, listBuckets, listFiles, updateBucket, updateFile, uploadFile, uploadFileFromPath, };

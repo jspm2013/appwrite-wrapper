@@ -1,13 +1,7 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getType = exports.getTypeFile = void 0;
-const path_1 = __importDefault(require("path"));
-const promises_1 = __importDefault(require("fs/promises"));
-const appwriteConfig_1 = require("../appwriteConfig");
-const SCHEMAS_FOLDER = path_1.default.join(process.cwd(), appwriteConfig_1.schemasPath);
+import path from "path";
+import fs from "fs/promises";
+import { schemasPath } from "../appwriteConfig";
+const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
 /**
  * Retrieves the file path of the dynamically created TypeScript definition file.
  *
@@ -15,10 +9,10 @@ const SCHEMAS_FOLDER = path_1.default.join(process.cwd(), appwriteConfig_1.schem
  * @param {string} options.collName - The name of the collection (default: "users").
  * @returns {Promise<string | null>} - The absolute file path of the type file if found, otherwise `null`.
  */
-const getTypeFile = async ({ collName = "users", }) => {
+export const getTypeFile = async ({ collName = "users", }) => {
     try {
-        const filePath = path_1.default.join(SCHEMAS_FOLDER, `${collName}.ts`);
-        await promises_1.default.access(filePath);
+        const filePath = path.join(SCHEMAS_FOLDER, `${collName}.ts`);
+        await fs.access(filePath);
         return filePath;
     }
     catch (err) {
@@ -26,7 +20,6 @@ const getTypeFile = async ({ collName = "users", }) => {
         return null;
     }
 };
-exports.getTypeFile = getTypeFile;
 /**
  * Reads a TypeScript file and extracts a specific interface or type.
  *
@@ -35,12 +28,12 @@ exports.getTypeFile = getTypeFile;
  * @param {string} options.typeName - The specific type name to extract.
  * @returns {Promise<string | null>} - The extracted type definition as a string, or `null` if not found.
  */
-const getType = async ({ collName = "users", typeName, }) => {
+export const getType = async ({ collName = "users", typeName, }) => {
     try {
-        const typeFile = await (0, exports.getTypeFile)({ collName });
+        const typeFile = await getTypeFile({ collName });
         if (!typeFile)
             return null;
-        const tsContent = await promises_1.default.readFile(typeFile, "utf-8");
+        const tsContent = await fs.readFile(typeFile, "utf-8");
         const typeRegex = new RegExp(`export\\s+(?:interface|type)\\s+${typeName}\\s+[^]+?\\n}`, "gs");
         const match = tsContent.match(typeRegex);
         if (!match) {
@@ -53,4 +46,3 @@ const getType = async ({ collName = "users", typeName, }) => {
         return null;
     }
 };
-exports.getType = getType;

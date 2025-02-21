@@ -1,14 +1,11 @@
 "use server";
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInitials = exports.getQr = exports.getImage = exports.getFlag = void 0;
-const appwriteClients_1 = require("../appwriteClients");
+import { createAdminClient } from "../appwriteClients";
 /**
  * Retrieves a country flag image.
  */
 const getFlag = async ({ code, width = 100, height = 100, quality = 100, }) => {
     try {
-        const { avatars } = await (0, appwriteClients_1.createAdminClient)();
+        const { avatars } = await createAdminClient();
         const buffer = await avatars.getFlag(code, width, height, quality);
         return Buffer.from(buffer).toString("base64");
     }
@@ -17,13 +14,12 @@ const getFlag = async ({ code, width = 100, height = 100, quality = 100, }) => {
         throw err;
     }
 };
-exports.getFlag = getFlag;
 /**
  * Retrieves an image from a URL.
  */
 const getImage = async ({ url, width = 400, height = 400, }) => {
     try {
-        const { avatars } = await (0, appwriteClients_1.createAdminClient)();
+        const { avatars } = await createAdminClient();
         const buffer = await avatars.getImage(url, width, height);
         return Buffer.from(buffer).toString("base64");
     }
@@ -32,13 +28,12 @@ const getImage = async ({ url, width = 400, height = 400, }) => {
         throw err;
     }
 };
-exports.getImage = getImage;
 /**
  * Retrieves a QR code as an image.
  */
 const getQr = async ({ text, size = 400, margin = 1, download = false, }) => {
     try {
-        const { avatars } = await (0, appwriteClients_1.createAdminClient)();
+        const { avatars } = await createAdminClient();
         const buffer = await avatars.getQR(text, size, margin, download);
         return Buffer.from(buffer).toString("base64");
     }
@@ -47,13 +42,12 @@ const getQr = async ({ text, size = 400, margin = 1, download = false, }) => {
         throw err;
     }
 };
-exports.getQr = getQr;
 /**
  * Retrieves user initials as an avatar image.
  */
 const getInitials = async ({ name, width = 100, height = 100, background, }) => {
     try {
-        const { avatars } = await (0, appwriteClients_1.createAdminClient)();
+        const { avatars } = await createAdminClient();
         const buffer = await avatars.getInitials(name, width, height, background);
         return Buffer.from(buffer).toString("base64");
     }
@@ -62,4 +56,4 @@ const getInitials = async ({ name, width = 100, height = 100, background, }) => 
         throw err;
     }
 };
-exports.getInitials = getInitials;
+export { getFlag, getImage, getQr, getInitials };

@@ -1,15 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ImageType = exports.apwManager = exports.isEmptyKeyValuePair = exports.isEmptyObject = exports.isValidJsonObject = exports.isValidJsonString = exports.arrayBufferToBase64 = void 0;
-exports.temporaryPassword = temporaryPassword;
-const crypto_1 = require("crypto");
+import { randomInt } from "crypto";
 //import sharp from "sharp";
 /**
  * Converts an ArrayBuffer to a Base64 string.
  * @param buffer - The ArrayBuffer to convert.
  * @returns {string} - The Base64 encoded string.
  */
-const arrayBufferToBase64 = (buffer) => {
+export const arrayBufferToBase64 = (buffer) => {
     let binary = "";
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;
@@ -18,13 +14,12 @@ const arrayBufferToBase64 = (buffer) => {
     }
     return btoa(binary); // Converts binary string to Base64
 };
-exports.arrayBufferToBase64 = arrayBufferToBase64;
 /**
  * Validates if a given string is a valid JSON string.
  * @param str - The string to validate.
  * @returns {boolean} - True if the string is a valid JSON string, false otherwise.
  */
-const isValidJsonString = (str) => {
+export const isValidJsonString = (str) => {
     try {
         JSON.parse(str); // Attempt to parse the string
         return true;
@@ -33,43 +28,39 @@ const isValidJsonString = (str) => {
         return false;
     }
 };
-exports.isValidJsonString = isValidJsonString;
 /**
  * Checks if the given object is a valid JSON object.
  * @param obj - The object to check.
  * @returns {boolean} - True if the object is a valid JSON object, false otherwise.
  */
-const isValidJsonObject = (obj) => {
+export const isValidJsonObject = (obj) => {
     return obj !== null && typeof obj === "object" && !Array.isArray(obj);
 };
-exports.isValidJsonObject = isValidJsonObject;
 /**
  * Checks if the given object is an empty object.
  * @param obj - The object to check.
  * @returns {boolean} - True if the object is empty, false otherwise.
  */
-const isEmptyObject = (obj) => {
+export const isEmptyObject = (obj) => {
     return Object.keys(obj).length === 0 && obj.constructor === Object;
 };
-exports.isEmptyObject = isEmptyObject;
 /**
  * Checks if the given object has only one key-value pair with an empty key and an empty value.
  * @param obj - The object to check.
  * @returns {boolean} - True if the object matches the condition, false otherwise.
  */
-const isEmptyKeyValuePair = (obj) => {
+export const isEmptyKeyValuePair = (obj) => {
     return Object.keys(obj).length === 1 && obj[""] === "";
 };
-exports.isEmptyKeyValuePair = isEmptyKeyValuePair;
 /**
  * Generates a random password of the specified length.
  */
-function temporaryPassword(length = 12) {
+export function temporaryPassword(length = 12) {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const charactersLength = characters.length;
     let password = "";
     for (let i = 0; i < length; i++) {
-        const randomValue = (0, crypto_1.randomInt)(0, charactersLength);
+        const randomValue = randomInt(0, charactersLength);
         password += characters.charAt(randomValue);
     }
     return password;
@@ -105,7 +96,7 @@ class AppwriteManager {
     }
 }
 // Export a global instance
-exports.apwManager = AppwriteManager.getInstance();
+export const apwManager = AppwriteManager.getInstance();
 /*
  * Processes an image file based on the specified output type and quality percentage.
  * @param fileData - The image file data.
@@ -113,7 +104,7 @@ exports.apwManager = AppwriteManager.getInstance();
  * @param qualityPercentage - The quality percentage for the output image (optional).
  * @returns {Promise<Buffer>} - A Promise that resolves to the processed image data.
  */
-var ImageType;
+export var ImageType;
 (function (ImageType) {
     ImageType["JPEG"] = "image/jpeg";
     ImageType["JPG"] = "image/jpg";
@@ -122,7 +113,7 @@ var ImageType;
     ImageType["AVIF"] = "image/avif";
     ImageType["GIF"] = "image/gif";
     ImageType["TIFF"] = "image/tiff";
-})(ImageType || (exports.ImageType = ImageType = {}));
+})(ImageType || (ImageType = {}));
 /*
 export async function processImage(
   fileData: Buffer,

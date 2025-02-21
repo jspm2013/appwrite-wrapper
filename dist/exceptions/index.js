@@ -1,26 +1,20 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleApwError = void 0;
-const host_1 = require("../host");
-const utils_1 = require("../utils");
-const exceptions_json_1 = __importDefault(require("./exceptions.json"));
-const node_appwrite_1 = require("node-appwrite");
-const loaders_1 = require("./loaders");
-const adminStatus = !host_1.live;
-utils_1.apwManager.setAdmin(adminStatus);
+import { live } from "../host";
+import { apwManager } from "../utils";
+import allExceptions from "./exceptions.json";
+import { AppwriteException } from "node-appwrite";
+import { configLoader, messagesLoader } from "./loaders";
+const adminStatus = !live;
+apwManager.setAdmin(adminStatus);
 /**
  * Load the exceptions.
  */
-const exceptions = exceptions_json_1.default;
+const exceptions = allExceptions;
 /**
  * Handles Appwrite errors and maps them to a readable format.
  * @param error - The error to handle.
  * @returns {object} - Formatted error object.
  */
-const handleApwError = async ({ error, }) => {
+export const handleApwError = async ({ error, }) => {
     /*
      * Define the internal error object.
      */
@@ -35,13 +29,13 @@ const handleApwError = async ({ error, }) => {
     /**
      * Load the locales config.
      */
-    const config = await (0, loaders_1.configLoader)();
-    const locale = utils_1.apwManager.getLocale();
+    const config = await configLoader();
+    const locale = apwManager.getLocale();
     const defaultLocale = config.defaultLocale;
     /**
      * Load the admin status.
      */
-    const admin = utils_1.apwManager.getAdmin();
+    const admin = apwManager.getAdmin();
     /*
      * Check if the provided locale is allowed.
      */
@@ -60,7 +54,7 @@ const handleApwError = async ({ error, }) => {
     /*
      * If the error is not an instance of AppwriteException, throw it.
      */
-    if (!(error instanceof node_appwrite_1.AppwriteException)) {
+    if (!(error instanceof AppwriteException)) {
         return {
             ...internalError,
             error,
@@ -73,7 +67,7 @@ const handleApwError = async ({ error, }) => {
      */
     let localizedMessages;
     try {
-        localizedMessages = await (0, loaders_1.messagesLoader)(locale ?? defaultLocale);
+        localizedMessages = await messagesLoader(locale ?? defaultLocale);
     }
     catch (err) {
         return {
@@ -125,4 +119,3 @@ const handleApwError = async ({ error, }) => {
         };
     }
 };
-exports.handleApwError = handleApwError;

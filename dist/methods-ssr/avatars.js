@@ -1,125 +1,116 @@
 "use server";
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getQr = exports.getInitials = exports.getImage = exports.getFlag = exports.getFavicon = exports.getCreditCardIcon = exports.getBrowserIcon = void 0;
-const exceptions_1 = require("../exceptions");
-const appwriteClients_1 = require("../appwriteClients");
+import { handleApwError } from "../exceptions";
+import { createAdminClient } from "../appwriteClients";
 /**
  * Retrieves a browser icon image.
  */
 const getBrowserIcon = async ({ code, width = 100, height = 100, quality = 100, }) => {
     try {
-        const { avatars } = await (0, appwriteClients_1.createAdminClient)();
+        const { avatars } = await createAdminClient();
         const buffer = await avatars.getBrowser(code, width, height, quality);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
     catch (error) {
         return {
             data: null,
-            error: await (0, exceptions_1.handleApwError)({ error }),
+            error: await handleApwError({ error }),
         };
     }
 };
-exports.getBrowserIcon = getBrowserIcon;
 /**
  * Retrieves a website favicon image.
  */
 const getFavicon = async ({ url, }) => {
     try {
-        const { avatars } = await (0, appwriteClients_1.createAdminClient)();
+        const { avatars } = await createAdminClient();
         const buffer = await avatars.getFavicon(url);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
     catch (error) {
         return {
             data: null,
-            error: await (0, exceptions_1.handleApwError)({ error }),
+            error: await handleApwError({ error }),
         };
     }
 };
-exports.getFavicon = getFavicon;
 /**
  * Retrieves a country flag image.
  */
 const getFlag = async ({ code, width = 100, height = 100, quality = 100, }) => {
     try {
-        const { avatars } = await (0, appwriteClients_1.createAdminClient)();
+        const { avatars } = await createAdminClient();
         const buffer = await avatars.getFlag(code, width, height, quality);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
     catch (error) {
         return {
             data: null,
-            error: await (0, exceptions_1.handleApwError)({ error }),
+            error: await handleApwError({ error }),
         };
     }
 };
-exports.getFlag = getFlag;
 /**
  * Retrieves a credit card icon image.
  */
 const getCreditCardIcon = async ({ code, width = 100, height = 100, quality = 100, }) => {
     try {
-        const { avatars } = await (0, appwriteClients_1.createAdminClient)();
+        const { avatars } = await createAdminClient();
         const buffer = await avatars.getCreditCard(code, width, height, quality);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
     catch (error) {
         return {
             data: null,
-            error: await (0, exceptions_1.handleApwError)({ error }),
+            error: await handleApwError({ error }),
         };
     }
 };
-exports.getCreditCardIcon = getCreditCardIcon;
 /**
  * Retrieves user initials as an avatar image.
  */
 const getInitials = async ({ name, width = 100, height = 100, background, }) => {
     try {
-        const { avatars } = await (0, appwriteClients_1.createAdminClient)();
+        const { avatars } = await createAdminClient();
         const buffer = await avatars.getInitials(name, width, height, background);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
     catch (error) {
         return {
             data: null,
-            error: await (0, exceptions_1.handleApwError)({ error }),
+            error: await handleApwError({ error }),
         };
     }
 };
-exports.getInitials = getInitials;
 /**
  * Retrieves an image from a URL.
  */
 const getImage = async ({ url, width = 400, height = 400, }) => {
     try {
-        const { avatars } = await (0, appwriteClients_1.createAdminClient)();
+        const { avatars } = await createAdminClient();
         const buffer = await avatars.getImage(url, width, height);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
     catch (error) {
         return {
             data: null,
-            error: await (0, exceptions_1.handleApwError)({ error }),
+            error: await handleApwError({ error }),
         };
     }
 };
-exports.getImage = getImage;
 /**
  * Retrieves a QR code as an image.
  */
 const getQr = async ({ text, size = 400, margin = 1, download = false, }) => {
     try {
-        const { avatars } = await (0, appwriteClients_1.createAdminClient)();
+        const { avatars } = await createAdminClient();
         const buffer = await avatars.getQR(text, size, margin, download);
         return { data: Buffer.from(buffer).toString("base64"), error: null };
     }
     catch (error) {
         return {
             data: null,
-            error: await (0, exceptions_1.handleApwError)({ error }),
+            error: await handleApwError({ error }),
         };
     }
 };
-exports.getQr = getQr;
+export { getBrowserIcon, getCreditCardIcon, getFavicon, getFlag, getImage, getInitials, getQr, };

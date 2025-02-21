@@ -11,7 +11,7 @@ import { ID, Models } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
-import { ImageType } from "../utils.js";
+import { ImageType, processImage } from "../utils";
 
 const oneMb: number = 1024 * 1024;
 
@@ -433,7 +433,7 @@ const uploadFile = async ({
 }: UploadFileParams): Promise<ReturnObject<Models.File>> => {
   try {
     const { storage } = await createAdminClient();
-    const fileBuffer = file; //await processImage(file, outputType, qualityPercentage);
+    const fileBuffer = await processImage(file, outputType, qualityPercentage);
 
     const data = await storage.createFile(
       bucketId,

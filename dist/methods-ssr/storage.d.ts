@@ -1,6 +1,6 @@
 import { Compression, ImageFormat, ImageGravity, UploadProgress } from "../enums";
 import { Models } from "node-appwrite";
-import { ImageType } from "../utils.js";
+import { ImageType } from "../utils";
 interface ErrorObject {
     appwrite: boolean;
     header: string;

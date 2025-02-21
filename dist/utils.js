@@ -1,5 +1,5 @@
 import { randomInt } from "crypto";
-//import sharp from "sharp";
+import sharp from "sharp";
 /**
  * Converts an ArrayBuffer to a Base64 string.
  * @param buffer - The ArrayBuffer to convert.
@@ -114,45 +114,36 @@ export var ImageType;
     ImageType["GIF"] = "image/gif";
     ImageType["TIFF"] = "image/tiff";
 })(ImageType || (ImageType = {}));
-/*
-export async function processImage(
-  fileData: Buffer,
-  outputType?: ImageType,
-  qualityPercentage?: number
-): Promise<Buffer> {
-  try {
-    let type = outputType;
-
-    if (!type) {
-      // Default to WebP if no outputType is provided
-      type = ImageType.WEBP;
+export async function processImage(fileData, outputType, qualityPercentage) {
+    try {
+        let type = outputType;
+        if (!type) {
+            // Default to WebP if no outputType is provided
+            type = ImageType.WEBP;
+        }
+        const quality = qualityPercentage !== undefined
+            ? Math.round(Math.max(0, Math.min(1, qualityPercentage)) * 100)
+            : 80;
+        switch (type) {
+            case ImageType.JPEG:
+            case ImageType.JPG:
+                return await sharp(fileData).jpeg({ quality }).toBuffer();
+            case ImageType.PNG:
+                return await sharp(fileData).png({ quality }).toBuffer();
+            case ImageType.WEBP:
+                return await sharp(fileData).webp({ quality }).toBuffer();
+            case ImageType.AVIF:
+                return await sharp(fileData).avif({ quality }).toBuffer();
+            case ImageType.GIF:
+                return await sharp(fileData).gif().toBuffer();
+            case ImageType.TIFF:
+                return await sharp(fileData).tiff({ quality }).toBuffer();
+            default: // Default to WebP
+                return await sharp(fileData).webp({ quality }).toBuffer();
+        }
     }
-
-    const quality =
-      qualityPercentage !== undefined
-        ? Math.round(Math.max(0, Math.min(1, qualityPercentage)) * 100)
-        : 80;
-
-    switch (type) {
-      case ImageType.JPEG:
-      case ImageType.JPG:
-        return await sharp(fileData).jpeg({ quality }).toBuffer();
-      case ImageType.PNG:
-        return await sharp(fileData).png({ quality }).toBuffer();
-      case ImageType.WEBP:
-        return await sharp(fileData).webp({ quality }).toBuffer();
-      case ImageType.AVIF:
-        return await sharp(fileData).avif({ quality }).toBuffer();
-      case ImageType.GIF:
-        return await sharp(fileData).gif().toBuffer();
-      case ImageType.TIFF:
-        return await sharp(fileData).tiff({ quality }).toBuffer();
-      default: // Default to WebP
-        return await sharp(fileData).webp({ quality }).toBuffer();
+    catch (error) {
+        console.error("Error processing image:", error);
+        throw error;
     }
-  } catch (error) {
-    console.error("Error processing image:", error);
-    throw error;
-  }
 }
-*/

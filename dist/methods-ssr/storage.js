@@ -5,6 +5,7 @@ import { ID } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
+import { processImage } from "../utils";
 const oneMb = 1024 * 1024;
 const createBucket = async ({ bucketName, permissions, fileSecurity = false, enabled = false, maxFileSizeInMb = 5, allowedFileExtensions = [], compression = Compression.Gzip, encryption = true, antivirus = true, }) => {
     try {
@@ -168,7 +169,7 @@ const updateFile = async ({ bucketId, fileId, name, permissions, }) => {
 const uploadFile = async ({ bucketId, fileId = ID.unique(), file, userId, onProgress, outputType, qualityPercentage, }) => {
     try {
         const { storage } = await createAdminClient();
-        const fileBuffer = file; //await processImage(file, outputType, qualityPercentage);
+        const fileBuffer = await processImage(file, outputType, qualityPercentage);
         const data = await storage.createFile(bucketId, fileId, InputFile.fromBuffer(fileBuffer, file.name), userId
             ? [`read("user:${userId}")`, `write("user:${userId}")`]
             : undefined, onProgress);

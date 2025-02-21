@@ -161,6 +161,5 @@ export type UploadFileFromPathParams = {
     fileId?: string;
     filePath: string;
 };
-declare const uploadFileFromPath: ({ bucketId, fileId, filePath, }: UploadFileFromPathParams) => Promise<ReturnObject<Models.File>>;
-export { createBucket, deleteBucket, deleteFile, getBucket, getFile, getFileDownload, getFilePreview, getFileView, listBuckets, listFiles, updateBucket, updateFile, uploadFile, uploadFileFromPath, };
+export { createBucket, deleteBucket, deleteFile, getBucket, getFile, getFileDownload, getFilePreview, getFileView, listBuckets, listFiles, updateBucket, updateFile, uploadFile, };
 //# sourceMappingURL=storage.d.ts.map

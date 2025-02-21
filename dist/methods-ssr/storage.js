@@ -1,6 +1,6 @@
 "use server";
 import { Compression, } from "../enums";
-import fs from "fs";
+//import fs from "fs";
 import { ID } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 import { handleApwError } from "../exceptions";
@@ -182,18 +182,23 @@ const uploadFile = async ({ bucketId, fileId = ID.unique(), file, userId, onProg
         };
     }
 };
-const uploadFileFromPath = async ({ bucketId, fileId = ID.unique(), filePath, }) => {
-    try {
-        await fs.promises.access(filePath, fs.constants.R_OK);
-        const file = fs.createReadStream(filePath);
-        const result = await uploadFile({ bucketId, fileId, file });
-        return { data: result.data, error: result.error };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-export { createBucket, deleteBucket, deleteFile, getBucket, getFile, getFileDownload, getFilePreview, getFileView, listBuckets, listFiles, updateBucket, updateFile, uploadFile, uploadFileFromPath, };
+/* const uploadFileFromPath = async ({
+  bucketId,
+  fileId = ID.unique(),
+  filePath,
+}: UploadFileFromPathParams): Promise<ReturnObject<Models.File>> => {
+  try {
+    await fs.promises.access(filePath, fs.constants.R_OK);
+    const file = fs.createReadStream(filePath);
+    const result = await uploadFile({ bucketId, fileId, file });
+    return { data: result.data, error: result.error };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+}; */
+export { createBucket, deleteBucket, deleteFile, getBucket, getFile, getFileDownload, getFilePreview, getFileView, listBuckets, listFiles, updateBucket, updateFile, uploadFile,
+//uploadFileFromPath,
+ };

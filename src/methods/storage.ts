@@ -1,6 +1,6 @@
 "use server";
 
-import fs from "fs";
+//import fs from "fs";
 import { ID, Models } from "node-appwrite";
 import {
   Compression,
@@ -325,7 +325,7 @@ export type UploadFileFromPathParams = {
  * @param params - Parameters for uploading the file.
  * @returns The uploaded file details.
  */
-const uploadFileFromPath = async ({
+/* const uploadFileFromPath = async ({
   bucketId,
   fileId = ID.unique(),
   filePath,
@@ -362,7 +362,7 @@ const uploadFileFromPath = async ({
     );
     throw err;
   }
-};
+}; */
 
 /**
  * Parameters for the listBuckets function.
@@ -569,5 +569,5 @@ export {
   updateBucket,
   updateFile,
   uploadFile,
-  uploadFileFromPath,
+  //uploadFileFromPath,
 };

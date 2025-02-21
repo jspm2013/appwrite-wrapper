@@ -110,7 +110,7 @@ export {
   updateBucket,
   updateFile,
   uploadFile,
-  uploadFileFromPath,
+  //uploadFileFromPath,
 } from "./methods/storage";
 
 export {

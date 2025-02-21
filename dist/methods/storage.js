@@ -1,5 +1,5 @@
 "use server";
-import fs from "fs";
+//import fs from "fs";
 import { ID } from "node-appwrite";
 import { Compression, } from "../enums";
 import { createAdminClient } from "../appwriteClients";
@@ -139,42 +139,6 @@ const uploadFile = async ({ bucketId, fileId = ID.unique(), file, userId, onProg
     }
 };
 /**
- * Upload a file to a bucket using its file path.
- * @param params - Parameters for uploading the file.
- * @returns The uploaded file details.
- */
-const uploadFileFromPath = async ({ bucketId, fileId = ID.unique(), filePath, userId, onProgress, }) => {
-    try {
-        try {
-            await fs.promises.access(filePath, fs.constants.R_OK);
-        }
-        catch (err) {
-            if (err.code === "ENOENT") {
-                throw new Error(`File not found: ${filePath}`);
-            }
-            else if (err.code === "EACCES") {
-                throw new Error(`No read permission for file: ${filePath}`);
-            }
-            else {
-                throw new Error(`Unable to access file: ${filePath}, Error: ${err.message}`);
-            }
-        }
-        const file = fs.createReadStream(filePath);
-        const result = await uploadFile({
-            bucketId,
-            fileId,
-            file,
-            userId,
-            onProgress,
-        });
-        return result;
-    }
-    catch (err) {
-        console.error("APW-WRAPPER - Error (methods/storage): Error executing uploadFileFromPath():", err);
-        throw err;
-    }
-};
-/**
  * List all storage buckets.
  * @param params - Parameters for listing the buckets.
  * @returns The list of buckets.
@@ -254,4 +218,6 @@ const deleteBucket = async ({ bucketId }) => {
         throw err;
     }
 };
-export { createBucket, deleteBucket, getBucket, getFile, getFileDownload, getFilePreview, getFileView, deleteFile, listBuckets, listFiles, updateBucket, updateFile, uploadFile, uploadFileFromPath, };
+export { createBucket, deleteBucket, getBucket, getFile, getFileDownload, getFilePreview, getFileView, deleteFile, listBuckets, listFiles, updateBucket, updateFile, uploadFile,
+//uploadFileFromPath,
+ };

@@ -6,7 +6,7 @@ import {
   ImageGravity,
   UploadProgress,
 } from "../enums";
-import fs from "fs";
+//import fs from "fs";
 import { ID, Models } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 import { handleApwError } from "../exceptions";
@@ -462,7 +462,7 @@ export type UploadFileFromPathParams = {
   filePath: string;
 };
 
-const uploadFileFromPath = async ({
+/* const uploadFileFromPath = async ({
   bucketId,
   fileId = ID.unique(),
   filePath,
@@ -478,7 +478,7 @@ const uploadFileFromPath = async ({
       error: await handleApwError({ error }),
     };
   }
-};
+}; */
 
 export {
   createBucket,
@@ -494,5 +494,5 @@ export {
   updateBucket,
   updateFile,
   uploadFile,
-  uploadFileFromPath,
+  //uploadFileFromPath,
 };

@@ -138,7 +138,6 @@ export type UploadFileFromPathParams = {
  * @param params - Parameters for uploading the file.
  * @returns The uploaded file details.
  */
-declare const uploadFileFromPath: ({ bucketId, fileId, filePath, userId, onProgress, }: UploadFileFromPathParams) => Promise<any>;
 /**
  * Parameters for the listBuckets function.
  */
@@ -217,5 +216,5 @@ export type DeleteBucketParams = {
  * @returns Confirmation of deletion.
  */
 declare const deleteBucket: ({ bucketId }: DeleteBucketParams) => Promise<any>;
-export { createBucket, deleteBucket, getBucket, getFile, getFileDownload, getFilePreview, getFileView, deleteFile, listBuckets, listFiles, updateBucket, updateFile, uploadFile, uploadFileFromPath, };
+export { createBucket, deleteBucket, getBucket, getFile, getFileDownload, getFilePreview, getFileView, deleteFile, listBuckets, listFiles, updateBucket, updateFile, uploadFile, };
 //# sourceMappingURL=storage.d.ts.map

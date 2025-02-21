@@ -113,7 +113,7 @@ export {
   updateBucket,
   updateFile,
   uploadFile,
-  uploadFileFromPath,
+  //uploadFileFromPath,
 } from "../methods-ssr/storage";
 
 export {

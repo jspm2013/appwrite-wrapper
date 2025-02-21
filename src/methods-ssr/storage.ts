@@ -8,8 +8,10 @@ import {
 } from "../enums";
 import fs from "fs";
 import { ID, Models } from "node-appwrite";
+import { InputFile } from "node-appwrite/dist/inputFile.mjs";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
+import { processImage, ImageType } from "../utils.js";
 
 const oneMb: number = 1024 * 1024;
 
@@ -417,6 +419,8 @@ export type UploadFileParams = {
   file: any;
   userId?: string;
   onProgress?: (progress: UploadProgress) => void;
+  outputType?: ImageType;
+  qualityPercentage?: number;
 };
 const uploadFile = async ({
   bucketId,
@@ -424,13 +428,17 @@ const uploadFile = async ({
   file,
   userId,
   onProgress,
+  outputType,
+  qualityPercentage,
 }: UploadFileParams): Promise<ReturnObject<Models.File>> => {
   try {
     const { storage } = await createAdminClient();
+    const fileBuffer = await processImage(file, outputType, qualityPercentage);
+
     const data = await storage.createFile(
       bucketId,
       fileId,
-      file,
+      InputFile.fromBuffer(fileBuffer, file.name),
       userId
         ? [`read("user:${userId}")`, `write("user:${userId}")`]
         : undefined,

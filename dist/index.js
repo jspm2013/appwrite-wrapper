@@ -1,5 +1,5 @@
 import { hostInternal, hostExternal, live, originInternal, originExternal, } from "./host";
-import { apwManager, imgToWebP, temporaryPassword } from "./utils";
+import { apwManager, temporaryPassword } from "./utils";
 export { ID, Query } from "node-appwrite";
 export { 
 // Account functions
@@ -22,4 +22,4 @@ createSessionForUserId, createToken, deletePrefsForUserId, deleteSessionForUserI
 export { 
 // ApwWrapper Config
 envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, schemasPath, signInPath, userCollectionId, verificationPath, } from "./appwriteConfig";
-export { apwManager, temporaryPassword, imgToWebP, hostInternal, hostExternal, live, originInternal, originExternal, };
+export { apwManager, temporaryPassword, hostInternal, hostExternal, live, originInternal, originExternal, };

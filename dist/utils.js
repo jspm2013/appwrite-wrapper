@@ -1,4 +1,5 @@
 import { randomInt } from "crypto";
+import sharp from "sharp";
 /**
  * Converts an ArrayBuffer to a Base64 string.
  * @param buffer - The ArrayBuffer to convert.
@@ -97,40 +98,52 @@ class AppwriteManager {
 // Export a global instance
 export const apwManager = AppwriteManager.getInstance();
 /*
- * Converts an image file to WebP format.
- * @param file - The image file to convert.
- * @returns {Promise<File>} - A promise that resolves to the converted WebP file.
+ * Processes an image file based on the specified output type and quality percentage.
+ * @param fileData - The image file data.
+ * @param outputType - The desired output image type (optional).
+ * @param qualityPercentage - The quality percentage for the output image (optional).
+ * @returns {Promise<Buffer>} - A Promise that resolves to the processed image data.
  */
-export const imgToWebP = async (file, quality = 0.9) => {
-    return new Promise((resolve, reject) => {
-        if (!file.type.startsWith("image/")) {
-            return reject(new Error("Invalid file type"));
+export var ImageType;
+(function (ImageType) {
+    ImageType["JPEG"] = "image/jpeg";
+    ImageType["JPG"] = "image/jpg";
+    ImageType["PNG"] = "image/png";
+    ImageType["WEBP"] = "image/webp";
+    ImageType["AVIF"] = "image/avif";
+    ImageType["GIF"] = "image/gif";
+    ImageType["TIFF"] = "image/tiff";
+})(ImageType || (ImageType = {}));
+export async function processImage(fileData, outputType, qualityPercentage) {
+    try {
+        let type = outputType;
+        if (!type) {
+            // Default to WebP if no outputType is provided
+            type = ImageType.WEBP;
         }
-        const reader = new FileReader();
-        reader.onload = async function (event) {
-            if (!event.target?.result)
-                return reject(new Error("File reading failed"));
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d");
-                if (!ctx)
-                    return reject(new Error("Canvas not supported"));
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0, img.width, img.height);
-                canvas.toBlob((blob) => {
-                    if (!blob)
-                        return reject(new Error("Failed to create WebP blob"));
-                    resolve(new File([blob], file.name.replace(/\.\w+$/, ".webp"), {
-                        type: "image/webp",
-                    }));
-                }, "image/webp", quality // Quality (0-1)
-                );
-            };
-        };
-        reader.onerror = () => reject(new Error("FileReader error"));
-        reader.readAsDataURL(file);
-    });
-};
+        const quality = qualityPercentage !== undefined
+            ? Math.round(Math.max(0, Math.min(1, qualityPercentage)) * 100)
+            : 80;
+        switch (type) {
+            case ImageType.JPEG:
+            case ImageType.JPG:
+                return await sharp(fileData).jpeg({ quality }).toBuffer();
+            case ImageType.PNG:
+                return await sharp(fileData).png({ quality }).toBuffer();
+            case ImageType.WEBP:
+                return await sharp(fileData).webp({ quality }).toBuffer();
+            case ImageType.AVIF:
+                return await sharp(fileData).avif({ quality }).toBuffer();
+            case ImageType.GIF:
+                return await sharp(fileData).gif().toBuffer();
+            case ImageType.TIFF:
+                return await sharp(fileData).tiff({ quality }).toBuffer();
+            default: // Default to WebP
+                return await sharp(fileData).webp({ quality }).toBuffer();
+        }
+    }
+    catch (error) {
+        console.error("Error processing image:", error);
+        throw error;
+    }
+}

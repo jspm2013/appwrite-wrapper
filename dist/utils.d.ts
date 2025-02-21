@@ -48,6 +48,15 @@ declare class AppwriteManager {
     setAdmin(isAdmin: boolean): void;
 }
 export declare const apwManager: AppwriteManager;
-export declare const imgToWebP: (file: File, quality?: number) => Promise<File>;
+export declare enum ImageType {
+    JPEG = "image/jpeg",
+    JPG = "image/jpg",
+    PNG = "image/png",
+    WEBP = "image/webp",
+    AVIF = "image/avif",
+    GIF = "image/gif",
+    TIFF = "image/tiff"
+}
+export declare function processImage(fileData: Buffer, outputType?: ImageType, qualityPercentage?: number): Promise<Buffer>;
 export {};
 //# sourceMappingURL=utils.d.ts.map

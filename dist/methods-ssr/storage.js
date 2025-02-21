@@ -2,7 +2,6 @@
 import { Compression, } from "../enums";
 //import fs from "fs";
 import { ID } from "node-appwrite";
-import { InputFile } from "node-appwrite/file";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 const oneMb = 1024 * 1024;
@@ -170,7 +169,7 @@ const uploadFile = async ({ bucketId, fileId = ID.unique(), file, userId, onProg
         const { storage } = await createAdminClient();
         //const fileBuffer = await processImage(file, outputType, qualityPercentage);
         //const fileBufferNode = Buffer.from(fileBuffer);
-        const data = await storage.createFile(bucketId, fileId, InputFile.fromBuffer(file, file.name), userId
+        const data = await storage.createFile(bucketId, fileId, file, userId
             ? [`read("user:${userId}")`, `write("user:${userId}")`]
             : undefined, onProgress);
         return { data, error: null };

@@ -436,7 +436,7 @@ const uploadFile = async ({
     const data = await storage.createFile(
       bucketId,
       fileId,
-      InputFile.fromBuffer(file, file.name),
+      file,
       userId
         ? [`read("user:${userId}")`, `write("user:${userId}")`]
         : undefined,

@@ -1,4 +1,3 @@
-"use server";
 import { randomInt } from "crypto";
 /**
  * Converts an ArrayBuffer to a Base64 string.

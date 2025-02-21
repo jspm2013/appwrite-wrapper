@@ -1,5 +1,3 @@
-"use server";
-
 import { randomInt } from "crypto";
 
 /**

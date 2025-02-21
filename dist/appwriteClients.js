@@ -1,20 +1,24 @@
-import { Client, Account, Teams, Functions, Databases, Storage, Messaging, Locale, Users, Avatars, } from "node-appwrite";
-import { apwManager } from "./utils";
-import { cookies } from "next/headers";
-import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createSessionClient = createSessionClient;
+exports.createAdminClient = createAdminClient;
+const node_appwrite_1 = require("node-appwrite");
+const utils_1 = require("./utils");
+const headers_1 = require("next/headers");
+const appwriteConfig_1 = require("./appwriteConfig");
 /**
  * Creates a session client for the current user.
  */
-export async function createSessionClient(params = {}) {
+async function createSessionClient(params = {}) {
     const { selfSigned = false } = params;
-    const locale = apwManager.getLocale();
-    const client = new Client()
-        .setEndpoint(endpoint)
-        .setProject(projectId)
+    const locale = utils_1.apwManager.getLocale();
+    const client = new node_appwrite_1.Client()
+        .setEndpoint(appwriteConfig_1.endpoint)
+        .setProject(appwriteConfig_1.projectId)
         .setSelfSigned(selfSigned)
         .setLocale(locale);
-    const cookiesList = await cookies();
-    const session = cookiesList.get(cookieName);
+    const cookiesList = await (0, headers_1.cookies)();
+    const session = cookiesList.get(appwriteConfig_1.cookieName);
     /* if (!session || !session.value) {
       throw new Error(
         "APW-WRAPPER - Error: No session found in cookies while calling createSessionClient()"
@@ -23,73 +27,73 @@ export async function createSessionClient(params = {}) {
     client.setSession(session.value);
     return {
         get account() {
-            return new Account(client);
+            return new node_appwrite_1.Account(client);
         },
         get teams() {
-            return new Teams(client);
+            return new node_appwrite_1.Teams(client);
         },
         get databases() {
-            return new Databases(client);
+            return new node_appwrite_1.Databases(client);
         },
         get storage() {
-            return new Storage(client);
+            return new node_appwrite_1.Storage(client);
         },
         get functions() {
-            return new Functions(client);
+            return new node_appwrite_1.Functions(client);
         },
         get messaging() {
-            return new Messaging(client);
+            return new node_appwrite_1.Messaging(client);
         },
         get locale() {
-            return new Locale(client);
+            return new node_appwrite_1.Locale(client);
         },
         get avatars() {
-            return new Avatars(client);
+            return new node_appwrite_1.Avatars(client);
         },
         get users() {
-            return new Users(client);
+            return new node_appwrite_1.Users(client);
         },
     };
 }
 /**
  * Creates an admin client with elevated privileges.
  */
-export async function createAdminClient(params = {}) {
+async function createAdminClient(params = {}) {
     const { selfSigned = false } = params;
-    const locale = apwManager.getLocale();
-    const client = new Client()
-        .setEndpoint(endpoint)
-        .setProject(projectId)
+    const locale = utils_1.apwManager.getLocale();
+    const client = new node_appwrite_1.Client()
+        .setEndpoint(appwriteConfig_1.endpoint)
+        .setProject(appwriteConfig_1.projectId)
         .setSelfSigned(selfSigned)
         .setLocale(locale)
-        .setKey(apiKeySsr);
+        .setKey(appwriteConfig_1.apiKeySsr);
     return {
         get account() {
-            return new Account(client);
+            return new node_appwrite_1.Account(client);
         },
         get teams() {
-            return new Teams(client);
+            return new node_appwrite_1.Teams(client);
         },
         get databases() {
-            return new Databases(client);
+            return new node_appwrite_1.Databases(client);
         },
         get storage() {
-            return new Storage(client);
+            return new node_appwrite_1.Storage(client);
         },
         get functions() {
-            return new Functions(client);
+            return new node_appwrite_1.Functions(client);
         },
         get messaging() {
-            return new Messaging(client);
+            return new node_appwrite_1.Messaging(client);
         },
         get locale() {
-            return new Locale(client);
+            return new node_appwrite_1.Locale(client);
         },
         get avatars() {
-            return new Avatars(client);
+            return new node_appwrite_1.Avatars(client);
         },
         get users() {
-            return new Users(client);
+            return new node_appwrite_1.Users(client);
         },
     };
 }

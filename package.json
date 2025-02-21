@@ -1,6 +1,6 @@
 {
   "name": "appwrite-server-wrapper",
-  "version": "1.6.11",
+  "version": "1.6.12",
   "description": "Wrapper library to handle Appwrite methods including server handling using SSR with NextJS v15 (useActionState, useAction,...)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -38,8 +38,8 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "node-appwrite": "^14.1.0",
-    "sharp": "^0.33.5"
+    "canvas": "^3.1.0",
+    "node-appwrite": "^14.1.0"
   },
   "engines": {
     "node": ">=18.0.0"

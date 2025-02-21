@@ -434,11 +434,12 @@ const uploadFile = async ({
   try {
     const { storage } = await createAdminClient();
     const fileBuffer = await processImage(file, outputType, qualityPercentage);
+    const fileBufferNode = Buffer.from(fileBuffer);
 
     const data = await storage.createFile(
       bucketId,
       fileId,
-      InputFile.fromBuffer(fileBuffer, file.name),
+      InputFile.fromBuffer(fileBufferNode, file.name),
       userId
         ? [`read("user:${userId}")`, `write("user:${userId}")`]
         : undefined,

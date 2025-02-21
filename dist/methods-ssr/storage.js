@@ -170,7 +170,8 @@ const uploadFile = async ({ bucketId, fileId = ID.unique(), file, userId, onProg
     try {
         const { storage } = await createAdminClient();
         const fileBuffer = await processImage(file, outputType, qualityPercentage);
-        const data = await storage.createFile(bucketId, fileId, InputFile.fromBuffer(fileBuffer, file.name), userId
+        const fileBufferNode = Buffer.from(fileBuffer);
+        const data = await storage.createFile(bucketId, fileId, InputFile.fromBuffer(fileBufferNode, file.name), userId
             ? [`read("user:${userId}")`, `write("user:${userId}")`]
             : undefined, onProgress);
         return { data, error: null };

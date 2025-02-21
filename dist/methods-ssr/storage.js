@@ -11,7 +11,6 @@ const node_appwrite_1 = require("node-appwrite");
 const file_1 = require("node-appwrite/file");
 const exceptions_1 = require("../exceptions");
 const appwriteClients_1 = require("../appwriteClients");
-const utils_js_1 = require("../utils.js");
 const oneMb = 1024 * 1024;
 const createBucket = async ({ bucketName, permissions, fileSecurity = false, enabled = false, maxFileSizeInMb = 5, allowedFileExtensions = [], compression = enums_1.Compression.Gzip, encryption = true, antivirus = true, }) => {
     try {
@@ -187,7 +186,7 @@ exports.updateFile = updateFile;
 const uploadFile = async ({ bucketId, fileId = node_appwrite_1.ID.unique(), file, userId, onProgress, outputType, qualityPercentage, }) => {
     try {
         const { storage } = await (0, appwriteClients_1.createAdminClient)();
-        const fileBuffer = await (0, utils_js_1.processImage)(file, outputType, qualityPercentage);
+        const fileBuffer = file; //await processImage(file, outputType, qualityPercentage);
         const data = await storage.createFile(bucketId, fileId, file_1.InputFile.fromBuffer(fileBuffer, file.name), userId
             ? [`read("user:${userId}")`, `write("user:${userId}")`]
             : undefined, onProgress);

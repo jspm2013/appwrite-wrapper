@@ -1,5 +1,5 @@
 import { randomInt } from "crypto";
-import sharp from "sharp";
+//import sharp from "sharp";
 
 /**
  * Converts an ArrayBuffer to a Base64 string.
@@ -131,6 +131,7 @@ export enum ImageType {
   GIF = "image/gif",
   TIFF = "image/tiff",
 }
+/*
 export async function processImage(
   fileData: Buffer,
   outputType?: ImageType,
@@ -171,3 +172,4 @@ export async function processImage(
     throw error;
   }
 }
+*/

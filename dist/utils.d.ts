@@ -57,6 +57,5 @@ export declare enum ImageType {
     GIF = "image/gif",
     TIFF = "image/tiff"
 }
-export declare function processImage(fileData: Buffer, outputType?: ImageType, qualityPercentage?: number): Promise<Buffer>;
 export {};
 //# sourceMappingURL=utils.d.ts.map

@@ -1,13 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImageType = exports.apwManager = exports.isEmptyKeyValuePair = exports.isEmptyObject = exports.isValidJsonObject = exports.isValidJsonString = exports.arrayBufferToBase64 = void 0;
 exports.temporaryPassword = temporaryPassword;
-exports.processImage = processImage;
 const crypto_1 = require("crypto");
-const sharp_1 = __importDefault(require("sharp"));
+//import sharp from "sharp";
 /**
  * Converts an ArrayBuffer to a Base64 string.
  * @param buffer - The ArrayBuffer to convert.
@@ -127,36 +123,45 @@ var ImageType;
     ImageType["GIF"] = "image/gif";
     ImageType["TIFF"] = "image/tiff";
 })(ImageType || (exports.ImageType = ImageType = {}));
-async function processImage(fileData, outputType, qualityPercentage) {
-    try {
-        let type = outputType;
-        if (!type) {
-            // Default to WebP if no outputType is provided
-            type = ImageType.WEBP;
-        }
-        const quality = qualityPercentage !== undefined
-            ? Math.round(Math.max(0, Math.min(1, qualityPercentage)) * 100)
-            : 80;
-        switch (type) {
-            case ImageType.JPEG:
-            case ImageType.JPG:
-                return await (0, sharp_1.default)(fileData).jpeg({ quality }).toBuffer();
-            case ImageType.PNG:
-                return await (0, sharp_1.default)(fileData).png({ quality }).toBuffer();
-            case ImageType.WEBP:
-                return await (0, sharp_1.default)(fileData).webp({ quality }).toBuffer();
-            case ImageType.AVIF:
-                return await (0, sharp_1.default)(fileData).avif({ quality }).toBuffer();
-            case ImageType.GIF:
-                return await (0, sharp_1.default)(fileData).gif().toBuffer();
-            case ImageType.TIFF:
-                return await (0, sharp_1.default)(fileData).tiff({ quality }).toBuffer();
-            default: // Default to WebP
-                return await (0, sharp_1.default)(fileData).webp({ quality }).toBuffer();
-        }
+/*
+export async function processImage(
+  fileData: Buffer,
+  outputType?: ImageType,
+  qualityPercentage?: number
+): Promise<Buffer> {
+  try {
+    let type = outputType;
+
+    if (!type) {
+      // Default to WebP if no outputType is provided
+      type = ImageType.WEBP;
     }
-    catch (error) {
-        console.error("Error processing image:", error);
-        throw error;
+
+    const quality =
+      qualityPercentage !== undefined
+        ? Math.round(Math.max(0, Math.min(1, qualityPercentage)) * 100)
+        : 80;
+
+    switch (type) {
+      case ImageType.JPEG:
+      case ImageType.JPG:
+        return await sharp(fileData).jpeg({ quality }).toBuffer();
+      case ImageType.PNG:
+        return await sharp(fileData).png({ quality }).toBuffer();
+      case ImageType.WEBP:
+        return await sharp(fileData).webp({ quality }).toBuffer();
+      case ImageType.AVIF:
+        return await sharp(fileData).avif({ quality }).toBuffer();
+      case ImageType.GIF:
+        return await sharp(fileData).gif().toBuffer();
+      case ImageType.TIFF:
+        return await sharp(fileData).tiff({ quality }).toBuffer();
+      default: // Default to WebP
+        return await sharp(fileData).webp({ quality }).toBuffer();
     }
+  } catch (error) {
+    console.error("Error processing image:", error);
+    throw error;
+  }
 }
+*/

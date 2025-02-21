@@ -1,7 +1,6 @@
 "use server";
 
 import { randomInt } from "crypto";
-import sharp from "sharp";
 
 /**
  * Converts an ArrayBuffer to a Base64 string.
@@ -116,53 +115,3 @@ class AppwriteManager {
 }
 // Export a global instance
 export const apwManager = AppwriteManager.getInstance();
-
-/*
- * Processes an image file based on the specified output type and quality percentage.
- * @param fileData - The image file data.
- * @param outputType - The desired output image type (optional).
- * @param qualityPercentage - The quality percentage for the output image (optional).
- * @returns {Promise<Buffer>} - A Promise that resolves to the processed image data.
- */
-export enum ImageType {
-  JPEG = "image/jpeg",
-  JPG = "image/jpg",
-  PNG = "image/png",
-  WEBP = "image/webp",
-  AVIF = "image/avif",
-  GIF = "image/gif",
-  TIFF = "image/tiff",
-}
-
-export async function processImage(
-  fileData: ArrayBuffer,
-  outputType: ImageType = ImageType.WEBP,
-  qualityPercentage: number = 0.8
-): Promise<ArrayBuffer> {
-  try {
-    const quality = Math.round(
-      Math.max(0, Math.min(1, qualityPercentage)) * 100
-    );
-
-    const blob = new Blob([fileData], { type: "image/png" });
-
-    const bitmap = await createImageBitmap(blob);
-
-    const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
-    const ctx = canvas.getContext("2d");
-
-    if (!ctx) throw new Error("Canvas ist nicht unterstützt");
-
-    ctx.drawImage(bitmap, 0, 0);
-
-    const blobOut = await canvas.convertToBlob({
-      type: outputType,
-      quality: quality / 100,
-    });
-
-    return await blobOut.arrayBuffer();
-  } catch (error) {
-    console.error("Fehler beim Bildverarbeiten:", error);
-    throw error;
-  }
-}

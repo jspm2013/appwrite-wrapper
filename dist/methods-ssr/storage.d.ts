@@ -1,6 +1,5 @@
 import { Compression, ImageFormat, ImageGravity, UploadProgress } from "../enums";
 import { Models } from "node-appwrite";
-import { ImageType } from "../utils";
 interface ErrorObject {
     appwrite: boolean;
     header: string;
@@ -149,10 +148,8 @@ export type UploadFileParams = {
     file: any;
     userId?: string;
     onProgress?: (progress: UploadProgress) => void;
-    outputType?: ImageType;
-    qualityPercentage?: number;
 };
-declare const uploadFile: ({ bucketId, fileId, file, userId, onProgress, outputType, qualityPercentage, }: UploadFileParams) => Promise<ReturnObject<Models.File>>;
+declare const uploadFile: ({ bucketId, fileId, file, userId, onProgress, }: UploadFileParams) => Promise<ReturnObject<Models.File>>;
 /**
  * Uploads a file from a local path.
  */

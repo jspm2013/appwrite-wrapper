@@ -48,15 +48,5 @@ declare class AppwriteManager {
     setAdmin(isAdmin: boolean): void;
 }
 export declare const apwManager: AppwriteManager;
-export declare enum ImageType {
-    JPEG = "image/jpeg",
-    JPG = "image/jpg",
-    PNG = "image/png",
-    WEBP = "image/webp",
-    AVIF = "image/avif",
-    GIF = "image/gif",
-    TIFF = "image/tiff"
-}
-export declare function processImage(fileData: ArrayBuffer, outputType?: ImageType, qualityPercentage?: number): Promise<ArrayBuffer>;
 export {};
 //# sourceMappingURL=utils.d.ts.map

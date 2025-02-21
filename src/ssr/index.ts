@@ -5,7 +5,7 @@ import {
   originInternal,
   originExternal,
 } from "../host";
-import { apwManager, temporaryPassword, ImageType } from "../utils";
+import { apwManager, temporaryPassword } from "../utils";
 export { Models, ID, Query } from "node-appwrite";
 
 export {
@@ -185,7 +185,6 @@ export {
 export {
   apwManager,
   temporaryPassword,
-  ImageType,
   hostInternal,
   hostExternal,
   live,

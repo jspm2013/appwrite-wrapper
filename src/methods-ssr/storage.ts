@@ -11,7 +11,6 @@ import { ID, Models } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
-import { ImageType, processImage } from "../utils";
 
 const oneMb: number = 1024 * 1024;
 
@@ -419,8 +418,8 @@ export type UploadFileParams = {
   file: any;
   userId?: string;
   onProgress?: (progress: UploadProgress) => void;
-  outputType?: ImageType;
-  qualityPercentage?: number;
+  //outputType?: ImageType;
+  //qualityPercentage?: number;
 };
 const uploadFile = async ({
   bucketId,
@@ -428,18 +427,16 @@ const uploadFile = async ({
   file,
   userId,
   onProgress,
-  outputType,
-  qualityPercentage,
 }: UploadFileParams): Promise<ReturnObject<Models.File>> => {
   try {
     const { storage } = await createAdminClient();
-    const fileBuffer = await processImage(file, outputType, qualityPercentage);
-    const fileBufferNode = Buffer.from(fileBuffer);
+    //const fileBuffer = await processImage(file, outputType, qualityPercentage);
+    //const fileBufferNode = Buffer.from(fileBuffer);
 
     const data = await storage.createFile(
       bucketId,
       fileId,
-      InputFile.fromBuffer(fileBufferNode, file.name),
+      InputFile.fromBuffer(file, file.name),
       userId
         ? [`read("user:${userId}")`, `write("user:${userId}")`]
         : undefined,

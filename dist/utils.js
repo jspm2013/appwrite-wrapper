@@ -96,3 +96,39 @@ class AppwriteManager {
 }
 // Export a global instance
 export const apwManager = AppwriteManager.getInstance();
+/*
+ * WebP image conversion
+ */
+export const imgToWebP = async (file, quality = 0.9) => {
+    return new Promise((resolve, reject) => {
+        if (!file.type.startsWith("image/")) {
+            return reject(new Error("Invalid file type"));
+        }
+        const reader = new FileReader();
+        reader.onload = async function (event) {
+            if (!event.target?.result)
+                return reject(new Error("File reading failed"));
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                if (!ctx)
+                    return reject(new Error("Canvas not supported"));
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0, img.width, img.height);
+                canvas.toBlob((blob) => {
+                    if (!blob)
+                        return reject(new Error("Failed to create WebP blob"));
+                    resolve(new File([blob], file.name.replace(/\.\w+$/, ".webp"), {
+                        type: "image/webp",
+                    }));
+                }, "image/webp", quality // Quality (0-1)
+                );
+            };
+        };
+        reader.onerror = () => reject(new Error("FileReader error"));
+        reader.readAsDataURL(file);
+    });
+};

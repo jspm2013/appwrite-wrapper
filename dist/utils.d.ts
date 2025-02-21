@@ -48,5 +48,6 @@ declare class AppwriteManager {
     setAdmin(isAdmin: boolean): void;
 }
 export declare const apwManager: AppwriteManager;
+export declare const imgToWebP: (file: File, quality?: number) => Promise<File>;
 export {};
 //# sourceMappingURL=utils.d.ts.map

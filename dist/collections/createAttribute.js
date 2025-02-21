@@ -1,6 +1,9 @@
-import { createBooleanAttribute, createDatetimeAttribute, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, } from "../index";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createAttribute = void 0;
+const index_1 = require("../index");
 const attributeHandlers = {
-    string: async (dbId, collId, attr, encrypt = false) => await createStringAttribute({
+    string: async (dbId, collId, attr, encrypt = false) => await (0, index_1.createStringAttribute)({
         dbId,
         collId,
         key: attr.key,
@@ -10,7 +13,7 @@ const attributeHandlers = {
         xarray: attr.array,
         encrypt: encrypt,
     }),
-    integer: async (dbId, collId, attr) => await createIntegerAttribute({
+    integer: async (dbId, collId, attr) => await (0, index_1.createIntegerAttribute)({
         dbId,
         collId,
         key: attr.key,
@@ -20,7 +23,7 @@ const attributeHandlers = {
         xdefault: attr.default,
         xarray: attr.array,
     }),
-    float: async (dbId, collId, attr) => await createFloatAttribute({
+    float: async (dbId, collId, attr) => await (0, index_1.createFloatAttribute)({
         dbId,
         collId,
         key: attr.key,
@@ -30,7 +33,7 @@ const attributeHandlers = {
         xdefault: attr.default,
         xarray: attr.array,
     }),
-    boolean: async (dbId, collId, attr) => await createBooleanAttribute({
+    boolean: async (dbId, collId, attr) => await (0, index_1.createBooleanAttribute)({
         dbId,
         collId,
         key: attr.key,
@@ -38,7 +41,7 @@ const attributeHandlers = {
         xdefault: attr.default,
         xarray: attr.array,
     }),
-    email: async (dbId, collId, attr) => await createEmailAttribute({
+    email: async (dbId, collId, attr) => await (0, index_1.createEmailAttribute)({
         dbId,
         collId,
         key: attr.key,
@@ -46,7 +49,7 @@ const attributeHandlers = {
         xdefault: attr.default,
         xarray: attr.array,
     }),
-    enum: async (dbId, collId, attr) => await createEnumAttribute({
+    enum: async (dbId, collId, attr) => await (0, index_1.createEnumAttribute)({
         dbId,
         collId,
         key: attr.key,
@@ -55,7 +58,7 @@ const attributeHandlers = {
         xdefault: attr.default,
         xarray: attr.array,
     }),
-    url: async (dbId, collId, attr) => await createUrlAttribute({
+    url: async (dbId, collId, attr) => await (0, index_1.createUrlAttribute)({
         dbId,
         collId,
         key: attr.key,
@@ -63,7 +66,7 @@ const attributeHandlers = {
         xdefault: attr.default,
         xarray: attr.array,
     }),
-    ip: async (dbId, collId, attr) => await createIpAttribute({
+    ip: async (dbId, collId, attr) => await (0, index_1.createIpAttribute)({
         dbId,
         collId,
         key: attr.key,
@@ -71,7 +74,7 @@ const attributeHandlers = {
         xdefault: attr.default,
         xarray: attr.array,
     }),
-    datetime: async (dbId, collId, attr) => await createDatetimeAttribute({
+    datetime: async (dbId, collId, attr) => await (0, index_1.createDatetimeAttribute)({
         dbId,
         collId,
         key: attr.key,
@@ -79,7 +82,7 @@ const attributeHandlers = {
         xdefault: attr.default,
         xarray: attr.array,
     }),
-    relationship: async (dbId, collId, attr) => await createRelationshipAttribute({
+    relationship: async (dbId, collId, attr) => await (0, index_1.createRelationshipAttribute)({
         dbId,
         collId,
         relatedCollectionId: attr.relatedCollectionId,
@@ -90,10 +93,11 @@ const attributeHandlers = {
         onDelete: attr.onDelete,
     }),
 };
-export const createAttribute = async (dbId, collId, attr) => {
+const createAttribute = async (dbId, collId, attr) => {
     const handler = attributeHandlers[attr.type];
     if (!handler) {
         throw new Error(`Unsupported attribute type: ${attr.type}`);
     }
     await handler(dbId, collId, attr);
 };
+exports.createAttribute = createAttribute;

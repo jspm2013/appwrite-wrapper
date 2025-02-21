@@ -8,7 +8,7 @@ import {
 } from "../enums";
 import fs from "fs";
 import { ID, Models } from "node-appwrite";
-import { InputFile } from "node-appwrite/dist/inputFile.mjs";
+import { InputFile } from "node-appwrite/file";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 import { processImage, ImageType } from "../utils.js";

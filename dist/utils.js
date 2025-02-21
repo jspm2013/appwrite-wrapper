@@ -1,11 +1,19 @@
-import { randomInt } from "crypto";
-import sharp from "sharp";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ImageType = exports.apwManager = exports.isEmptyKeyValuePair = exports.isEmptyObject = exports.isValidJsonObject = exports.isValidJsonString = exports.arrayBufferToBase64 = void 0;
+exports.temporaryPassword = temporaryPassword;
+exports.processImage = processImage;
+const crypto_1 = require("crypto");
+const sharp_1 = __importDefault(require("sharp"));
 /**
  * Converts an ArrayBuffer to a Base64 string.
  * @param buffer - The ArrayBuffer to convert.
  * @returns {string} - The Base64 encoded string.
  */
-export const arrayBufferToBase64 = (buffer) => {
+const arrayBufferToBase64 = (buffer) => {
     let binary = "";
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;
@@ -14,12 +22,13 @@ export const arrayBufferToBase64 = (buffer) => {
     }
     return btoa(binary); // Converts binary string to Base64
 };
+exports.arrayBufferToBase64 = arrayBufferToBase64;
 /**
  * Validates if a given string is a valid JSON string.
  * @param str - The string to validate.
  * @returns {boolean} - True if the string is a valid JSON string, false otherwise.
  */
-export const isValidJsonString = (str) => {
+const isValidJsonString = (str) => {
     try {
         JSON.parse(str); // Attempt to parse the string
         return true;
@@ -28,39 +37,43 @@ export const isValidJsonString = (str) => {
         return false;
     }
 };
+exports.isValidJsonString = isValidJsonString;
 /**
  * Checks if the given object is a valid JSON object.
  * @param obj - The object to check.
  * @returns {boolean} - True if the object is a valid JSON object, false otherwise.
  */
-export const isValidJsonObject = (obj) => {
+const isValidJsonObject = (obj) => {
     return obj !== null && typeof obj === "object" && !Array.isArray(obj);
 };
+exports.isValidJsonObject = isValidJsonObject;
 /**
  * Checks if the given object is an empty object.
  * @param obj - The object to check.
  * @returns {boolean} - True if the object is empty, false otherwise.
  */
-export const isEmptyObject = (obj) => {
+const isEmptyObject = (obj) => {
     return Object.keys(obj).length === 0 && obj.constructor === Object;
 };
+exports.isEmptyObject = isEmptyObject;
 /**
  * Checks if the given object has only one key-value pair with an empty key and an empty value.
  * @param obj - The object to check.
  * @returns {boolean} - True if the object matches the condition, false otherwise.
  */
-export const isEmptyKeyValuePair = (obj) => {
+const isEmptyKeyValuePair = (obj) => {
     return Object.keys(obj).length === 1 && obj[""] === "";
 };
+exports.isEmptyKeyValuePair = isEmptyKeyValuePair;
 /**
  * Generates a random password of the specified length.
  */
-export function temporaryPassword(length = 12) {
+function temporaryPassword(length = 12) {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const charactersLength = characters.length;
     let password = "";
     for (let i = 0; i < length; i++) {
-        const randomValue = randomInt(0, charactersLength);
+        const randomValue = (0, crypto_1.randomInt)(0, charactersLength);
         password += characters.charAt(randomValue);
     }
     return password;
@@ -96,7 +109,7 @@ class AppwriteManager {
     }
 }
 // Export a global instance
-export const apwManager = AppwriteManager.getInstance();
+exports.apwManager = AppwriteManager.getInstance();
 /*
  * Processes an image file based on the specified output type and quality percentage.
  * @param fileData - The image file data.
@@ -104,7 +117,7 @@ export const apwManager = AppwriteManager.getInstance();
  * @param qualityPercentage - The quality percentage for the output image (optional).
  * @returns {Promise<Buffer>} - A Promise that resolves to the processed image data.
  */
-export var ImageType;
+var ImageType;
 (function (ImageType) {
     ImageType["JPEG"] = "image/jpeg";
     ImageType["JPG"] = "image/jpg";
@@ -113,8 +126,8 @@ export var ImageType;
     ImageType["AVIF"] = "image/avif";
     ImageType["GIF"] = "image/gif";
     ImageType["TIFF"] = "image/tiff";
-})(ImageType || (ImageType = {}));
-export async function processImage(fileData, outputType, qualityPercentage) {
+})(ImageType || (exports.ImageType = ImageType = {}));
+async function processImage(fileData, outputType, qualityPercentage) {
     try {
         let type = outputType;
         if (!type) {
@@ -127,19 +140,19 @@ export async function processImage(fileData, outputType, qualityPercentage) {
         switch (type) {
             case ImageType.JPEG:
             case ImageType.JPG:
-                return await sharp(fileData).jpeg({ quality }).toBuffer();
+                return await (0, sharp_1.default)(fileData).jpeg({ quality }).toBuffer();
             case ImageType.PNG:
-                return await sharp(fileData).png({ quality }).toBuffer();
+                return await (0, sharp_1.default)(fileData).png({ quality }).toBuffer();
             case ImageType.WEBP:
-                return await sharp(fileData).webp({ quality }).toBuffer();
+                return await (0, sharp_1.default)(fileData).webp({ quality }).toBuffer();
             case ImageType.AVIF:
-                return await sharp(fileData).avif({ quality }).toBuffer();
+                return await (0, sharp_1.default)(fileData).avif({ quality }).toBuffer();
             case ImageType.GIF:
-                return await sharp(fileData).gif().toBuffer();
+                return await (0, sharp_1.default)(fileData).gif().toBuffer();
             case ImageType.TIFF:
-                return await sharp(fileData).tiff({ quality }).toBuffer();
+                return await (0, sharp_1.default)(fileData).tiff({ quality }).toBuffer();
             default: // Default to WebP
-                return await sharp(fileData).webp({ quality }).toBuffer();
+                return await (0, sharp_1.default)(fileData).webp({ quality }).toBuffer();
         }
     }
     catch (error) {

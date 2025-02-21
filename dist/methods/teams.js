@@ -1,14 +1,11 @@
 "use server";
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateTeamPreferences = exports.updateTeamName = exports.updateTeamMembershipStatus = exports.updateTeamMembership = exports.listTeams = exports.listTeamMemberships = exports.getTeamPreferences = exports.getTeamMembership = exports.getTeam = exports.deleteTeamMembership = exports.deleteTeam = exports.createTeamMembership = exports.createTeam = void 0;
-const appwriteClients_1 = require("../appwriteClients");
+import { createAdminClient } from "../appwriteClients";
 /**
  * Lists all teams for the current user, optionally filtered by queries or search terms.
  */
 const listTeams = async ({ queries = [], search, }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         const result = await teams.list(queries, search);
         return result;
     }
@@ -17,13 +14,12 @@ const listTeams = async ({ queries = [], search, }) => {
         throw err;
     }
 };
-exports.listTeams = listTeams;
 /**
  * Creates a new team with the specified ID, name, and optional roles.
  */
 const createTeam = async ({ teamId, name, roles = [], }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         const result = await teams.create(teamId, name, roles);
         return result;
     }
@@ -32,13 +28,12 @@ const createTeam = async ({ teamId, name, roles = [], }) => {
         throw err;
     }
 };
-exports.createTeam = createTeam;
 /**
  * Retrieves details of a specific team by its unique ID.
  */
 const getTeam = async ({ teamId, }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         const result = await teams.get(teamId);
         return result;
     }
@@ -47,13 +42,12 @@ const getTeam = async ({ teamId, }) => {
         throw err;
     }
 };
-exports.getTeam = getTeam;
 /**
  * Updates the name of a specific team by its ID.
  */
 const updateTeamName = async ({ teamId, name, }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         const result = await teams.updateName(teamId, name);
         return result;
     }
@@ -62,13 +56,12 @@ const updateTeamName = async ({ teamId, name, }) => {
         throw err;
     }
 };
-exports.updateTeamName = updateTeamName;
 /**
  * Deletes a team using its unique ID.
  */
 const deleteTeam = async ({ teamId }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         await teams.delete(teamId);
     }
     catch (err) {
@@ -76,13 +69,12 @@ const deleteTeam = async ({ teamId }) => {
         throw err;
     }
 };
-exports.deleteTeam = deleteTeam;
 /**
  * Lists all memberships for a specific team, optionally filtered by queries or search terms.
  */
 const listTeamMemberships = async ({ teamId, queries = [], search, }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         const result = await teams.listMemberships(teamId, queries, search);
         return result;
     }
@@ -91,13 +83,12 @@ const listTeamMemberships = async ({ teamId, queries = [], search, }) => {
         throw err;
     }
 };
-exports.listTeamMemberships = listTeamMemberships;
 /**
  * Creates a new membership for a team, optionally inviting a user via email or phone.
  */
 const createTeamMembership = async ({ teamId, roles, email, userId, phone, url, name, }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         const result = await teams.createMembership(teamId, roles, email, userId, phone, url, name);
         return result;
     }
@@ -106,13 +97,12 @@ const createTeamMembership = async ({ teamId, roles, email, userId, phone, url, 
         throw err;
     }
 };
-exports.createTeamMembership = createTeamMembership;
 /**
  * Retrieves details of a specific team membership by its unique ID.
  */
 const getTeamMembership = async ({ teamId, membershipId, }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         const result = await teams.getMembership(teamId, membershipId);
         return result;
     }
@@ -121,13 +111,12 @@ const getTeamMembership = async ({ teamId, membershipId, }) => {
         throw err;
     }
 };
-exports.getTeamMembership = getTeamMembership;
 /**
  * Updates the roles of a specific team membership.
  */
 const updateTeamMembership = async ({ teamId, membershipId, roles, }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         const result = await teams.updateMembership(teamId, membershipId, roles);
         return result;
     }
@@ -136,13 +125,12 @@ const updateTeamMembership = async ({ teamId, membershipId, roles, }) => {
         throw err;
     }
 };
-exports.updateTeamMembership = updateTeamMembership;
 /**
  * Deletes a team membership by its unique ID.
  */
 const deleteTeamMembership = async ({ teamId, membershipId, }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         await teams.deleteMembership(teamId, membershipId);
     }
     catch (err) {
@@ -150,13 +138,12 @@ const deleteTeamMembership = async ({ teamId, membershipId, }) => {
         throw err;
     }
 };
-exports.deleteTeamMembership = deleteTeamMembership;
 /**
  * Updates the status of a specific team membership, allowing the user to accept an invitation.
  */
 const updateTeamMembershipStatus = async ({ teamId, membershipId, userId, secret, }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         const result = await teams.updateMembershipStatus(teamId, membershipId, userId, secret);
         return result;
     }
@@ -165,13 +152,12 @@ const updateTeamMembershipStatus = async ({ teamId, membershipId, userId, secret
         throw err;
     }
 };
-exports.updateTeamMembershipStatus = updateTeamMembershipStatus;
 /**
  * Retrieves the shared preferences for a specific team by its unique ID.
  */
 const getTeamPreferences = async ({ teamId, }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         const result = await teams.getPrefs(teamId);
         return result;
     }
@@ -180,13 +166,12 @@ const getTeamPreferences = async ({ teamId, }) => {
         throw err;
     }
 };
-exports.getTeamPreferences = getTeamPreferences;
 /**
  * Updates the shared preferences of a team, replacing any previous values.
  */
 const updateTeamPreferences = async ({ teamId, prefs, }) => {
     try {
-        const { teams } = await (0, appwriteClients_1.createAdminClient)();
+        const { teams } = await createAdminClient();
         const result = await teams.updatePrefs(teamId, prefs);
         return result;
     }
@@ -195,4 +180,4 @@ const updateTeamPreferences = async ({ teamId, prefs, }) => {
         throw err;
     }
 };
-exports.updateTeamPreferences = updateTeamPreferences;
+export { createTeam, createTeamMembership, deleteTeam, deleteTeamMembership, getTeam, getTeamMembership, getTeamPreferences, listTeamMemberships, listTeams, updateTeamMembership, updateTeamMembershipStatus, updateTeamName, updateTeamPreferences, };

@@ -1,35 +1,31 @@
 "use server";
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePhoneVerification = exports.createPhoneVerification = exports.createMagicURLSession = exports.createAnonymousSession = exports.updateRecovery = exports.createRecovery = exports.updatePassword = exports.updateStatus = exports.updateName = exports.updatePhone = exports.updateEmail = exports.updateVerification = exports.updateSession = exports.updatePrefs = exports.listSessions = exports.getUser = exports.getSession = exports.getPrefs = exports.getAppUser = exports.deleteSessions = exports.deleteSession = exports.deletePrefs = exports.createVerification = exports.createSession = exports.createOAuth2Token = exports.createJWT = exports.createEmailPasswordSession = exports.createAccount = void 0;
-const node_appwrite_1 = require("node-appwrite");
-const enums_1 = require("../enums");
-const typeReader_1 = require("../collections/typeReader");
-const appwriteClients_1 = require("../appwriteClients");
-const utils_1 = require("../utils");
-const appwriteConfig_1 = require("../appwriteConfig");
-const headers_1 = require("next/headers");
-const host_1 = require("../host");
+import { ID, Query } from "node-appwrite";
+import { OAuthProvider } from "../enums";
+import { getType } from "../collections/typeReader";
+import { createSessionClient, createAdminClient } from "../appwriteClients";
+import { isValidJsonObject, isEmptyKeyValuePair } from "../utils";
+import { cookieName, oauthSuccessPath, oauthFailurePath, verificationPath, signInPath, databaseId, userCollectionId, } from "../appwriteConfig";
+import { cookies } from "next/headers";
+import { hostExternal } from "../host";
 /**
  * Creates a new account.
  */
 const createAccount = async ({ email, password, name, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
-        return await account.create(node_appwrite_1.ID.unique(), email, password, name);
+        const { account } = await createSessionClient();
+        return await account.create(ID.unique(), email, password, name);
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/account): Error executing createAccount():", err);
         throw err;
     }
 };
-exports.createAccount = createAccount;
 /**
  * Creates a JWT token.
  */
 const createJWT = async () => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.createJWT();
     }
     catch (err) {
@@ -37,13 +33,12 @@ const createJWT = async () => {
         throw err;
     }
 };
-exports.createJWT = createJWT;
 /**
  * Creates an email verification token.
  */
-const createVerification = async ({ verificationUrl = `${host_1.hostExternal}/${appwriteConfig_1.verificationPath}`, }) => {
+const createVerification = async ({ verificationUrl = `${hostExternal}/${verificationPath}`, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.createVerification(verificationUrl);
     }
     catch (err) {
@@ -51,30 +46,28 @@ const createVerification = async ({ verificationUrl = `${host_1.hostExternal}/${
         throw err;
     }
 };
-exports.createVerification = createVerification;
 /**
  * Deletes a specific session or the current session.
  */
 const deleteSession = async (params = {}) => {
     const { sessionId = "current" } = params;
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         await account.deleteSession(sessionId);
-        return appwriteConfig_1.signInPath;
+        return signInPath;
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/account): Error executing deleteSession():", err);
         throw err;
     }
 };
-exports.deleteSession = deleteSession;
 /**
  * Getting a specific session or the current session.
  */
 const getSession = async (params = {}) => {
     const { sessionId = "current" } = params;
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.getSession(sessionId);
     }
     catch (err) {
@@ -82,14 +75,13 @@ const getSession = async (params = {}) => {
         throw err;
     }
 };
-exports.getSession = getSession;
 /**
  * Updates a specific session or the current session.
  */
 const updateSession = async (params = {}) => {
     const { sessionId = "current" } = params;
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.updateSession(sessionId);
     }
     catch (err) {
@@ -97,13 +89,12 @@ const updateSession = async (params = {}) => {
         throw err;
     }
 };
-exports.updateSession = updateSession;
 /**
  * Lists all sessions for the current user.
  */
 const listSessions = async () => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.listSessions();
     }
     catch (err) {
@@ -111,28 +102,26 @@ const listSessions = async () => {
         throw err;
     }
 };
-exports.listSessions = listSessions;
 /**
  * Deletes all sessions for the current user.
  */
 const deleteSessions = async () => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         await account.deleteSessions();
-        return appwriteConfig_1.signInPath;
+        return signInPath;
     }
     catch (err) {
         console.error("APW-WRAPPER - Error (methods/account): Error executing deleteSessions():", err);
         throw err;
     }
 };
-exports.deleteSessions = deleteSessions;
 /**
  * Retrieves the current user.
  */
 const getUser = async () => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.get();
     }
     catch (err) {
@@ -142,7 +131,6 @@ const getUser = async () => {
         return null;
     }
 };
-exports.getUser = getUser;
 /**
  * Retrieves the currently authenticated and verified user, dynamically typed based on the generated schema.
  *
@@ -150,21 +138,21 @@ exports.getUser = getUser;
  */
 const getAppUser = async () => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
-        const { databases } = await (0, appwriteClients_1.createAdminClient)();
+        const { account } = await createSessionClient();
+        const { databases } = await createAdminClient();
         const user = await account.get();
-        const AppUserType = await (0, typeReader_1.getType)({
-            collName: appwriteConfig_1.userCollectionId,
+        const AppUserType = await getType({
+            collName: userCollectionId,
             typeName: "AppUserType",
         });
         if (!AppUserType) {
             throw new Error("No AppUserType found. Returning null");
         }
         if (user.emailVerification || user.phoneVerification) {
-            const { total, documents } = await databases.listDocuments(appwriteConfig_1.databaseId, appwriteConfig_1.userCollectionId, [
-                node_appwrite_1.Query.and([
-                    node_appwrite_1.Query.equal("user_id", user.$id),
-                    node_appwrite_1.Query.equal("deleted", false),
+            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
+                Query.and([
+                    Query.equal("user_id", user.$id),
+                    Query.equal("deleted", false),
                 ]),
             ]);
             if (total > 0) {
@@ -183,13 +171,12 @@ const getAppUser = async () => {
         return null;
     }
 };
-exports.getAppUser = getAppUser;
 /**
  * Deletes a specific preference key for the current user.
  */
 const deletePrefs = async ({ key, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         const prefs = await account.getPrefs();
         if (Object.prototype.hasOwnProperty.call(prefs, key)) {
             const { [key]: _, ...newPrefs } = prefs;
@@ -203,13 +190,12 @@ const deletePrefs = async ({ key, }) => {
         throw err;
     }
 };
-exports.deletePrefs = deletePrefs;
 /**
  * Retrieves all preferences for the current user.
  */
 const getPrefs = async () => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         const prefs = await account.getPrefs();
         return prefs;
     }
@@ -218,16 +204,15 @@ const getPrefs = async () => {
         throw err;
     }
 };
-exports.getPrefs = getPrefs;
 /**
  * Updates preferences for the current user.
  */
 const updatePrefs = async ({ prefs, }) => {
     try {
-        if ((0, utils_1.isValidJsonObject)(prefs)) {
-            const { account } = await (0, appwriteClients_1.createSessionClient)();
+        if (isValidJsonObject(prefs)) {
+            const { account } = await createSessionClient();
             const oldPrefs = await account.getPrefs();
-            const user = await account.updatePrefs((0, utils_1.isEmptyKeyValuePair)(oldPrefs) ? prefs : { ...oldPrefs, ...prefs });
+            const user = await account.updatePrefs(isEmptyKeyValuePair(oldPrefs) ? prefs : { ...oldPrefs, ...prefs });
             return user.prefs;
         }
         else {
@@ -239,13 +224,12 @@ const updatePrefs = async ({ prefs, }) => {
         throw err;
     }
 };
-exports.updatePrefs = updatePrefs;
 /**
  * Updates the email verification for a specific user.
  */
 const updateVerification = async ({ userId, secret, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.updateVerification(userId, secret);
     }
     catch (err) {
@@ -253,15 +237,14 @@ const updateVerification = async ({ userId, secret, }) => {
         throw err;
     }
 };
-exports.updateVerification = updateVerification;
 /**
  * Creates a session for a user using email and password.
  */
 const createEmailPasswordSession = async ({ email, password, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createAdminClient)();
+        const { account } = await createAdminClient();
         const session = await account.createEmailPasswordSession(email, password);
-        (await (0, headers_1.cookies)()).set(appwriteConfig_1.cookieName, session.secret, {
+        (await cookies()).set(cookieName, session.secret, {
             path: "/",
             httpOnly: true,
             sameSite: "strict",
@@ -274,14 +257,13 @@ const createEmailPasswordSession = async ({ email, password, }) => {
         throw err;
     }
 };
-exports.createEmailPasswordSession = createEmailPasswordSession;
 /**
  * Creates an OAuth2 token for the user.
  */
-const createOAuth2Token = async ({ provider, successPath = appwriteConfig_1.oauthSuccessPath, failurePath = appwriteConfig_1.oauthFailurePath, }) => {
+const createOAuth2Token = async ({ provider, successPath = oauthSuccessPath, failurePath = oauthFailurePath, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createAdminClient)();
-        const url = await account.createOAuth2Token(enums_1.OAuthProvider[provider], `${host_1.hostExternal}/${successPath}`, `${host_1.hostExternal}/${failurePath}`);
+        const { account } = await createAdminClient();
+        const url = await account.createOAuth2Token(OAuthProvider[provider], `${hostExternal}/${successPath}`, `${hostExternal}/${failurePath}`);
         return url;
     }
     catch (err) {
@@ -289,15 +271,14 @@ const createOAuth2Token = async ({ provider, successPath = appwriteConfig_1.oaut
         throw err;
     }
 };
-exports.createOAuth2Token = createOAuth2Token;
 /**
  * Creates a session for a user by their ID and secret.
  */
 const createSession = async ({ userId, secret, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createAdminClient)();
+        const { account } = await createAdminClient();
         const session = await account.createSession(userId, secret);
-        (await (0, headers_1.cookies)()).set(appwriteConfig_1.cookieName, session.secret, {
+        (await cookies()).set(cookieName, session.secret, {
             path: "/",
             httpOnly: true,
             sameSite: "strict",
@@ -310,13 +291,12 @@ const createSession = async ({ userId, secret, }) => {
         throw err;
     }
 };
-exports.createSession = createSession;
 /**
  * Updates the email for the current user.
  */
 const updateEmail = async ({ email, password, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.updateEmail(email, password);
     }
     catch (err) {
@@ -324,13 +304,12 @@ const updateEmail = async ({ email, password, }) => {
         throw err;
     }
 };
-exports.updateEmail = updateEmail;
 /**
  * Updates the phone number for the current user.
  */
 const updatePhone = async ({ phone, password, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.updatePhone(phone, password);
     }
     catch (err) {
@@ -338,13 +317,12 @@ const updatePhone = async ({ phone, password, }) => {
         throw err;
     }
 };
-exports.updatePhone = updatePhone;
 /**
  * Updates the name for the current user.
  */
 const updateName = async ({ name }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.updateName(name);
     }
     catch (err) {
@@ -352,13 +330,12 @@ const updateName = async ({ name }) => {
         throw err;
     }
 };
-exports.updateName = updateName;
 /**
  * Updates the account status (block/unblock user).
  */
 const updateStatus = async () => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.updateStatus();
     }
     catch (err) {
@@ -366,13 +343,12 @@ const updateStatus = async () => {
         throw err;
     }
 };
-exports.updateStatus = updateStatus;
 /**
  * Updates the password for the current user.
  */
 const updatePassword = async ({ password, oldPassword, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.updatePassword(password, oldPassword);
     }
     catch (err) {
@@ -380,13 +356,12 @@ const updatePassword = async ({ password, oldPassword, }) => {
         throw err;
     }
 };
-exports.updatePassword = updatePassword;
 /**
  * Creates a password recovery token.
  */
 const createRecovery = async ({ email, url, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.createRecovery(email, url);
     }
     catch (err) {
@@ -394,13 +369,12 @@ const createRecovery = async ({ email, url, }) => {
         throw err;
     }
 };
-exports.createRecovery = createRecovery;
 /**
  * Updates the password using a recovery token.
  */
 const updateRecovery = async ({ userId, secret, password, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.updateRecovery(userId, secret, password);
     }
     catch (err) {
@@ -408,13 +382,12 @@ const updateRecovery = async ({ userId, secret, password, }) => {
         throw err;
     }
 };
-exports.updateRecovery = updateRecovery;
 /**
  * Creates an anonymous session for the user.
  */
 const createAnonymousSession = async () => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.createAnonymousSession();
     }
     catch (err) {
@@ -422,13 +395,12 @@ const createAnonymousSession = async () => {
         throw err;
     }
 };
-exports.createAnonymousSession = createAnonymousSession;
 /**
  * Creates a Magic URL session for the user.
  */
 const createMagicURLSession = async ({ userId, email, url, phrase, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.createMagicURLToken(userId, email, url, phrase);
     }
     catch (err) {
@@ -436,13 +408,12 @@ const createMagicURLSession = async ({ userId, email, url, phrase, }) => {
         throw err;
     }
 };
-exports.createMagicURLSession = createMagicURLSession;
 /**
  * Creates a phone verification token.
  */
 const createPhoneVerification = async () => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.createPhoneVerification();
     }
     catch (err) {
@@ -450,13 +421,12 @@ const createPhoneVerification = async () => {
         throw err;
     }
 };
-exports.createPhoneVerification = createPhoneVerification;
 /**
  * Confirms phone verification.
  */
 const updatePhoneVerification = async ({ userId, secret, }) => {
     try {
-        const { account } = await (0, appwriteClients_1.createSessionClient)();
+        const { account } = await createSessionClient();
         return await account.updatePhoneVerification(userId, secret);
     }
     catch (err) {
@@ -464,4 +434,7 @@ const updatePhoneVerification = async ({ userId, secret, }) => {
         throw err;
     }
 };
-exports.updatePhoneVerification = updatePhoneVerification;
+/**
+ * Export all functions
+ */
+export { createAccount, createEmailPasswordSession, createJWT, createOAuth2Token, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getPrefs, getSession, getUser, listSessions, updatePrefs, updateSession, updateVerification, updateEmail, updatePhone, updateName, updateStatus, updatePassword, createRecovery, updateRecovery, createAnonymousSession, createMagicURLSession, createPhoneVerification, updatePhoneVerification, };

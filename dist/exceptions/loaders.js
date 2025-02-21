@@ -1,16 +1,7 @@
 "use server";
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.messagesLoader = messagesLoader;
-exports.configLoader = configLoader;
-exports.isAllowedLocale = isAllowedLocale;
-exports.getDefaultLocale = getDefaultLocale;
-const promises_1 = __importDefault(require("fs/promises"));
-const path_1 = __importDefault(require("path"));
-const appwriteConfig_1 = require("../appwriteConfig");
+import fs from "fs/promises";
+import path from "path";
+import { i18nPath } from "../appwriteConfig";
 /**
  * Asynchronously loads localized messages for the specified locale.
  *
@@ -18,10 +9,10 @@ const appwriteConfig_1 = require("../appwriteConfig");
  * @returns {Promise<LocalizedMessages>} - A promise that resolves to the parsed messages.
  * @throws {Error} - If the messages file does not exist or cannot be read.
  */
-async function messagesLoader(locale) {
-    const msgsPath = path_1.default.join(process.cwd(), appwriteConfig_1.i18nPath, `${locale}.json`);
+export async function messagesLoader(locale) {
+    const msgsPath = path.join(process.cwd(), i18nPath, `${locale}.json`);
     try {
-        const messagesContent = await promises_1.default.readFile(msgsPath, "utf-8");
+        const messagesContent = await fs.readFile(msgsPath, "utf-8");
         return JSON.parse(messagesContent);
     }
     catch {
@@ -34,10 +25,10 @@ async function messagesLoader(locale) {
  * @returns {Promise<Config>} A promise that resolves to the parsed configuration object.
  * @throws {Error} If the configuration file cannot be read or parsed.
  */
-async function configLoader() {
-    const configPath = path_1.default.join(process.cwd(), appwriteConfig_1.i18nPath, "config.json");
+export async function configLoader() {
+    const configPath = path.join(process.cwd(), i18nPath, "config.json");
     try {
-        const config = await promises_1.default.readFile(configPath, "utf-8");
+        const config = await fs.readFile(configPath, "utf-8");
         return JSON.parse(config);
     }
     catch {
@@ -50,7 +41,7 @@ async function configLoader() {
  * @param {string} locale - The locale to be checked.
  * @returns {Promise<boolean>} A promise that resolves to true if the locale is allowed, otherwise false.
  */
-async function isAllowedLocale(locale) {
+export async function isAllowedLocale(locale) {
     try {
         const config = await configLoader();
         return config.allowedLocales.includes(locale);
@@ -66,7 +57,7 @@ async function isAllowedLocale(locale) {
  * @returns {Promise<string>} A promise that resolves to the default locale.
  * @throws {Error} If the configuration file cannot be read or does not contain a defaultLocale.
  */
-async function getDefaultLocale() {
+export async function getDefaultLocale() {
     try {
         const config = await configLoader();
         return config.defaultLocale;

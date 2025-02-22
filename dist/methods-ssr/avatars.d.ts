@@ -24,7 +24,7 @@ export type GetBrowserIconParams = {
 /**
  * Retrieves a browser icon image.
  */
-declare const getBrowserIcon: ({ code, width, height, quality, }: GetBrowserIconParams) => Promise<ReturnObject<string>>;
+declare const getBrowserIcon: ({ code, width, height, quality, }: GetBrowserIconParams) => Promise<ReturnObject<ArrayBuffer>>;
 /**
  * Parameters for retrieving a website favicon.
  */
@@ -34,7 +34,7 @@ export type GetFaviconParams = {
 /**
  * Retrieves a website favicon image.
  */
-declare const getFavicon: ({ url, }: GetFaviconParams) => Promise<ReturnObject<string>>;
+declare const getFavicon: ({ url, }: GetFaviconParams) => Promise<ReturnObject<ArrayBuffer>>;
 /**
  * Parameters for retrieving a country flag image, including optional width, height, and quality settings.
  */
@@ -47,7 +47,7 @@ export type GetFlagParams = {
 /**
  * Retrieves a country flag image.
  */
-declare const getFlag: ({ code, width, height, quality, }: GetFlagParams) => Promise<ReturnObject<string>>;
+declare const getFlag: ({ code, width, height, quality, }: GetFlagParams) => Promise<ReturnObject<ArrayBuffer>>;
 /**
  * Parameters for retrieving a credit card icon, including optional width, height, and quality settings.
  */
@@ -60,7 +60,7 @@ export type GetCreditCardIconParams = {
 /**
  * Retrieves a credit card icon image.
  */
-declare const getCreditCardIcon: ({ code, width, height, quality, }: GetCreditCardIconParams) => Promise<ReturnObject<string>>;
+declare const getCreditCardIcon: ({ code, width, height, quality, }: GetCreditCardIconParams) => Promise<ReturnObject<ArrayBuffer>>;
 /**
  * Parameters for retrieving user initials as an avatar image, including optional width, height, and background color settings.
  */
@@ -73,7 +73,7 @@ export type GetInitialsParams = {
 /**
  * Retrieves user initials as an avatar image.
  */
-declare const getInitials: ({ name, width, height, background, }: GetInitialsParams) => Promise<ReturnObject<string>>;
+declare const getInitials: ({ name, width, height, background, }: GetInitialsParams) => Promise<ReturnObject<ArrayBuffer>>;
 /**
  * Parameters for retrieving an image from a URL, with optional width and height settings.
  */
@@ -85,7 +85,7 @@ export type GetImageParams = {
 /**
  * Retrieves an image from a URL.
  */
-declare const getImage: ({ url, width, height, }: GetImageParams) => Promise<ReturnObject<string>>;
+declare const getImage: ({ url, width, height, }: GetImageParams) => Promise<ReturnObject<ArrayBuffer>>;
 /**
  * Parameters for retrieving a QR code as an image, with optional size, margin, and download settings.
  */
@@ -98,6 +98,6 @@ export type GetQrParams = {
 /**
  * Retrieves a QR code as an image.
  */
-declare const getQr: ({ text, size, margin, download, }: GetQrParams) => Promise<ReturnObject<string>>;
+declare const getQr: ({ text, size, margin, download, }: GetQrParams) => Promise<ReturnObject<ArrayBuffer>>;
 export { getBrowserIcon, getCreditCardIcon, getFavicon, getFlag, getImage, getInitials, getQr, };
 //# sourceMappingURL=avatars.d.ts.map

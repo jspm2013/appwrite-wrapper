@@ -35,11 +35,11 @@ const getBrowserIcon = async ({
   width = 100,
   height = 100,
   quality = 100,
-}: GetBrowserIconParams): Promise<ReturnObject<string>> => {
+}: GetBrowserIconParams): Promise<ReturnObject<ArrayBuffer>> => {
   try {
     const { avatars } = await createAdminClient();
-    const buffer = await avatars.getBrowser(code, width, height, quality);
-    return { data: Buffer.from(buffer).toString("base64"), error: null };
+    const data = await avatars.getBrowser(code, width, height, quality);
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -59,11 +59,11 @@ export type GetFaviconParams = {
  */
 const getFavicon = async ({
   url,
-}: GetFaviconParams): Promise<ReturnObject<string>> => {
+}: GetFaviconParams): Promise<ReturnObject<ArrayBuffer>> => {
   try {
     const { avatars } = await createAdminClient();
-    const buffer = await avatars.getFavicon(url);
-    return { data: Buffer.from(buffer).toString("base64"), error: null };
+    const data = await avatars.getFavicon(url);
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -89,11 +89,11 @@ const getFlag = async ({
   width = 100,
   height = 100,
   quality = 100,
-}: GetFlagParams): Promise<ReturnObject<string>> => {
+}: GetFlagParams): Promise<ReturnObject<ArrayBuffer>> => {
   try {
     const { avatars } = await createAdminClient();
-    const buffer = await avatars.getFlag(code, width, height, quality);
-    return { data: Buffer.from(buffer).toString("base64"), error: null };
+    const data = await avatars.getFlag(code, width, height, quality);
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -120,11 +120,11 @@ const getCreditCardIcon = async ({
   width = 100,
   height = 100,
   quality = 100,
-}: GetCreditCardIconParams): Promise<ReturnObject<string>> => {
+}: GetCreditCardIconParams): Promise<ReturnObject<ArrayBuffer>> => {
   try {
     const { avatars } = await createAdminClient();
-    const buffer = await avatars.getCreditCard(code, width, height, quality);
-    return { data: Buffer.from(buffer).toString("base64"), error: null };
+    const data = await avatars.getCreditCard(code, width, height, quality);
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -150,11 +150,11 @@ const getInitials = async ({
   width = 100,
   height = 100,
   background,
-}: GetInitialsParams): Promise<ReturnObject<string>> => {
+}: GetInitialsParams): Promise<ReturnObject<ArrayBuffer>> => {
   try {
     const { avatars } = await createAdminClient();
-    const buffer = await avatars.getInitials(name, width, height, background);
-    return { data: Buffer.from(buffer).toString("base64"), error: null };
+    const data = await avatars.getInitials(name, width, height, background);
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -178,11 +178,11 @@ const getImage = async ({
   url,
   width = 400,
   height = 400,
-}: GetImageParams): Promise<ReturnObject<string>> => {
+}: GetImageParams): Promise<ReturnObject<ArrayBuffer>> => {
   try {
     const { avatars } = await createAdminClient();
-    const buffer = await avatars.getImage(url, width, height);
-    return { data: Buffer.from(buffer).toString("base64"), error: null };
+    const data = await avatars.getImage(url, width, height);
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -208,11 +208,11 @@ const getQr = async ({
   size = 400,
   margin = 1,
   download = false,
-}: GetQrParams): Promise<ReturnObject<string>> => {
+}: GetQrParams): Promise<ReturnObject<ArrayBuffer>> => {
   try {
     const { avatars } = await createAdminClient();
-    const buffer = await avatars.getQR(text, size, margin, download);
-    return { data: Buffer.from(buffer).toString("base64"), error: null };
+    const data = await avatars.getQR(text, size, margin, download);
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,

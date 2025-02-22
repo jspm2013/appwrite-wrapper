@@ -18,7 +18,12 @@ import {
 } from "../index";
 
 const attributeHandlers: Record<string, AttributeHandler> = {
-  string: async (dbId, collId, attr: Models.AttributeString, encrypt = false) =>
+  string: async (
+    dbId,
+    collId,
+    attr: Models.AttributeString,
+    encrypt = false
+  ) => {
     await createStringAttribute({
       dbId,
       collId,
@@ -27,9 +32,11 @@ const attributeHandlers: Record<string, AttributeHandler> = {
       required: attr.required,
       xdefault: attr.default,
       xarray: attr.array,
-      encrypt: encrypt,
-    }),
-  integer: async (dbId, collId, attr: Models.AttributeInteger) =>
+      encrypt,
+    });
+  },
+
+  integer: async (dbId, collId, attr: Models.AttributeInteger) => {
     await createIntegerAttribute({
       dbId,
       collId,
@@ -39,8 +46,10 @@ const attributeHandlers: Record<string, AttributeHandler> = {
       max: attr.max,
       xdefault: attr.default,
       xarray: attr.array,
-    }),
-  float: async (dbId, collId, attr: Models.AttributeFloat) =>
+    });
+  },
+
+  float: async (dbId, collId, attr: Models.AttributeFloat) => {
     await createFloatAttribute({
       dbId,
       collId,
@@ -50,8 +59,10 @@ const attributeHandlers: Record<string, AttributeHandler> = {
       max: attr.max,
       xdefault: attr.default,
       xarray: attr.array,
-    }),
-  boolean: async (dbId, collId, attr: Models.AttributeBoolean) =>
+    });
+  },
+
+  boolean: async (dbId, collId, attr: Models.AttributeBoolean) => {
     await createBooleanAttribute({
       dbId,
       collId,
@@ -59,8 +70,10 @@ const attributeHandlers: Record<string, AttributeHandler> = {
       required: attr.required,
       xdefault: attr.default,
       xarray: attr.array,
-    }),
-  email: async (dbId, collId, attr: Models.AttributeEmail) =>
+    });
+  },
+
+  email: async (dbId, collId, attr: Models.AttributeEmail) => {
     await createEmailAttribute({
       dbId,
       collId,
@@ -68,8 +81,10 @@ const attributeHandlers: Record<string, AttributeHandler> = {
       required: attr.required,
       xdefault: attr.default,
       xarray: attr.array,
-    }),
-  enum: async (dbId, collId, attr: Models.AttributeEnum) =>
+    });
+  },
+
+  enum: async (dbId, collId, attr: Models.AttributeEnum) => {
     await createEnumAttribute({
       dbId,
       collId,
@@ -78,8 +93,10 @@ const attributeHandlers: Record<string, AttributeHandler> = {
       required: attr.required,
       xdefault: attr.default,
       xarray: attr.array,
-    }),
-  url: async (dbId, collId, attr: Models.AttributeUrl) =>
+    });
+  },
+
+  url: async (dbId, collId, attr: Models.AttributeUrl) => {
     await createUrlAttribute({
       dbId,
       collId,
@@ -87,8 +104,10 @@ const attributeHandlers: Record<string, AttributeHandler> = {
       required: attr.required,
       xdefault: attr.default,
       xarray: attr.array,
-    }),
-  ip: async (dbId, collId, attr: Models.AttributeIp) =>
+    });
+  },
+
+  ip: async (dbId, collId, attr: Models.AttributeIp) => {
     await createIpAttribute({
       dbId,
       collId,
@@ -96,8 +115,10 @@ const attributeHandlers: Record<string, AttributeHandler> = {
       required: attr.required,
       xdefault: attr.default,
       xarray: attr.array,
-    }),
-  datetime: async (dbId, collId, attr: Models.AttributeDatetime) =>
+    });
+  },
+
+  datetime: async (dbId, collId, attr: Models.AttributeDatetime) => {
     await createDatetimeAttribute({
       dbId,
       collId,
@@ -105,8 +126,14 @@ const attributeHandlers: Record<string, AttributeHandler> = {
       required: attr.required,
       xdefault: attr.default,
       xarray: attr.array,
-    }),
-  relationship: async (dbId, collId, attr: CreateRelationshipAttributeParams) =>
+    });
+  },
+
+  relationship: async (
+    dbId,
+    collId,
+    attr: CreateRelationshipAttributeParams
+  ) => {
     await createRelationshipAttribute({
       dbId,
       collId,
@@ -116,7 +143,8 @@ const attributeHandlers: Record<string, AttributeHandler> = {
       key: attr.key,
       twoWayKey: attr.twoWayKey,
       onDelete: attr.onDelete,
-    }),
+    });
+  },
 };
 
 export const createAttribute = async (

@@ -4,49 +4,52 @@ import {
   live,
   originInternal,
   originExternal,
-} from "./host";
-import { apwManager, temporaryPassword } from "./utils";
+} from "../host";
+import { apwManager, imgToWebP, temporaryPassword } from "../utils";
 export { Models, ID, Query } from "node-appwrite";
 
 export {
   // Account functions
+  addPrefs,
   createAccount,
+  createAnonymousSession,
   createEmailPasswordSession,
   createJWT,
+  createMagicURLSession,
   createOAuth2Token,
+  createPhoneVerification,
+  createRecovery,
   createSession,
   createVerification,
   deletePrefs,
   deleteSession,
   deleteSessions,
   getAppUser,
-  getPrefs,
+  getCustomUser,
   getSession,
   getUser,
   listSessions,
-  updatePrefs,
-  updateSession,
-  updateVerification,
   updateEmail,
-  updatePhone,
   updateName,
-  updateStatus,
   updatePassword,
-  createRecovery,
-  updateRecovery,
-  createAnonymousSession,
-  createMagicURLSession,
-  createPhoneVerification,
+  updatePhone,
   updatePhoneVerification,
-} from "./methods/account";
+  updateRecovery,
+  updateSession,
+  updateStatus,
+  updateVerification,
+} from "../methods-ssr/account";
 
 export {
   // Avatars functions
+  getBrowserIcon,
+  getCreditCardIcon,
+  getFavicon,
   getFlag,
   getImage,
-  getQr,
   getInitials,
-} from "./methods/avatars";
+  getQr,
+} from "../methods-ssr/avatars";
 
 export {
   // Databases functions
@@ -93,7 +96,7 @@ export {
   updateRelationshipAttribute,
   updateStringAttribute,
   updateUrlAttribute,
-} from "./methods/databases";
+} from "../methods-ssr/databases";
 
 export {
   // Storage functions
@@ -111,7 +114,7 @@ export {
   updateFile,
   uploadFile,
   //uploadFileFromPath,
-} from "./methods/storage";
+} from "../methods-ssr/storage";
 
 export {
   // Teams functions
@@ -128,26 +131,35 @@ export {
   updateTeamMembershipStatus,
   updateTeamName,
   updateTeamPreferences,
-} from "./methods/teams";
+} from "../methods-ssr/teams";
 
 export {
   // Users functions
+  addLabelsForUserId,
+  addPrefsForUserId,
   createSessionForUserId,
   createToken,
+  deleteLabelsForUserId,
   deletePrefsForUserId,
   deleteSessionForUserId,
   deleteSessionsForUserId,
-  deleteUserId,
+  deleteUserForUserId,
   getAppUserForUserId,
-  getCustomUsers,
-  getPrefsForUserId,
+  getCustomUserForUserId,
   getUserForUserId,
-  getUsers,
+  listCustomUsers,
   listIdentities,
+  listIdentitiesForUserId,
+  listSessionsForUserId,
   listUsers,
-  setPrefsForUserId,
+  updateEmailForUserId,
   updateEmailVerificationForUserId,
-} from "./methods/users";
+  updateNameForUserId,
+  updatePasswordForUserId,
+  updatePhoneForUserId,
+  updatePhoneVerificationForUserId,
+  updateStatusForUserId,
+} from "../methods-ssr/users";
 
 export {
   // ApwWrapper Config
@@ -168,11 +180,12 @@ export {
   signInPath,
   userCollectionId,
   verificationPath,
-} from "./appwriteConfig";
+} from "../appwriteConfig";
 
 export {
   apwManager,
   temporaryPassword,
+  imgToWebP,
   hostInternal,
   hostExternal,
   live,

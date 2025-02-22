@@ -48,6 +48,15 @@ declare class AppwriteManager {
     setAdmin(isAdmin: boolean): void;
 }
 export declare const apwManager: AppwriteManager;
-export declare const imgToWebP: (file: File, quality?: number) => Promise<File>;
+/**
+ * WebP image conversion
+ * @param file - The image file to convert.
+ * @param quality - The quality of the output image (0-1).
+ * @param width - The width of the output image.
+ * @param height - The height of the output image.
+ * @param background - The background color of the output image.
+ * @returns {Promise<File>} - A promise that resolves to the converted image file.
+ */
+export declare const imgToWebP: (file: File, quality?: number, width?: number, height?: number, background?: string) => Promise<File>;
 export {};
 //# sourceMappingURL=utils.d.ts.map

@@ -96,13 +96,25 @@ class AppwriteManager {
 }
 // Export a global instance
 export const apwManager = AppwriteManager.getInstance();
-/*
+/**
  * WebP image conversion
+ * @param file - The image file to convert.
+ * @param quality - The quality of the output image (0-1).
+ * @param width - The width of the output image.
+ * @param height - The height of the output image.
+ * @param background - The background color of the output image.
+ * @returns {Promise<File>} - A promise that resolves to the converted image file.
  */
-export const imgToWebP = async (file, quality = 0.9) => {
+export const imgToWebP = async (file, quality = 0.9, width, height, background = "transparent" // Default is transparent
+) => {
     return new Promise((resolve, reject) => {
         if (!file.type.startsWith("image/")) {
             return reject(new Error("Invalid file type"));
+        }
+        // Validate background color (allow only hex or transparent)
+        const isValidHex = /^#([0-9A-F]{3}){1,2}$/i.test(background);
+        if (background !== "transparent" && !isValidHex) {
+            return reject(new Error("Invalid background color. Use a hex string."));
         }
         const reader = new FileReader();
         reader.onload = async function (event) {
@@ -110,14 +122,51 @@ export const imgToWebP = async (file, quality = 0.9) => {
                 return reject(new Error("File reading failed"));
             const img = new Image();
             img.src = event.target.result;
+            img.crossOrigin = "anonymous"; // Prevent CORS issues
             img.onload = () => {
+                let newWidth = img.width;
+                let newHeight = img.height;
+                if (width && !height) {
+                    // Scale based on width while maintaining aspect ratio
+                    newHeight = Math.round((img.height / img.width) * width);
+                    newWidth = width;
+                }
+                else if (height && !width) {
+                    // Scale based on height while maintaining aspect ratio
+                    newWidth = Math.round((img.width / img.height) * height);
+                    newHeight = height;
+                }
+                else if (width && height) {
+                    // Full resize with background padding if aspect ratio doesn't match
+                    const aspectRatio = img.width / img.height;
+                    const targetAspectRatio = width / height;
+                    if (aspectRatio > targetAspectRatio) {
+                        // Image is wider than target aspect ratio
+                        newWidth = width;
+                        newHeight = Math.round(width / aspectRatio);
+                    }
+                    else {
+                        // Image is taller than target aspect ratio
+                        newHeight = height;
+                        newWidth = Math.round(height * aspectRatio);
+                    }
+                }
                 const canvas = document.createElement("canvas");
                 const ctx = canvas.getContext("2d");
                 if (!ctx)
                     return reject(new Error("Canvas not supported"));
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0, img.width, img.height);
+                // Set final canvas size
+                canvas.width = width || newWidth;
+                canvas.height = height || newHeight;
+                // Fill background if a hex color is provided (not transparent)
+                if (background !== "transparent") {
+                    ctx.fillStyle = background;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+                // Calculate center positioning for images with padding
+                const offsetX = (canvas.width - newWidth) / 2;
+                const offsetY = (canvas.height - newHeight) / 2;
+                ctx.drawImage(img, offsetX, offsetY, newWidth, newHeight);
                 canvas.toBlob((blob) => {
                     if (!blob)
                         return reject(new Error("Failed to create WebP blob"));

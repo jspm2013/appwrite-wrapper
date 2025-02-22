@@ -19,7 +19,6 @@
       "dom"
     ] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
     "paths": {
-      "@jspm2013/appwrite-wrapper/ssr": ["src/ssr"],
       "@jspm2013/appwrite-wrapper/enums": ["src/enums"],
       "@jspm2013/appwrite-wrapper/exceptions": ["src/exceptions"],
       "@jspm2013/appwrite-wrapper/collections": ["src/collections"]

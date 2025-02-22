@@ -4,8 +4,8 @@ import {
   live,
   originInternal,
   originExternal,
-} from "../host";
-import { apwManager, imgToWebP, temporaryPassword } from "../utils";
+} from "./host";
+import { apwManager, imgToWebP, temporaryPassword } from "./utils";
 export { Models, ID, Query } from "node-appwrite";
 
 export {
@@ -38,7 +38,7 @@ export {
   updateSession,
   updateStatus,
   updateVerification,
-} from "../methods-ssr/account";
+} from "./methods/account";
 
 export {
   // Avatars functions
@@ -49,7 +49,7 @@ export {
   getImage,
   getInitials,
   getQr,
-} from "../methods-ssr/avatars";
+} from "./methods/avatars";
 
 export {
   // Databases functions
@@ -96,7 +96,7 @@ export {
   updateRelationshipAttribute,
   updateStringAttribute,
   updateUrlAttribute,
-} from "../methods-ssr/databases";
+} from "./methods/databases";
 
 export {
   // Storage functions
@@ -114,7 +114,7 @@ export {
   updateFile,
   uploadFile,
   //uploadFileFromPath,
-} from "../methods-ssr/storage";
+} from "./methods/storage";
 
 export {
   // Teams functions
@@ -131,7 +131,7 @@ export {
   updateTeamMembershipStatus,
   updateTeamName,
   updateTeamPreferences,
-} from "../methods-ssr/teams";
+} from "./methods/teams";
 
 export {
   // Users functions
@@ -159,7 +159,7 @@ export {
   updatePhoneForUserId,
   updatePhoneVerificationForUserId,
   updateStatusForUserId,
-} from "../methods-ssr/users";
+} from "./methods/users";
 
 export {
   // ApwWrapper Config
@@ -180,7 +180,7 @@ export {
   signInPath,
   userCollectionId,
   verificationPath,
-} from "../appwriteConfig";
+} from "./appwriteConfig";
 
 export {
   apwManager,

@@ -113,6 +113,10 @@ const deleteSessionsForUserId = async ({ userId, }) => {
 const deleteUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
+        const user = await users.get(userId);
+        if (user.status) {
+            throw new Error("Cannot delete user with status active");
+        }
         await users.delete(userId);
         return { data: userId, error: null };
     }
@@ -135,7 +139,7 @@ const getAppUserForUserId = async ({ userId, includingDeleted = false, }) => {
         if (!AppUserType) {
             throw new Error("No AppUserType found. Returning null");
         }
-        if (user.emailVerification || user.phoneVerification) {
+        if ((user.emailVerification || user.phoneVerification) && user.status) {
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
                 Query.and([
                     Query.equal("user_id", userId),
@@ -173,7 +177,7 @@ const getCustomUserForUserId = async ({ userId, queries = [], includingDeleted =
         if (!AppUserType) {
             throw new Error("No AppUserType found. Returning null");
         }
-        if (user.emailVerification || user.phoneVerification) {
+        if ((user.emailVerification || user.phoneVerification) && user.status) {
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
                 Query.and([
                     ...queries,

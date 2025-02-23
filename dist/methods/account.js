@@ -281,7 +281,7 @@ const getAppUser = async () => {
         if (!AppUserType) {
             throw new Error("No AppUser Type found.");
         }
-        if (user.emailVerification || user.phoneVerification) {
+        if ((user.emailVerification || user.phoneVerification) && user.status) {
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
                 Query.and([
                     Query.equal("user_id", user.$id),
@@ -324,7 +324,7 @@ const getCustomUser = async () => {
                 Query.equal("deleted", false),
             ]),
         ]);
-        if (total === 1) {
+        if (total === 1 && user.status) {
             return {
                 data: documents[0],
                 error: null,

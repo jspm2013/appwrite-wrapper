@@ -205,6 +205,11 @@ const deleteUserForUserId = async ({
 }: DeleteUserForUserIdParams): Promise<ReturnObject<string>> => {
   try {
     const { users } = await createAdminClient();
+    const user = await users.get(userId);
+
+    if (user.status) {
+      throw new Error("Cannot delete user with status active");
+    }
 
     await users.delete(userId);
     return { data: userId, error: null };
@@ -242,7 +247,7 @@ const getAppUserForUserId = async ({
       throw new Error("No AppUserType found. Returning null");
     }
 
-    if (user.emailVerification || user.phoneVerification) {
+    if ((user.emailVerification || user.phoneVerification) && user.status) {
       const { total, documents } = await databases.listDocuments(
         databaseId,
         userCollectionId,
@@ -293,7 +298,7 @@ const getCustomUserForUserId = async ({
       throw new Error("No AppUserType found. Returning null");
     }
 
-    if (user.emailVerification || user.phoneVerification) {
+    if ((user.emailVerification || user.phoneVerification) && user.status) {
       const { total, documents } = await databases.listDocuments(
         databaseId,
         userCollectionId,

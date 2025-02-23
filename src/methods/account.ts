@@ -32,7 +32,7 @@ interface ReturnObject<T> {
 }
 
 /*
- * Add preferences for a user by their ID.
+ * Add preferences for a user.
  */
 type AddPrefsParams = {
   prefs: string; // Must be a stringified JSON object
@@ -401,7 +401,7 @@ const getAppUser = async (): Promise<ReturnObject<any | null>> => {
       throw new Error("No AppUser Type found.");
     }
 
-    if (user.emailVerification || user.phoneVerification) {
+    if ((user.emailVerification || user.phoneVerification) && user.status) {
       const { total, documents } = await databases.listDocuments(
         databaseId,
         userCollectionId,
@@ -457,7 +457,7 @@ const getCustomUser = async (): Promise<ReturnObject<Record<string, any>>> => {
       ]
     );
 
-    if (total === 1) {
+    if (total === 1 && user.status) {
       return {
         data: documents[0],
         error: null,

@@ -117,6 +117,9 @@ const deleteUserForUserId = async ({ userId, }) => {
         if (user.status) {
             throw new Error("Cannot delete user with status active");
         }
+        if (user.labels.includes("owner")) {
+            throw new Error("Cannot delete high privilege user");
+        }
         await users.delete(userId);
         return { data: userId, error: null };
     }
@@ -454,6 +457,10 @@ const updateStatusForUserId = async ({ userId, status, }) => {
             throw new Error("Invalid param 'status'");
         }
         const { users } = await createAdminClient();
+        const user = await users.get(userId);
+        if (user.labels.includes("owner")) {
+            throw new Error("Cannot update status for high privilege user");
+        }
         const data = await users.updateStatus(userId, status);
         return { data, error: null };
     }

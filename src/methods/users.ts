@@ -530,11 +530,11 @@ const updateEmailForUserId = async ({
  */
 type UpdateEmailVerificationForUserIdParams = {
   userId: string;
-  status: boolean;
+  emailVerification: boolean;
 };
 const updateEmailVerificationForUserId = async ({
   userId,
-  status,
+  emailVerification,
 }: UpdateEmailVerificationForUserIdParams): Promise<
   ReturnObject<Models.User<Models.Preferences>>
 > => {
@@ -544,7 +544,7 @@ const updateEmailVerificationForUserId = async ({
     }
     const { users } = await createAdminClient();
 
-    const data = await users.updateEmailVerification(userId, status);
+    const data = await users.updateEmailVerification(userId, emailVerification);
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -738,18 +738,18 @@ const updatePhoneForUserId = async ({
  */
 type UpdatePhoneVerificationForUserIdParams = {
   userId: string;
-  name: string;
+  phoneVerification: boolean;
 };
 const updatePhoneVerificationForUserId = async ({
   userId,
-  name,
+  phoneVerification,
 }: UpdatePhoneVerificationForUserIdParams): Promise<
   ReturnObject<Models.User<Models.Preferences>>
 > => {
   try {
     const { users } = await createAdminClient();
 
-    const data = await users.updateName(userId, name);
+    const data = await users.updatePhoneVerification(userId, phoneVerification);
     return { data, error: null };
   } catch (error: any) {
     return {

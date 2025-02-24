@@ -311,13 +311,13 @@ const updateEmailForUserId = async ({ userId, email, }) => {
         };
     }
 };
-const updateEmailVerificationForUserId = async ({ userId, status, }) => {
+const updateEmailVerificationForUserId = async ({ userId, emailVerification, }) => {
     try {
         if (typeof status !== "boolean") {
             throw new Error("Invalid param 'status'");
         }
         const { users } = await createAdminClient();
-        const data = await users.updateEmailVerification(userId, status);
+        const data = await users.updateEmailVerification(userId, emailVerification);
         return { data, error: null };
     }
     catch (error) {
@@ -438,10 +438,10 @@ const updatePhoneForUserId = async ({ userId, phone, }) => {
         };
     }
 };
-const updatePhoneVerificationForUserId = async ({ userId, name, }) => {
+const updatePhoneVerificationForUserId = async ({ userId, phoneVerification, }) => {
     try {
         const { users } = await createAdminClient();
-        const data = await users.updateName(userId, name);
+        const data = await users.updatePhoneVerification(userId, phoneVerification);
         return { data, error: null };
     }
     catch (error) {

@@ -85,9 +85,9 @@ type UpdateEmailForUserIdParams = {
 declare const updateEmailForUserId: ({ userId, email, }: UpdateEmailForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
 type UpdateEmailVerificationForUserIdParams = {
     userId: string;
-    status: boolean;
+    emailVerification: boolean;
 };
-declare const updateEmailVerificationForUserId: ({ userId, status, }: UpdateEmailVerificationForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+declare const updateEmailVerificationForUserId: ({ userId, emailVerification, }: UpdateEmailVerificationForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
 type LabelsForUserIdParams = {
     userId: string;
     labels: string | string[];
@@ -111,9 +111,9 @@ type UpdatePhoneForUserIdParams = {
 declare const updatePhoneForUserId: ({ userId, phone, }: UpdatePhoneForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
 type UpdatePhoneVerificationForUserIdParams = {
     userId: string;
-    name: string;
+    phoneVerification: boolean;
 };
-declare const updatePhoneVerificationForUserId: ({ userId, name, }: UpdatePhoneVerificationForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
+declare const updatePhoneVerificationForUserId: ({ userId, phoneVerification, }: UpdatePhoneVerificationForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
 type UpdateStatusForUserIdParams = {
     userId: string;
     status: boolean;

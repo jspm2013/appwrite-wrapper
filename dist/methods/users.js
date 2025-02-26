@@ -313,9 +313,6 @@ const updateEmailForUserId = async ({ userId, email, }) => {
 };
 const updateEmailVerificationForUserId = async ({ userId, emailVerification, }) => {
     try {
-        if (typeof status !== "boolean") {
-            throw new Error("Invalid param 'status'");
-        }
         const { users } = await createAdminClient();
         const data = await users.updateEmailVerification(userId, emailVerification);
         return { data, error: null };

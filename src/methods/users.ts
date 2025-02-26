@@ -539,9 +539,6 @@ const updateEmailVerificationForUserId = async ({
   ReturnObject<Models.User<Models.Preferences>>
 > => {
   try {
-    if (typeof status !== "boolean") {
-      throw new Error("Invalid param 'status'");
-    }
     const { users } = await createAdminClient();
 
     const data = await users.updateEmailVerification(userId, emailVerification);

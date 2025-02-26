@@ -233,12 +233,13 @@ type GetUserForUserIdParams = {
   queries?: string[];
   includingDeleted?: boolean;
 };
+type AppUserReturnType = Models.User<Models.Preferences> & {
+  customUser: Record<string, unknown>; // Dynamic structure but ensures it's an object
+};
 const getAppUserForUserId = async ({
   userId,
   includingDeleted = false,
-}: GetUserForUserIdParams): Promise<
-  ReturnObject<Models.User<Models.Preferences> & { customUser: any }>
-> => {
+}: GetUserForUserIdParams): Promise<ReturnObject<AppUserReturnType>> => {
   try {
     const { users } = await createAdminClient();
     const { databases } = await createAdminClient();
@@ -371,11 +372,12 @@ const listCustomUsers = async <
 /*
  * Retrieves a user by their ID.
  */
+type UserReturnType = Models.User<Models.Preferences> & {
+  customUser: Record<string, unknown>; // Dynamic structure but ensures it's an object
+};
 const getUserForUserId = async ({
   userId,
-}: GetUserForUserIdParams): Promise<
-  ReturnObject<Models.User<Models.Preferences> & { customUser: any }>
-> => {
+}: GetUserForUserIdParams): Promise<ReturnObject<UserReturnType>> => {
   try {
     const { users } = await createAdminClient();
     const { databases } = await createAdminClient();
@@ -389,7 +391,7 @@ const getUserForUserId = async ({
     );
 
     return {
-      data: { ...user, customUser: total > 0 ? documents[0] : null },
+      data: { ...user, customUser: total > 0 ? documents[0] : {} },
       error: null,
     };
   } catch (error: any) {

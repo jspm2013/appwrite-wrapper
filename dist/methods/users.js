@@ -220,9 +220,6 @@ const listCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
         };
     }
 };
-/*
- * Retrieves a user by their ID.
- */
 const getUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
@@ -230,7 +227,7 @@ const getUserForUserId = async ({ userId, }) => {
         const user = await users.get(userId);
         const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.and([Query.equal("user_id", userId)])]);
         return {
-            data: { ...user, customUser: total > 0 ? documents[0] : null },
+            data: { ...user, customUser: total > 0 ? documents[0] : {} },
             error: null,
         };
     }

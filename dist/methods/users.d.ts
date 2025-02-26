@@ -50,20 +50,14 @@ type GetUserForUserIdParams = {
     queries?: string[];
     includingDeleted?: boolean;
 };
-type AppUserReturnType = Models.User<Models.Preferences> & {
-    customUser: Record<string, unknown>;
-};
-declare const getAppUserForUserId: ({ userId, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<AppUserReturnType>>;
+declare const getAppUserForUserId: ({ userId, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<any>>;
 declare const getCustomUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<any>>;
 type ListCustomUsersParams = {
     queries?: string[];
     includingDeleted?: boolean;
 };
 declare const listCustomUsers: <TCustomUsers extends Models.DocumentList<Models.Document>>({ queries, includingDeleted, }: ListCustomUsersParams) => Promise<ReturnObject<TCustomUsers>>;
-type UserReturnType = Models.User<Models.Preferences> & {
-    customUser: Record<string, unknown>;
-};
-declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<ReturnObject<UserReturnType>>;
+declare const getUserForUserId: ({ userId, }: GetUserForUserIdParams) => Promise<ReturnObject<any>>;
 type ListIdentitiesParams = {
     queries?: string[];
     search?: string;

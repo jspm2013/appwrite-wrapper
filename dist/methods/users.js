@@ -220,6 +220,9 @@ const listCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
         };
     }
 };
+/*
+ * Retrieves a user by their ID.
+ */
 const getUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();

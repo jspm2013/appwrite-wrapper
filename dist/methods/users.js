@@ -135,13 +135,6 @@ const getAppUserForUserId = async ({ userId, includingDeleted = false, }) => {
         const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
         const user = await users.get(userId);
-        const AppUserType = await getType({
-            collName: userCollectionId,
-            typeName: "AppUserType",
-        });
-        if (!AppUserType) {
-            throw new Error("No AppUserType found. Returning null");
-        }
         if ((user.emailVerification || user.phoneVerification) && user.status) {
             const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
                 Query.and([
@@ -233,8 +226,13 @@ const listCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
 const getUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
-        const data = await users.get(userId);
-        return { data, error: null };
+        const { databases } = await createAdminClient();
+        const user = await users.get(userId);
+        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.and([Query.equal("user_id", userId)])]);
+        return {
+            data: { ...user, customUser: total > 0 ? documents[0] : null },
+            error: null,
+        };
     }
     catch (error) {
         return {

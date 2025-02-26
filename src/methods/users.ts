@@ -387,7 +387,7 @@ const getUserForUserId = async ({
     const { total, documents } = await databases.listDocuments(
       databaseId,
       userCollectionId,
-      [Query.and([Query.equal("user_id", userId)])]
+      [Query.equal("user_id", userId)]
     );
 
     return {

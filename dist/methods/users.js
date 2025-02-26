@@ -225,7 +225,7 @@ const getUserForUserId = async ({ userId, }) => {
         const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
         const user = await users.get(userId);
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.and([Query.equal("user_id", userId)])]);
+        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", userId)]);
         return {
             data: { ...user, customUser: total > 0 ? documents[0] : {} },
             error: null,

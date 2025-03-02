@@ -28,6 +28,12 @@ interface LocalizedMessage {
 }
 type MessagesMap = Record<string, LocalizedMessage>;
 
+declare class ExceptionViaUrl {
+  message: string;
+  code: number;
+  type: string;
+}
+
 interface Exception {
   name: string;
   description: string;
@@ -107,7 +113,10 @@ export const handleApwError = async ({
   /*
    * If the error is not an instance of AppwriteException, throw it.
    */
-  if (!(error instanceof AppwriteException)) {
+  if (
+    !(error instanceof AppwriteException) &&
+    !(error instanceof ExceptionViaUrl)
+  ) {
     return {
       ...internalError,
       error,

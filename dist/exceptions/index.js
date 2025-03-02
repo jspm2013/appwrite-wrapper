@@ -54,7 +54,8 @@ export const handleApwError = async ({ error, }) => {
     /*
      * If the error is not an instance of AppwriteException, throw it.
      */
-    if (!(error instanceof AppwriteException)) {
+    if (!(error instanceof AppwriteException) &&
+        !(error instanceof ExceptionViaUrl)) {
         return {
             ...internalError,
             error,

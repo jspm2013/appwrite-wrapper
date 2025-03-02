@@ -17,7 +17,7 @@ export const handleApwError = async ({ error, }) => {
      */
     const internalError = {
         appwrite: false,
-        header: "INTERNAL_ERROR",
+        header: "Internal Error",
         type: "general_unknown",
         code: 500,
         variant: "error",
@@ -52,12 +52,19 @@ export const handleApwError = async ({ error, }) => {
      * If the error is not an instance of AppwriteException, throw it.
      */
     if (!(error instanceof AppwriteException || isExceptionViaUrl(error))) {
-        return {
-            ...internalError,
-            error,
-            appwrite: false,
-            description: "APW-WRAPPER - Error: Invalid appwrite error format received",
-        };
+        return isExceptionViaUrl(error)
+            ? {
+                ...internalError,
+                error,
+                appwrite: false,
+                description: "APW-WRAPPER - Error: Invalid appwrite error format received",
+            }
+            : {
+                ...internalError,
+                error,
+                appwrite: true,
+                description: error.message,
+            };
     }
     /*
      * Load the localized messages and exceptions.

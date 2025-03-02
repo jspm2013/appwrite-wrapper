@@ -35,7 +35,7 @@ export class ExceptionViaUrl extends Error {
     super(message);
     this.code = code;
     this.type = type;
-    this.name = "ExceptionViaUrl"; // Set the name property
+    Object.setPrototypeOf(this, ExceptionViaUrl.prototype);
   }
 }
 

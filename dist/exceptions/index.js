@@ -1,10 +1,7 @@
-import { live } from "../host";
 import { apwManager } from "../utils";
 import allExceptions from "./exceptions.json";
 import { AppwriteException } from "node-appwrite";
 import { configLoader, messagesLoader } from "./loaders";
-const adminStatus = !live;
-apwManager.setAdmin(adminStatus);
 /**
  * Load the exceptions.
  */
@@ -90,7 +87,7 @@ export const handleApwError = async ({ error, }) => {
             ? "APW-WRAPPER - DEV-MSG"
             : localizedMessages[typeLowerCase]?.header || "APW-WRAPPER - Error";
         const description = admin
-            ? jsonErrorReponse.message || `Exception code: ${code}`
+            ? jsonErrorReponse?.message || `Exception code: ${code}`
             : localizedMessages[typeLowerCase]?.description ||
                 exceptions[type]?.description ||
                 "No description found";

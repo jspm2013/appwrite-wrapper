@@ -1,11 +1,7 @@
-import { live } from "../host";
 import { apwManager } from "../utils";
 import allExceptions from "./exceptions.json";
 import { AppwriteException } from "node-appwrite";
 import { configLoader, messagesLoader } from "./loaders";
-
-const adminStatus: boolean = !live;
-apwManager.setAdmin(adminStatus);
 
 /*
  * APPWRITE ERROR EXAMPLE, see https://appwrite.io/docs/advanced/platform/response-codes as per 12.01.2024
@@ -155,7 +151,7 @@ export const handleApwError = async ({
       : localizedMessages[typeLowerCase]?.header || "APW-WRAPPER - Error";
 
     const description = admin
-      ? jsonErrorReponse.message || `Exception code: ${code}`
+      ? jsonErrorReponse?.message || `Exception code: ${code}`
       : localizedMessages[typeLowerCase]?.description ||
         exceptions[type]?.description ||
         "No description found";

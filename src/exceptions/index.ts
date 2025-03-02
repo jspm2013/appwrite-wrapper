@@ -28,15 +28,10 @@ interface LocalizedMessage {
 }
 type MessagesMap = Record<string, LocalizedMessage>;
 
-export class ExceptionViaUrl extends Error {
+interface ExceptionViaUrl {
   code: number;
   type: string;
-  constructor(message: string, code: number, type: string) {
-    super(message);
-    this.code = code;
-    this.type = type;
-    Object.setPrototypeOf(this, ExceptionViaUrl.prototype);
-  }
+  message: string;
 }
 
 interface Exception {
@@ -118,10 +113,7 @@ export const handleApwError = async ({
   /*
    * If the error is not an instance of AppwriteException, throw it.
    */
-  if (
-    !(error instanceof AppwriteException) &&
-    !(error instanceof ExceptionViaUrl)
-  ) {
+  if (!(error instanceof AppwriteException) && !isExceptionViaUrl(error)) {
     return {
       ...internalError,
       error,
@@ -192,4 +184,14 @@ export const handleApwError = async ({
       description: "APW-WRAPPER - Error: An unexpected library error occurred",
     };
   }
+};
+
+const isExceptionViaUrl = (error: any): error is ExceptionViaUrl => {
+  return (
+    error &&
+    typeof error === "object" &&
+    typeof error.code === "number" &&
+    typeof error.type === "string" &&
+    typeof error.message === "string"
+  );
 };

@@ -5,16 +5,6 @@ import { AppwriteException } from "node-appwrite";
 import { configLoader, messagesLoader } from "./loaders";
 const adminStatus = !live;
 apwManager.setAdmin(adminStatus);
-export class ExceptionViaUrl extends Error {
-    code;
-    type;
-    constructor(message, code, type) {
-        super(message);
-        this.code = code;
-        this.type = type;
-        Object.setPrototypeOf(this, ExceptionViaUrl.prototype);
-    }
-}
 /**
  * Load the exceptions.
  */
@@ -64,8 +54,7 @@ export const handleApwError = async ({ error, }) => {
     /*
      * If the error is not an instance of AppwriteException, throw it.
      */
-    if (!(error instanceof AppwriteException) &&
-        !(error instanceof ExceptionViaUrl)) {
+    if (!(error instanceof AppwriteException) && !isExceptionViaUrl(error)) {
         return {
             ...internalError,
             error,
@@ -129,4 +118,11 @@ export const handleApwError = async ({ error, }) => {
             description: "APW-WRAPPER - Error: An unexpected library error occurred",
         };
     }
+};
+const isExceptionViaUrl = (error) => {
+    return (error &&
+        typeof error === "object" &&
+        typeof error.code === "number" &&
+        typeof error.type === "string" &&
+        typeof error.message === "string");
 };

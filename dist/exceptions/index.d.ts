@@ -1,3 +1,8 @@
+export declare class ExceptionViaUrl extends Error {
+    code: number;
+    type: string;
+    constructor(message: string, code: number, type: string);
+}
 interface ErrorHandler {
     error: any;
     locale?: string;

@@ -28,11 +28,15 @@ interface LocalizedMessage {
 }
 type MessagesMap = Record<string, LocalizedMessage>;
 
-declare class ExceptionViaUrl extends Error {
-  message: string;
+export class ExceptionViaUrl extends Error {
   code: number;
   type: string;
-  constructor(message: string, code: number, type: string);
+  constructor(message: string, code: number, type: string) {
+    super(message);
+    this.code = code;
+    this.type = type;
+    this.name = "ExceptionViaUrl"; // Set the name property
+  }
 }
 
 interface Exception {

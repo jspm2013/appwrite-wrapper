@@ -5,6 +5,16 @@ import { AppwriteException } from "node-appwrite";
 import { configLoader, messagesLoader } from "./loaders";
 const adminStatus = !live;
 apwManager.setAdmin(adminStatus);
+export class ExceptionViaUrl extends Error {
+    code;
+    type;
+    constructor(message, code, type) {
+        super(message);
+        this.code = code;
+        this.type = type;
+        this.name = "ExceptionViaUrl"; // Set the name property
+    }
+}
 /**
  * Load the exceptions.
  */

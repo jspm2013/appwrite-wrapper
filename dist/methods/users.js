@@ -1,7 +1,6 @@
 "use server";
 import { Query } from "node-appwrite";
 import { handleApwError } from "../exceptions";
-import { getType } from "../collections/typeReader";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
 const addPrefsForUserId = async ({ userId, prefs, }) => {
@@ -130,18 +129,13 @@ const deleteUserForUserId = async ({ userId, }) => {
         };
     }
 };
-const getAppUserForUserId = async ({ userId, includingDeleted = false, }) => {
+const getAppUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
         const user = await users.get(userId);
         if ((user.emailVerification || user.phoneVerification) && user.status) {
-            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
-                Query.and([
-                    Query.equal("user_id", userId),
-                    Query.equal("deleted", includingDeleted),
-                ]),
-            ]);
+            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", userId)]);
             if (total > 0) {
                 return {
                     data: { ...user, customUser: documents[0] },
@@ -159,36 +153,49 @@ const getAppUserForUserId = async ({ userId, includingDeleted = false, }) => {
     }
 };
 /*
- * Retrieves an App User (native appwrite user extended by custom user (key = customUser)) by their ID.
+ * Retrieves a user by their ID.
+ *
+ * NATIVE APPWRITE USER (BUT NOT NECESSARILY VERIFIED) extended by custom user (key = customUser)
+ * ...user for lists/displaying all app users
+ *
  */
-const getCustomUserForUserId = async ({ userId, queries = [], includingDeleted = false, }) => {
+const getUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
         const user = await users.get(userId);
-        const AppUserType = await getType({
-            collName: userCollectionId,
-            typeName: "AppUserType",
-        });
-        if (!AppUserType) {
-            throw new Error("No AppUserType found. Returning null");
-        }
-        if ((user.emailVerification || user.phoneVerification) && user.status) {
-            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
-                Query.and([
-                    ...queries,
-                    Query.equal("user_id", userId),
-                    Query.equal("deleted", includingDeleted),
-                ]),
-            ]);
-            if (total > 0) {
-                return {
-                    data: { ...user, customUser: documents[0] },
-                    error: null,
-                };
-            }
-        }
-        return { data: null, error: null };
+        if (!user)
+            return { data: null, error: null };
+        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", userId)]);
+        return {
+            data: { ...user, customUser: total > 0 ? documents[0] : {} },
+            error: null,
+        };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+/*
+ * Retrieves an App User (native appwrite user extended by custom user (key = customUser)) by their ID.
+ */
+const getCustomUserForUserId = async ({ userId, queries = [], includingDeleted = false, }) => {
+    try {
+        const { databases } = await createAdminClient();
+        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
+            Query.and([
+                ...queries,
+                Query.equal("user_id", userId),
+                Query.equal("deleted", includingDeleted),
+            ]),
+        ]);
+        return {
+            data: total > 0 ? documents[0] : null,
+            error: null,
+        };
     }
     catch (error) {
         return {
@@ -210,27 +217,6 @@ const listCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
                 total: total,
                 documents: documents,
             },
-            error: null,
-        };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-/*
- * Retrieves a user by their ID.
- */
-const getUserForUserId = async ({ userId, }) => {
-    try {
-        const { users } = await createAdminClient();
-        const { databases } = await createAdminClient();
-        const user = await users.get(userId);
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", userId)]);
-        return {
-            data: { ...user, customUser: total > 0 ? documents[0] : {} },
             error: null,
         };
     }

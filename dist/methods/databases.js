@@ -3,6 +3,8 @@ import { ID, } from "node-appwrite";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
+import { getSchema } from "../collections";
+import { createAttribute } from "../collections";
 const createBooleanAttribute = async ({ dbId = databaseId, collId = userCollectionId, key, required, xdefault, xarray, }) => {
     try {
         const { databases } = await createAdminClient();
@@ -29,11 +31,28 @@ const createCollection = async ({ dbId = databaseId, collId = userCollectionId, 
         };
     }
 };
-const createCollectionWithSchema = async ({ dbId = databaseId, collId, name, permissions, documentSecurity, enabled, }) => {
+/**
+ * Create a new collection according to a specific schema in a specific database.
+ * @param params - Parameters for creating the collection.
+ * @returns The created collection details.
+ */
+const createCollectionWithSchema = async ({ dbId = databaseId, collId, name, permissions, documentSecurity, enabled, nameAsId, }) => {
     try {
         const { databases } = await createAdminClient();
-        const data = await databases.createCollection(dbId, collId ?? ID.unique(), name, permissions, documentSecurity, enabled);
-        return { data, error: null };
+        const collList = await databases.listCollections(dbId);
+        let coll = collList.collections.find((collection) => collection.name === name);
+        if (!coll) {
+            const schema = await getSchema(name);
+            const collectionId = collId ?? (nameAsId ? name : ID.unique());
+            coll = await databases.createCollection(dbId, collectionId, name, permissions ?? schema.permissions, documentSecurity ?? schema.documentSecurity, enabled ?? schema.enabled);
+            for (const attr of schema.attributes) {
+                await createAttribute(dbId, collectionId, attr);
+            }
+            for (const index of schema.indexes) {
+                await databases.createIndex(dbId, collectionId, index.key, index.type, index.attributes, index.orders);
+            }
+        }
+        return { data: coll, error: null };
     }
     catch (error) {
         return {

@@ -10,6 +10,8 @@ import {
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
+import { getSchema } from "../collections";
+import { createAttribute } from "../collections";
 
 interface ErrorObject {
   appwrite: boolean;
@@ -104,6 +106,7 @@ const createCollection = async ({
 /**
  * Creates a collection with schema.
  */
+/*
 export type CreateCollectionWithSchemaParams = {
   dbId?: string;
   collId?: string;
@@ -133,6 +136,88 @@ const createCollectionWithSchema = async ({
       enabled
     );
     return { data, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+*/
+/**
+ * Parameters for the createCollectionWithSchema function.
+ */
+type CommonParams = {
+  dbId?: string;
+  name: string;
+  permissions?: string[];
+  documentSecurity?: boolean;
+  enabled?: boolean;
+};
+type WithCollId = CommonParams & {
+  collId: string;
+  nameAsId?: never;
+};
+type WithoutCollId = CommonParams & {
+  collId?: never;
+  nameAsId: boolean;
+};
+export type CreateCollectionWithSchemaParams = WithCollId | WithoutCollId;
+/**
+ * Create a new collection according to a specific schema in a specific database.
+ * @param params - Parameters for creating the collection.
+ * @returns The created collection details.
+ */
+const createCollectionWithSchema = async ({
+  dbId = databaseId,
+  collId,
+  name,
+  permissions,
+  documentSecurity,
+  enabled,
+  nameAsId,
+}: CreateCollectionWithSchemaParams): Promise<
+  ReturnObject<Models.Collection>
+> => {
+  try {
+    const { databases } = await createAdminClient();
+
+    const collList = await databases.listCollections(dbId);
+    let coll = collList.collections.find(
+      (collection: Models.Collection) => collection.name === name
+    );
+
+    if (!coll) {
+      const schema = await getSchema(name);
+
+      const collectionId = collId ?? (nameAsId ? name : ID.unique());
+
+      coll = await databases.createCollection(
+        dbId,
+        collectionId,
+        name,
+        permissions ?? schema.permissions,
+        documentSecurity ?? schema.documentSecurity,
+        enabled ?? schema.enabled
+      );
+
+      for (const attr of schema.attributes) {
+        await createAttribute(dbId, collectionId, attr);
+      }
+
+      for (const index of schema.indexes) {
+        await databases.createIndex(
+          dbId,
+          collectionId,
+          index.key,
+          index.type,
+          index.attributes,
+          index.orders
+        );
+      }
+    }
+
+    return { data: coll, error: null };
   } catch (error: any) {
     return {
       data: null,

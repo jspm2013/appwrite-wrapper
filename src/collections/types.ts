@@ -30,7 +30,9 @@ export type Index = {
 };
 
 export type CollectionSchema = {
-  name: string;
+  tsFileName: string;
+  tsFileFormat: string;
+  collectionName: string;
   permissions: string[];
   documentSecurity: boolean;
   enabled: boolean;

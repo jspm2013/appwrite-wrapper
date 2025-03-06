@@ -13,7 +13,7 @@ export const getSchema = async (schema) => {
                 continue;
             const filePath = path.join(SCHEMAS_FOLDER, file);
             const module = JSON.parse(await fs.readFile(filePath, "utf-8"));
-            if (isCollectionSchema(module) && module.name === schema) {
+            if (isCollectionSchema(module) && module.collectionName === schema) {
                 await createTypeFile(module, filePath);
                 return module;
             }
@@ -27,8 +27,12 @@ export const getSchema = async (schema) => {
 // Type guard to validate the structure of the schema
 const isCollectionSchema = (obj) => {
     return (obj &&
-        typeof obj.name === "string" &&
-        obj.name.length > 0 &&
+        typeof obj.tsFileFormat === "string" &&
+        obj.tsFileFormat.length > 0 &&
+        typeof obj.tsFileName === "string" &&
+        obj.tsFileName.length > 0 &&
+        typeof obj.collectionName === "string" &&
+        obj.collectionName.length > 0 &&
         Array.isArray(obj.permissions) &&
         typeof obj.documentSecurity === "boolean" &&
         typeof obj.enabled === "boolean" &&

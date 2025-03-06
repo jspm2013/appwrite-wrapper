@@ -36,9 +36,17 @@ export const createTypeFile = async (
   schema: CollectionSchema,
   schemaFilePath: string
 ) => {
-  const { name, attributes } = schema;
+  const { tsFileName, attributes, tsFileFormat } = schema;
 
-  const typeName = `${name.charAt(0).toUpperCase() + name.slice(1)}Type`;
+  if (!tsFileFormat) {
+    throw new Error(
+      `Schema for '${tsFileName}' is missing 'tsFileFormat' key.`
+    );
+  }
+
+  const typeName = `${
+    tsFileName.charAt(0).toUpperCase() + tsFileName.slice(1)
+  }Type`;
 
   // Ensure every generated type extends `Models.Document`
   const fields = attributes
@@ -49,13 +57,20 @@ export const createTypeFile = async (
     })
     .join("\n");
 
-  const typeDefinition = `import { Models } from "node-appwrite";\n\nexport interface ${typeName} extends Models.Document {\n${fields}\n}\n\nexport interface AppUserType extends Models.User<Models.Preferences> {\ncustomUser: UserType;\n}`;
+  // Replace placeholders in tsFileFormat
+  const typeDefinition = tsFileFormat
+    .replaceAll(/\$\{fields\}/g, fields) // Replace fields placeholder
+    .replaceAll(/\$\{typeName\}/g, typeName); // Replace typeName placeholder
+
+  // Define TypeScript file path
+  const typeFilePath = path.join(
+    path.dirname(schemaFilePath),
+    `${tsFileName}.ts`
+  );
 
   // Write the type definition to a file in the same folder as the schema
-  const typeFilePath = path.join(path.dirname(schemaFilePath), `${name}.ts`);
-
   await fs.writeFile(typeFilePath, typeDefinition, "utf-8");
   console.log(
-    `Type definition for schema '${name}' created at ${typeFilePath}`
+    `Type definition for schema '${tsFileName}' created at ${typeFilePath}`
   );
 };

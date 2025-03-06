@@ -19,7 +19,7 @@ export const getSchema = async (schema: string): Promise<CollectionSchema> => {
       const filePath = path.join(SCHEMAS_FOLDER, file);
       const module = JSON.parse(await fs.readFile(filePath, "utf-8"));
 
-      if (isCollectionSchema(module) && module.name === schema) {
+      if (isCollectionSchema(module) && module.collectionName === schema) {
         await createTypeFile(module, filePath);
         return module;
       }
@@ -36,8 +36,12 @@ export const getSchema = async (schema: string): Promise<CollectionSchema> => {
 const isCollectionSchema = (obj: any): obj is CollectionSchema => {
   return (
     obj &&
-    typeof obj.name === "string" &&
-    obj.name.length > 0 &&
+    typeof obj.tsFileFormat === "string" &&
+    obj.tsFileFormat.length > 0 &&
+    typeof obj.tsFileName === "string" &&
+    obj.tsFileName.length > 0 &&
+    typeof obj.collectionName === "string" &&
+    obj.collectionName.length > 0 &&
     Array.isArray(obj.permissions) &&
     typeof obj.documentSecurity === "boolean" &&
     typeof obj.enabled === "boolean" &&

@@ -402,7 +402,9 @@ const listAppUsers = async ({
   queries = [],
   search,
   includingDeleted = false,
-}: ListAppUsersParams): Promise<ReturnObject<Models.DocumentList<any>>> => {
+}: ListAppUsersParams): Promise<
+  ReturnObject<Models.DocumentList<typeof AppUserType>>
+> => {
   try {
     // Run both queries in parallel for better performance
     const [usersResult, customUsersResult] = await Promise.all([
@@ -449,7 +451,7 @@ type ListCustomUsersParams = {
   includingDeleted?: boolean;
 };
 const listCustomUsers = async <
-  TCustomUsers extends Models.DocumentList<Models.Document>
+  TCustomUsers extends Models.DocumentList<typeof UserType>
 >({
   queries = [],
   includingDeleted = false,

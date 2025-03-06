@@ -11,11 +11,7 @@ const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
  * @param {string} options.collName - The name of the collection (default: "users").
  * @returns {Promise<string | null>} - The absolute file path of the type file if found, otherwise `null`.
  */
-export const getTypeFile = async ({
-  collName = "user",
-}: {
-  collName: string;
-}) => {
+export const getTypeFile = async ({ collName }: { collName: string }) => {
   try {
     const files = await fs.readdir(SCHEMAS_FOLDER);
 

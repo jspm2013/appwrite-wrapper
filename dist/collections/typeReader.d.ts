@@ -5,7 +5,7 @@
  * @param {string} options.collName - The name of the collection (default: "users").
  * @returns {Promise<string | null>} - The absolute file path of the type file if found, otherwise `null`.
  */
-export declare const getTypeFile: ({ collName, }: {
+export declare const getTypeFile: ({ collName }: {
     collName: string;
 }) => Promise<string | null>;
 /**

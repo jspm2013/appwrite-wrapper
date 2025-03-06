@@ -104,48 +104,7 @@ const createCollection = async ({
 };
 
 /**
- * Creates a collection with schema.
- */
-/*
-export type CreateCollectionWithSchemaParams = {
-  dbId?: string;
-  collId?: string;
-  name: string;
-  permissions?: string[];
-  documentSecurity?: boolean;
-  enabled?: boolean;
-};
-const createCollectionWithSchema = async ({
-  dbId = databaseId,
-  collId,
-  name,
-  permissions,
-  documentSecurity,
-  enabled,
-}: CreateCollectionWithSchemaParams): Promise<
-  ReturnObject<Models.Collection>
-> => {
-  try {
-    const { databases } = await createAdminClient();
-    const data = await databases.createCollection(
-      dbId,
-      collId ?? ID.unique(),
-      name,
-      permissions,
-      documentSecurity,
-      enabled
-    );
-    return { data, error: null };
-  } catch (error: any) {
-    return {
-      data: null,
-      error: await handleApwError({ error }),
-    };
-  }
-};
-*/
-/**
- * Parameters for the createCollectionWithSchema function.
+ * Creates a collection with schema Params
  */
 type CommonParams = {
   dbId?: string;

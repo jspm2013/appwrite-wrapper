@@ -4,20 +4,25 @@ import { handleApwError } from "../exceptions";
 import { getType } from "src/collections/typeReader";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
-const AppUserType = await getType({
-    collName: userCollectionId,
-    typeName: "AppUserType",
-});
-if (!AppUserType) {
-    throw new Error("No Type 'AppUserType' found (service: users).");
-}
-const UserType = await getType({
-    collName: userCollectionId,
-    typeName: "UserType",
-});
-if (!UserType) {
-    throw new Error("No Type 'UserType' found (service: users).");
-}
+let AppUserType;
+let UserType;
+const init = async () => {
+    AppUserType = await getType({
+        collName: userCollectionId,
+        typeName: "AppUserType",
+    });
+    if (!AppUserType) {
+        throw new Error("No Type 'AppUserType' found (service: account).");
+    }
+    UserType = await getType({
+        collName: userCollectionId,
+        typeName: "UserType",
+    });
+    if (!UserType) {
+        throw new Error("No Type 'UserType' found (service: account).");
+    }
+};
+init();
 const addPrefsForUserId = async ({ userId, prefs, }) => {
     try {
         const { users } = await createAdminClient();

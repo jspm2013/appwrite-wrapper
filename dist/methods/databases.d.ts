@@ -37,10 +37,7 @@ export type CreateCollectionParams = {
 };
 declare const createCollection: ({ dbId, collId, name, permissions, documentSecurity, enabled, }: CreateCollectionParams) => Promise<ReturnObject<Models.Collection>>;
 /**
- * Creates a collection with schema.
- */
-/**
- * Parameters for the createCollectionWithSchema function.
+ * Creates a collection with schema Params
  */
 type CommonParams = {
     dbId?: string;

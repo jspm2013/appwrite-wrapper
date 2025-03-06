@@ -1,6 +1,6 @@
 import { Models } from "node-appwrite";
-declare const AppUserType: any;
-declare const UserType: any;
+declare let AppUserType: any;
+declare let UserType: any;
 interface ErrorObject {
     appwrite: boolean;
     header: string;

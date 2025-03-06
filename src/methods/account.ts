@@ -17,23 +17,29 @@ import { ID, Models, Query } from "node-appwrite";
 import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 
-const AppUserType = await getType({
-  collName: userCollectionId,
-  typeName: "AppUserType",
-});
+let AppUserType: any;
+let UserType: any;
 
-if (!AppUserType) {
-  throw new Error("No Type 'AppUserType' found (service: account).");
-}
+const init = async () => {
+  AppUserType = await getType({
+    collName: userCollectionId,
+    typeName: "AppUserType",
+  });
 
-const UserType = await getType({
-  collName: userCollectionId,
-  typeName: "UserType",
-});
+  if (!AppUserType) {
+    throw new Error("No Type 'AppUserType' found (service: account).");
+  }
 
-if (!UserType) {
-  throw new Error("No Type 'UserType' found (service: account).");
-}
+  UserType = await getType({
+    collName: userCollectionId,
+    typeName: "UserType",
+  });
+
+  if (!UserType) {
+    throw new Error("No Type 'UserType' found (service: account).");
+  }
+};
+init();
 
 interface ErrorObject {
   appwrite: boolean;

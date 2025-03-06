@@ -41,7 +41,10 @@ const createCollectionWithSchema = async ({ dbId = databaseId, collId, name, per
         const { databases } = await createAdminClient();
         const collList = await databases.listCollections(dbId);
         let coll = collList.collections.find((collection) => collection.name === name);
-        if (!coll) {
+        if (coll) {
+            throw new Error(`Collection ${name} already exists`);
+        }
+        else {
             const schema = await getSchema(name);
             const collectionId = collId ?? (nameAsId ? name : ID.unique());
             coll = await databases.createCollection(dbId, collectionId, name, permissions ?? schema.permissions, documentSecurity ?? schema.documentSecurity, enabled ?? schema.enabled);
@@ -51,8 +54,8 @@ const createCollectionWithSchema = async ({ dbId = databaseId, collId, name, per
             for (const index of schema.indexes) {
                 await databases.createIndex(dbId, collectionId, index.key, index.type, index.attributes, index.orders);
             }
+            return { data: coll, error: null };
         }
-        return { data: coll, error: null };
     }
     catch (error) {
         return {

@@ -187,7 +187,9 @@ const createCollectionWithSchema = async ({
       (collection: Models.Collection) => collection.name === name
     );
 
-    if (!coll) {
+    if (coll) {
+      throw new Error(`Collection ${name} already exists`);
+    } else {
       const schema = await getSchema(name);
 
       const collectionId = collId ?? (nameAsId ? name : ID.unique());
@@ -215,9 +217,8 @@ const createCollectionWithSchema = async ({
           index.orders
         );
       }
+      return { data: coll, error: null };
     }
-
-    return { data: coll, error: null };
   } catch (error: any) {
     return {
       data: null,

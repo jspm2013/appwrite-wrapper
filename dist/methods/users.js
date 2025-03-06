@@ -266,7 +266,7 @@ const listAppUsers = async ({ queries = [], search, includingDeleted = false, })
             customUser: customUsersMap.get(user.$id) || null, // Add customUser if found, otherwise null
         }));
         return {
-            data: { total: appUsers.length, documents: appUsers },
+            data: { total: appUsers.length, documents: appUsers ?? [] },
             error: null,
         };
     }
@@ -284,7 +284,7 @@ const listCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
         return {
             data: {
                 total: total,
-                documents: documents,
+                documents: documents ?? [],
             },
             error: null,
         };

@@ -432,7 +432,7 @@ const listAppUsers = async ({
     }));
 
     return {
-      data: { total: appUsers.length, documents: appUsers },
+      data: { total: appUsers.length, documents: appUsers ?? [] },
       error: null,
     };
   } catch (error: any) {
@@ -468,7 +468,7 @@ const listCustomUsers = async <
     return {
       data: {
         total: total,
-        documents: documents,
+        documents: documents ?? [],
       } as TCustomUsers,
       error: null,
     };

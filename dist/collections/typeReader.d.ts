@@ -19,5 +19,5 @@ export declare const getTypeFile: ({ typeFileName, }: {
 export declare const getType: ({ typeFileName, typeName, }: {
     typeFileName: string;
     typeName: string;
-}) => Promise<any>;
+}) => Promise<string | null>;
 //# sourceMappingURL=typeReader.d.ts.map

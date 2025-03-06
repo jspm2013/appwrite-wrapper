@@ -60,14 +60,18 @@ export const getType = async ({
       return null;
     }
 
-    // Import the TypeScript module dynamically
-    const userTypesModule = await import(typeFile);
+    const tsContent = await fs.readFile(typeFile, "utf-8");
+    const typeRegex = new RegExp(
+      `export\\s+(?:interface|type)\\s+${typeName}\\s+[^]+?\\n}`,
+      "gs"
+    );
+    const match = tsContent.match(typeRegex);
 
-    if (!userTypesModule[typeName]) {
+    if (!match) {
       throw new Error(`Type '${typeName}' not found in ${typeFile}`);
     }
 
-    return userTypesModule[typeName]; // Return the actual type
+    return match[0];
   } catch (err: any) {
     console.error(
       `APW-WRAPPER - Error (collections/typeReader): Failed to extract type - ${err.message}`

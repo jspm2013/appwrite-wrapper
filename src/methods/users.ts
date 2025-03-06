@@ -462,7 +462,9 @@ const listCustomUsers = async <
     const { total, documents } = await databases.listDocuments(
       databaseId,
       userCollectionId,
-      [Query.and([...queries, Query.equal("deleted", includingDeleted)])]
+      queries.length
+        ? [Query.and([...queries, Query.equal("deleted", includingDeleted)])]
+        : [Query.equal("deleted", includingDeleted)]
     );
 
     return {
@@ -549,7 +551,9 @@ const listIdentitiesForUserId = async ({
     const { users } = await createAdminClient();
 
     const data = await users.listIdentities(
-      [Query.and([...queries, Query.equal("userId", userId)])],
+      queries.length
+        ? [Query.and([...queries, Query.equal("userId", userId)])]
+        : [Query.equal("userId", userId)],
       search
     );
 

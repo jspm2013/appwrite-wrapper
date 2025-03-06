@@ -280,7 +280,9 @@ const listAppUsers = async ({ queries = [], search, includingDeleted = false, })
 const listCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
     try {
         const { databases } = await createAdminClient();
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.and([...queries, Query.equal("deleted", includingDeleted)])]);
+        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, queries.length
+            ? [Query.and([...queries, Query.equal("deleted", includingDeleted)])]
+            : [Query.equal("deleted", includingDeleted)]);
         return {
             data: {
                 total: total,
@@ -325,7 +327,9 @@ const listIdentities = async ({ queries = [], search, }) => {
 const listIdentitiesForUserId = async ({ userId, queries = [], search, }) => {
     try {
         const { users } = await createAdminClient();
-        const data = await users.listIdentities([Query.and([...queries, Query.equal("userId", userId)])], search);
+        const data = await users.listIdentities(queries.length
+            ? [Query.and([...queries, Query.equal("userId", userId)])]
+            : [Query.equal("userId", userId)], search);
         return { data, error: null };
     }
     catch (error) {

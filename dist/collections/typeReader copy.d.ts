@@ -1,5 +1,5 @@
 /**
- * Retrieves the absolute file path of a TypeScript type definition file.
+ * Retrieves the file path of the dynamically created TypeScript definition file.
  *
  * @param {Object} options - Configuration options for fetching the type file.
  * @param {string} options.collName - The name of the collection (default: "users").
@@ -9,15 +9,15 @@ export declare const getTypeFile: ({ collName, }: {
     collName: string;
 }) => Promise<string | null>;
 /**
- * Dynamically imports a TypeScript type definition file and extracts the specified type.
+ * Reads a TypeScript file and extracts a specific interface or type.
  *
  * @param {Object} options - Configuration options for fetching the type.
- * @param {string} options.collName - The name of the collection.
+ * @param {string} options.collName - The name of the collection (default: "users").
  * @param {string} options.typeName - The specific type name to extract.
- * @returns {Promise<any | null>} - The extracted type definition or `null` if not found.
+ * @returns {Promise<string | null>} - The extracted type definition as a string, or `null` if not found.
  */
 export declare const getType: ({ collName, typeName, }: {
     collName: string;
     typeName: string;
-}) => Promise<any>;
-//# sourceMappingURL=typeReader.d.ts.map
+}) => Promise<string | null>;
+//# sourceMappingURL=typeReader%20copy.d.ts.map

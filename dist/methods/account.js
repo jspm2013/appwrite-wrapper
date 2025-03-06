@@ -1,5 +1,5 @@
 "use server";
-import { cookieName, oauthSuccessPath, oauthFailurePath, verificationPath, signInPath, databaseId, userCollectionId, } from "../appwriteConfig";
+import { cookieName, signInPath, databaseId, oauthSuccessPath, oauthFailurePath, verificationPath, userCollectionId, } from "../appwriteConfig";
 import { cookies } from "next/headers";
 import { hostExternal } from "../host";
 import { OAuthProvider } from "../enums";
@@ -7,6 +7,20 @@ import { handleApwError } from "../exceptions";
 import { ID, Query } from "node-appwrite";
 import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
+const AppUserType = await getType({
+    collName: userCollectionId,
+    typeName: "AppUserType",
+});
+if (!AppUserType) {
+    throw new Error("No Type 'AppUserType' found (service: account).");
+}
+const UserType = await getType({
+    collName: userCollectionId,
+    typeName: "UserType",
+});
+if (!UserType) {
+    throw new Error("No Type 'UserType' found (service: account).");
+}
 const addPrefs = async ({ prefs, }) => {
     try {
         const { account } = await createSessionClient();
@@ -272,22 +286,10 @@ const getAppUser = async () => {
         const { databases } = await createAdminClient();
         const user = await account.get();
         if (!user) {
-            throw new Error("No user found in database.");
-        }
-        const AppUserType = await getType({
-            collName: userCollectionId,
-            typeName: "AppUserType",
-        });
-        if (!AppUserType) {
-            throw new Error("No AppUser Type found.");
+            throw new Error("No session user found in database.");
         }
         if ((user.emailVerification || user.phoneVerification) && user.status) {
-            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
-                Query.and([
-                    Query.equal("user_id", user.$id),
-                    Query.equal("deleted", false),
-                ]),
-            ]);
+            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", user.$id)]);
             if (total === 1) {
                 return {
                     data: {
@@ -316,21 +318,45 @@ const getCustomUser = async () => {
         const { databases } = await createAdminClient();
         const user = await account.get();
         if (!user) {
-            throw new Error("No user found in database.");
+            throw new Error("No session user found in database.");
         }
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
-            Query.and([
-                Query.equal("user_id", user.$id),
-                Query.equal("deleted", false),
-            ]),
-        ]);
-        if (total === 1 && user.status) {
-            return {
-                data: documents[0],
-                error: null,
-            };
+        if ((user.emailVerification || user.phoneVerification) && user.status) {
+            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", user.$id)]);
+            if (total === 1) {
+                return {
+                    data: documents[0],
+                    error: null,
+                };
+            }
         }
         return { data: null, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+/*
+ * Retrieves user details.
+ */
+const getUser = async () => {
+    try {
+        const { account } = await createSessionClient();
+        const { databases } = await createAdminClient();
+        const user = await account.get();
+        if (!user) {
+            throw new Error("No session user found in database.");
+        }
+        const { documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", user.$id)]);
+        return {
+            data: {
+                ...user,
+                customUser: documents[0],
+            },
+            error: null,
+        };
     }
     catch (error) {
         return {
@@ -346,22 +372,6 @@ const getSession = async ({ sessionId = "current", } = {}) => {
     try {
         const { account } = await createSessionClient();
         const data = await account.getSession(sessionId);
-        return { data, error: null };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-/*
- * Retrieves user details.
- */
-const getUser = async () => {
-    try {
-        const { account } = await createSessionClient();
-        const data = await account.get();
         return { data, error: null };
     }
     catch (error) {

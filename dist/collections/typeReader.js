@@ -3,43 +3,51 @@ import fs from "fs/promises";
 import { schemasPath } from "../appwriteConfig";
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
 /**
- * Retrieves the file path of the dynamically created TypeScript definition file.
+ * Retrieves the absolute file path of a TypeScript type definition file.
  *
  * @param {Object} options - Configuration options for fetching the type file.
  * @param {string} options.collName - The name of the collection (default: "users").
  * @returns {Promise<string | null>} - The absolute file path of the type file if found, otherwise `null`.
  */
-export const getTypeFile = async ({ collName = "users", }) => {
+export const getTypeFile = async ({ collName = "user", }) => {
     try {
-        const filePath = path.join(SCHEMAS_FOLDER, `${collName}.ts`);
-        await fs.access(filePath);
-        return filePath;
+        const files = await fs.readdir(SCHEMAS_FOLDER);
+        for (const file of files) {
+            if (file.endsWith(".ts") && file.startsWith(collName)) {
+                const filePath = path.join(SCHEMAS_FOLDER, file);
+                await fs.access(filePath);
+                return filePath;
+            }
+        }
+        console.error(`ERROR: No TypeScript file found for collection '${collName}'.`);
+        return null;
     }
     catch (err) {
-        console.error(`ERROR: Type file not found - ${err.message}`);
+        console.error(`ERROR: Unable to access type file - ${err.message}`);
         return null;
     }
 };
 /**
- * Reads a TypeScript file and extracts a specific interface or type.
+ * Dynamically imports a TypeScript type definition file and extracts the specified type.
  *
  * @param {Object} options - Configuration options for fetching the type.
- * @param {string} options.collName - The name of the collection (default: "users").
+ * @param {string} options.collName - The name of the collection.
  * @param {string} options.typeName - The specific type name to extract.
- * @returns {Promise<string | null>} - The extracted type definition as a string, or `null` if not found.
+ * @returns {Promise<any | null>} - The extracted type definition or `null` if not found.
  */
-export const getType = async ({ collName = "users", typeName, }) => {
+export const getType = async ({ collName, typeName, }) => {
     try {
         const typeFile = await getTypeFile({ collName });
-        if (!typeFile)
+        if (!typeFile) {
+            console.error(`Type file not found for collection: ${collName}`);
             return null;
-        const tsContent = await fs.readFile(typeFile, "utf-8");
-        const typeRegex = new RegExp(`export\\s+(?:interface|type)\\s+${typeName}\\s+[^]+?\\n}`, "gs");
-        const match = tsContent.match(typeRegex);
-        if (!match) {
+        }
+        // Import the TypeScript module dynamically
+        const userTypesModule = await import(typeFile);
+        if (!userTypesModule[typeName]) {
             throw new Error(`Type '${typeName}' not found in ${typeFile}`);
         }
-        return match[0];
+        return userTypesModule[typeName]; // Return the actual type
     }
     catch (err) {
         console.error(`APW-WRAPPER - Error (collections/typeReader): Failed to extract type - ${err.message}`);

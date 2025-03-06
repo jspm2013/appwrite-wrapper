@@ -1,5 +1,7 @@
 import { OAuthProvider } from "../enums";
 import { Models } from "node-appwrite";
+declare const AppUserType: any;
+declare const UserType: any;
 interface ErrorObject {
     appwrite: boolean;
     header: string;
@@ -60,12 +62,12 @@ declare const deleteSession: ({ sessionId, }?: {
     sessionId?: string;
 }) => Promise<ReturnObject<string>>;
 declare const deleteSessions: () => Promise<ReturnObject<string>>;
-declare const getAppUser: () => Promise<ReturnObject<any | null>>;
-declare const getCustomUser: () => Promise<ReturnObject<Record<string, any>>>;
+declare const getAppUser: () => Promise<ReturnObject<typeof AppUserType>>;
+declare const getCustomUser: () => Promise<ReturnObject<typeof UserType>>;
+declare const getUser: () => Promise<ReturnObject<typeof AppUserType>>;
 declare const getSession: ({ sessionId, }?: {
     sessionId?: string;
 }) => Promise<ReturnObject<Models.Session>>;
-declare const getUser: () => Promise<ReturnObject<Models.User<Models.Preferences>>>;
 declare const listSessions: () => Promise<ReturnObject<Models.SessionList>>;
 declare const updateEmail: ({ email, password, }: {
     email: string;

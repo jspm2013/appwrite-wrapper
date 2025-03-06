@@ -2,9 +2,27 @@
 
 import { Models, Query } from "node-appwrite";
 import { handleApwError } from "../exceptions";
-import { getType } from "../collections/typeReader";
+import { getType } from "src/collections/typeReader";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
+
+const AppUserType = await getType({
+  collName: userCollectionId,
+  typeName: "AppUserType",
+});
+
+if (!AppUserType) {
+  throw new Error("No Type 'AppUserType' found (service: users).");
+}
+
+const UserType = await getType({
+  collName: userCollectionId,
+  typeName: "UserType",
+});
+
+if (!UserType) {
+  throw new Error("No Type 'UserType' found (service: users).");
+}
 
 interface ErrorObject {
   appwrite: boolean;
@@ -239,29 +257,76 @@ type GetUserForUserIdParams = {
 };
 const getAppUserForUserId = async ({
   userId,
-}: GetUserForUserIdParams): Promise<ReturnObject<any>> => {
+  queries = [],
+  includingDeleted = false,
+}: GetUserForUserIdParams): Promise<ReturnObject<typeof AppUserType>> => {
   try {
     const { users } = await createAdminClient();
     const { databases } = await createAdminClient();
 
     const user = await users.get(userId);
+    if (!user) {
+      throw new Error("No user found in database.");
+    }
 
-    if ((user.emailVerification || user.phoneVerification) && user.status) {
-      const { total, documents } = await databases.listDocuments(
-        databaseId,
-        userCollectionId,
-        [Query.equal("user_id", userId)]
-      );
+    const { total, documents } = await databases.listDocuments(
+      databaseId,
+      userCollectionId,
+      [
+        Query.and([
+          ...queries,
+          Query.equal("user_id", userId),
+          Query.equal("deleted", includingDeleted),
+        ]),
+      ]
+    );
 
-      if (total > 0) {
-        return {
-          data: { ...user, customUser: documents[0] },
-          error: null,
-        };
-      }
+    if (total === 1) {
+      return {
+        data: {
+          ...user,
+          customUser: documents[0],
+        },
+        error: null,
+      };
     }
 
     return { data: null, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Retrieves an App User (native appwrite user extended by custom user (key = customUser)) by their ID.
+ */
+const getCustomUserForUserId = async ({
+  userId,
+  queries = [],
+  includingDeleted = false,
+}: GetUserForUserIdParams): Promise<ReturnObject<typeof UserType>> => {
+  try {
+    const { databases } = await createAdminClient();
+
+    const { total, documents } = await databases.listDocuments(
+      databaseId,
+      userCollectionId,
+      [
+        Query.and([
+          ...queries,
+          Query.equal("user_id", userId),
+          Query.equal("deleted", includingDeleted),
+        ]),
+      ]
+    );
+
+    return {
+      data: total === 1 ? documents[0] : null,
+      error: null,
+    };
   } catch (error: any) {
     return {
       data: null,
@@ -279,22 +344,35 @@ const getAppUserForUserId = async ({
  */
 const getUserForUserId = async ({
   userId,
-}: GetUserForUserIdParams): Promise<ReturnObject<any>> => {
+  queries = [],
+  includingDeleted = false,
+}: GetUserForUserIdParams): Promise<ReturnObject<typeof AppUserType>> => {
   try {
     const { users } = await createAdminClient();
     const { databases } = await createAdminClient();
 
     const user = await users.get(userId);
-    if (!user) return { data: null, error: null };
+    if (!user) {
+      throw new Error("No session user found in database.");
+    }
 
-    const { total, documents } = await databases.listDocuments(
+    const { documents } = await databases.listDocuments(
       databaseId,
       userCollectionId,
-      [Query.equal("user_id", userId)]
+      [
+        Query.and([
+          ...queries,
+          Query.equal("user_id", userId),
+          Query.equal("deleted", includingDeleted),
+        ]),
+      ]
     );
 
     return {
-      data: { ...user, customUser: total > 0 ? documents[0] : {} },
+      data: {
+        ...user,
+        customUser: documents[0],
+      },
       error: null,
     };
   } catch (error: any) {
@@ -306,28 +384,47 @@ const getUserForUserId = async ({
 };
 
 /*
- * Retrieves an App User (native appwrite user extended by custom user (key = customUser)) by their ID.
+ * Gets APP users list.
  */
-const getCustomUserForUserId = async ({
-  userId,
+type ListAppUsersParams = {
+  queries?: string[];
+  search?: string;
+  includingDeleted?: boolean;
+};
+
+const listAppUsers = async ({
   queries = [],
+  search,
   includingDeleted = false,
-}: GetUserForUserIdParams): Promise<ReturnObject<any>> => {
+}: ListAppUsersParams): Promise<ReturnObject<Models.DocumentList<any>>> => {
   try {
-    const { databases } = await createAdminClient();
-    const { total, documents } = await databases.listDocuments(
-      databaseId,
-      userCollectionId,
-      [
-        Query.and([
-          ...queries,
-          Query.equal("user_id", userId),
-          Query.equal("deleted", includingDeleted),
-        ]),
-      ]
+    // Run both queries in parallel for better performance
+    const [usersResult, customUsersResult] = await Promise.all([
+      listUsers({ queries, search }),
+      listCustomUsers({ queries, includingDeleted }),
+    ]);
+
+    // Check for errors
+    if (usersResult.error) return { data: null, error: usersResult.error };
+    if (customUsersResult.error)
+      return { data: null, error: customUsersResult.error };
+
+    const usersList = usersResult.data?.users ?? [];
+    const customUsersList = customUsersResult.data?.documents ?? [];
+
+    // Convert customUsersList to a Map for O(1) lookups
+    const customUsersMap = new Map(
+      customUsersList.map((customUser) => [customUser.user_id, customUser])
     );
+
+    // Merge users with customUser data
+    const appUsers: any[] = usersList.map((user) => ({
+      ...user,
+      customUser: customUsersMap.get(user.$id) || null, // Add customUser if found, otherwise null
+    }));
+
     return {
-      data: total > 0 ? documents[0] : null,
+      data: { total: appUsers.length, documents: appUsers },
       error: null,
     };
   } catch (error: any) {
@@ -354,15 +451,10 @@ const listCustomUsers = async <
   try {
     const { databases } = await createAdminClient();
 
-    const combinedQueries = [
-      ...queries,
-      Query.equal("deleted", includingDeleted),
-    ];
-
     const { total, documents } = await databases.listDocuments(
       databaseId,
       userCollectionId,
-      combinedQueries
+      [Query.and([...queries, Query.equal("deleted", includingDeleted)])]
     );
 
     return {
@@ -372,6 +464,32 @@ const listCustomUsers = async <
       } as TCustomUsers,
       error: null,
     };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Lists users with optional filters and search parameters.
+ */
+type ListUsersParams = {
+  queries?: string[];
+  search?: string;
+};
+const listUsers = async ({
+  queries,
+  search,
+}: ListUsersParams): Promise<
+  ReturnObject<Models.UserList<Models.Preferences>>
+> => {
+  try {
+    const { users } = await createAdminClient();
+
+    const data = await users.list(queries, search);
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -422,11 +540,11 @@ const listIdentitiesForUserId = async ({
   try {
     const { users } = await createAdminClient();
 
-    const userQueries = [
-      Query.and([...queries, Query.equal("userId", userId)]),
-    ];
+    const data = await users.listIdentities(
+      [Query.and([...queries, Query.equal("userId", userId)])],
+      search
+    );
 
-    const data = await users.listIdentities(userQueries, search);
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -449,32 +567,6 @@ const listSessionsForUserId = async ({
     const { users } = await createAdminClient();
 
     const data = await users.listSessions(userId);
-    return { data, error: null };
-  } catch (error: any) {
-    return {
-      data: null,
-      error: await handleApwError({ error }),
-    };
-  }
-};
-
-/*
- * Lists users with optional filters and search parameters.
- */
-type ListUsersParams = {
-  queries?: string[];
-  search?: string;
-};
-const listUsers = async ({
-  queries,
-  search,
-}: ListUsersParams): Promise<
-  ReturnObject<Models.UserList<Models.Preferences>>
-> => {
-  try {
-    const { users } = await createAdminClient();
-
-    const data = await users.list(queries, search);
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -788,12 +880,13 @@ export {
   deleteUserForUserId,
   getAppUserForUserId, // INcl. deleted=false as default
   getCustomUserForUserId, // INcl. deleted=false as default
-  getUserForUserId,
+  getUserForUserId, // INcl. deleted=false as default
+  listAppUsers, // INcl. deleted=false as default
   listCustomUsers, // INcl. deleted=false as default
+  listUsers, // INcl. deleted=false as default
   listIdentities,
   listIdentitiesForUserId,
   listSessionsForUserId,
-  listUsers, // INcl. deleted=false as default
   updateEmailForUserId,
   updateEmailVerificationForUserId,
   updateNameForUserId,

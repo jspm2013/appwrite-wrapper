@@ -1,8 +1,23 @@
 "use server";
 import { Query } from "node-appwrite";
 import { handleApwError } from "../exceptions";
+import { getType } from "src/collections/typeReader";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
+const AppUserType = await getType({
+    collName: userCollectionId,
+    typeName: "AppUserType",
+});
+if (!AppUserType) {
+    throw new Error("No Type 'AppUserType' found (service: users).");
+}
+const UserType = await getType({
+    collName: userCollectionId,
+    typeName: "UserType",
+});
+if (!UserType) {
+    throw new Error("No Type 'UserType' found (service: users).");
+}
 const addPrefsForUserId = async ({ userId, prefs, }) => {
     try {
         const { users } = await createAdminClient();
@@ -129,48 +144,31 @@ const deleteUserForUserId = async ({ userId, }) => {
         };
     }
 };
-const getAppUserForUserId = async ({ userId, }) => {
+const getAppUserForUserId = async ({ userId, queries = [], includingDeleted = false, }) => {
     try {
         const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
         const user = await users.get(userId);
-        if ((user.emailVerification || user.phoneVerification) && user.status) {
-            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", userId)]);
-            if (total > 0) {
-                return {
-                    data: { ...user, customUser: documents[0] },
-                    error: null,
-                };
-            }
+        if (!user) {
+            throw new Error("No user found in database.");
+        }
+        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
+            Query.and([
+                ...queries,
+                Query.equal("user_id", userId),
+                Query.equal("deleted", includingDeleted),
+            ]),
+        ]);
+        if (total === 1) {
+            return {
+                data: {
+                    ...user,
+                    customUser: documents[0],
+                },
+                error: null,
+            };
         }
         return { data: null, error: null };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-/*
- * Retrieves a user by their ID.
- *
- * NATIVE APPWRITE USER (BUT NOT NECESSARILY VERIFIED) extended by custom user (key = customUser)
- * ...user for lists/displaying all app users
- *
- */
-const getUserForUserId = async ({ userId, }) => {
-    try {
-        const { users } = await createAdminClient();
-        const { databases } = await createAdminClient();
-        const user = await users.get(userId);
-        if (!user)
-            return { data: null, error: null };
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", userId)]);
-        return {
-            data: { ...user, customUser: total > 0 ? documents[0] : {} },
-            error: null,
-        };
     }
     catch (error) {
         return {
@@ -193,7 +191,77 @@ const getCustomUserForUserId = async ({ userId, queries = [], includingDeleted =
             ]),
         ]);
         return {
-            data: total > 0 ? documents[0] : null,
+            data: total === 1 ? documents[0] : null,
+            error: null,
+        };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+/*
+ * Retrieves a user by their ID.
+ *
+ * NATIVE APPWRITE USER (BUT NOT NECESSARILY VERIFIED) extended by custom user (key = customUser)
+ * ...user for lists/displaying all app users
+ *
+ */
+const getUserForUserId = async ({ userId, queries = [], includingDeleted = false, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const { databases } = await createAdminClient();
+        const user = await users.get(userId);
+        if (!user) {
+            throw new Error("No session user found in database.");
+        }
+        const { documents } = await databases.listDocuments(databaseId, userCollectionId, [
+            Query.and([
+                ...queries,
+                Query.equal("user_id", userId),
+                Query.equal("deleted", includingDeleted),
+            ]),
+        ]);
+        return {
+            data: {
+                ...user,
+                customUser: documents[0],
+            },
+            error: null,
+        };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+const listAppUsers = async ({ queries = [], search, includingDeleted = false, }) => {
+    try {
+        // Run both queries in parallel for better performance
+        const [usersResult, customUsersResult] = await Promise.all([
+            listUsers({ queries, search }),
+            listCustomUsers({ queries, includingDeleted }),
+        ]);
+        // Check for errors
+        if (usersResult.error)
+            return { data: null, error: usersResult.error };
+        if (customUsersResult.error)
+            return { data: null, error: customUsersResult.error };
+        const usersList = usersResult.data?.users ?? [];
+        const customUsersList = customUsersResult.data?.documents ?? [];
+        // Convert customUsersList to a Map for O(1) lookups
+        const customUsersMap = new Map(customUsersList.map((customUser) => [customUser.user_id, customUser]));
+        // Merge users with customUser data
+        const appUsers = usersList.map((user) => ({
+            ...user,
+            customUser: customUsersMap.get(user.$id) || null, // Add customUser if found, otherwise null
+        }));
+        return {
+            data: { total: appUsers.length, documents: appUsers },
             error: null,
         };
     }
@@ -207,11 +275,7 @@ const getCustomUserForUserId = async ({ userId, queries = [], includingDeleted =
 const listCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
     try {
         const { databases } = await createAdminClient();
-        const combinedQueries = [
-            ...queries,
-            Query.equal("deleted", includingDeleted),
-        ];
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, combinedQueries);
+        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.and([...queries, Query.equal("deleted", includingDeleted)])]);
         return {
             data: {
                 total: total,
@@ -219,6 +283,19 @@ const listCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
             },
             error: null,
         };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+const listUsers = async ({ queries, search, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const data = await users.list(queries, search);
+        return { data, error: null };
     }
     catch (error) {
         return {
@@ -243,10 +320,7 @@ const listIdentities = async ({ queries = [], search, }) => {
 const listIdentitiesForUserId = async ({ userId, queries = [], search, }) => {
     try {
         const { users } = await createAdminClient();
-        const userQueries = [
-            Query.and([...queries, Query.equal("userId", userId)]),
-        ];
-        const data = await users.listIdentities(userQueries, search);
+        const data = await users.listIdentities([Query.and([...queries, Query.equal("userId", userId)])], search);
         return { data, error: null };
     }
     catch (error) {
@@ -260,19 +334,6 @@ const listSessionsForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
         const data = await users.listSessions(userId);
-        return { data, error: null };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-const listUsers = async ({ queries, search, }) => {
-    try {
-        const { users } = await createAdminClient();
-        const data = await users.list(queries, search);
         return { data, error: null };
     }
     catch (error) {
@@ -454,6 +515,8 @@ const updateStatusForUserId = async ({ userId, status, }) => {
 };
 export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getAppUserForUserId, // INcl. deleted=false as default
 getCustomUserForUserId, // INcl. deleted=false as default
-getUserForUserId, listCustomUsers, // INcl. deleted=false as default
-listIdentities, listIdentitiesForUserId, listSessionsForUserId, listUsers, // INcl. deleted=false as default
-updateEmailForUserId, updateEmailVerificationForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, };
+getUserForUserId, // INcl. deleted=false as default
+listAppUsers, // INcl. deleted=false as default
+listCustomUsers, // INcl. deleted=false as default
+listUsers, // INcl. deleted=false as default
+listIdentities, listIdentitiesForUserId, listSessionsForUserId, updateEmailForUserId, updateEmailVerificationForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, };

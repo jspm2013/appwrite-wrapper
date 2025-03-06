@@ -22,7 +22,7 @@ let UserType: any;
 
 const init = async () => {
   AppUserType = await getType({
-    collName: userCollectionId,
+    typeFileName: "user", // without extension
     typeName: "AppUserType",
   });
 
@@ -31,7 +31,7 @@ const init = async () => {
   }
 
   UserType = await getType({
-    collName: userCollectionId,
+    typeFileName: "user", // without extension
     typeName: "UserType",
   });
 

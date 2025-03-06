@@ -8,14 +8,14 @@ let AppUserType;
 let UserType;
 const init = async () => {
     AppUserType = await getType({
-        collName: userCollectionId,
+        typeFileName: "user", // without extension
         typeName: "AppUserType",
     });
     if (!AppUserType) {
         throw new Error("No Type 'AppUserType' found (service: account).");
     }
     UserType = await getType({
-        collName: userCollectionId,
+        typeFileName: "user", // without extension
         typeName: "UserType",
     });
     if (!UserType) {

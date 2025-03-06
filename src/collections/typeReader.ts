@@ -8,15 +8,19 @@ const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
  * Retrieves the absolute file path of a TypeScript type definition file.
  *
  * @param {Object} options - Configuration options for fetching the type file.
- * @param {string} options.collName - The name of the collection (default: "users").
+ * @param {string} options.typeFileName - The name of the file that holds the type definition.
  * @returns {Promise<string | null>} - The absolute file path of the type file if found, otherwise `null`.
  */
-export const getTypeFile = async ({ collName }: { collName: string }) => {
+export const getTypeFile = async ({
+  typeFileName,
+}: {
+  typeFileName: string;
+}) => {
   try {
     const files = await fs.readdir(SCHEMAS_FOLDER);
 
     for (const file of files) {
-      if (file.endsWith(".ts") && file.startsWith(collName)) {
+      if (file.endsWith(".ts") && file.startsWith(typeFileName)) {
         const filePath = path.join(SCHEMAS_FOLDER, file);
         await fs.access(filePath);
         return filePath;
@@ -24,7 +28,7 @@ export const getTypeFile = async ({ collName }: { collName: string }) => {
     }
 
     console.error(
-      `ERROR: No TypeScript file found for collection '${collName}'.`
+      `ERROR: No TypeScript file found for collection '${typeFileName}'.`
     );
     return null;
   } catch (err: any) {
@@ -37,22 +41,22 @@ export const getTypeFile = async ({ collName }: { collName: string }) => {
  * Dynamically imports a TypeScript type definition file and extracts the specified type.
  *
  * @param {Object} options - Configuration options for fetching the type.
- * @param {string} options.collName - The name of the collection.
+ * @param {string} options.typeFileName - The name of the file that holds the type definition.
  * @param {string} options.typeName - The specific type name to extract.
  * @returns {Promise<any | null>} - The extracted type definition or `null` if not found.
  */
 export const getType = async ({
-  collName,
+  typeFileName,
   typeName,
 }: {
-  collName: string;
+  typeFileName: string;
   typeName: string;
 }) => {
   try {
-    const typeFile = await getTypeFile({ collName });
+    const typeFile = await getTypeFile({ typeFileName });
 
     if (!typeFile) {
-      console.error(`Type file not found for collection: ${collName}`);
+      console.error(`Type file not found for collection: ${typeFileName}`);
       return null;
     }
 

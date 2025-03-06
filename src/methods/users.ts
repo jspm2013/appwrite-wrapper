@@ -2,7 +2,7 @@
 
 import { Models, Query } from "node-appwrite";
 import { handleApwError } from "../exceptions";
-import { getType } from "src/collections/typeReader";
+import { getType } from "../collections/typeReader";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
 

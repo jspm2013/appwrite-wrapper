@@ -149,7 +149,7 @@ const deleteUserForUserId = async ({ userId, }) => {
         };
     }
 };
-const getAppUserForUserId = async ({ userId, queries = [], includingDeleted = false, }) => {
+const getAppUserForUserId = async ({ userId, queries = [], includingDeleted = undefined, }) => {
     try {
         const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
@@ -158,11 +158,15 @@ const getAppUserForUserId = async ({ userId, queries = [], includingDeleted = fa
             throw new Error("No user found in database.");
         }
         const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
-            Query.and([
-                ...queries,
-                Query.equal("user_id", userId),
-                Query.equal("deleted", includingDeleted),
-            ]),
+            includingDeleted === undefined
+                ? queries.length
+                    ? Query.and([...queries, Query.equal("user_id", userId)])
+                    : Query.equal("user_id", userId)
+                : Query.and([
+                    ...queries,
+                    Query.equal("user_id", userId),
+                    Query.equal("deleted", includingDeleted),
+                ]),
         ]);
         if (total === 1) {
             return {
@@ -185,15 +189,19 @@ const getAppUserForUserId = async ({ userId, queries = [], includingDeleted = fa
 /*
  * Retrieves an App User (native appwrite user extended by custom user (key = customUser)) by their ID.
  */
-const getCustomUserForUserId = async ({ userId, queries = [], includingDeleted = false, }) => {
+const getCustomUserForUserId = async ({ userId, queries = [], includingDeleted = undefined, }) => {
     try {
         const { databases } = await createAdminClient();
         const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
-            Query.and([
-                ...queries,
-                Query.equal("user_id", userId),
-                Query.equal("deleted", includingDeleted),
-            ]),
+            includingDeleted === undefined
+                ? queries.length
+                    ? Query.and([...queries, Query.equal("user_id", userId)])
+                    : Query.equal("user_id", userId)
+                : Query.and([
+                    ...queries,
+                    Query.equal("user_id", userId),
+                    Query.equal("deleted", includingDeleted),
+                ]),
         ]);
         return {
             data: total === 1 ? documents[0] : null,
@@ -214,7 +222,7 @@ const getCustomUserForUserId = async ({ userId, queries = [], includingDeleted =
  * ...user for lists/displaying all app users
  *
  */
-const getUserForUserId = async ({ userId, queries = [], includingDeleted = false, }) => {
+const getUserForUserId = async ({ userId, queries = [], includingDeleted = undefined, }) => {
     try {
         const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
@@ -223,11 +231,15 @@ const getUserForUserId = async ({ userId, queries = [], includingDeleted = false
             throw new Error("No session user found in database.");
         }
         const { documents } = await databases.listDocuments(databaseId, userCollectionId, [
-            Query.and([
-                ...queries,
-                Query.equal("user_id", userId),
-                Query.equal("deleted", includingDeleted),
-            ]),
+            includingDeleted === undefined
+                ? queries.length
+                    ? Query.and([...queries, Query.equal("user_id", userId)])
+                    : Query.equal("user_id", userId)
+                : Query.and([
+                    ...queries,
+                    Query.equal("user_id", userId),
+                    Query.equal("deleted", includingDeleted),
+                ]),
         ]);
         return {
             data: {
@@ -244,7 +256,7 @@ const getUserForUserId = async ({ userId, queries = [], includingDeleted = false
         };
     }
 };
-const listAppUsers = async ({ queries = [], search, includingDeleted = false, }) => {
+const listAppUsers = async ({ queries = [], search, includingDeleted = undefined, }) => {
     try {
         // Run both queries in parallel for better performance
         const [usersResult, customUsersResult] = await Promise.all([
@@ -277,12 +289,15 @@ const listAppUsers = async ({ queries = [], search, includingDeleted = false, })
         };
     }
 };
-const listCustomUsers = async ({ queries = [], includingDeleted = false, }) => {
+const listCustomUsers = async ({ queries = [], includingDeleted = undefined, }) => {
     try {
         const { databases } = await createAdminClient();
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, queries.length
-            ? [Query.and([...queries, Query.equal("deleted", includingDeleted)])]
-            : [Query.equal("deleted", includingDeleted)]);
+        const query = queries.length
+            ? includingDeleted === undefined
+                ? queries
+                : [Query.and([...queries, Query.equal("deleted", includingDeleted)])]
+            : [Query.equal("deleted", includingDeleted)];
+        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, query);
         return {
             data: {
                 total: total,

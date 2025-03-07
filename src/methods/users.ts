@@ -264,7 +264,7 @@ type GetUserForUserIdParams = {
 const getAppUserForUserId = async ({
   userId,
   queries = [],
-  includingDeleted = false,
+  includingDeleted = undefined,
 }: GetUserForUserIdParams): Promise<ReturnObject<typeof AppUserType>> => {
   try {
     const { users } = await createAdminClient();
@@ -279,11 +279,15 @@ const getAppUserForUserId = async ({
       databaseId,
       userCollectionId,
       [
-        Query.and([
-          ...queries,
-          Query.equal("user_id", userId),
-          Query.equal("deleted", includingDeleted),
-        ]),
+        includingDeleted === undefined
+          ? queries.length
+            ? Query.and([...queries, Query.equal("user_id", userId)])
+            : Query.equal("user_id", userId)
+          : Query.and([
+              ...queries,
+              Query.equal("user_id", userId),
+              Query.equal("deleted", includingDeleted),
+            ]),
       ]
     );
 
@@ -312,7 +316,7 @@ const getAppUserForUserId = async ({
 const getCustomUserForUserId = async ({
   userId,
   queries = [],
-  includingDeleted = false,
+  includingDeleted = undefined,
 }: GetUserForUserIdParams): Promise<ReturnObject<typeof UserType>> => {
   try {
     const { databases } = await createAdminClient();
@@ -321,11 +325,15 @@ const getCustomUserForUserId = async ({
       databaseId,
       userCollectionId,
       [
-        Query.and([
-          ...queries,
-          Query.equal("user_id", userId),
-          Query.equal("deleted", includingDeleted),
-        ]),
+        includingDeleted === undefined
+          ? queries.length
+            ? Query.and([...queries, Query.equal("user_id", userId)])
+            : Query.equal("user_id", userId)
+          : Query.and([
+              ...queries,
+              Query.equal("user_id", userId),
+              Query.equal("deleted", includingDeleted),
+            ]),
       ]
     );
 
@@ -351,7 +359,7 @@ const getCustomUserForUserId = async ({
 const getUserForUserId = async ({
   userId,
   queries = [],
-  includingDeleted = false,
+  includingDeleted = undefined,
 }: GetUserForUserIdParams): Promise<ReturnObject<typeof AppUserType>> => {
   try {
     const { users } = await createAdminClient();
@@ -366,11 +374,15 @@ const getUserForUserId = async ({
       databaseId,
       userCollectionId,
       [
-        Query.and([
-          ...queries,
-          Query.equal("user_id", userId),
-          Query.equal("deleted", includingDeleted),
-        ]),
+        includingDeleted === undefined
+          ? queries.length
+            ? Query.and([...queries, Query.equal("user_id", userId)])
+            : Query.equal("user_id", userId)
+          : Query.and([
+              ...queries,
+              Query.equal("user_id", userId),
+              Query.equal("deleted", includingDeleted),
+            ]),
       ]
     );
 
@@ -401,7 +413,7 @@ type ListAppUsersParams = {
 const listAppUsers = async ({
   queries = [],
   search,
-  includingDeleted = false,
+  includingDeleted = undefined,
 }: ListAppUsersParams): Promise<
   ReturnObject<Models.DocumentList<typeof AppUserType>>
 > => {
@@ -454,17 +466,21 @@ const listCustomUsers = async <
   TCustomUsers extends Models.DocumentList<typeof UserType>
 >({
   queries = [],
-  includingDeleted = false,
+  includingDeleted = undefined,
 }: ListCustomUsersParams): Promise<ReturnObject<TCustomUsers>> => {
   try {
     const { databases } = await createAdminClient();
 
+    const query = queries.length
+      ? includingDeleted === undefined
+        ? queries
+        : [Query.and([...queries, Query.equal("deleted", includingDeleted)])]
+      : [Query.equal("deleted", includingDeleted!)];
+
     const { total, documents } = await databases.listDocuments(
       databaseId,
       userCollectionId,
-      queries.length
-        ? [Query.and([...queries, Query.equal("deleted", includingDeleted)])]
-        : [Query.equal("deleted", includingDeleted)]
+      query
     );
 
     return {

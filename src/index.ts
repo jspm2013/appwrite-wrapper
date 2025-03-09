@@ -16,6 +16,17 @@ import {
 } from "./utils";
 export { Models, ID, Query } from "node-appwrite";
 
+interface ErrorObject {
+  appwrite: boolean;
+  header: string;
+  type: string;
+  code: number;
+  variant: string;
+  description: string;
+  error?: object;
+}
+export { type ErrorObject };
+
 export {
   // Account functions
   addPrefs,

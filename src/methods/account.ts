@@ -772,17 +772,3 @@ export {
   updateStatus,
   updateVerification,
 };
-
-/*
- To use for manipulation/rendering within a STANDARD user-form component:
-  addPrefs,
-  deletePrefs,
-  getAppUser,
-  getCustomUser,
-  getSession, --> ToDo in Form
-  listSessions, --> ToDo in Form
-  deleteSessions, --> ToDo in Form
-  updateName,
-  updateEmail,
-  updatePhone,
- */

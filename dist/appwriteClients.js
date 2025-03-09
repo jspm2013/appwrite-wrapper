@@ -15,11 +15,9 @@ export async function createSessionClient(params = {}) {
         .setLocale(locale);
     const cookiesList = await cookies();
     const session = cookiesList.get(cookieName);
-    /* if (!session || !session.value) {
-      throw new Error(
-        "APW-WRAPPER - Error: No session found in cookies while calling createSessionClient()"
-      );
-    } */
+    if (!session || !session.value) {
+        throw new Error("APW-WRAPPER - Error: No session found in cookies while calling createSessionClient()");
+    }
     client.setSession(session.value);
     return {
         get account() {

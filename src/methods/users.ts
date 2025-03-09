@@ -923,29 +923,3 @@ export {
   updatePhoneVerificationForUserId,
   updateStatusForUserId,
 };
-
-/*
- To use for manipulation/rendering within a ADMIN user-form component:
-  addLabelsForUserId,
-  addPrefsForUserId,
-  deleteLabelsForUserId,
-  deletePrefsForUserId,
-  deleteSessionForUserId, --> ToDo in Form
-  deleteSessionsForUserId, --> ToDo in Form
-  deleteUserForUserId, --> ToDo in Form
-  getAppUserForUserId,
-  getCustomUserForUserId,
-  getUserForUserId,
-  listCustomUsers,
-  listIdentities, --> ToDo in Form
-  listIdentitiesForUserId, --> ToDo in Form
-  listSessionsForUserId, --> ToDo in Form
-  listUsers,
-  updateNameForUserId,
-  updateEmailForUserId,
-  updatePhoneForUserId,
-  updateStatusForUserId,
-  updatePasswordForUserId,
-  updateEmailVerificationForUserId,
-  updatePhoneVerificationForUserId,
- */

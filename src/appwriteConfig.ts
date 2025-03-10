@@ -19,6 +19,7 @@ const liveEnvVarName = process.env.APPWRITE_LIVE_ENV_VAR_NAME;
  *
  */
 const port = process.env.PORT || 3000;
+const logsPath = process.env.APPWRITE_LOGS_PATH || "lib/appwrite/logs";
 const schemasPath = process.env.APPWRITE_SCHEMAS_PATH || "lib/appwrite/schemas";
 const i18nPath = process.env.APPWRITE_I18N_PATH || "messages/appwrite";
 const signInPath = process.env.APPWRITE_SIGN_IN_PATH || "sign-in";
@@ -87,6 +88,7 @@ export {
   oauthFailurePath,
   projectId,
   port,
+  logsPath,
   schemasPath,
   signInPath,
   userCollectionId,

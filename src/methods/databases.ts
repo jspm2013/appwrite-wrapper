@@ -1,17 +1,17 @@
 "use server";
 
 import {
-  ID,
-  IndexType,
-  Models,
-  RelationMutate,
-  RelationshipType,
-} from "node-appwrite";
+  getSchema,
+  attributesEqual,
+  createAttribute,
+  updateAttribute,
+  getAttributeFromKey,
+} from "../collections";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
+import { ID, Query, Models, Databases } from "node-appwrite";
 import { databaseId, userCollectionId } from "../appwriteConfig";
-import { getSchema } from "../collections";
-import { createAttribute } from "../collections";
+import { toLogFolder } from "../utils";
 
 interface ErrorObject {
   appwrite: boolean;
@@ -27,34 +27,264 @@ interface ReturnObject<T> {
   data: T | null;
 }
 
+/*
+ *
+ * ARGUMENT TYPE DEFINITIONS
+ *
+ */
+type CreateDatabase = Parameters<Databases["create"]>;
+type CreateBooleanAttribute = Parameters<Databases["createBooleanAttribute"]>;
+type CreateCollection = Parameters<Databases["createCollection"]>;
+type CreateCollectionWithSchema = CreateCollectionAwaited; // NOT NATIVE APPWRITE METHOD
+type CreateDatetimeAttribute = Parameters<Databases["createDatetimeAttribute"]>;
+type CreateDocument = Parameters<Databases["createDocument"]>;
+type CreateEmailAttribute = Parameters<Databases["createEmailAttribute"]>;
+type CreateEnumAttribute = Parameters<Databases["createEnumAttribute"]>;
+type CreateFloatAttribute = Parameters<Databases["createFloatAttribute"]>;
+type CreateIndex = Parameters<Databases["createIndex"]>;
+type CreateIntegerAttribute = Parameters<Databases["createIntegerAttribute"]>;
+type CreateIpAttribute = Parameters<Databases["createIpAttribute"]>;
+type CreateRelationshipAttribute = Parameters<
+  Databases["createRelationshipAttribute"]
+>;
+type CreateStringAttribute = Parameters<Databases["createStringAttribute"]>;
+type CreateUrlAttribute = Parameters<Databases["createUrlAttribute"]>;
+type DeleteAttribute = Parameters<Databases["deleteAttribute"]>;
+type DeleteCollection = Parameters<Databases["deleteCollection"]>;
+type DeleteDatabase = Parameters<Databases["delete"]>;
+type DeleteDocument = Parameters<Databases["deleteDocument"]>;
+type DeleteIndex = Parameters<Databases["deleteIndex"]>;
+type GetAttribute = Parameters<Databases["getAttribute"]>;
+type GetCollection = Parameters<Databases["getCollection"]>;
+type GetDatabase = Parameters<Databases["get"]>;
+type GetDocument = Parameters<Databases["getDocument"]>;
+type GetIndex = Parameters<Databases["getIndex"]>;
+type ListAttributes = Parameters<Databases["listAttributes"]>;
+type ListCollections = Parameters<Databases["listCollections"]>;
+type ListDatabases = Parameters<Databases["list"]>;
+type ListDocuments = Parameters<Databases["listDocuments"]>;
+type ListIndexes = Parameters<Databases["listIndexes"]>;
+type UpdateBooleanAttribute = Parameters<Databases["updateBooleanAttribute"]>;
+type UpdateCollection = Parameters<Databases["updateCollection"]>;
+type UpdateCollectionWithSchema = UpdateCollection; // NOT NATIVE APPWRITE METHOD
+type UpdateDatabase = Parameters<Databases["update"]>;
+type UpdateDatetimeAttribute = Parameters<Databases["updateDatetimeAttribute"]>;
+type UpdateDocument = Parameters<Databases["updateDocument"]>;
+type UpdateEmailAttribute = Parameters<Databases["updateEmailAttribute"]>;
+type UpdateEnumAttribute = Parameters<Databases["updateEnumAttribute"]>;
+type UpdateFloatAttribute = Parameters<Databases["updateFloatAttribute"]>;
+type UpdateIntegerAttribute = Parameters<Databases["updateIntegerAttribute"]>;
+type UpdateIpAttribute = Parameters<Databases["updateIpAttribute"]>;
+type UpdateRelationshipAttribute = Parameters<
+  Databases["updateRelationshipAttribute"]
+>;
+type UpdateStringAttribute = Parameters<Databases["updateStringAttribute"]>;
+type UpdateUrlAttribute = Parameters<Databases["updateUrlAttribute"]>;
+
+/*
+ *
+ * RETURN TYPE DEFINITIONS
+ *
+ */
+type CreateDatabaseReturnType = ReturnType<Databases["create"]>;
+type CreateBooleanAttributeReturnType = ReturnType<
+  Databases["createBooleanAttribute"]
+>;
+type CreateCollectionReturnType = ReturnType<Databases["createCollection"]>;
+type CreateCollectionWithSchemaReturnType = CreateCollectionReturnType; // NOT NATIVE APPWRITE METHOD
+type CreateDatetimeAttributeReturnType = ReturnType<
+  Databases["createDatetimeAttribute"]
+>;
+type CreateDocumentReturnType = ReturnType<Databases["createDocument"]>;
+type CreateEmailAttributeReturnType = ReturnType<
+  Databases["createEmailAttribute"]
+>;
+type CreateEnumAttributeReturnType = ReturnType<
+  Databases["createEnumAttribute"]
+>;
+type CreateFloatAttributeReturnType = ReturnType<
+  Databases["createFloatAttribute"]
+>;
+type CreateIndexReturnType = ReturnType<Databases["createIndex"]>;
+type CreateIntegerAttributeReturnType = ReturnType<
+  Databases["createIntegerAttribute"]
+>;
+type CreateIpAttributeReturnType = ReturnType<Databases["createIpAttribute"]>;
+type CreateRelationshipAttributeReturnType = ReturnType<
+  Databases["createRelationshipAttribute"]
+>;
+type CreateStringAttributeReturnType = ReturnType<
+  Databases["createStringAttribute"]
+>;
+type CreateUrlAttributeReturnType = ReturnType<Databases["createUrlAttribute"]>;
+type DeleteAttributeReturnType = ReturnType<Databases["deleteAttribute"]>;
+type DeleteCollectionReturnType = ReturnType<Databases["deleteCollection"]>;
+type DeleteDatabaseReturnType = ReturnType<Databases["delete"]>;
+type DeleteDocumentReturnType = ReturnType<Databases["deleteDocument"]>;
+type DeleteIndexReturnType = ReturnType<Databases["deleteIndex"]>;
+type GetAttributeReturnType = ReturnType<Databases["getAttribute"]>;
+type GetCollectionReturnType = ReturnType<Databases["getCollection"]>;
+type GetDatabaseReturnType = ReturnType<Databases["get"]>;
+type GetDocumentReturnType = ReturnType<Databases["getDocument"]>;
+type GetIndexReturnType = ReturnType<Databases["getIndex"]>;
+type ListAttributesReturnType = ReturnType<Databases["listAttributes"]>;
+type ListCollectionsReturnType = ReturnType<Databases["listCollections"]>;
+type ListDatabasesReturnType = ReturnType<Databases["list"]>;
+type ListDocumentsReturnType = ReturnType<Databases["listDocuments"]>;
+type ListIndexesReturnType = ReturnType<Databases["listIndexes"]>;
+type UpdateBooleanAttributeReturnType = ReturnType<
+  Databases["updateBooleanAttribute"]
+>;
+type UpdateCollectionReturnType = ReturnType<Databases["updateCollection"]>;
+type UpdateCollectionWithSchemaReturnType = UpdateCollectionReturnType; // NOT NATIVE APPWRITE METHOD
+type UpdateDatabaseReturnType = ReturnType<Databases["update"]>;
+type UpdateDatetimeAttributeReturnType = ReturnType<
+  Databases["updateDatetimeAttribute"]
+>;
+type UpdateDocumentReturnType = ReturnType<Databases["updateDocument"]>;
+type UpdateEmailAttributeReturnType = ReturnType<
+  Databases["updateEmailAttribute"]
+>;
+type UpdateEnumAttributeReturnType = ReturnType<
+  Databases["updateEnumAttribute"]
+>;
+type UpdateFloatAttributeReturnType = ReturnType<
+  Databases["updateFloatAttribute"]
+>;
+type UpdateIntegerAttributeReturnType = ReturnType<
+  Databases["updateIntegerAttribute"]
+>;
+type UpdateIpAttributeReturnType = ReturnType<Databases["updateIpAttribute"]>;
+type UpdateRelationshipAttributeReturnType = ReturnType<
+  Databases["updateRelationshipAttribute"]
+>;
+type UpdateStringAttributeReturnType = ReturnType<
+  Databases["updateStringAttribute"]
+>;
+type UpdateUrlAttributeReturnType = ReturnType<Databases["updateUrlAttribute"]>;
+
+/*
+ *
+ * AWAITED RETURN TYPE DEFINITIONS
+ *
+ */
+type CreateDatabaseAwaited = Awaited<ReturnType<Databases["create"]>>;
+type CreateBooleanAttributeAwaited = Awaited<
+  ReturnType<Databases["createBooleanAttribute"]>
+>;
+type CreateCollectionAwaited = Awaited<
+  ReturnType<Databases["createCollection"]>
+>;
+type CreateCollectionWithSchemaAwaited = CreateCollectionAwaited; // NOT NATIVE APPWRITE METHOD
+type CreateDatetimeAttributeAwaited = Awaited<
+  ReturnType<Databases["createDatetimeAttribute"]>
+>;
+type CreateDocumentAwaited = Awaited<ReturnType<Databases["createDocument"]>>;
+type CreateEmailAttributeAwaited = Awaited<
+  ReturnType<Databases["createEmailAttribute"]>
+>;
+type CreateEnumAttributeAwaited = Awaited<
+  ReturnType<Databases["createEnumAttribute"]>
+>;
+type CreateFloatAttributeAwaited = Awaited<
+  ReturnType<Databases["createFloatAttribute"]>
+>;
+type CreateIndexAwaited = Awaited<ReturnType<Databases["createIndex"]>>;
+type CreateIntegerAttributeAwaited = Awaited<
+  ReturnType<Databases["createIntegerAttribute"]>
+>;
+type CreateIpAttributeAwaited = Awaited<
+  ReturnType<Databases["createIpAttribute"]>
+>;
+type CreateRelationshipAttributeAwaited = Awaited<
+  ReturnType<Databases["createRelationshipAttribute"]>
+>;
+type CreateStringAttributeAwaited = Awaited<
+  ReturnType<Databases["createStringAttribute"]>
+>;
+type CreateUrlAttributeAwaited = Awaited<
+  ReturnType<Databases["createUrlAttribute"]>
+>;
+type DeleteAttributeAwaited = Awaited<ReturnType<Databases["deleteAttribute"]>>;
+type DeleteCollectionAwaited = Awaited<
+  ReturnType<Databases["deleteCollection"]>
+>;
+type DeleteDatabaseAwaited = Awaited<ReturnType<Databases["delete"]>>;
+type DeleteDocumentAwaited = Awaited<ReturnType<Databases["deleteDocument"]>>;
+type DeleteIndexAwaited = Awaited<ReturnType<Databases["deleteIndex"]>>;
+type GetAttributeAwaited = Awaited<ReturnType<Databases["getAttribute"]>>;
+type GetCollectionAwaited = Awaited<ReturnType<Databases["getCollection"]>>;
+type GetDatabaseAwaited = Awaited<ReturnType<Databases["get"]>>;
+type GetDocumentAwaited = Awaited<ReturnType<Databases["getDocument"]>>;
+type GetIndexAwaited = Awaited<ReturnType<Databases["getIndex"]>>;
+type ListAttributesAwaited = Awaited<ReturnType<Databases["listAttributes"]>>;
+type ListCollectionsAwaited = Awaited<ReturnType<Databases["listCollections"]>>;
+type ListDatabasesAwaited = Awaited<ReturnType<Databases["list"]>>;
+type ListDocumentsAwaited = Awaited<ReturnType<Databases["listDocuments"]>>;
+type ListIndexesAwaited = Awaited<ReturnType<Databases["listIndexes"]>>;
+type UpdateBooleanAttributeAwaited = Awaited<
+  ReturnType<Databases["updateBooleanAttribute"]>
+>;
+type UpdateCollectionAwaited = Awaited<
+  ReturnType<Databases["updateCollection"]>
+>;
+type UpdateCollectionWithSchemaAwaited = UpdateCollectionAwaited; // NOT NATIVE APPWRITE METHOD
+type UpdateDatabaseAwaited = Awaited<ReturnType<Databases["update"]>>;
+type UpdateDatetimeAttributeAwaited = Awaited<
+  ReturnType<Databases["updateDatetimeAttribute"]>
+>;
+type UpdateDocumentAwaited = Awaited<ReturnType<Databases["updateDocument"]>>;
+type UpdateEmailAttributeAwaited = Awaited<
+  ReturnType<Databases["updateEmailAttribute"]>
+>;
+type UpdateEnumAttributeAwaited = Awaited<
+  ReturnType<Databases["updateEnumAttribute"]>
+>;
+type UpdateFloatAttributeAwaited = Awaited<
+  ReturnType<Databases["updateFloatAttribute"]>
+>;
+type UpdateIntegerAttributeAwaited = Awaited<
+  ReturnType<Databases["updateIntegerAttribute"]>
+>;
+type UpdateIpAttributeAwaited = Awaited<
+  ReturnType<Databases["updateIpAttribute"]>
+>;
+type UpdateRelationshipAttributeAwaited = Awaited<
+  ReturnType<Databases["updateRelationshipAttribute"]>
+>;
+type UpdateStringAttributeAwaited = Awaited<
+  ReturnType<Databases["updateStringAttribute"]>
+>;
+type UpdateUrlAttributeAwaited = Awaited<
+  ReturnType<Databases["updateUrlAttribute"]>
+>;
+
 /**
  * Creates a boolean attribute in a collection.
  */
-export type CreateBooleanAttributeParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
-  required: boolean;
-  xdefault?: boolean;
-  xarray?: boolean;
+type CreateBooleanAttributeArgs = {
+  databaseId?: CreateBooleanAttribute[0];
+  collectionId?: CreateBooleanAttribute[1];
+  key: CreateBooleanAttribute[2];
+  required: CreateBooleanAttribute[3];
+  xdefault?: CreateBooleanAttribute[4];
+  array?: CreateBooleanAttribute[5];
 };
 const createBooleanAttribute = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-  required,
-  xdefault,
-  xarray,
-}: CreateBooleanAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: CreateBooleanAttributeArgs): Promise<
+  ReturnObject<CreateBooleanAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as CreateBooleanAttributeArgs;
     const data = await databases.createBooleanAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      xdefault,
-      xarray
+      ...(Object.values(newArgs) as CreateBooleanAttribute)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -68,32 +298,30 @@ const createBooleanAttribute = async ({
 /**
  * Creates a collection.
  */
-export type CreateCollectionParams = {
-  dbId?: string;
-  collId?: string;
-  name: string;
-  permissions?: string[];
-  documentSecurity?: boolean;
-  enabled?: boolean;
+type CreateCollectionArgs = {
+  databaseId?: CreateCollection[0];
+  collectionId?: CreateCollection[1];
+  name: CreateCollection[2];
+  permissions?: CreateCollection[3];
+  documentSecurity?: CreateCollection[4];
+  enabled?: CreateCollection[5];
 };
 const createCollection = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  name,
-  permissions,
-  documentSecurity,
-  enabled,
-}: CreateCollectionParams): Promise<ReturnObject<Models.Collection>> => {
+  ...args
+}: CreateCollectionArgs): Promise<ReturnObject<CreateCollectionAwaited>> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: ID.unique(),
+    } as CreateCollectionArgs;
+
     const data = await databases.createCollection(
-      dbId,
-      collId,
-      name,
-      permissions,
-      documentSecurity,
-      enabled
+      ...(Object.values(newArgs) as CreateCollection)
     );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -104,72 +332,52 @@ const createCollection = async ({
 };
 
 /**
- * Creates a collection with schema Params
+ * Creates a collection according to a defined schema
+ * To execute successfully, there must be a schema file (json) in the schemas folder, named as the collection name
+ * This schema folder path must be defined in env vars (see appwriteConfig.ts)
  */
-type CommonParams = {
-  dbId?: string;
-  name: string;
-  permissions?: string[];
-  documentSecurity?: boolean;
-  enabled?: boolean;
-};
-type WithCollId = CommonParams & {
-  collId: string;
-  nameAsId?: never;
-};
-type WithoutCollId = CommonParams & {
-  collId?: never;
-  nameAsId: boolean;
-};
-export type CreateCollectionWithSchemaParams = WithCollId | WithoutCollId;
-/**
- * Create a new collection according to a specific schema in a specific database.
- * @param params - Parameters for creating the collection.
- * @returns The created collection details.
- */
+type CreateCollectionWithSchemaArgs = CreateCollectionArgs;
 const createCollectionWithSchema = async ({
-  dbId = databaseId,
-  collId,
-  name,
-  permissions,
-  documentSecurity,
-  enabled,
-  nameAsId,
-}: CreateCollectionWithSchemaParams): Promise<
-  ReturnObject<Models.Collection>
+  ...args
+}: CreateCollectionWithSchemaArgs): Promise<
+  ReturnObject<CreateCollectionAwaited>
 > => {
   try {
     const { databases } = await createAdminClient();
 
-    const collList = await databases.listCollections(dbId);
+    const newArgs = {
+      ...args,
+      databaseId: args.databaseId ?? databaseId,
+      collectionId: args.collectionId ?? ID.unique(),
+    } as CreateCollectionWithSchemaArgs;
+
+    const collList = await databases.listCollections(newArgs.databaseId!);
     let coll = collList.collections.find(
-      (collection: Models.Collection) => collection.name === name
+      (collection: Models.Collection) => collection.name === newArgs.name
     );
 
     if (coll) {
-      throw new Error(`Collection ${name} already exists`);
+      throw new Error(`Collection '${newArgs.name}' already exists`);
     } else {
-      const schema = await getSchema(name);
-
-      const collectionId = collId ?? (nameAsId ? name : ID.unique());
+      const schema = await getSchema(newArgs.name);
 
       coll = await databases.createCollection(
-        dbId,
-        collectionId,
-        name,
-        permissions ?? schema.permissions,
-        documentSecurity ?? schema.documentSecurity,
-        enabled ?? schema.enabled
+        newArgs.databaseId!,
+        ID.unique(),
+        schema.collectionName,
+        schema.permissions,
+        schema.documentSecurity,
+        schema.enabled
       );
 
       for (const attr of schema.attributes) {
-        await createAttribute(dbId, collectionId, attr);
+        await createAttribute(newArgs.databaseId!, newArgs.collectionId!, attr);
       }
 
       for (const index of schema.indexes) {
         await databases.createIndex(
-          dbId,
-          collectionId,
+          newArgs.databaseId!,
+          newArgs.collectionId!,
           index.key,
           index.type,
           index.attributes,
@@ -189,19 +397,26 @@ const createCollectionWithSchema = async ({
 /**
  * Creates a database.
  */
-export type CreateDatabaseParams = {
-  dbId?: string;
-  name: string;
-  enabled?: boolean;
+type CreateDatabaseArgs = {
+  databaseId?: CreateDatabase[0];
+  name: CreateDatabase[1];
+  enabled?: CreateDatabase[2];
 };
 const createDatabase = async ({
-  dbId = databaseId,
-  name,
-  enabled,
-}: CreateDatabaseParams): Promise<ReturnObject<Models.Database>> => {
+  ...args
+}: CreateDatabaseArgs): Promise<ReturnObject<CreateDatabaseAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.create(dbId, name, enabled);
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+    } as CreateDatabaseArgs;
+
+    const data = await databases.create(
+      ...(Object.values(newArgs) as CreateDatabase)
+    );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -214,32 +429,32 @@ const createDatabase = async ({
 /**
  * Creates a datetime attribute.
  */
-export type CreateDatetimeAttributeParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
-  required: boolean;
-  xdefault?: string;
-  xarray?: boolean;
+type CreateDatetimeAttributeArgs = {
+  databaseId?: CreateDatetimeAttribute[0];
+  collectionId?: CreateDatetimeAttribute[1];
+  key: CreateDatetimeAttribute[2];
+  required: CreateDatetimeAttribute[3];
+  xdefault?: CreateDatetimeAttribute[4];
+  array?: CreateDatetimeAttribute[5];
 };
 const createDatetimeAttribute = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-  required,
-  xdefault,
-  xarray,
-}: CreateDatetimeAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: CreateDatetimeAttributeArgs): Promise<
+  ReturnObject<CreateDatetimeAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as CreateDatetimeAttributeArgs;
+
     const data = await databases.createDatetimeAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      xdefault,
-      xarray
+      ...(Object.values(newArgs) as CreateDatetimeAttribute)
     );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -252,30 +467,31 @@ const createDatetimeAttribute = async ({
 /**
  * Creates a document.
  */
-export type CreateDocumentParams = {
-  dbId?: string;
-  collId?: string;
-  documentId?: string;
-  data: Record<string, any>;
-  permissions?: string[];
+type CreateDocumentArgs = {
+  databaseId?: CreateDocument[0];
+  collectionId?: CreateDocument[1];
+  documentId?: CreateDocument[2];
+  data: CreateDocument[3];
+  permissions?: CreateDocument[4];
 };
 const createDocument = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  documentId = ID.unique(),
-  data,
-  permissions,
-}: CreateDocumentParams): Promise<ReturnObject<Models.Document>> => {
+  ...args
+}: CreateDocumentArgs): Promise<ReturnObject<CreateDocumentAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const document = await databases.createDocument(
-      dbId,
-      collId,
-      documentId,
-      data,
-      permissions
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+      documentId: ID.unique(),
+    } as CreateDocumentArgs;
+
+    const data = await databases.createDocument(
+      ...(Object.values(newArgs) as CreateDocument)
     );
-    return { data: document, error: null };
+
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -287,32 +503,32 @@ const createDocument = async ({
 /**
  * Creates an email attribute.
  */
-export type CreateEmailAttributeParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
-  required: boolean;
-  xdefault?: string;
-  xarray?: boolean;
+type CreateEmailAttributeArgs = {
+  databaseId?: CreateEmailAttribute[0];
+  collectionId?: CreateEmailAttribute[1];
+  key: CreateEmailAttribute[2];
+  required: CreateEmailAttribute[3];
+  xdefault?: CreateEmailAttribute[4];
+  array?: CreateEmailAttribute[5];
 };
 const createEmailAttribute = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-  required,
-  xdefault,
-  xarray,
-}: CreateEmailAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: CreateEmailAttributeArgs): Promise<
+  ReturnObject<CreateEmailAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as CreateEmailAttributeArgs;
+
     const data = await databases.createEmailAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      xdefault,
-      xarray
+      ...(Object.values(newArgs) as CreateEmailAttribute)
     );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -325,35 +541,33 @@ const createEmailAttribute = async ({
 /**
  * Creates an enum attribute.
  */
-export type CreateEnumAttributeParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
-  elements: string[];
-  required: boolean;
-  xdefault?: string;
-  xarray?: boolean;
+type CreateEnumAttributeArgs = {
+  databaseId?: CreateEnumAttribute[0];
+  collectionId?: CreateEnumAttribute[1];
+  key: CreateEnumAttribute[2];
+  elements: CreateEnumAttribute[3];
+  required: CreateEnumAttribute[4];
+  xdefault?: CreateEnumAttribute[5];
+  array?: CreateEnumAttribute[6];
 };
 const createEnumAttribute = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-  elements,
-  required,
-  xdefault,
-  xarray,
-}: CreateEnumAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: CreateEnumAttributeArgs): Promise<
+  ReturnObject<CreateEnumAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as CreateEnumAttributeArgs;
+
     const data = await databases.createEnumAttribute(
-      dbId,
-      collId,
-      key,
-      elements,
-      required,
-      xdefault,
-      xarray
+      ...(Object.values(newArgs) as CreateEnumAttribute)
     );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -366,38 +580,34 @@ const createEnumAttribute = async ({
 /**
  * Creates a float attribute.
  */
-export type CreateFloatAttributeParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
-  required: boolean;
-  min?: number;
-  max?: number;
-  xdefault?: number;
-  xarray?: boolean;
+type CreateFloatAttributeArgs = {
+  databaseId?: CreateFloatAttribute[0];
+  collectionId?: CreateFloatAttribute[1];
+  key: CreateFloatAttribute[2];
+  required: CreateFloatAttribute[3];
+  min?: CreateFloatAttribute[4];
+  max?: CreateFloatAttribute[5];
+  xdefault?: CreateFloatAttribute[6];
+  array?: CreateFloatAttribute[7];
 };
 const createFloatAttribute = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-  required,
-  min,
-  max,
-  xdefault,
-  xarray,
-}: CreateFloatAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: CreateFloatAttributeArgs): Promise<
+  ReturnObject<CreateFloatAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as CreateFloatAttributeArgs;
+
     const data = await databases.createFloatAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      min,
-      max,
-      xdefault,
-      xarray
+      ...(Object.values(newArgs) as CreateFloatAttribute)
     );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -410,32 +620,30 @@ const createFloatAttribute = async ({
 /**
  * Creates an index in a collection.
  */
-export type CreateIndexParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
-  type: IndexType;
-  attributes: string[];
-  orders?: string[];
+type CreateIndexArgs = {
+  databaseId?: CreateIndex[0];
+  collectionId?: CreateIndex[1];
+  key: CreateIndex[2];
+  type: CreateIndex[3];
+  attributes: CreateIndex[4];
+  orders?: CreateIndex[5];
 };
 const createIndex = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-  type,
-  attributes,
-  orders,
-}: CreateIndexParams): Promise<ReturnObject<Models.Index>> => {
+  ...args
+}: CreateIndexArgs): Promise<ReturnObject<CreateIndexAwaited>> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as CreateIndexArgs;
+
     const data = await databases.createIndex(
-      dbId,
-      collId,
-      key,
-      type,
-      attributes,
-      orders
+      ...(Object.values(newArgs) as CreateIndex)
     );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -448,38 +656,34 @@ const createIndex = async ({
 /**
  * Creates an integer attribute in a collection.
  */
-export type CreateIntegerAttributeParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
-  required: boolean;
-  min?: number;
-  max?: number;
-  xdefault?: number;
-  xarray?: boolean;
+type CreateIntegerAttributeArgs = {
+  databaseId?: CreateIntegerAttribute[0];
+  collectionId?: CreateIntegerAttribute[1];
+  key: CreateIntegerAttribute[2];
+  required: CreateIntegerAttribute[3];
+  min?: CreateIntegerAttribute[4];
+  max?: CreateIntegerAttribute[5];
+  xdefault?: CreateIntegerAttribute[6];
+  array?: CreateIntegerAttribute[7];
 };
 const createIntegerAttribute = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-  required,
-  min,
-  max,
-  xdefault,
-  xarray,
-}: CreateIntegerAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: CreateIntegerAttributeArgs): Promise<
+  ReturnObject<CreateIntegerAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as CreateIntegerAttributeArgs;
+
     const data = await databases.createIntegerAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      min,
-      max,
-      xdefault,
-      xarray
+      ...(Object.values(newArgs) as CreateIntegerAttribute)
     );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -492,32 +696,30 @@ const createIntegerAttribute = async ({
 /**
  * Creates an IP attribute in a collection.
  */
-export type CreateIpAttributeParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
-  required: boolean;
-  xdefault?: string;
-  xarray?: boolean;
+type CreateIpAttributeArgs = {
+  databaseId?: CreateIpAttribute[0];
+  collectionId?: CreateIpAttribute[1];
+  key: CreateIpAttribute[2];
+  required: CreateIpAttribute[3];
+  xdefault?: CreateIpAttribute[4];
+  array?: CreateIpAttribute[5];
 };
 const createIpAttribute = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-  required,
-  xdefault,
-  xarray,
-}: CreateIpAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: CreateIpAttributeArgs): Promise<ReturnObject<CreateIpAttributeAwaited>> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as CreateIpAttributeArgs;
+
     const data = await databases.createIpAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      xdefault,
-      xarray
+      ...(Object.values(newArgs) as CreateIpAttribute)
     );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -530,39 +732,34 @@ const createIpAttribute = async ({
 /**
  * Creates a relationship attribute in a collection.
  */
-export type CreateRelationshipAttributeParams = {
-  dbId?: string;
-  collId?: string;
-  relatedCollectionId: string;
-  type: RelationshipType;
-  twoWay?: boolean;
-  key?: string;
-  twoWayKey?: string;
-  onDelete?: RelationMutate;
-  required?: boolean;
+type CreateRelationshipAttributeArgs = {
+  databaseId?: CreateRelationshipAttribute[0];
+  collectionId?: CreateRelationshipAttribute[1];
+  relatedCollectionId: CreateRelationshipAttribute[2];
+  type: CreateRelationshipAttribute[3];
+  twoWay?: CreateRelationshipAttribute[4];
+  key?: CreateRelationshipAttribute[5];
+  twoWayKey?: CreateRelationshipAttribute[6];
+  onDelete?: CreateRelationshipAttribute[7];
 };
 const createRelationshipAttribute = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  relatedCollectionId,
-  type,
-  twoWay,
-  key,
-  twoWayKey,
-  onDelete,
-}: CreateRelationshipAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: CreateRelationshipAttributeArgs): Promise<
+  ReturnObject<CreateRelationshipAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as CreateRelationshipAttributeArgs;
+
     const data = await databases.createRelationshipAttribute(
-      dbId,
-      collId,
-      relatedCollectionId,
-      type,
-      twoWay,
-      key,
-      twoWayKey,
-      onDelete
+      ...(Object.values(newArgs) as CreateRelationshipAttribute)
     );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -575,38 +772,34 @@ const createRelationshipAttribute = async ({
 /**
  * Creates a string attribute in a collection.
  */
-export type CreateStringAttributeParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
-  size: number;
-  required: boolean;
-  xdefault?: string;
-  xarray?: boolean;
-  encrypt?: boolean;
+type CreateStringAttributeArgs = {
+  databaseId?: CreateStringAttribute[0];
+  collectionId?: CreateStringAttribute[1];
+  key: CreateStringAttribute[2];
+  size: CreateStringAttribute[3];
+  required: CreateStringAttribute[4];
+  xdefault?: CreateStringAttribute[5];
+  array?: CreateStringAttribute[6];
+  encrypt?: CreateStringAttribute[7];
 };
 const createStringAttribute = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-  size,
-  required,
-  xdefault,
-  xarray,
-  encrypt,
-}: CreateStringAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: CreateStringAttributeArgs): Promise<
+  ReturnObject<CreateStringAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as CreateStringAttributeArgs;
+
     const data = await databases.createStringAttribute(
-      dbId,
-      collId,
-      key,
-      size,
-      required,
-      xdefault,
-      xarray,
-      encrypt
+      ...(Object.values(newArgs) as CreateStringAttribute)
     );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -619,32 +812,32 @@ const createStringAttribute = async ({
 /**
  * Creates a URL attribute in a collection.
  */
-export type CreateUrlAttributeParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
-  required: boolean;
-  xdefault?: string;
-  xarray?: boolean;
+type CreateUrlAttributeArgs = {
+  databaseId?: CreateUrlAttribute[0];
+  collectionId?: CreateUrlAttribute[1];
+  key: CreateUrlAttribute[2];
+  required: CreateUrlAttribute[3];
+  xdefault?: CreateUrlAttribute[4];
+  array?: CreateUrlAttribute[5];
 };
 const createUrlAttribute = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-  required,
-  xdefault,
-  xarray,
-}: CreateUrlAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: CreateUrlAttributeArgs): Promise<
+  ReturnObject<CreateUrlAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as CreateUrlAttributeArgs;
+
     const data = await databases.createUrlAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      xdefault,
-      xarray
+      ...(Object.values(newArgs) as CreateUrlAttribute)
     );
+
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -657,20 +850,27 @@ const createUrlAttribute = async ({
 /**
  * Deletes an attribute in a collection.
  */
-export type DeleteAttributeParams = {
-  dbId: string;
-  collId: string;
-  key: string;
+type DeleteAttributeArgs = {
+  databaseId?: DeleteAttribute[0];
+  collectionId?: DeleteAttribute[1];
+  key: DeleteAttribute[2];
 };
 const deleteAttribute = async ({
-  dbId,
-  collId,
-  key,
-}: DeleteAttributeParams): Promise<ReturnObject<void>> => {
+  ...args
+}: DeleteAttributeArgs): Promise<ReturnObject<DeleteAttributeAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    await databases.deleteAttribute(dbId, collId, key);
-    return { data: undefined, error: null };
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as DeleteAttributeArgs;
+
+    const data = await databases.deleteAttribute(
+      ...(Object.values(newArgs) as DeleteAttribute)
+    );
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -682,18 +882,25 @@ const deleteAttribute = async ({
 /**
  * Deletes a collection in a database.
  */
-export type DeleteCollectionParams = {
-  dbId: string;
-  collId: string;
+type DeleteCollectionArgs = {
+  databaseId?: DeleteCollection[0];
+  collectionId: DeleteCollection[1];
 };
 const deleteCollection = async ({
-  dbId,
-  collId,
-}: DeleteCollectionParams): Promise<ReturnObject<void>> => {
+  ...args
+}: DeleteCollectionArgs): Promise<ReturnObject<DeleteCollectionAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    await databases.deleteCollection(dbId, collId);
-    return { data: undefined, error: null };
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+    } as DeleteCollectionArgs;
+
+    const data = await databases.deleteCollection(
+      ...(Object.values(newArgs) as DeleteCollection)
+    );
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -705,16 +912,23 @@ const deleteCollection = async ({
 /**
  * Deletes a database.
  */
-export type DeleteDatabaseParams = {
-  dbId: string;
+type DeleteDatabaseArgs = {
+  databaseId: DeleteDatabase[0];
 };
 const deleteDatabase = async ({
-  dbId,
-}: DeleteDatabaseParams): Promise<ReturnObject<void>> => {
+  ...args
+}: DeleteDatabaseArgs): Promise<ReturnObject<DeleteDatabaseAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    await databases.delete(dbId);
-    return { data: undefined, error: null };
+
+    const newArgs = {
+      ...args,
+    } as DeleteDatabaseArgs;
+
+    const data = await databases.delete(
+      ...(Object.values(newArgs) as DeleteDatabase)
+    );
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -726,20 +940,27 @@ const deleteDatabase = async ({
 /**
  * Deletes a document from a collection.
  */
-export type DeleteDocumentParams = {
-  dbId?: string;
-  collId?: string;
-  documentId: string;
+type DeleteDocumentArgs = {
+  databaseId?: DeleteDocument[0];
+  collectionId?: DeleteDocument[1];
+  documentId: DeleteDocument[2];
 };
 const deleteDocument = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  documentId,
-}: DeleteDocumentParams): Promise<ReturnObject<void>> => {
+  ...args
+}: DeleteDocumentArgs): Promise<ReturnObject<DeleteDocumentAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    await databases.deleteDocument(dbId, collId, documentId);
-    return { data: undefined, error: null };
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as DeleteDocumentArgs;
+
+    const data = await databases.deleteDocument(
+      ...(Object.values(newArgs) as DeleteDocument)
+    );
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -751,20 +972,27 @@ const deleteDocument = async ({
 /**
  * Deletes an index from a collection.
  */
-export type DeleteIndexParams = {
-  dbId: string;
-  collId: string;
-  key: string;
+type DeleteIndexArgs = {
+  databaseId?: DeleteIndex[0];
+  collectionId?: DeleteIndex[1];
+  key: DeleteIndex[2];
 };
 const deleteIndex = async ({
-  dbId,
-  collId,
-  key,
-}: DeleteIndexParams): Promise<ReturnObject<void>> => {
+  ...args
+}: DeleteIndexArgs): Promise<ReturnObject<DeleteIndexAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    await databases.deleteIndex(dbId, collId, key);
-    return { data: undefined, error: null };
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as DeleteIndexArgs;
+
+    const data = await databases.deleteIndex(
+      ...(Object.values(newArgs) as DeleteIndex)
+    );
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -776,19 +1004,26 @@ const deleteIndex = async ({
 /**
  * Retrieves an attribute from a collection.
  */
-export type GetAttributeParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
+type GetAttributeArgs = {
+  databaseId?: GetAttribute[0];
+  collectionId?: GetAttribute[1];
+  key: GetAttribute[2];
 };
 const getAttribute = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-}: GetAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: GetAttributeArgs): Promise<ReturnObject<GetAttributeAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.getAttribute(dbId, collId, key);
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as GetAttributeArgs;
+
+    const data = await databases.getAttribute(
+      ...(Object.values(newArgs) as GetAttribute)
+    );
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -801,17 +1036,24 @@ const getAttribute = async ({
 /**
  * Retrieves a collection from a database.
  */
-export type GetCollectionParams = {
-  dbId?: string;
-  collId?: string;
+type GetCollectionArgs = {
+  databaseId?: GetCollection[0];
+  collectionId: GetCollection[1];
 };
 const getCollection = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-}: GetCollectionParams): Promise<ReturnObject<Models.Collection>> => {
+  ...args
+}: GetCollectionArgs): Promise<ReturnObject<GetCollectionAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.getCollection(dbId, collId);
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+    } as GetCollectionArgs;
+
+    const data = await databases.getCollection(
+      ...(Object.values(newArgs) as GetCollection)
+    );
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -824,15 +1066,20 @@ const getCollection = async ({
 /**
  * Retrieves a database by its ID.
  */
-export type GetDatabaseParams = {
-  dbId: string;
-};
+type GetDatabaseArgs = { dbId: GetDatabase[0] };
 const getDatabase = async ({
-  dbId = databaseId,
-}: GetDatabaseParams): Promise<ReturnObject<Models.Database>> => {
+  ...args
+}: GetDatabaseArgs): Promise<ReturnObject<GetDatabaseAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.get(dbId);
+
+    const newArgs = {
+      ...args,
+    } as GetDatabaseArgs;
+
+    const data = await databases.get(
+      ...(Object.values(newArgs) as GetDatabase)
+    );
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -845,19 +1092,27 @@ const getDatabase = async ({
 /**
  * Retrieves a document from a collection.
  */
-export type GetDocumentParams = {
-  dbId?: string;
-  collId?: string;
-  documentId: string;
+type GetDocumentArgs = {
+  databaseId?: GetDocument[0];
+  collectionId?: GetDocument[1];
+  documentId: GetDocument[2];
+  query?: string;
 };
 const getDocument = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  documentId,
-}: GetDocumentParams): Promise<ReturnObject<Models.Document>> => {
+  ...args
+}: GetDocumentArgs): Promise<ReturnObject<GetDocumentAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.getDocument(dbId, collId, documentId);
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as GetDocumentArgs;
+
+    const data = await databases.getDocument(
+      ...(Object.values(newArgs) as GetDocument)
+    );
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -870,19 +1125,26 @@ const getDocument = async ({
 /**
  * Retrieves an index from a collection.
  */
-export type GetIndexParams = {
-  dbId?: string;
-  collId?: string;
-  key: string;
+type GetIndexArgs = {
+  databaseId?: GetIndex[0];
+  collectionId?: GetIndex[1];
+  key: GetIndex[2];
 };
 const getIndex = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  key,
-}: GetIndexParams): Promise<ReturnObject<Models.Index>> => {
+  ...args
+}: GetIndexArgs): Promise<ReturnObject<GetIndexAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.getIndex(dbId, collId, key);
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as GetIndexArgs;
+
+    const data = await databases.getIndex(
+      ...(Object.values(newArgs) as GetIndex)
+    );
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -895,17 +1157,26 @@ const getIndex = async ({
 /**
  * Lists all attributes in a collection.
  */
-export type ListAttributesParams = {
-  dbId?: string;
-  collId?: string;
+type ListAttributesArgs = {
+  databaseId?: ListAttributes[0];
+  collectionId?: ListAttributes[1];
+  queries?: ListAttributes[2];
 };
 const listAttributes = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-}: ListAttributesParams): Promise<ReturnObject<any>> => {
+  ...args
+}: ListAttributesArgs): Promise<ReturnObject<ListAttributesAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.listAttributes(dbId, collId);
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as ListAttributesArgs;
+
+    const data = await databases.listAttributes(
+      ...(Object.values(newArgs) as ListAttributes)
+    );
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -918,19 +1189,25 @@ const listAttributes = async ({
 /**
  * Lists all collections in a database.
  */
-export type ListCollectionsParams = {
-  dbId?: string;
-  queries?: string[];
-  search?: string;
+type ListCollectionsArgs = {
+  databaseId?: ListCollections[0];
+  queries?: ListCollections[1];
+  search?: ListCollections[2];
 };
 const listCollections = async ({
-  dbId = databaseId,
-  queries = [],
-  search,
-}: ListCollectionsParams): Promise<ReturnObject<Models.CollectionList>> => {
+  ...args
+}: ListCollectionsArgs): Promise<ReturnObject<ListCollectionsAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.listCollections(dbId, queries, search);
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+    } as ListCollectionsArgs;
+
+    const data = await databases.listCollections(
+      ...(Object.values(newArgs) as ListCollections)
+    );
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -943,17 +1220,23 @@ const listCollections = async ({
 /**
  * Lists all databases in the Appwrite project.
  */
-export type ListDatabasesParams = {
-  queries?: string[];
-  search?: string;
+type ListDatabasesArgs = {
+  queries?: ListDatabases[0];
+  search?: ListDatabases[1];
 };
 const listDatabases = async ({
-  queries = [],
-  search,
-}: ListDatabasesParams): Promise<ReturnObject<Models.DatabaseList>> => {
+  ...args
+}: ListDatabasesArgs): Promise<ReturnObject<ListDatabasesAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.list(queries, search);
+
+    const newArgs = {
+      ...args,
+    } as ListDatabasesArgs;
+
+    const data = await databases.list(
+      ...(Object.values(newArgs) as ListDatabases)
+    );
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -966,21 +1249,26 @@ const listDatabases = async ({
 /**
  * Lists all documents in a specific collection.
  */
-export type ListDocumentsParams = {
-  dbId?: string;
-  collId?: string;
-  queries?: string[];
+type ListDocumentsArgs = {
+  databaseId?: ListDocuments[0];
+  collectionId?: ListDocuments[1];
+  queries?: ListDocuments[2];
 };
 const listDocuments = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  queries = [],
-}: ListDocumentsParams): Promise<
-  ReturnObject<Models.DocumentList<Models.Document>>
-> => {
+  ...args
+}: ListDocumentsArgs): Promise<ReturnObject<ListDocumentsAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.listDocuments(dbId, collId, queries);
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as ListDocumentsArgs;
+
+    const data = await databases.listDocuments(
+      ...(Object.values(newArgs) as ListDocuments)
+    );
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -993,17 +1281,26 @@ const listDocuments = async ({
 /**
  * Lists all indexes in a collection.
  */
-export type ListIndexesParams = {
-  dbId?: string;
-  collId?: string;
+type ListIndexesArgs = {
+  databaseId?: ListIndexes[0];
+  collectionId?: ListIndexes[1];
+  queries?: ListIndexes[2];
 };
 const listIndexes = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-}: ListIndexesParams): Promise<ReturnObject<Models.IndexList>> => {
+  ...args
+}: ListIndexesArgs): Promise<ReturnObject<ListIndexesAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.listIndexes(dbId, collId);
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as ListIndexesArgs;
+
+    const data = await databases.listIndexes(
+      ...(Object.values(newArgs) as ListIndexes)
+    );
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -1016,31 +1313,30 @@ const listIndexes = async ({
 /**
  * Updates a boolean attribute in a collection.
  */
-export type UpdateBooleanAttributeParams = {
-  dbId: string;
-  collId: string;
-  key: string;
-  required: boolean;
-  xdefault?: boolean;
-  newKey?: string;
+type UpdateBooleanAttributeArgs = {
+  databaseId?: UpdateBooleanAttribute[0];
+  collectionId?: UpdateBooleanAttribute[1];
+  key: UpdateBooleanAttribute[2];
+  required: UpdateBooleanAttribute[3];
+  xdefault?: UpdateBooleanAttribute[4];
+  newKey?: UpdateBooleanAttribute[5];
 };
 const updateBooleanAttribute = async ({
-  dbId,
-  collId,
-  key,
-  required,
-  xdefault,
-  newKey,
-}: UpdateBooleanAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: UpdateBooleanAttributeArgs): Promise<
+  ReturnObject<UpdateBooleanAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as UpdateBooleanAttributeArgs;
+
     const data = await databases.updateBooleanAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      xdefault,
-      newKey
+      ...(Object.values(newArgs) as UpdateBooleanAttribute)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -1054,31 +1350,45 @@ const updateBooleanAttribute = async ({
 /**
  * Updates a collection in a database.
  */
-export type UpdateCollectionParams = {
-  dbId: string;
-  collId: string;
-  name: string;
-  permissions?: string[];
-  documentSecurity?: boolean;
-  enabled?: boolean;
+type UpdateCollectionArgs = {
+  databaseId?: UpdateCollection[0];
+  collectionId: UpdateCollection[1];
+  name: UpdateCollection[2];
+  permissions?: UpdateCollection[3];
+  documentSecurity?: UpdateCollection[4];
+  enabled?: UpdateCollection[5];
 };
 const updateCollection = async ({
-  dbId,
-  collId,
-  name,
-  permissions,
-  documentSecurity,
-  enabled,
-}: UpdateCollectionParams): Promise<ReturnObject<Models.Collection>> => {
+  ...args
+}: UpdateCollectionArgs): Promise<ReturnObject<UpdateCollectionAwaited>> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+    } as UpdateCollectionArgs;
+
+    const collList = await databases.listCollections(newArgs.databaseId!, [
+      Query.and([
+        Query.equal("name", newArgs.name),
+        Query.equal("$id", newArgs.collectionId),
+      ]),
+    ]);
+
+    if (collList.total < 1) {
+      throw new Error(
+        `Collection with name: '${newArgs.name}' / id:'${newArgs.collectionId}' not found`
+      );
+    }
+    if (collList.total > 1) {
+      throw new Error(
+        `Collection with name: '${newArgs.name}' / id:'${newArgs.collectionId}' not unique, multiple collections with the same name and/or id found`
+      );
+    }
+
     const data = await databases.updateCollection(
-      dbId,
-      collId,
-      name,
-      permissions,
-      documentSecurity,
-      enabled
+      ...(Object.values(newArgs) as UpdateCollection)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -1090,21 +1400,205 @@ const updateCollection = async ({
 };
 
 /**
- * Updates a database in the Appwrite project.
+ * Updates a collection according to a defined schema.
+ * To execute successfully, there must be a schema file (JSON) in the schemas folder,
+ * named as the collection name. The schema folder path must be defined in env vars.
  */
-export type UpdateDatabaseParams = {
-  dbId: string;
-  name: string;
-  enabled?: boolean;
+type UpdateCollectionWithSchemaArgs = UpdateCollectionArgs & {
+  destructive?: boolean;
 };
-const updateDatabase = async ({
-  dbId,
-  name,
-  enabled,
-}: UpdateDatabaseParams): Promise<ReturnObject<Models.Database>> => {
+
+const updateCollectionWithSchema = async ({
+  ...args
+}: UpdateCollectionWithSchemaArgs): Promise<
+  ReturnObject<UpdateCollectionWithSchemaAwaited>
+> => {
+  // Create a log tracker to capture every action.
+  const logActions: string[] = [];
+  logActions.push(`Update started at ${new Date().toISOString()}`);
+  logActions.push(`Destructive flag: ${args.destructive ? "true" : "false"}`);
+
   try {
     const { databases } = await createAdminClient();
-    const data = await databases.update(dbId, name, enabled);
+
+    // Use provided databaseId/collectionId if available; otherwise use defaults.
+    const newArgs: UpdateCollectionWithSchemaArgs = {
+      ...args,
+      databaseId: args.databaseId ?? databaseId,
+      collectionId: args.collectionId ?? ID.unique(),
+    };
+
+    // Verify that the collection exists and is unique.
+    const collList = await databases.listCollections(newArgs.databaseId!, [
+      Query.and([
+        Query.equal("name", newArgs.name),
+        Query.equal("$id", newArgs.collectionId),
+      ]),
+    ]);
+
+    if (collList.total < 1) {
+      throw new Error(
+        `Collection with name: '${newArgs.name}' / id:'${newArgs.collectionId}' not found`
+      );
+    }
+    if (collList.total > 1) {
+      throw new Error(
+        `Collection with name: '${newArgs.name}' / id:'${newArgs.collectionId}' not unique, multiple collections with the same name and/or id found`
+      );
+    }
+    logActions.push(
+      `Found collection: name='${newArgs.name}', id='${newArgs.collectionId}'`
+    );
+
+    // Retrieve the schema.
+    const schema = await getSchema(newArgs.name);
+    if (!schema) {
+      throw new Error(`No schema found for collection '${newArgs.name}'`);
+    }
+    if (!schema.attributes || schema.attributes.length < 1) {
+      throw new Error(
+        `No attributes found in schema for collection '${newArgs.name}'`
+      );
+    }
+    if (!schema.indexes || schema.indexes.length < 1) {
+      throw new Error(
+        `No indexes found in schema for collection '${newArgs.name}'`
+      );
+    }
+    logActions.push(`Schema loaded for collection '${newArgs.name}'`);
+
+    // Update newArgs with values from the schema.
+    newArgs.name = schema.collectionName;
+    newArgs.permissions = schema.permissions;
+    newArgs.documentSecurity = schema.documentSecurity;
+    newArgs.enabled = schema.enabled;
+
+    // Update the collection.
+    const coll = await databases.updateCollection(
+      ...(Object.values(newArgs) as UpdateCollection)
+    );
+    logActions.push(`Collection updated with new schema values.`);
+
+    // coll.attributes is a string[] of attribute keys.
+    const currentAttributeKeys: string[] = coll.attributes || [];
+    // Build a Set of attribute keys defined in the new schema.
+    const schemaAttributeKeys = new Set(
+      schema.attributes.map((attr) => attr.key)
+    );
+
+    // Loop through each attribute defined in the schema.
+    for (const schemaAttr of schema.attributes) {
+      const exists = currentAttributeKeys.includes(schemaAttr.key);
+      if (!exists) {
+        logActions.push(
+          `Attribute '${schemaAttr.key}' not found; creating it.`
+        );
+        await createAttribute(
+          newArgs.databaseId!,
+          newArgs.collectionId,
+          schemaAttr
+        );
+        logActions.push(`Attribute '${schemaAttr.key}' created.`);
+      } else if (args.destructive) {
+        // In destructive mode, update attribute if it differs.
+        // Helper function "attributesEqual" compares only the relevant common
+        // properties for the given attribute type.
+        // If they differ, update the attribute.
+        const existingAttr = getAttributeFromKey(
+          schemaAttr.key,
+          schema.attributes
+        );
+        if (!attributesEqual(existingAttr!, schemaAttr)) {
+          logActions.push(
+            `Attribute '${schemaAttr.key}' differs from schema; updating it (destructive update).`
+          );
+          await updateAttribute(
+            newArgs.databaseId!,
+            newArgs.collectionId,
+            schemaAttr
+          );
+          logActions.push(`Attribute '${schemaAttr.key}' updated.`);
+        } else {
+          logActions.push(`Attribute '${schemaAttr.key}' is up-to-date.`);
+        }
+      } else {
+        // If not destructive, you might choose to skip the update.
+        logActions.push(
+          `Attribute '${schemaAttr.key}' exists but no update was performed (no destructive flag set).`
+        );
+      }
+    }
+
+    // If destructive mode is enabled, remove any attribute that exists in the collection
+    // but is not defined in the new schema.
+    if (args.destructive) {
+      const attributesToRemove = currentAttributeKeys.filter(
+        (key) => !schemaAttributeKeys.has(key)
+      );
+      for (const key of attributesToRemove) {
+        logActions.push(
+          `Attribute '${key}' exists in collection but not in schema; removing it.`
+        );
+        await deleteAttribute({
+          databaseId: newArgs.databaseId!,
+          collectionId: newArgs.collectionId,
+          key,
+        });
+        logActions.push(`Attribute '${key}' removed.`);
+      }
+    }
+
+    // Process each index defined in the schema.
+    for (const index of schema.indexes) {
+      logActions.push(`Creating index '${index.key}' of type '${index.type}'`);
+      await databases.createIndex(
+        newArgs.databaseId!,
+        newArgs.collectionId,
+        index.key,
+        index.type,
+        index.attributes,
+        index.orders
+      );
+      logActions.push(`Index '${index.key}' created.`);
+    }
+
+    // Write the log to the migration logs folder.
+    await toLogFolder(logActions.join("\n"));
+    logActions.push(`Migration log saved.`);
+
+    return { data: coll, error: null };
+  } catch (error: any) {
+    // In case of an error, write the log (or part of it) to file.
+    await toLogFolder(logActions.join("\n"));
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/**
+ * Updates a database in the Appwrite project.
+ */
+type UpdateDatabaseArgs = {
+  databaseId?: UpdateDatabase[0];
+  name: UpdateDatabase[1];
+  enabled?: UpdateDatabase[2];
+};
+const updateDatabase = async ({
+  ...args
+}: UpdateDatabaseArgs): Promise<ReturnObject<UpdateDatabaseAwaited>> => {
+  try {
+    const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+    } as UpdateDatabaseArgs;
+
+    const data = await databases.update(
+      ...(Object.values(newArgs) as UpdateDatabase)
+    );
     return { data, error: null };
   } catch (error: any) {
     return {
@@ -1117,31 +1611,30 @@ const updateDatabase = async ({
 /**
  * Updates a datetime attribute in a collection.
  */
-export type UpdateDatetimeAttributeParams = {
-  dbId: string;
-  collId: string;
-  key: string;
-  required: boolean;
-  xdefault?: string;
-  newKey?: string;
+type UpdateDatetimeAttributeArgs = {
+  databaseId?: UpdateDatetimeAttribute[0];
+  collectionId?: UpdateDatetimeAttribute[1];
+  key: UpdateDatetimeAttribute[2];
+  required: UpdateDatetimeAttribute[3];
+  xdefault?: UpdateDatetimeAttribute[4];
+  newKey?: UpdateDatetimeAttribute[5];
 };
 const updateDatetimeAttribute = async ({
-  dbId,
-  collId,
-  key,
-  required,
-  xdefault,
-  newKey,
-}: UpdateDatetimeAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: UpdateDatetimeAttributeArgs): Promise<
+  ReturnObject<UpdateDatetimeAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as UpdateDatetimeAttributeArgs;
+
     const data = await databases.updateDatetimeAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      xdefault,
-      newKey
+      ...(Object.values(newArgs) as UpdateDatetimeAttribute)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -1155,30 +1648,29 @@ const updateDatetimeAttribute = async ({
 /**
  * Updates a document in a collection.
  */
-export type UpdateDocumentParams = {
-  dbId?: string;
-  collId?: string;
-  documentId: string;
-  data?: Record<string, any>;
-  permissions?: string[];
+type UpdateDocumentArgs = {
+  databaseId?: UpdateDocument[0];
+  collectionId?: UpdateDocument[1];
+  documentId: UpdateDocument[2];
+  data?: UpdateDocument[3];
+  permissions?: UpdateDocument[4];
 };
 const updateDocument = async ({
-  dbId = databaseId,
-  collId = userCollectionId,
-  documentId,
-  data,
-  permissions,
-}: UpdateDocumentParams): Promise<ReturnObject<Models.Document>> => {
+  ...args
+}: UpdateDocumentArgs): Promise<ReturnObject<UpdateDocumentAwaited>> => {
   try {
     const { databases } = await createAdminClient();
-    const updatedData = await databases.updateDocument(
-      dbId,
-      collId,
-      documentId,
-      data,
-      permissions
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as UpdateDocumentArgs;
+
+    const data = await databases.updateDocument(
+      ...(Object.values(newArgs) as UpdateDocument)
     );
-    return { data: updatedData, error: null };
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,
@@ -1190,31 +1682,30 @@ const updateDocument = async ({
 /**
  * Updates an email attribute in a collection.
  */
-export type UpdateEmailAttributeParams = {
-  dbId: string;
-  collId: string;
-  key: string;
-  required: boolean;
-  xdefault?: string;
-  newKey?: string;
+type UpdateEmailAttributeArgs = {
+  databaseId?: UpdateEmailAttribute[0];
+  collectionId?: UpdateEmailAttribute[1];
+  key: UpdateEmailAttribute[2];
+  required: UpdateEmailAttribute[3];
+  xdefault?: UpdateEmailAttribute[4];
+  newKey?: UpdateEmailAttribute[5];
 };
 const updateEmailAttribute = async ({
-  dbId,
-  collId,
-  key,
-  required,
-  xdefault,
-  newKey,
-}: UpdateEmailAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: UpdateEmailAttributeArgs): Promise<
+  ReturnObject<UpdateEmailAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as UpdateEmailAttributeArgs;
+
     const data = await databases.updateEmailAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      xdefault,
-      newKey
+      ...(Object.values(newArgs) as UpdateEmailAttribute)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -1228,34 +1719,31 @@ const updateEmailAttribute = async ({
 /**
  * Updates an enum attribute in a collection.
  */
-export type UpdateEnumAttributeParams = {
-  dbId: string;
-  collId: string;
-  key: string;
-  elements: string[];
-  required: boolean;
-  xdefault?: string;
-  newKey?: string;
+type UpdateEnumAttributeArgs = {
+  databaseId?: UpdateEnumAttribute[0];
+  collectionId?: UpdateEnumAttribute[1];
+  key: UpdateEnumAttribute[2];
+  elements: UpdateEnumAttribute[3];
+  required: UpdateEnumAttribute[4];
+  xdefault?: UpdateEnumAttribute[5];
+  newKey?: UpdateEnumAttribute[6];
 };
 const updateEnumAttribute = async ({
-  dbId,
-  collId,
-  key,
-  elements,
-  required,
-  xdefault,
-  newKey,
-}: UpdateEnumAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: UpdateEnumAttributeArgs): Promise<
+  ReturnObject<UpdateEnumAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as UpdateEnumAttributeArgs;
+
     const data = await databases.updateEnumAttribute(
-      dbId,
-      collId,
-      key,
-      elements,
-      required,
-      xdefault,
-      newKey
+      ...(Object.values(newArgs) as UpdateEnumAttribute)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -1269,37 +1757,32 @@ const updateEnumAttribute = async ({
 /**
  * Updates a float attribute in a collection.
  */
-export type UpdateFloatAttributeParams = {
-  dbId: string;
-  collId: string;
-  key: string;
-  required: boolean;
-  min: number;
-  max: number;
-  xdefault?: number;
-  newKey?: string;
+type UpdateFloatAttributeArgs = {
+  databaseId?: UpdateFloatAttribute[0];
+  collectionId?: UpdateFloatAttribute[1];
+  key: UpdateFloatAttribute[2];
+  required: UpdateFloatAttribute[3];
+  min: UpdateFloatAttribute[4];
+  max: UpdateFloatAttribute[5];
+  xdefault?: UpdateFloatAttribute[6];
+  newKey?: UpdateFloatAttribute[7];
 };
 const updateFloatAttribute = async ({
-  dbId,
-  collId,
-  key,
-  required,
-  min,
-  max,
-  xdefault,
-  newKey,
-}: UpdateFloatAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: UpdateFloatAttributeArgs): Promise<
+  ReturnObject<UpdateFloatAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as UpdateFloatAttributeArgs;
+
     const data = await databases.updateFloatAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      min,
-      max,
-      xdefault,
-      newKey
+      ...(Object.values(newArgs) as UpdateFloatAttribute)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -1313,37 +1796,32 @@ const updateFloatAttribute = async ({
 /**
  * Updates an integer attribute in a collection.
  */
-export type UpdateIntegerAttributeParams = {
-  dbId: string;
-  collId: string;
-  key: string;
-  required: boolean;
-  min: number;
-  max: number;
-  xdefault?: number;
-  newKey?: string;
+type UpdateIntegerAttributeArgs = {
+  databaseId?: UpdateIntegerAttribute[0];
+  collectionId?: UpdateIntegerAttribute[1];
+  key: UpdateIntegerAttribute[2];
+  required: UpdateIntegerAttribute[3];
+  min: UpdateIntegerAttribute[4];
+  max: UpdateIntegerAttribute[5];
+  xdefault?: UpdateIntegerAttribute[6];
+  newKey?: UpdateIntegerAttribute[7];
 };
 const updateIntegerAttribute = async ({
-  dbId,
-  collId,
-  key,
-  required,
-  min,
-  max,
-  xdefault,
-  newKey,
-}: UpdateIntegerAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: UpdateIntegerAttributeArgs): Promise<
+  ReturnObject<UpdateIntegerAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as UpdateIntegerAttributeArgs;
+
     const data = await databases.updateIntegerAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      min,
-      max,
-      xdefault,
-      newKey
+      ...(Object.values(newArgs) as UpdateIntegerAttribute)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -1357,31 +1835,28 @@ const updateIntegerAttribute = async ({
 /**
  * Updates an IP address attribute in a collection.
  */
-export type UpdateIpAttributeParams = {
-  dbId: string;
-  collId: string;
-  key: string;
-  required: boolean;
-  xdefault?: string;
-  newKey?: string;
+type UpdateIpAttributeArgs = {
+  databaseId?: UpdateIpAttribute[0];
+  collectionId?: UpdateIpAttribute[1];
+  key: UpdateIpAttribute[2];
+  required: UpdateIpAttribute[3];
+  xdefault?: UpdateIpAttribute[4];
+  newKey?: UpdateIpAttribute[5];
 };
 const updateIpAttribute = async ({
-  dbId,
-  collId,
-  key,
-  required,
-  xdefault,
-  newKey,
-}: UpdateIpAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: UpdateIpAttributeArgs): Promise<ReturnObject<UpdateIpAttributeAwaited>> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as UpdateIpAttributeArgs;
+
     const data = await databases.updateIpAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      xdefault,
-      newKey
+      ...(Object.values(newArgs) as UpdateIpAttribute)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -1395,28 +1870,29 @@ const updateIpAttribute = async ({
 /**
  * Updates a relationship attribute in a collection.
  */
-export type UpdateRelationshipAttributeParams = {
-  dbId: string;
-  collId: string;
-  key: string;
-  onDelete?: RelationMutate;
-  newKey?: string;
+type UpdateRelationshipAttributeArgs = {
+  databaseId?: UpdateRelationshipAttribute[0];
+  collectionId?: UpdateRelationshipAttribute[1];
+  key: UpdateRelationshipAttribute[2];
+  onDelete?: UpdateRelationshipAttribute[3];
+  newKey?: UpdateRelationshipAttribute[4];
 };
 const updateRelationshipAttribute = async ({
-  dbId,
-  collId,
-  key,
-  onDelete,
-  newKey,
-}: UpdateRelationshipAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: UpdateRelationshipAttributeArgs): Promise<
+  ReturnObject<UpdateRelationshipAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as UpdateRelationshipAttributeArgs;
+
     const data = await databases.updateRelationshipAttribute(
-      dbId,
-      collId,
-      key,
-      onDelete,
-      newKey
+      ...(Object.values(newArgs) as UpdateRelationshipAttribute)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -1430,34 +1906,31 @@ const updateRelationshipAttribute = async ({
 /**
  * Updates a string attribute in a collection.
  */
-export type UpdateStringAttributeParams = {
-  dbId: string;
-  collId: string;
-  key: string;
-  required: boolean;
-  xdefault?: string;
-  size?: number;
-  newKey?: string;
+type UpdateStringAttributeArgs = {
+  databaseId?: UpdateStringAttribute[0];
+  collectionId?: UpdateStringAttribute[1];
+  key: UpdateStringAttribute[2];
+  required: UpdateStringAttribute[3];
+  xdefault?: UpdateStringAttribute[4];
+  size?: UpdateStringAttribute[5];
+  newKey?: UpdateStringAttribute[6];
 };
 const updateStringAttribute = async ({
-  dbId,
-  collId,
-  key,
-  required,
-  xdefault,
-  size,
-  newKey,
-}: UpdateStringAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: UpdateStringAttributeArgs): Promise<
+  ReturnObject<UpdateStringAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as UpdateStringAttributeArgs;
+
     const data = await databases.updateStringAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      xdefault,
-      size,
-      newKey
+      ...(Object.values(newArgs) as UpdateStringAttribute)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -1471,31 +1944,30 @@ const updateStringAttribute = async ({
 /**
  * Updates a URL attribute in a collection.
  */
-export type UpdateUrlAttributeParams = {
-  dbId: string;
-  collId: string;
-  key: string;
-  required: boolean;
-  xdefault?: string;
-  newKey?: string;
+type UpdateUrlAttributeArgs = {
+  databaseId?: UpdateUrlAttribute[0];
+  collectionId?: UpdateUrlAttribute[1];
+  key: UpdateUrlAttribute[2];
+  required: UpdateUrlAttribute[3];
+  xdefault?: UpdateUrlAttribute[4];
+  newKey?: UpdateUrlAttribute[5];
 };
 const updateUrlAttribute = async ({
-  dbId,
-  collId,
-  key,
-  required,
-  xdefault,
-  newKey,
-}: UpdateUrlAttributeParams): Promise<ReturnObject<any>> => {
+  ...args
+}: UpdateUrlAttributeArgs): Promise<
+  ReturnObject<UpdateUrlAttributeAwaited>
+> => {
   try {
     const { databases } = await createAdminClient();
+
+    const newArgs = {
+      ...args,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
+    } as UpdateUrlAttributeArgs;
+
     const data = await databases.updateUrlAttribute(
-      dbId,
-      collId,
-      key,
-      required,
-      xdefault,
-      newKey
+      ...(Object.values(newArgs) as UpdateUrlAttribute)
     );
     return { data, error: null };
   } catch (error: any) {
@@ -1539,6 +2011,7 @@ export {
   listIndexes,
   updateBooleanAttribute,
   updateCollection,
+  updateCollectionWithSchema,
   updateDatabase,
   updateDatetimeAttribute,
   updateDocument,
@@ -1550,4 +2023,269 @@ export {
   updateRelationshipAttribute,
   updateStringAttribute,
   updateUrlAttribute,
+};
+
+export {
+  type CreateDatabase,
+  type CreateDatabaseAwaited,
+  type CreateDatabaseArgs,
+  type CreateDatabaseReturnType,
+};
+export {
+  type CreateBooleanAttribute,
+  type CreateBooleanAttributeAwaited,
+  type CreateBooleanAttributeArgs,
+  type CreateBooleanAttributeReturnType,
+};
+export {
+  type CreateCollection,
+  type CreateCollectionAwaited,
+  type CreateCollectionArgs,
+  type CreateCollectionReturnType,
+};
+export {
+  type CreateCollectionWithSchema,
+  type CreateCollectionWithSchemaAwaited,
+  type CreateCollectionWithSchemaArgs,
+  type CreateCollectionWithSchemaReturnType,
+};
+export {
+  type CreateDatetimeAttribute,
+  type CreateDatetimeAttributeAwaited,
+  type CreateDatetimeAttributeArgs,
+  type CreateDatetimeAttributeReturnType,
+};
+export {
+  type CreateDocument,
+  type CreateDocumentAwaited,
+  type CreateDocumentArgs,
+  type CreateDocumentReturnType,
+};
+export {
+  type CreateEmailAttribute,
+  type CreateEmailAttributeAwaited,
+  type CreateEmailAttributeArgs,
+  type CreateEmailAttributeReturnType,
+};
+export {
+  type CreateEnumAttribute,
+  type CreateEnumAttributeAwaited,
+  type CreateEnumAttributeArgs,
+  type CreateEnumAttributeReturnType,
+};
+export {
+  type CreateFloatAttribute,
+  type CreateFloatAttributeAwaited,
+  type CreateFloatAttributeArgs,
+  type CreateFloatAttributeReturnType,
+};
+export {
+  type CreateIndex,
+  type CreateIndexAwaited,
+  type CreateIndexArgs,
+  type CreateIndexReturnType,
+};
+export {
+  type CreateIntegerAttribute,
+  type CreateIntegerAttributeAwaited,
+  type CreateIntegerAttributeArgs,
+  type CreateIntegerAttributeReturnType,
+};
+export {
+  type CreateIpAttribute,
+  type CreateIpAttributeAwaited,
+  type CreateIpAttributeArgs,
+  type CreateIpAttributeReturnType,
+};
+export {
+  type CreateRelationshipAttribute,
+  type CreateRelationshipAttributeAwaited,
+  type CreateRelationshipAttributeArgs,
+  type CreateRelationshipAttributeReturnType,
+};
+export {
+  type CreateStringAttribute,
+  type CreateStringAttributeAwaited,
+  type CreateStringAttributeArgs,
+  type CreateStringAttributeReturnType,
+};
+export {
+  type CreateUrlAttribute,
+  type CreateUrlAttributeAwaited,
+  type CreateUrlAttributeArgs,
+  type CreateUrlAttributeReturnType,
+};
+export {
+  type DeleteAttribute,
+  type DeleteAttributeAwaited,
+  type DeleteAttributeArgs,
+  type DeleteAttributeReturnType,
+};
+export {
+  type DeleteCollection,
+  type DeleteCollectionAwaited,
+  type DeleteCollectionArgs,
+  type DeleteCollectionReturnType,
+};
+export {
+  type DeleteDatabase,
+  type DeleteDatabaseAwaited,
+  type DeleteDatabaseArgs,
+  type DeleteDatabaseReturnType,
+};
+export {
+  type DeleteDocument,
+  type DeleteDocumentAwaited,
+  type DeleteDocumentArgs,
+  type DeleteDocumentReturnType,
+};
+export {
+  type DeleteIndex,
+  type DeleteIndexAwaited,
+  type DeleteIndexArgs,
+  type DeleteIndexReturnType,
+};
+export {
+  type GetAttribute,
+  type GetAttributeAwaited,
+  type GetAttributeArgs,
+  type GetAttributeReturnType,
+};
+export {
+  type GetCollection,
+  type GetCollectionAwaited,
+  type GetCollectionArgs,
+  type GetCollectionReturnType,
+};
+export {
+  type GetDatabase,
+  type GetDatabaseAwaited,
+  type GetDatabaseArgs,
+  type GetDatabaseReturnType,
+};
+export {
+  type GetDocument,
+  type GetDocumentAwaited,
+  type GetDocumentArgs,
+  type GetDocumentReturnType,
+};
+export {
+  type GetIndex,
+  type GetIndexAwaited,
+  type GetIndexArgs,
+  type GetIndexReturnType,
+};
+export {
+  type ListAttributes,
+  type ListAttributesAwaited,
+  type ListAttributesArgs,
+  type ListAttributesReturnType,
+};
+export {
+  type ListCollections,
+  type ListCollectionsAwaited,
+  type ListCollectionsArgs,
+  type ListCollectionsReturnType,
+};
+export {
+  type ListDatabases,
+  type ListDatabasesAwaited,
+  type ListDatabasesArgs,
+  type ListDatabasesReturnType,
+};
+export {
+  type ListDocuments,
+  type ListDocumentsAwaited,
+  type ListDocumentsArgs,
+  type ListDocumentsReturnType,
+};
+export {
+  type ListIndexes,
+  type ListIndexesAwaited,
+  type ListIndexesArgs,
+  type ListIndexesReturnType,
+};
+export {
+  type UpdateBooleanAttribute,
+  type UpdateBooleanAttributeAwaited,
+  type UpdateBooleanAttributeArgs,
+  type UpdateBooleanAttributeReturnType,
+};
+export {
+  type UpdateCollection,
+  type UpdateCollectionAwaited,
+  type UpdateCollectionArgs,
+  type UpdateCollectionReturnType,
+};
+export {
+  type UpdateCollectionWithSchema,
+  type UpdateCollectionWithSchemaAwaited,
+  type UpdateCollectionWithSchemaArgs,
+  type UpdateCollectionWithSchemaReturnType,
+};
+export {
+  type UpdateDatabase,
+  type UpdateDatabaseAwaited,
+  type UpdateDatabaseArgs,
+  type UpdateDatabaseReturnType,
+};
+export {
+  type UpdateDatetimeAttribute,
+  type UpdateDatetimeAttributeAwaited,
+  type UpdateDatetimeAttributeArgs,
+  type UpdateDatetimeAttributeReturnType,
+};
+export {
+  type UpdateDocument,
+  type UpdateDocumentAwaited,
+  type UpdateDocumentArgs,
+  type UpdateDocumentReturnType,
+};
+export {
+  type UpdateEmailAttribute,
+  type UpdateEmailAttributeAwaited,
+  type UpdateEmailAttributeArgs,
+  type UpdateEmailAttributeReturnType,
+};
+export {
+  type UpdateEnumAttribute,
+  type UpdateEnumAttributeAwaited,
+  type UpdateEnumAttributeArgs,
+  type UpdateEnumAttributeReturnType,
+};
+export {
+  type UpdateFloatAttribute,
+  type UpdateFloatAttributeAwaited,
+  type UpdateFloatAttributeArgs,
+  type UpdateFloatAttributeReturnType,
+};
+export {
+  type UpdateIntegerAttribute,
+  type UpdateIntegerAttributeAwaited,
+  type UpdateIntegerAttributeArgs,
+  type UpdateIntegerAttributeReturnType,
+};
+export {
+  type UpdateIpAttribute,
+  type UpdateIpAttributeAwaited,
+  type UpdateIpAttributeArgs,
+  type UpdateIpAttributeReturnType,
+};
+export {
+  type UpdateRelationshipAttribute,
+  type UpdateRelationshipAttributeAwaited,
+  type UpdateRelationshipAttributeArgs,
+  type UpdateRelationshipAttributeReturnType,
+};
+export {
+  type UpdateStringAttribute,
+  type UpdateStringAttributeAwaited,
+  type UpdateStringAttributeArgs,
+  type UpdateStringAttributeReturnType,
+};
+export {
+  type UpdateUrlAttribute,
+  type UpdateUrlAttributeAwaited,
+  type UpdateUrlAttributeArgs,
+  type UpdateUrlAttributeReturnType,
 };

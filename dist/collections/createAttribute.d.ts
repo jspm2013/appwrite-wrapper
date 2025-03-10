@@ -1,3 +1,3 @@
-import { Attribute, CreateRelationshipAttributeParams } from "./types";
-export declare const createAttribute: (dbId: string, collId: string, attr: Attribute | CreateRelationshipAttributeParams) => Promise<void>;
+import { Attribute } from "./types";
+export declare const createAttribute: (databaseId: string, collectionId: string, attr: Attribute) => Promise<void>;
 //# sourceMappingURL=createAttribute.d.ts.map

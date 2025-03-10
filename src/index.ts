@@ -25,7 +25,11 @@ interface ErrorObject {
   description: string;
   error?: object;
 }
-export { type ErrorObject };
+interface ReturnObject<T> {
+  error: ErrorObject | null;
+  data: T | null;
+}
+export { type ErrorObject, type ReturnObject };
 
 export {
   // Account functions
@@ -104,6 +108,7 @@ export {
   listIndexes,
   updateBooleanAttribute,
   updateCollection,
+  updateCollectionWithSchema,
   updateDatabase,
   updateDatetimeAttribute,
   updateDocument,

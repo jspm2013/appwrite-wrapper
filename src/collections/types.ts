@@ -1,5 +1,4 @@
 import { Models, IndexType } from "node-appwrite";
-import { type CreateRelationshipAttributeParams } from "src/methods/databases";
 
 /*
  *
@@ -8,7 +7,7 @@ import { type CreateRelationshipAttributeParams } from "src/methods/databases";
  *
  *
  */
-export { Models, IndexType, type CreateRelationshipAttributeParams };
+export { Models, IndexType };
 
 export type Attribute =
   | Models.AttributeString
@@ -36,12 +35,12 @@ export type CollectionSchema = {
   permissions: string[];
   documentSecurity: boolean;
   enabled: boolean;
-  attributes: Attribute[] | CreateRelationshipAttributeParams[];
+  attributes: Attribute[];
   indexes: Index[];
 };
 
 export type AttributeHandler = (
-  dbId: string,
-  collId: string,
+  databaseId: string,
+  collectionId: string,
   attr: any
 ) => Promise<void>;

@@ -1,4 +1,4 @@
-import { IndexType, Models, RelationMutate, RelationshipType } from "node-appwrite";
+import { Databases } from "node-appwrite";
 interface ErrorObject {
     appwrite: boolean;
     header: string;
@@ -12,487 +12,656 @@ interface ReturnObject<T> {
     error: ErrorObject | null;
     data: T | null;
 }
+type CreateDatabase = Parameters<Databases["create"]>;
+type CreateBooleanAttribute = Parameters<Databases["createBooleanAttribute"]>;
+type CreateCollection = Parameters<Databases["createCollection"]>;
+type CreateCollectionWithSchema = CreateCollectionAwaited;
+type CreateDatetimeAttribute = Parameters<Databases["createDatetimeAttribute"]>;
+type CreateDocument = Parameters<Databases["createDocument"]>;
+type CreateEmailAttribute = Parameters<Databases["createEmailAttribute"]>;
+type CreateEnumAttribute = Parameters<Databases["createEnumAttribute"]>;
+type CreateFloatAttribute = Parameters<Databases["createFloatAttribute"]>;
+type CreateIndex = Parameters<Databases["createIndex"]>;
+type CreateIntegerAttribute = Parameters<Databases["createIntegerAttribute"]>;
+type CreateIpAttribute = Parameters<Databases["createIpAttribute"]>;
+type CreateRelationshipAttribute = Parameters<Databases["createRelationshipAttribute"]>;
+type CreateStringAttribute = Parameters<Databases["createStringAttribute"]>;
+type CreateUrlAttribute = Parameters<Databases["createUrlAttribute"]>;
+type DeleteAttribute = Parameters<Databases["deleteAttribute"]>;
+type DeleteCollection = Parameters<Databases["deleteCollection"]>;
+type DeleteDatabase = Parameters<Databases["delete"]>;
+type DeleteDocument = Parameters<Databases["deleteDocument"]>;
+type DeleteIndex = Parameters<Databases["deleteIndex"]>;
+type GetAttribute = Parameters<Databases["getAttribute"]>;
+type GetCollection = Parameters<Databases["getCollection"]>;
+type GetDatabase = Parameters<Databases["get"]>;
+type GetDocument = Parameters<Databases["getDocument"]>;
+type GetIndex = Parameters<Databases["getIndex"]>;
+type ListAttributes = Parameters<Databases["listAttributes"]>;
+type ListCollections = Parameters<Databases["listCollections"]>;
+type ListDatabases = Parameters<Databases["list"]>;
+type ListDocuments = Parameters<Databases["listDocuments"]>;
+type ListIndexes = Parameters<Databases["listIndexes"]>;
+type UpdateBooleanAttribute = Parameters<Databases["updateBooleanAttribute"]>;
+type UpdateCollection = Parameters<Databases["updateCollection"]>;
+type UpdateCollectionWithSchema = UpdateCollection;
+type UpdateDatabase = Parameters<Databases["update"]>;
+type UpdateDatetimeAttribute = Parameters<Databases["updateDatetimeAttribute"]>;
+type UpdateDocument = Parameters<Databases["updateDocument"]>;
+type UpdateEmailAttribute = Parameters<Databases["updateEmailAttribute"]>;
+type UpdateEnumAttribute = Parameters<Databases["updateEnumAttribute"]>;
+type UpdateFloatAttribute = Parameters<Databases["updateFloatAttribute"]>;
+type UpdateIntegerAttribute = Parameters<Databases["updateIntegerAttribute"]>;
+type UpdateIpAttribute = Parameters<Databases["updateIpAttribute"]>;
+type UpdateRelationshipAttribute = Parameters<Databases["updateRelationshipAttribute"]>;
+type UpdateStringAttribute = Parameters<Databases["updateStringAttribute"]>;
+type UpdateUrlAttribute = Parameters<Databases["updateUrlAttribute"]>;
+type CreateDatabaseReturnType = ReturnType<Databases["create"]>;
+type CreateBooleanAttributeReturnType = ReturnType<Databases["createBooleanAttribute"]>;
+type CreateCollectionReturnType = ReturnType<Databases["createCollection"]>;
+type CreateCollectionWithSchemaReturnType = CreateCollectionReturnType;
+type CreateDatetimeAttributeReturnType = ReturnType<Databases["createDatetimeAttribute"]>;
+type CreateDocumentReturnType = ReturnType<Databases["createDocument"]>;
+type CreateEmailAttributeReturnType = ReturnType<Databases["createEmailAttribute"]>;
+type CreateEnumAttributeReturnType = ReturnType<Databases["createEnumAttribute"]>;
+type CreateFloatAttributeReturnType = ReturnType<Databases["createFloatAttribute"]>;
+type CreateIndexReturnType = ReturnType<Databases["createIndex"]>;
+type CreateIntegerAttributeReturnType = ReturnType<Databases["createIntegerAttribute"]>;
+type CreateIpAttributeReturnType = ReturnType<Databases["createIpAttribute"]>;
+type CreateRelationshipAttributeReturnType = ReturnType<Databases["createRelationshipAttribute"]>;
+type CreateStringAttributeReturnType = ReturnType<Databases["createStringAttribute"]>;
+type CreateUrlAttributeReturnType = ReturnType<Databases["createUrlAttribute"]>;
+type DeleteAttributeReturnType = ReturnType<Databases["deleteAttribute"]>;
+type DeleteCollectionReturnType = ReturnType<Databases["deleteCollection"]>;
+type DeleteDatabaseReturnType = ReturnType<Databases["delete"]>;
+type DeleteDocumentReturnType = ReturnType<Databases["deleteDocument"]>;
+type DeleteIndexReturnType = ReturnType<Databases["deleteIndex"]>;
+type GetAttributeReturnType = ReturnType<Databases["getAttribute"]>;
+type GetCollectionReturnType = ReturnType<Databases["getCollection"]>;
+type GetDatabaseReturnType = ReturnType<Databases["get"]>;
+type GetDocumentReturnType = ReturnType<Databases["getDocument"]>;
+type GetIndexReturnType = ReturnType<Databases["getIndex"]>;
+type ListAttributesReturnType = ReturnType<Databases["listAttributes"]>;
+type ListCollectionsReturnType = ReturnType<Databases["listCollections"]>;
+type ListDatabasesReturnType = ReturnType<Databases["list"]>;
+type ListDocumentsReturnType = ReturnType<Databases["listDocuments"]>;
+type ListIndexesReturnType = ReturnType<Databases["listIndexes"]>;
+type UpdateBooleanAttributeReturnType = ReturnType<Databases["updateBooleanAttribute"]>;
+type UpdateCollectionReturnType = ReturnType<Databases["updateCollection"]>;
+type UpdateCollectionWithSchemaReturnType = UpdateCollectionReturnType;
+type UpdateDatabaseReturnType = ReturnType<Databases["update"]>;
+type UpdateDatetimeAttributeReturnType = ReturnType<Databases["updateDatetimeAttribute"]>;
+type UpdateDocumentReturnType = ReturnType<Databases["updateDocument"]>;
+type UpdateEmailAttributeReturnType = ReturnType<Databases["updateEmailAttribute"]>;
+type UpdateEnumAttributeReturnType = ReturnType<Databases["updateEnumAttribute"]>;
+type UpdateFloatAttributeReturnType = ReturnType<Databases["updateFloatAttribute"]>;
+type UpdateIntegerAttributeReturnType = ReturnType<Databases["updateIntegerAttribute"]>;
+type UpdateIpAttributeReturnType = ReturnType<Databases["updateIpAttribute"]>;
+type UpdateRelationshipAttributeReturnType = ReturnType<Databases["updateRelationshipAttribute"]>;
+type UpdateStringAttributeReturnType = ReturnType<Databases["updateStringAttribute"]>;
+type UpdateUrlAttributeReturnType = ReturnType<Databases["updateUrlAttribute"]>;
+type CreateDatabaseAwaited = Awaited<ReturnType<Databases["create"]>>;
+type CreateBooleanAttributeAwaited = Awaited<ReturnType<Databases["createBooleanAttribute"]>>;
+type CreateCollectionAwaited = Awaited<ReturnType<Databases["createCollection"]>>;
+type CreateCollectionWithSchemaAwaited = CreateCollectionAwaited;
+type CreateDatetimeAttributeAwaited = Awaited<ReturnType<Databases["createDatetimeAttribute"]>>;
+type CreateDocumentAwaited = Awaited<ReturnType<Databases["createDocument"]>>;
+type CreateEmailAttributeAwaited = Awaited<ReturnType<Databases["createEmailAttribute"]>>;
+type CreateEnumAttributeAwaited = Awaited<ReturnType<Databases["createEnumAttribute"]>>;
+type CreateFloatAttributeAwaited = Awaited<ReturnType<Databases["createFloatAttribute"]>>;
+type CreateIndexAwaited = Awaited<ReturnType<Databases["createIndex"]>>;
+type CreateIntegerAttributeAwaited = Awaited<ReturnType<Databases["createIntegerAttribute"]>>;
+type CreateIpAttributeAwaited = Awaited<ReturnType<Databases["createIpAttribute"]>>;
+type CreateRelationshipAttributeAwaited = Awaited<ReturnType<Databases["createRelationshipAttribute"]>>;
+type CreateStringAttributeAwaited = Awaited<ReturnType<Databases["createStringAttribute"]>>;
+type CreateUrlAttributeAwaited = Awaited<ReturnType<Databases["createUrlAttribute"]>>;
+type DeleteAttributeAwaited = Awaited<ReturnType<Databases["deleteAttribute"]>>;
+type DeleteCollectionAwaited = Awaited<ReturnType<Databases["deleteCollection"]>>;
+type DeleteDatabaseAwaited = Awaited<ReturnType<Databases["delete"]>>;
+type DeleteDocumentAwaited = Awaited<ReturnType<Databases["deleteDocument"]>>;
+type DeleteIndexAwaited = Awaited<ReturnType<Databases["deleteIndex"]>>;
+type GetAttributeAwaited = Awaited<ReturnType<Databases["getAttribute"]>>;
+type GetCollectionAwaited = Awaited<ReturnType<Databases["getCollection"]>>;
+type GetDatabaseAwaited = Awaited<ReturnType<Databases["get"]>>;
+type GetDocumentAwaited = Awaited<ReturnType<Databases["getDocument"]>>;
+type GetIndexAwaited = Awaited<ReturnType<Databases["getIndex"]>>;
+type ListAttributesAwaited = Awaited<ReturnType<Databases["listAttributes"]>>;
+type ListCollectionsAwaited = Awaited<ReturnType<Databases["listCollections"]>>;
+type ListDatabasesAwaited = Awaited<ReturnType<Databases["list"]>>;
+type ListDocumentsAwaited = Awaited<ReturnType<Databases["listDocuments"]>>;
+type ListIndexesAwaited = Awaited<ReturnType<Databases["listIndexes"]>>;
+type UpdateBooleanAttributeAwaited = Awaited<ReturnType<Databases["updateBooleanAttribute"]>>;
+type UpdateCollectionAwaited = Awaited<ReturnType<Databases["updateCollection"]>>;
+type UpdateCollectionWithSchemaAwaited = UpdateCollectionAwaited;
+type UpdateDatabaseAwaited = Awaited<ReturnType<Databases["update"]>>;
+type UpdateDatetimeAttributeAwaited = Awaited<ReturnType<Databases["updateDatetimeAttribute"]>>;
+type UpdateDocumentAwaited = Awaited<ReturnType<Databases["updateDocument"]>>;
+type UpdateEmailAttributeAwaited = Awaited<ReturnType<Databases["updateEmailAttribute"]>>;
+type UpdateEnumAttributeAwaited = Awaited<ReturnType<Databases["updateEnumAttribute"]>>;
+type UpdateFloatAttributeAwaited = Awaited<ReturnType<Databases["updateFloatAttribute"]>>;
+type UpdateIntegerAttributeAwaited = Awaited<ReturnType<Databases["updateIntegerAttribute"]>>;
+type UpdateIpAttributeAwaited = Awaited<ReturnType<Databases["updateIpAttribute"]>>;
+type UpdateRelationshipAttributeAwaited = Awaited<ReturnType<Databases["updateRelationshipAttribute"]>>;
+type UpdateStringAttributeAwaited = Awaited<ReturnType<Databases["updateStringAttribute"]>>;
+type UpdateUrlAttributeAwaited = Awaited<ReturnType<Databases["updateUrlAttribute"]>>;
 /**
  * Creates a boolean attribute in a collection.
  */
-export type CreateBooleanAttributeParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
-    required: boolean;
-    xdefault?: boolean;
-    xarray?: boolean;
+type CreateBooleanAttributeArgs = {
+    databaseId?: CreateBooleanAttribute[0];
+    collectionId?: CreateBooleanAttribute[1];
+    key: CreateBooleanAttribute[2];
+    required: CreateBooleanAttribute[3];
+    xdefault?: CreateBooleanAttribute[4];
+    array?: CreateBooleanAttribute[5];
 };
-declare const createBooleanAttribute: ({ dbId, collId, key, required, xdefault, xarray, }: CreateBooleanAttributeParams) => Promise<ReturnObject<any>>;
+declare const createBooleanAttribute: ({ ...args }: CreateBooleanAttributeArgs) => Promise<ReturnObject<CreateBooleanAttributeAwaited>>;
 /**
  * Creates a collection.
  */
-export type CreateCollectionParams = {
-    dbId?: string;
-    collId?: string;
-    name: string;
-    permissions?: string[];
-    documentSecurity?: boolean;
-    enabled?: boolean;
+type CreateCollectionArgs = {
+    databaseId?: CreateCollection[0];
+    collectionId?: CreateCollection[1];
+    name: CreateCollection[2];
+    permissions?: CreateCollection[3];
+    documentSecurity?: CreateCollection[4];
+    enabled?: CreateCollection[5];
 };
-declare const createCollection: ({ dbId, collId, name, permissions, documentSecurity, enabled, }: CreateCollectionParams) => Promise<ReturnObject<Models.Collection>>;
+declare const createCollection: ({ ...args }: CreateCollectionArgs) => Promise<ReturnObject<CreateCollectionAwaited>>;
 /**
- * Creates a collection with schema Params
+ * Creates a collection according to a defined schema
+ * To execute successfully, there must be a schema file (json) in the schemas folder, named as the collection name
+ * This schema folder path must be defined in env vars (see appwriteConfig.ts)
  */
-type CommonParams = {
-    dbId?: string;
-    name: string;
-    permissions?: string[];
-    documentSecurity?: boolean;
-    enabled?: boolean;
-};
-type WithCollId = CommonParams & {
-    collId: string;
-    nameAsId?: never;
-};
-type WithoutCollId = CommonParams & {
-    collId?: never;
-    nameAsId: boolean;
-};
-export type CreateCollectionWithSchemaParams = WithCollId | WithoutCollId;
-/**
- * Create a new collection according to a specific schema in a specific database.
- * @param params - Parameters for creating the collection.
- * @returns The created collection details.
- */
-declare const createCollectionWithSchema: ({ dbId, collId, name, permissions, documentSecurity, enabled, nameAsId, }: CreateCollectionWithSchemaParams) => Promise<ReturnObject<Models.Collection>>;
+type CreateCollectionWithSchemaArgs = CreateCollectionArgs;
+declare const createCollectionWithSchema: ({ ...args }: CreateCollectionWithSchemaArgs) => Promise<ReturnObject<CreateCollectionAwaited>>;
 /**
  * Creates a database.
  */
-export type CreateDatabaseParams = {
-    dbId?: string;
-    name: string;
-    enabled?: boolean;
+type CreateDatabaseArgs = {
+    databaseId?: CreateDatabase[0];
+    name: CreateDatabase[1];
+    enabled?: CreateDatabase[2];
 };
-declare const createDatabase: ({ dbId, name, enabled, }: CreateDatabaseParams) => Promise<ReturnObject<Models.Database>>;
+declare const createDatabase: ({ ...args }: CreateDatabaseArgs) => Promise<ReturnObject<CreateDatabaseAwaited>>;
 /**
  * Creates a datetime attribute.
  */
-export type CreateDatetimeAttributeParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
-    required: boolean;
-    xdefault?: string;
-    xarray?: boolean;
+type CreateDatetimeAttributeArgs = {
+    databaseId?: CreateDatetimeAttribute[0];
+    collectionId?: CreateDatetimeAttribute[1];
+    key: CreateDatetimeAttribute[2];
+    required: CreateDatetimeAttribute[3];
+    xdefault?: CreateDatetimeAttribute[4];
+    array?: CreateDatetimeAttribute[5];
 };
-declare const createDatetimeAttribute: ({ dbId, collId, key, required, xdefault, xarray, }: CreateDatetimeAttributeParams) => Promise<ReturnObject<any>>;
+declare const createDatetimeAttribute: ({ ...args }: CreateDatetimeAttributeArgs) => Promise<ReturnObject<CreateDatetimeAttributeAwaited>>;
 /**
  * Creates a document.
  */
-export type CreateDocumentParams = {
-    dbId?: string;
-    collId?: string;
-    documentId?: string;
-    data: Record<string, any>;
-    permissions?: string[];
+type CreateDocumentArgs = {
+    databaseId?: CreateDocument[0];
+    collectionId?: CreateDocument[1];
+    documentId?: CreateDocument[2];
+    data: CreateDocument[3];
+    permissions?: CreateDocument[4];
 };
-declare const createDocument: ({ dbId, collId, documentId, data, permissions, }: CreateDocumentParams) => Promise<ReturnObject<Models.Document>>;
+declare const createDocument: ({ ...args }: CreateDocumentArgs) => Promise<ReturnObject<CreateDocumentAwaited>>;
 /**
  * Creates an email attribute.
  */
-export type CreateEmailAttributeParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
-    required: boolean;
-    xdefault?: string;
-    xarray?: boolean;
+type CreateEmailAttributeArgs = {
+    databaseId?: CreateEmailAttribute[0];
+    collectionId?: CreateEmailAttribute[1];
+    key: CreateEmailAttribute[2];
+    required: CreateEmailAttribute[3];
+    xdefault?: CreateEmailAttribute[4];
+    array?: CreateEmailAttribute[5];
 };
-declare const createEmailAttribute: ({ dbId, collId, key, required, xdefault, xarray, }: CreateEmailAttributeParams) => Promise<ReturnObject<any>>;
+declare const createEmailAttribute: ({ ...args }: CreateEmailAttributeArgs) => Promise<ReturnObject<CreateEmailAttributeAwaited>>;
 /**
  * Creates an enum attribute.
  */
-export type CreateEnumAttributeParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
-    elements: string[];
-    required: boolean;
-    xdefault?: string;
-    xarray?: boolean;
+type CreateEnumAttributeArgs = {
+    databaseId?: CreateEnumAttribute[0];
+    collectionId?: CreateEnumAttribute[1];
+    key: CreateEnumAttribute[2];
+    elements: CreateEnumAttribute[3];
+    required: CreateEnumAttribute[4];
+    xdefault?: CreateEnumAttribute[5];
+    array?: CreateEnumAttribute[6];
 };
-declare const createEnumAttribute: ({ dbId, collId, key, elements, required, xdefault, xarray, }: CreateEnumAttributeParams) => Promise<ReturnObject<any>>;
+declare const createEnumAttribute: ({ ...args }: CreateEnumAttributeArgs) => Promise<ReturnObject<CreateEnumAttributeAwaited>>;
 /**
  * Creates a float attribute.
  */
-export type CreateFloatAttributeParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
-    required: boolean;
-    min?: number;
-    max?: number;
-    xdefault?: number;
-    xarray?: boolean;
+type CreateFloatAttributeArgs = {
+    databaseId?: CreateFloatAttribute[0];
+    collectionId?: CreateFloatAttribute[1];
+    key: CreateFloatAttribute[2];
+    required: CreateFloatAttribute[3];
+    min?: CreateFloatAttribute[4];
+    max?: CreateFloatAttribute[5];
+    xdefault?: CreateFloatAttribute[6];
+    array?: CreateFloatAttribute[7];
 };
-declare const createFloatAttribute: ({ dbId, collId, key, required, min, max, xdefault, xarray, }: CreateFloatAttributeParams) => Promise<ReturnObject<any>>;
+declare const createFloatAttribute: ({ ...args }: CreateFloatAttributeArgs) => Promise<ReturnObject<CreateFloatAttributeAwaited>>;
 /**
  * Creates an index in a collection.
  */
-export type CreateIndexParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
-    type: IndexType;
-    attributes: string[];
-    orders?: string[];
+type CreateIndexArgs = {
+    databaseId?: CreateIndex[0];
+    collectionId?: CreateIndex[1];
+    key: CreateIndex[2];
+    type: CreateIndex[3];
+    attributes: CreateIndex[4];
+    orders?: CreateIndex[5];
 };
-declare const createIndex: ({ dbId, collId, key, type, attributes, orders, }: CreateIndexParams) => Promise<ReturnObject<Models.Index>>;
+declare const createIndex: ({ ...args }: CreateIndexArgs) => Promise<ReturnObject<CreateIndexAwaited>>;
 /**
  * Creates an integer attribute in a collection.
  */
-export type CreateIntegerAttributeParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
-    required: boolean;
-    min?: number;
-    max?: number;
-    xdefault?: number;
-    xarray?: boolean;
+type CreateIntegerAttributeArgs = {
+    databaseId?: CreateIntegerAttribute[0];
+    collectionId?: CreateIntegerAttribute[1];
+    key: CreateIntegerAttribute[2];
+    required: CreateIntegerAttribute[3];
+    min?: CreateIntegerAttribute[4];
+    max?: CreateIntegerAttribute[5];
+    xdefault?: CreateIntegerAttribute[6];
+    array?: CreateIntegerAttribute[7];
 };
-declare const createIntegerAttribute: ({ dbId, collId, key, required, min, max, xdefault, xarray, }: CreateIntegerAttributeParams) => Promise<ReturnObject<any>>;
+declare const createIntegerAttribute: ({ ...args }: CreateIntegerAttributeArgs) => Promise<ReturnObject<CreateIntegerAttributeAwaited>>;
 /**
  * Creates an IP attribute in a collection.
  */
-export type CreateIpAttributeParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
-    required: boolean;
-    xdefault?: string;
-    xarray?: boolean;
+type CreateIpAttributeArgs = {
+    databaseId?: CreateIpAttribute[0];
+    collectionId?: CreateIpAttribute[1];
+    key: CreateIpAttribute[2];
+    required: CreateIpAttribute[3];
+    xdefault?: CreateIpAttribute[4];
+    array?: CreateIpAttribute[5];
 };
-declare const createIpAttribute: ({ dbId, collId, key, required, xdefault, xarray, }: CreateIpAttributeParams) => Promise<ReturnObject<any>>;
+declare const createIpAttribute: ({ ...args }: CreateIpAttributeArgs) => Promise<ReturnObject<CreateIpAttributeAwaited>>;
 /**
  * Creates a relationship attribute in a collection.
  */
-export type CreateRelationshipAttributeParams = {
-    dbId?: string;
-    collId?: string;
-    relatedCollectionId: string;
-    type: RelationshipType;
-    twoWay?: boolean;
-    key?: string;
-    twoWayKey?: string;
-    onDelete?: RelationMutate;
-    required?: boolean;
+type CreateRelationshipAttributeArgs = {
+    databaseId?: CreateRelationshipAttribute[0];
+    collectionId?: CreateRelationshipAttribute[1];
+    relatedCollectionId: CreateRelationshipAttribute[2];
+    type: CreateRelationshipAttribute[3];
+    twoWay?: CreateRelationshipAttribute[4];
+    key?: CreateRelationshipAttribute[5];
+    twoWayKey?: CreateRelationshipAttribute[6];
+    onDelete?: CreateRelationshipAttribute[7];
 };
-declare const createRelationshipAttribute: ({ dbId, collId, relatedCollectionId, type, twoWay, key, twoWayKey, onDelete, }: CreateRelationshipAttributeParams) => Promise<ReturnObject<any>>;
+declare const createRelationshipAttribute: ({ ...args }: CreateRelationshipAttributeArgs) => Promise<ReturnObject<CreateRelationshipAttributeAwaited>>;
 /**
  * Creates a string attribute in a collection.
  */
-export type CreateStringAttributeParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
-    size: number;
-    required: boolean;
-    xdefault?: string;
-    xarray?: boolean;
-    encrypt?: boolean;
+type CreateStringAttributeArgs = {
+    databaseId?: CreateStringAttribute[0];
+    collectionId?: CreateStringAttribute[1];
+    key: CreateStringAttribute[2];
+    size: CreateStringAttribute[3];
+    required: CreateStringAttribute[4];
+    xdefault?: CreateStringAttribute[5];
+    array?: CreateStringAttribute[6];
+    encrypt?: CreateStringAttribute[7];
 };
-declare const createStringAttribute: ({ dbId, collId, key, size, required, xdefault, xarray, encrypt, }: CreateStringAttributeParams) => Promise<ReturnObject<any>>;
+declare const createStringAttribute: ({ ...args }: CreateStringAttributeArgs) => Promise<ReturnObject<CreateStringAttributeAwaited>>;
 /**
  * Creates a URL attribute in a collection.
  */
-export type CreateUrlAttributeParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
-    required: boolean;
-    xdefault?: string;
-    xarray?: boolean;
+type CreateUrlAttributeArgs = {
+    databaseId?: CreateUrlAttribute[0];
+    collectionId?: CreateUrlAttribute[1];
+    key: CreateUrlAttribute[2];
+    required: CreateUrlAttribute[3];
+    xdefault?: CreateUrlAttribute[4];
+    array?: CreateUrlAttribute[5];
 };
-declare const createUrlAttribute: ({ dbId, collId, key, required, xdefault, xarray, }: CreateUrlAttributeParams) => Promise<ReturnObject<any>>;
+declare const createUrlAttribute: ({ ...args }: CreateUrlAttributeArgs) => Promise<ReturnObject<CreateUrlAttributeAwaited>>;
 /**
  * Deletes an attribute in a collection.
  */
-export type DeleteAttributeParams = {
-    dbId: string;
-    collId: string;
-    key: string;
+type DeleteAttributeArgs = {
+    databaseId?: DeleteAttribute[0];
+    collectionId?: DeleteAttribute[1];
+    key: DeleteAttribute[2];
 };
-declare const deleteAttribute: ({ dbId, collId, key, }: DeleteAttributeParams) => Promise<ReturnObject<void>>;
+declare const deleteAttribute: ({ ...args }: DeleteAttributeArgs) => Promise<ReturnObject<DeleteAttributeAwaited>>;
 /**
  * Deletes a collection in a database.
  */
-export type DeleteCollectionParams = {
-    dbId: string;
-    collId: string;
+type DeleteCollectionArgs = {
+    databaseId?: DeleteCollection[0];
+    collectionId: DeleteCollection[1];
 };
-declare const deleteCollection: ({ dbId, collId, }: DeleteCollectionParams) => Promise<ReturnObject<void>>;
+declare const deleteCollection: ({ ...args }: DeleteCollectionArgs) => Promise<ReturnObject<DeleteCollectionAwaited>>;
 /**
  * Deletes a database.
  */
-export type DeleteDatabaseParams = {
-    dbId: string;
+type DeleteDatabaseArgs = {
+    databaseId: DeleteDatabase[0];
 };
-declare const deleteDatabase: ({ dbId, }: DeleteDatabaseParams) => Promise<ReturnObject<void>>;
+declare const deleteDatabase: ({ ...args }: DeleteDatabaseArgs) => Promise<ReturnObject<DeleteDatabaseAwaited>>;
 /**
  * Deletes a document from a collection.
  */
-export type DeleteDocumentParams = {
-    dbId?: string;
-    collId?: string;
-    documentId: string;
+type DeleteDocumentArgs = {
+    databaseId?: DeleteDocument[0];
+    collectionId?: DeleteDocument[1];
+    documentId: DeleteDocument[2];
 };
-declare const deleteDocument: ({ dbId, collId, documentId, }: DeleteDocumentParams) => Promise<ReturnObject<void>>;
+declare const deleteDocument: ({ ...args }: DeleteDocumentArgs) => Promise<ReturnObject<DeleteDocumentAwaited>>;
 /**
  * Deletes an index from a collection.
  */
-export type DeleteIndexParams = {
-    dbId: string;
-    collId: string;
-    key: string;
+type DeleteIndexArgs = {
+    databaseId?: DeleteIndex[0];
+    collectionId?: DeleteIndex[1];
+    key: DeleteIndex[2];
 };
-declare const deleteIndex: ({ dbId, collId, key, }: DeleteIndexParams) => Promise<ReturnObject<void>>;
+declare const deleteIndex: ({ ...args }: DeleteIndexArgs) => Promise<ReturnObject<DeleteIndexAwaited>>;
 /**
  * Retrieves an attribute from a collection.
  */
-export type GetAttributeParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
+type GetAttributeArgs = {
+    databaseId?: GetAttribute[0];
+    collectionId?: GetAttribute[1];
+    key: GetAttribute[2];
 };
-declare const getAttribute: ({ dbId, collId, key, }: GetAttributeParams) => Promise<ReturnObject<any>>;
+declare const getAttribute: ({ ...args }: GetAttributeArgs) => Promise<ReturnObject<GetAttributeAwaited>>;
 /**
  * Retrieves a collection from a database.
  */
-export type GetCollectionParams = {
-    dbId?: string;
-    collId?: string;
+type GetCollectionArgs = {
+    databaseId?: GetCollection[0];
+    collectionId: GetCollection[1];
 };
-declare const getCollection: ({ dbId, collId, }: GetCollectionParams) => Promise<ReturnObject<Models.Collection>>;
+declare const getCollection: ({ ...args }: GetCollectionArgs) => Promise<ReturnObject<GetCollectionAwaited>>;
 /**
  * Retrieves a database by its ID.
  */
-export type GetDatabaseParams = {
-    dbId: string;
+type GetDatabaseArgs = {
+    dbId: GetDatabase[0];
 };
-declare const getDatabase: ({ dbId, }: GetDatabaseParams) => Promise<ReturnObject<Models.Database>>;
+declare const getDatabase: ({ ...args }: GetDatabaseArgs) => Promise<ReturnObject<GetDatabaseAwaited>>;
 /**
  * Retrieves a document from a collection.
  */
-export type GetDocumentParams = {
-    dbId?: string;
-    collId?: string;
-    documentId: string;
+type GetDocumentArgs = {
+    databaseId?: GetDocument[0];
+    collectionId?: GetDocument[1];
+    documentId: GetDocument[2];
+    query?: string;
 };
-declare const getDocument: ({ dbId, collId, documentId, }: GetDocumentParams) => Promise<ReturnObject<Models.Document>>;
+declare const getDocument: ({ ...args }: GetDocumentArgs) => Promise<ReturnObject<GetDocumentAwaited>>;
 /**
  * Retrieves an index from a collection.
  */
-export type GetIndexParams = {
-    dbId?: string;
-    collId?: string;
-    key: string;
+type GetIndexArgs = {
+    databaseId?: GetIndex[0];
+    collectionId?: GetIndex[1];
+    key: GetIndex[2];
 };
-declare const getIndex: ({ dbId, collId, key, }: GetIndexParams) => Promise<ReturnObject<Models.Index>>;
+declare const getIndex: ({ ...args }: GetIndexArgs) => Promise<ReturnObject<GetIndexAwaited>>;
 /**
  * Lists all attributes in a collection.
  */
-export type ListAttributesParams = {
-    dbId?: string;
-    collId?: string;
+type ListAttributesArgs = {
+    databaseId?: ListAttributes[0];
+    collectionId?: ListAttributes[1];
+    queries?: ListAttributes[2];
 };
-declare const listAttributes: ({ dbId, collId, }: ListAttributesParams) => Promise<ReturnObject<any>>;
+declare const listAttributes: ({ ...args }: ListAttributesArgs) => Promise<ReturnObject<ListAttributesAwaited>>;
 /**
  * Lists all collections in a database.
  */
-export type ListCollectionsParams = {
-    dbId?: string;
-    queries?: string[];
-    search?: string;
+type ListCollectionsArgs = {
+    databaseId?: ListCollections[0];
+    queries?: ListCollections[1];
+    search?: ListCollections[2];
 };
-declare const listCollections: ({ dbId, queries, search, }: ListCollectionsParams) => Promise<ReturnObject<Models.CollectionList>>;
+declare const listCollections: ({ ...args }: ListCollectionsArgs) => Promise<ReturnObject<ListCollectionsAwaited>>;
 /**
  * Lists all databases in the Appwrite project.
  */
-export type ListDatabasesParams = {
-    queries?: string[];
-    search?: string;
+type ListDatabasesArgs = {
+    queries?: ListDatabases[0];
+    search?: ListDatabases[1];
 };
-declare const listDatabases: ({ queries, search, }: ListDatabasesParams) => Promise<ReturnObject<Models.DatabaseList>>;
+declare const listDatabases: ({ ...args }: ListDatabasesArgs) => Promise<ReturnObject<ListDatabasesAwaited>>;
 /**
  * Lists all documents in a specific collection.
  */
-export type ListDocumentsParams = {
-    dbId?: string;
-    collId?: string;
-    queries?: string[];
+type ListDocumentsArgs = {
+    databaseId?: ListDocuments[0];
+    collectionId?: ListDocuments[1];
+    queries?: ListDocuments[2];
 };
-declare const listDocuments: ({ dbId, collId, queries, }: ListDocumentsParams) => Promise<ReturnObject<Models.DocumentList<Models.Document>>>;
+declare const listDocuments: ({ ...args }: ListDocumentsArgs) => Promise<ReturnObject<ListDocumentsAwaited>>;
 /**
  * Lists all indexes in a collection.
  */
-export type ListIndexesParams = {
-    dbId?: string;
-    collId?: string;
+type ListIndexesArgs = {
+    databaseId?: ListIndexes[0];
+    collectionId?: ListIndexes[1];
+    queries?: ListIndexes[2];
 };
-declare const listIndexes: ({ dbId, collId, }: ListIndexesParams) => Promise<ReturnObject<Models.IndexList>>;
+declare const listIndexes: ({ ...args }: ListIndexesArgs) => Promise<ReturnObject<ListIndexesAwaited>>;
 /**
  * Updates a boolean attribute in a collection.
  */
-export type UpdateBooleanAttributeParams = {
-    dbId: string;
-    collId: string;
-    key: string;
-    required: boolean;
-    xdefault?: boolean;
-    newKey?: string;
+type UpdateBooleanAttributeArgs = {
+    databaseId?: UpdateBooleanAttribute[0];
+    collectionId?: UpdateBooleanAttribute[1];
+    key: UpdateBooleanAttribute[2];
+    required: UpdateBooleanAttribute[3];
+    xdefault?: UpdateBooleanAttribute[4];
+    newKey?: UpdateBooleanAttribute[5];
 };
-declare const updateBooleanAttribute: ({ dbId, collId, key, required, xdefault, newKey, }: UpdateBooleanAttributeParams) => Promise<ReturnObject<any>>;
+declare const updateBooleanAttribute: ({ ...args }: UpdateBooleanAttributeArgs) => Promise<ReturnObject<UpdateBooleanAttributeAwaited>>;
 /**
  * Updates a collection in a database.
  */
-export type UpdateCollectionParams = {
-    dbId: string;
-    collId: string;
-    name: string;
-    permissions?: string[];
-    documentSecurity?: boolean;
-    enabled?: boolean;
+type UpdateCollectionArgs = {
+    databaseId?: UpdateCollection[0];
+    collectionId: UpdateCollection[1];
+    name: UpdateCollection[2];
+    permissions?: UpdateCollection[3];
+    documentSecurity?: UpdateCollection[4];
+    enabled?: UpdateCollection[5];
 };
-declare const updateCollection: ({ dbId, collId, name, permissions, documentSecurity, enabled, }: UpdateCollectionParams) => Promise<ReturnObject<Models.Collection>>;
+declare const updateCollection: ({ ...args }: UpdateCollectionArgs) => Promise<ReturnObject<UpdateCollectionAwaited>>;
+/**
+ * Updates a collection according to a defined schema.
+ * To execute successfully, there must be a schema file (JSON) in the schemas folder,
+ * named as the collection name. The schema folder path must be defined in env vars.
+ */
+type UpdateCollectionWithSchemaArgs = UpdateCollectionArgs & {
+    destructive?: boolean;
+};
+declare const updateCollectionWithSchema: ({ ...args }: UpdateCollectionWithSchemaArgs) => Promise<ReturnObject<UpdateCollectionWithSchemaAwaited>>;
 /**
  * Updates a database in the Appwrite project.
  */
-export type UpdateDatabaseParams = {
-    dbId: string;
-    name: string;
-    enabled?: boolean;
+type UpdateDatabaseArgs = {
+    databaseId?: UpdateDatabase[0];
+    name: UpdateDatabase[1];
+    enabled?: UpdateDatabase[2];
 };
-declare const updateDatabase: ({ dbId, name, enabled, }: UpdateDatabaseParams) => Promise<ReturnObject<Models.Database>>;
+declare const updateDatabase: ({ ...args }: UpdateDatabaseArgs) => Promise<ReturnObject<UpdateDatabaseAwaited>>;
 /**
  * Updates a datetime attribute in a collection.
  */
-export type UpdateDatetimeAttributeParams = {
-    dbId: string;
-    collId: string;
-    key: string;
-    required: boolean;
-    xdefault?: string;
-    newKey?: string;
+type UpdateDatetimeAttributeArgs = {
+    databaseId?: UpdateDatetimeAttribute[0];
+    collectionId?: UpdateDatetimeAttribute[1];
+    key: UpdateDatetimeAttribute[2];
+    required: UpdateDatetimeAttribute[3];
+    xdefault?: UpdateDatetimeAttribute[4];
+    newKey?: UpdateDatetimeAttribute[5];
 };
-declare const updateDatetimeAttribute: ({ dbId, collId, key, required, xdefault, newKey, }: UpdateDatetimeAttributeParams) => Promise<ReturnObject<any>>;
+declare const updateDatetimeAttribute: ({ ...args }: UpdateDatetimeAttributeArgs) => Promise<ReturnObject<UpdateDatetimeAttributeAwaited>>;
 /**
  * Updates a document in a collection.
  */
-export type UpdateDocumentParams = {
-    dbId?: string;
-    collId?: string;
-    documentId: string;
-    data?: Record<string, any>;
-    permissions?: string[];
+type UpdateDocumentArgs = {
+    databaseId?: UpdateDocument[0];
+    collectionId?: UpdateDocument[1];
+    documentId: UpdateDocument[2];
+    data?: UpdateDocument[3];
+    permissions?: UpdateDocument[4];
 };
-declare const updateDocument: ({ dbId, collId, documentId, data, permissions, }: UpdateDocumentParams) => Promise<ReturnObject<Models.Document>>;
+declare const updateDocument: ({ ...args }: UpdateDocumentArgs) => Promise<ReturnObject<UpdateDocumentAwaited>>;
 /**
  * Updates an email attribute in a collection.
  */
-export type UpdateEmailAttributeParams = {
-    dbId: string;
-    collId: string;
-    key: string;
-    required: boolean;
-    xdefault?: string;
-    newKey?: string;
+type UpdateEmailAttributeArgs = {
+    databaseId?: UpdateEmailAttribute[0];
+    collectionId?: UpdateEmailAttribute[1];
+    key: UpdateEmailAttribute[2];
+    required: UpdateEmailAttribute[3];
+    xdefault?: UpdateEmailAttribute[4];
+    newKey?: UpdateEmailAttribute[5];
 };
-declare const updateEmailAttribute: ({ dbId, collId, key, required, xdefault, newKey, }: UpdateEmailAttributeParams) => Promise<ReturnObject<any>>;
+declare const updateEmailAttribute: ({ ...args }: UpdateEmailAttributeArgs) => Promise<ReturnObject<UpdateEmailAttributeAwaited>>;
 /**
  * Updates an enum attribute in a collection.
  */
-export type UpdateEnumAttributeParams = {
-    dbId: string;
-    collId: string;
-    key: string;
-    elements: string[];
-    required: boolean;
-    xdefault?: string;
-    newKey?: string;
+type UpdateEnumAttributeArgs = {
+    databaseId?: UpdateEnumAttribute[0];
+    collectionId?: UpdateEnumAttribute[1];
+    key: UpdateEnumAttribute[2];
+    elements: UpdateEnumAttribute[3];
+    required: UpdateEnumAttribute[4];
+    xdefault?: UpdateEnumAttribute[5];
+    newKey?: UpdateEnumAttribute[6];
 };
-declare const updateEnumAttribute: ({ dbId, collId, key, elements, required, xdefault, newKey, }: UpdateEnumAttributeParams) => Promise<ReturnObject<any>>;
+declare const updateEnumAttribute: ({ ...args }: UpdateEnumAttributeArgs) => Promise<ReturnObject<UpdateEnumAttributeAwaited>>;
 /**
  * Updates a float attribute in a collection.
  */
-export type UpdateFloatAttributeParams = {
-    dbId: string;
-    collId: string;
-    key: string;
-    required: boolean;
-    min: number;
-    max: number;
-    xdefault?: number;
-    newKey?: string;
+type UpdateFloatAttributeArgs = {
+    databaseId?: UpdateFloatAttribute[0];
+    collectionId?: UpdateFloatAttribute[1];
+    key: UpdateFloatAttribute[2];
+    required: UpdateFloatAttribute[3];
+    min: UpdateFloatAttribute[4];
+    max: UpdateFloatAttribute[5];
+    xdefault?: UpdateFloatAttribute[6];
+    newKey?: UpdateFloatAttribute[7];
 };
-declare const updateFloatAttribute: ({ dbId, collId, key, required, min, max, xdefault, newKey, }: UpdateFloatAttributeParams) => Promise<ReturnObject<any>>;
+declare const updateFloatAttribute: ({ ...args }: UpdateFloatAttributeArgs) => Promise<ReturnObject<UpdateFloatAttributeAwaited>>;
 /**
  * Updates an integer attribute in a collection.
  */
-export type UpdateIntegerAttributeParams = {
-    dbId: string;
-    collId: string;
-    key: string;
-    required: boolean;
-    min: number;
-    max: number;
-    xdefault?: number;
-    newKey?: string;
+type UpdateIntegerAttributeArgs = {
+    databaseId?: UpdateIntegerAttribute[0];
+    collectionId?: UpdateIntegerAttribute[1];
+    key: UpdateIntegerAttribute[2];
+    required: UpdateIntegerAttribute[3];
+    min: UpdateIntegerAttribute[4];
+    max: UpdateIntegerAttribute[5];
+    xdefault?: UpdateIntegerAttribute[6];
+    newKey?: UpdateIntegerAttribute[7];
 };
-declare const updateIntegerAttribute: ({ dbId, collId, key, required, min, max, xdefault, newKey, }: UpdateIntegerAttributeParams) => Promise<ReturnObject<any>>;
+declare const updateIntegerAttribute: ({ ...args }: UpdateIntegerAttributeArgs) => Promise<ReturnObject<UpdateIntegerAttributeAwaited>>;
 /**
  * Updates an IP address attribute in a collection.
  */
-export type UpdateIpAttributeParams = {
-    dbId: string;
-    collId: string;
-    key: string;
-    required: boolean;
-    xdefault?: string;
-    newKey?: string;
+type UpdateIpAttributeArgs = {
+    databaseId?: UpdateIpAttribute[0];
+    collectionId?: UpdateIpAttribute[1];
+    key: UpdateIpAttribute[2];
+    required: UpdateIpAttribute[3];
+    xdefault?: UpdateIpAttribute[4];
+    newKey?: UpdateIpAttribute[5];
 };
-declare const updateIpAttribute: ({ dbId, collId, key, required, xdefault, newKey, }: UpdateIpAttributeParams) => Promise<ReturnObject<any>>;
+declare const updateIpAttribute: ({ ...args }: UpdateIpAttributeArgs) => Promise<ReturnObject<UpdateIpAttributeAwaited>>;
 /**
  * Updates a relationship attribute in a collection.
  */
-export type UpdateRelationshipAttributeParams = {
-    dbId: string;
-    collId: string;
-    key: string;
-    onDelete?: RelationMutate;
-    newKey?: string;
+type UpdateRelationshipAttributeArgs = {
+    databaseId?: UpdateRelationshipAttribute[0];
+    collectionId?: UpdateRelationshipAttribute[1];
+    key: UpdateRelationshipAttribute[2];
+    onDelete?: UpdateRelationshipAttribute[3];
+    newKey?: UpdateRelationshipAttribute[4];
 };
-declare const updateRelationshipAttribute: ({ dbId, collId, key, onDelete, newKey, }: UpdateRelationshipAttributeParams) => Promise<ReturnObject<any>>;
+declare const updateRelationshipAttribute: ({ ...args }: UpdateRelationshipAttributeArgs) => Promise<ReturnObject<UpdateRelationshipAttributeAwaited>>;
 /**
  * Updates a string attribute in a collection.
  */
-export type UpdateStringAttributeParams = {
-    dbId: string;
-    collId: string;
-    key: string;
-    required: boolean;
-    xdefault?: string;
-    size?: number;
-    newKey?: string;
+type UpdateStringAttributeArgs = {
+    databaseId?: UpdateStringAttribute[0];
+    collectionId?: UpdateStringAttribute[1];
+    key: UpdateStringAttribute[2];
+    required: UpdateStringAttribute[3];
+    xdefault?: UpdateStringAttribute[4];
+    size?: UpdateStringAttribute[5];
+    newKey?: UpdateStringAttribute[6];
 };
-declare const updateStringAttribute: ({ dbId, collId, key, required, xdefault, size, newKey, }: UpdateStringAttributeParams) => Promise<ReturnObject<any>>;
+declare const updateStringAttribute: ({ ...args }: UpdateStringAttributeArgs) => Promise<ReturnObject<UpdateStringAttributeAwaited>>;
 /**
  * Updates a URL attribute in a collection.
  */
-export type UpdateUrlAttributeParams = {
-    dbId: string;
-    collId: string;
-    key: string;
-    required: boolean;
-    xdefault?: string;
-    newKey?: string;
+type UpdateUrlAttributeArgs = {
+    databaseId?: UpdateUrlAttribute[0];
+    collectionId?: UpdateUrlAttribute[1];
+    key: UpdateUrlAttribute[2];
+    required: UpdateUrlAttribute[3];
+    xdefault?: UpdateUrlAttribute[4];
+    newKey?: UpdateUrlAttribute[5];
 };
-declare const updateUrlAttribute: ({ dbId, collId, key, required, xdefault, newKey, }: UpdateUrlAttributeParams) => Promise<ReturnObject<any>>;
-export { createBooleanAttribute, createCollection, createCollectionWithSchema, createDatabase, createDatetimeAttribute, createDocument, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIndex, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, deleteAttribute, deleteCollection, deleteDatabase, deleteDocument, deleteIndex, getAttribute, getCollection, getDatabase, getDocument, getIndex, listAttributes, listCollections, listDatabases, listDocuments, listIndexes, updateBooleanAttribute, updateCollection, updateDatabase, updateDatetimeAttribute, updateDocument, updateEmailAttribute, updateEnumAttribute, updateFloatAttribute, updateIntegerAttribute, updateIpAttribute, updateRelationshipAttribute, updateStringAttribute, updateUrlAttribute, };
+declare const updateUrlAttribute: ({ ...args }: UpdateUrlAttributeArgs) => Promise<ReturnObject<UpdateUrlAttributeAwaited>>;
+export { createBooleanAttribute, createCollection, createCollectionWithSchema, createDatabase, createDatetimeAttribute, createDocument, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIndex, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, deleteAttribute, deleteCollection, deleteDatabase, deleteDocument, deleteIndex, getAttribute, getCollection, getDatabase, getDocument, getIndex, listAttributes, listCollections, listDatabases, listDocuments, listIndexes, updateBooleanAttribute, updateCollection, updateCollectionWithSchema, updateDatabase, updateDatetimeAttribute, updateDocument, updateEmailAttribute, updateEnumAttribute, updateFloatAttribute, updateIntegerAttribute, updateIpAttribute, updateRelationshipAttribute, updateStringAttribute, updateUrlAttribute, };
+export { type CreateDatabase, type CreateDatabaseAwaited, type CreateDatabaseArgs, type CreateDatabaseReturnType, };
+export { type CreateBooleanAttribute, type CreateBooleanAttributeAwaited, type CreateBooleanAttributeArgs, type CreateBooleanAttributeReturnType, };
+export { type CreateCollection, type CreateCollectionAwaited, type CreateCollectionArgs, type CreateCollectionReturnType, };
+export { type CreateCollectionWithSchema, type CreateCollectionWithSchemaAwaited, type CreateCollectionWithSchemaArgs, type CreateCollectionWithSchemaReturnType, };
+export { type CreateDatetimeAttribute, type CreateDatetimeAttributeAwaited, type CreateDatetimeAttributeArgs, type CreateDatetimeAttributeReturnType, };
+export { type CreateDocument, type CreateDocumentAwaited, type CreateDocumentArgs, type CreateDocumentReturnType, };
+export { type CreateEmailAttribute, type CreateEmailAttributeAwaited, type CreateEmailAttributeArgs, type CreateEmailAttributeReturnType, };
+export { type CreateEnumAttribute, type CreateEnumAttributeAwaited, type CreateEnumAttributeArgs, type CreateEnumAttributeReturnType, };
+export { type CreateFloatAttribute, type CreateFloatAttributeAwaited, type CreateFloatAttributeArgs, type CreateFloatAttributeReturnType, };
+export { type CreateIndex, type CreateIndexAwaited, type CreateIndexArgs, type CreateIndexReturnType, };
+export { type CreateIntegerAttribute, type CreateIntegerAttributeAwaited, type CreateIntegerAttributeArgs, type CreateIntegerAttributeReturnType, };
+export { type CreateIpAttribute, type CreateIpAttributeAwaited, type CreateIpAttributeArgs, type CreateIpAttributeReturnType, };
+export { type CreateRelationshipAttribute, type CreateRelationshipAttributeAwaited, type CreateRelationshipAttributeArgs, type CreateRelationshipAttributeReturnType, };
+export { type CreateStringAttribute, type CreateStringAttributeAwaited, type CreateStringAttributeArgs, type CreateStringAttributeReturnType, };
+export { type CreateUrlAttribute, type CreateUrlAttributeAwaited, type CreateUrlAttributeArgs, type CreateUrlAttributeReturnType, };
+export { type DeleteAttribute, type DeleteAttributeAwaited, type DeleteAttributeArgs, type DeleteAttributeReturnType, };
+export { type DeleteCollection, type DeleteCollectionAwaited, type DeleteCollectionArgs, type DeleteCollectionReturnType, };
+export { type DeleteDatabase, type DeleteDatabaseAwaited, type DeleteDatabaseArgs, type DeleteDatabaseReturnType, };
+export { type DeleteDocument, type DeleteDocumentAwaited, type DeleteDocumentArgs, type DeleteDocumentReturnType, };
+export { type DeleteIndex, type DeleteIndexAwaited, type DeleteIndexArgs, type DeleteIndexReturnType, };
+export { type GetAttribute, type GetAttributeAwaited, type GetAttributeArgs, type GetAttributeReturnType, };
+export { type GetCollection, type GetCollectionAwaited, type GetCollectionArgs, type GetCollectionReturnType, };
+export { type GetDatabase, type GetDatabaseAwaited, type GetDatabaseArgs, type GetDatabaseReturnType, };
+export { type GetDocument, type GetDocumentAwaited, type GetDocumentArgs, type GetDocumentReturnType, };
+export { type GetIndex, type GetIndexAwaited, type GetIndexArgs, type GetIndexReturnType, };
+export { type ListAttributes, type ListAttributesAwaited, type ListAttributesArgs, type ListAttributesReturnType, };
+export { type ListCollections, type ListCollectionsAwaited, type ListCollectionsArgs, type ListCollectionsReturnType, };
+export { type ListDatabases, type ListDatabasesAwaited, type ListDatabasesArgs, type ListDatabasesReturnType, };
+export { type ListDocuments, type ListDocumentsAwaited, type ListDocumentsArgs, type ListDocumentsReturnType, };
+export { type ListIndexes, type ListIndexesAwaited, type ListIndexesArgs, type ListIndexesReturnType, };
+export { type UpdateBooleanAttribute, type UpdateBooleanAttributeAwaited, type UpdateBooleanAttributeArgs, type UpdateBooleanAttributeReturnType, };
+export { type UpdateCollection, type UpdateCollectionAwaited, type UpdateCollectionArgs, type UpdateCollectionReturnType, };
+export { type UpdateCollectionWithSchema, type UpdateCollectionWithSchemaAwaited, type UpdateCollectionWithSchemaArgs, type UpdateCollectionWithSchemaReturnType, };
+export { type UpdateDatabase, type UpdateDatabaseAwaited, type UpdateDatabaseArgs, type UpdateDatabaseReturnType, };
+export { type UpdateDatetimeAttribute, type UpdateDatetimeAttributeAwaited, type UpdateDatetimeAttributeArgs, type UpdateDatetimeAttributeReturnType, };
+export { type UpdateDocument, type UpdateDocumentAwaited, type UpdateDocumentArgs, type UpdateDocumentReturnType, };
+export { type UpdateEmailAttribute, type UpdateEmailAttributeAwaited, type UpdateEmailAttributeArgs, type UpdateEmailAttributeReturnType, };
+export { type UpdateEnumAttribute, type UpdateEnumAttributeAwaited, type UpdateEnumAttributeArgs, type UpdateEnumAttributeReturnType, };
+export { type UpdateFloatAttribute, type UpdateFloatAttributeAwaited, type UpdateFloatAttributeArgs, type UpdateFloatAttributeReturnType, };
+export { type UpdateIntegerAttribute, type UpdateIntegerAttributeAwaited, type UpdateIntegerAttributeArgs, type UpdateIntegerAttributeReturnType, };
+export { type UpdateIpAttribute, type UpdateIpAttributeAwaited, type UpdateIpAttributeArgs, type UpdateIpAttributeReturnType, };
+export { type UpdateRelationshipAttribute, type UpdateRelationshipAttributeAwaited, type UpdateRelationshipAttributeArgs, type UpdateRelationshipAttributeReturnType, };
+export { type UpdateStringAttribute, type UpdateStringAttributeAwaited, type UpdateStringAttributeArgs, type UpdateStringAttributeReturnType, };
+export { type UpdateUrlAttribute, type UpdateUrlAttributeAwaited, type UpdateUrlAttributeArgs, type UpdateUrlAttributeReturnType, };
 //# sourceMappingURL=databases.d.ts.map

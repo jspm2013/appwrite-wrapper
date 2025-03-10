@@ -31,7 +31,7 @@ export declare const isEmptyKeyValuePair: (obj: Record<string, any>) => boolean;
 /**
  * Generates a random password of the specified length.
  */
-export declare function temporaryPassword(length?: number): string;
+export declare const temporaryPassword: (length?: number) => string;
 /**
  * Singleton class for managing appwrite state.
  * @class
@@ -58,5 +58,6 @@ export declare const apwManager: AppwriteManager;
  * @returns {Promise<File>} - A promise that resolves to the converted image file.
  */
 export declare const imgToWebP: (file: File, quality?: number, width?: number, height?: number, background?: string) => Promise<File>;
+export declare const toLogFolder: (data: string) => Promise<void>;
 export {};
 //# sourceMappingURL=utils.d.ts.map

@@ -1,9 +1,4 @@
-import {
-  Attribute,
-  AttributeHandler,
-  CreateRelationshipAttributeParams,
-  Models,
-} from "./types";
+import { Attribute, AttributeHandler } from "./types";
 import {
   createBooleanAttribute,
   createDatetimeAttribute,
@@ -15,146 +10,166 @@ import {
   createRelationshipAttribute,
   createStringAttribute,
   createUrlAttribute,
-} from "../index";
+} from "../methods/databases";
 
-const attributeHandlers: Record<string, AttributeHandler> = {
-  string: async (
-    dbId,
-    collId,
-    attr: Models.AttributeString,
-    encrypt = false
+import {
+  type CreateBooleanAttributeArgs,
+  type CreateDatetimeAttributeArgs,
+  type CreateEmailAttributeArgs,
+  type CreateEnumAttributeArgs,
+  type CreateFloatAttributeArgs,
+  type CreateIntegerAttributeArgs,
+  type CreateIpAttributeArgs,
+  type CreateRelationshipAttributeArgs,
+  type CreateStringAttributeArgs,
+  type CreateUrlAttributeArgs,
+} from "../methods/databases";
+
+const createAttributeHandlers: Record<string, AttributeHandler> = {
+  boolean: async (
+    databaseId,
+    collectionId,
+    attr: CreateBooleanAttributeArgs
   ) => {
-    await createStringAttribute({
-      dbId,
-      collId,
-      key: attr.key,
-      size: attr.size,
-      required: attr.required,
-      xdefault: attr.default,
-      xarray: attr.array,
-      encrypt,
-    });
-  },
-
-  integer: async (dbId, collId, attr: Models.AttributeInteger) => {
-    await createIntegerAttribute({
-      dbId,
-      collId,
-      key: attr.key,
-      required: attr.required,
-      min: attr.min,
-      max: attr.max,
-      xdefault: attr.default,
-      xarray: attr.array,
-    });
-  },
-
-  float: async (dbId, collId, attr: Models.AttributeFloat) => {
-    await createFloatAttribute({
-      dbId,
-      collId,
-      key: attr.key,
-      required: attr.required,
-      min: attr.min,
-      max: attr.max,
-      xdefault: attr.default,
-      xarray: attr.array,
-    });
-  },
-
-  boolean: async (dbId, collId, attr: Models.AttributeBoolean) => {
     await createBooleanAttribute({
-      dbId,
-      collId,
+      databaseId,
+      collectionId,
       key: attr.key,
       required: attr.required,
-      xdefault: attr.default,
-      xarray: attr.array,
-    });
+      xdefault: attr.xdefault,
+      array: attr.array,
+    } as CreateBooleanAttributeArgs);
   },
 
-  email: async (dbId, collId, attr: Models.AttributeEmail) => {
+  datetime: async (
+    databaseId,
+    collectionId,
+    attr: CreateDatetimeAttributeArgs
+  ) => {
+    await createDatetimeAttribute({
+      databaseId,
+      collectionId,
+      key: attr.key,
+      required: attr.required,
+      xdefault: attr.xdefault,
+      array: attr.array,
+    } as CreateDatetimeAttributeArgs);
+  },
+
+  email: async (databaseId, collectionId, attr: CreateEmailAttributeArgs) => {
     await createEmailAttribute({
-      dbId,
-      collId,
+      databaseId,
+      collectionId,
       key: attr.key,
       required: attr.required,
-      xdefault: attr.default,
-      xarray: attr.array,
-    });
+      xdefault: attr.xdefault,
+      array: attr.array,
+    } as CreateEmailAttributeArgs);
   },
 
-  enum: async (dbId, collId, attr: Models.AttributeEnum) => {
+  enum: async (databaseId, collectionId, attr: CreateEnumAttributeArgs) => {
     await createEnumAttribute({
-      dbId,
-      collId,
+      databaseId,
+      collectionId,
       key: attr.key,
       elements: attr.elements,
       required: attr.required,
-      xdefault: attr.default,
-      xarray: attr.array,
-    });
+      xdefault: attr.xdefault,
+      array: attr.array,
+    } as CreateEnumAttributeArgs);
   },
 
-  url: async (dbId, collId, attr: Models.AttributeUrl) => {
-    await createUrlAttribute({
-      dbId,
-      collId,
+  float: async (databaseId, collectionId, attr: CreateFloatAttributeArgs) => {
+    await createFloatAttribute({
+      databaseId,
+      collectionId,
       key: attr.key,
       required: attr.required,
-      xdefault: attr.default,
-      xarray: attr.array,
-    });
+      min: attr.min,
+      max: attr.max,
+      xdefault: attr.xdefault,
+      array: attr.array,
+    } as CreateFloatAttributeArgs);
   },
 
-  ip: async (dbId, collId, attr: Models.AttributeIp) => {
+  integer: async (
+    databaseId,
+    collectionId,
+    attr: CreateIntegerAttributeArgs
+  ) => {
+    await createIntegerAttribute({
+      databaseId,
+      collectionId,
+      key: attr.key,
+      required: attr.required,
+      min: attr.min,
+      max: attr.max,
+      xdefault: attr.xdefault,
+      array: attr.array,
+    } as CreateIntegerAttributeArgs);
+  },
+
+  ip: async (databaseId, collectionId, attr: CreateIpAttributeArgs) => {
     await createIpAttribute({
-      dbId,
-      collId,
+      databaseId,
+      collectionId,
       key: attr.key,
       required: attr.required,
-      xdefault: attr.default,
-      xarray: attr.array,
-    });
-  },
-
-  datetime: async (dbId, collId, attr: Models.AttributeDatetime) => {
-    await createDatetimeAttribute({
-      dbId,
-      collId,
-      key: attr.key,
-      required: attr.required,
-      xdefault: attr.default,
-      xarray: attr.array,
-    });
+      xdefault: attr.xdefault,
+      array: attr.array,
+    } as CreateIpAttributeArgs);
   },
 
   relationship: async (
-    dbId,
-    collId,
-    attr: CreateRelationshipAttributeParams
+    databaseId,
+    collectionId,
+    attr: CreateRelationshipAttributeArgs
   ) => {
     await createRelationshipAttribute({
-      dbId,
-      collId,
+      databaseId,
+      collectionId,
       relatedCollectionId: attr.relatedCollectionId,
       type: attr.type,
       twoWay: attr.twoWay,
       key: attr.key,
       twoWayKey: attr.twoWayKey,
       onDelete: attr.onDelete,
-    });
+    } as CreateRelationshipAttributeArgs);
+  },
+
+  string: async (databaseId, collectionId, attr: CreateStringAttributeArgs) => {
+    await createStringAttribute({
+      databaseId,
+      collectionId,
+      key: attr.key,
+      size: attr.size,
+      required: attr.required,
+      xdefault: attr.xdefault,
+      array: attr.array,
+      encrypt: attr.encrypt,
+    } as CreateStringAttributeArgs);
+  },
+
+  url: async (databaseId, collectionId, attr: CreateUrlAttributeArgs) => {
+    await createUrlAttribute({
+      databaseId,
+      collectionId,
+      key: attr.key,
+      required: attr.required,
+      xdefault: attr.xdefault,
+      array: attr.array,
+    } as CreateUrlAttributeArgs);
   },
 };
 
 export const createAttribute = async (
-  dbId: string,
-  collId: string,
-  attr: Attribute | CreateRelationshipAttributeParams
+  databaseId: string,
+  collectionId: string,
+  attr: Attribute
 ): Promise<void> => {
-  const handler = attributeHandlers[attr.type];
+  const handler = createAttributeHandlers[attr.type];
   if (!handler) {
-    throw new Error(`Unsupported attribute type: ${attr.type}`);
+    throw new Error(`Unsupported attribute type: '${attr.type}'`);
   }
-  await handler(dbId, collId, attr);
+  await handler(databaseId, collectionId, attr);
 };

@@ -1,4 +1,8 @@
 import { randomInt } from "crypto";
+import { logsPath } from "./appwriteConfig";
+import fs from "fs/promises";
+import path from "path";
+const LOGS_FOLDER = path.join(process.cwd(), logsPath);
 /**
  * Converts an ArrayBuffer to a Base64 string.
  * @param buffer - The ArrayBuffer to convert.
@@ -54,7 +58,7 @@ export const isEmptyKeyValuePair = (obj) => {
 /**
  * Generates a random password of the specified length.
  */
-export function temporaryPassword(length = 12) {
+export const temporaryPassword = (length = 12) => {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const charactersLength = characters.length;
     let password = "";
@@ -63,7 +67,7 @@ export function temporaryPassword(length = 12) {
         password += characters.charAt(randomValue);
     }
     return password;
-}
+};
 /**
  * Singleton class for managing appwrite state.
  * @class
@@ -180,4 +184,9 @@ export const imgToWebP = async (file, quality = 0.9, width, height, background =
         reader.onerror = () => reject(new Error("FileReader error"));
         reader.readAsDataURL(file);
     });
+};
+export const toLogFolder = async (data) => {
+    // Write the logs to a file in the logs folder
+    await fs.writeFile(LOGS_FOLDER, data, "utf-8");
+    console.log(`Logs created at ${LOGS_FOLDER} at (locale datetime):${new Date().toLocaleString()} / (ISO datetime):${new Date().toISOString()} / (UTC datetime):${new Date().toUTCString()}`);
 };

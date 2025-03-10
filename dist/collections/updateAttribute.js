@@ -1,48 +1,48 @@
-import { createBooleanAttribute, createDatetimeAttribute, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, } from "../methods/databases";
-const createAttributeHandlers = {
+import { updateBooleanAttribute, updateDatetimeAttribute, updateEmailAttribute, updateEnumAttribute, updateFloatAttribute, updateIntegerAttribute, updateIpAttribute, updateRelationshipAttribute, updateStringAttribute, updateUrlAttribute, } from "../methods/databases";
+const updateAttributeHandlers = {
     boolean: async (databaseId, collectionId, attr) => {
-        await createBooleanAttribute({
+        await updateBooleanAttribute({
             databaseId,
             collectionId,
             key: attr.key,
             required: attr.required,
             xdefault: attr.xdefault,
-            array: attr.array,
+            newKey: attr.newKey,
         });
     },
     datetime: async (databaseId, collectionId, attr) => {
-        await createDatetimeAttribute({
+        await updateDatetimeAttribute({
             databaseId,
             collectionId,
             key: attr.key,
             required: attr.required,
             xdefault: attr.xdefault,
-            array: attr.array,
+            newKey: attr.newKey,
         });
     },
     email: async (databaseId, collectionId, attr) => {
-        await createEmailAttribute({
+        await updateEmailAttribute({
             databaseId,
             collectionId,
             key: attr.key,
             required: attr.required,
             xdefault: attr.xdefault,
-            array: attr.array,
+            newKey: attr.newKey,
         });
     },
     enum: async (databaseId, collectionId, attr) => {
-        await createEnumAttribute({
+        await updateEnumAttribute({
             databaseId,
             collectionId,
             key: attr.key,
             elements: attr.elements,
             required: attr.required,
             xdefault: attr.xdefault,
-            array: attr.array,
+            newKey: attr.newKey,
         });
     },
     float: async (databaseId, collectionId, attr) => {
-        await createFloatAttribute({
+        await updateFloatAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -50,11 +50,11 @@ const createAttributeHandlers = {
             min: attr.min,
             max: attr.max,
             xdefault: attr.xdefault,
-            array: attr.array,
+            newKey: attr.newKey,
         });
     },
     integer: async (databaseId, collectionId, attr) => {
-        await createIntegerAttribute({
+        await updateIntegerAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -62,56 +62,52 @@ const createAttributeHandlers = {
             min: attr.min,
             max: attr.max,
             xdefault: attr.xdefault,
-            array: attr.array,
+            newKey: attr.newKey,
         });
     },
     ip: async (databaseId, collectionId, attr) => {
-        await createIpAttribute({
+        await updateIpAttribute({
             databaseId,
             collectionId,
             key: attr.key,
             required: attr.required,
             xdefault: attr.xdefault,
-            array: attr.array,
+            newKey: attr.newKey,
         });
     },
     relationship: async (databaseId, collectionId, attr) => {
-        await createRelationshipAttribute({
+        await updateRelationshipAttribute({
             databaseId,
             collectionId,
-            relatedCollectionId: attr.relatedCollectionId,
-            type: attr.type,
-            twoWay: attr.twoWay,
             key: attr.key,
-            twoWayKey: attr.twoWayKey,
             onDelete: attr.onDelete,
+            newKey: attr.newKey,
         });
     },
     string: async (databaseId, collectionId, attr) => {
-        await createStringAttribute({
+        await updateStringAttribute({
             databaseId,
             collectionId,
             key: attr.key,
-            size: attr.size,
             required: attr.required,
             xdefault: attr.xdefault,
-            array: attr.array,
-            encrypt: attr.encrypt,
+            size: attr.size,
+            newKey: attr.newKey,
         });
     },
     url: async (databaseId, collectionId, attr) => {
-        await createUrlAttribute({
+        await updateUrlAttribute({
             databaseId,
             collectionId,
             key: attr.key,
             required: attr.required,
             xdefault: attr.xdefault,
-            array: attr.array,
+            newKey: attr.newKey,
         });
     },
 };
-export const createAttribute = async (databaseId, collectionId, attr) => {
-    const handler = createAttributeHandlers[attr.type];
+export const updateAttribute = async (databaseId, collectionId, attr) => {
+    const handler = updateAttributeHandlers[attr.type];
     if (!handler) {
         throw new Error(`Unsupported attribute type: '${attr.type}'`);
     }

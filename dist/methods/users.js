@@ -296,7 +296,9 @@ const listCustomUsers = async ({ queries = [], includingDeleted = undefined, }) 
             ? includingDeleted === undefined
                 ? queries
                 : [Query.and([...queries, Query.equal("deleted", includingDeleted)])]
-            : [Query.equal("deleted", includingDeleted)];
+            : includingDeleted === undefined
+                ? []
+                : [Query.equal("deleted", includingDeleted)];
         const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, query);
         return {
             data: {

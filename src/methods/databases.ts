@@ -11,7 +11,7 @@ import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 import { ID, Query, Models, Databases } from "node-appwrite";
 import { databaseId, userCollectionId } from "../appwriteConfig";
-import { toLogFolder } from "../utils";
+import { toLogFolder } from "../ssr-utils";
 
 interface ErrorObject {
   appwrite: boolean;

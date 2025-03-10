@@ -58,6 +58,5 @@ export declare const apwManager: AppwriteManager;
  * @returns {Promise<File>} - A promise that resolves to the converted image file.
  */
 export declare const imgToWebP: (file: File, quality?: number, width?: number, height?: number, background?: string) => Promise<File>;
-export declare const toLogFolder: (data: string) => Promise<void>;
 export {};
 //# sourceMappingURL=utils.d.ts.map

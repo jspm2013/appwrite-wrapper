@@ -4,7 +4,7 @@ import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 import { ID, Query } from "node-appwrite";
 import { databaseId, userCollectionId } from "../appwriteConfig";
-import { toLogFolder } from "../utils";
+import { toLogFolder } from "../ssr-utils";
 const createBooleanAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();

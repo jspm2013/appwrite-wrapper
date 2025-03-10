@@ -65,7 +65,7 @@ type ListCustomUsersParams = {
     queries?: string[];
     includingDeleted?: boolean;
 };
-declare const listCustomUsers: <TCustomUsers extends Models.DocumentList<typeof UserType>>({ queries, includingDeleted, }: ListCustomUsersParams) => Promise<ReturnObject<TCustomUsers>>;
+declare const listCustomUsers: ({ queries, includingDeleted, }: ListCustomUsersParams) => Promise<ReturnObject<Models.DocumentList<Models.Document>>>;
 type ListUsersParams = {
     queries?: string[];
     search?: string;

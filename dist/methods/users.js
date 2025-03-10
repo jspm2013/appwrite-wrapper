@@ -275,7 +275,7 @@ const listAppUsers = async ({ queries = [], search, includingDeleted = undefined
         // Merge users with customUser data
         const appUsers = usersList.map((user) => ({
             ...user,
-            customUser: customUsersMap.get(user.$id) || null, // Add customUser if found, otherwise null
+            customUser: customUsersMap.get(user.$id) || {}, // Add customUser if found, otherwise {}
         }));
         return {
             data: { total: appUsers.length, documents: appUsers ?? [] },
@@ -299,12 +299,9 @@ const listCustomUsers = async ({ queries = [], includingDeleted = undefined, }) 
             : includingDeleted === undefined
                 ? []
                 : [Query.equal("deleted", includingDeleted)];
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, query);
+        const data = await databases.listDocuments(databaseId, userCollectionId, query);
         return {
-            data: {
-                total: total,
-                documents: documents ?? [],
-            },
+            data,
             error: null,
         };
     }

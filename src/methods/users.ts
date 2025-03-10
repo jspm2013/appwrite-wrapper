@@ -440,7 +440,7 @@ const listAppUsers = async ({
     // Merge users with customUser data
     const appUsers: any[] = usersList.map((user) => ({
       ...user,
-      customUser: customUsersMap.get(user.$id) || null, // Add customUser if found, otherwise null
+      customUser: customUsersMap.get(user.$id) || {}, // Add customUser if found, otherwise {}
     }));
 
     return {
@@ -462,12 +462,12 @@ type ListCustomUsersParams = {
   queries?: string[];
   includingDeleted?: boolean;
 };
-const listCustomUsers = async <
-  TCustomUsers extends Models.DocumentList<typeof UserType>
->({
+const listCustomUsers = async ({
   queries = [],
   includingDeleted = undefined,
-}: ListCustomUsersParams): Promise<ReturnObject<TCustomUsers>> => {
+}: ListCustomUsersParams): Promise<
+  ReturnObject<Models.DocumentList<Models.Document>>
+> => {
   try {
     const { databases } = await createAdminClient();
 
@@ -479,17 +479,14 @@ const listCustomUsers = async <
       ? []
       : [Query.equal("deleted", includingDeleted)];
 
-    const { total, documents } = await databases.listDocuments(
+    const data = await databases.listDocuments(
       databaseId,
       userCollectionId,
       query
     );
 
     return {
-      data: {
-        total: total,
-        documents: documents ?? [],
-      } as TCustomUsers,
+      data,
       error: null,
     };
   } catch (error: any) {

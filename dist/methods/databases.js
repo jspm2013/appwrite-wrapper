@@ -1,5 +1,5 @@
 "use server";
-import { toLogsFolder, generateMigrationId, toLogs, } from "../ssr-utils";
+import { generateMigrationId, toLogs, } from "../ssr-utils";
 import { getSchema, attributesEqual, createAttribute, updateAttribute, getAttributeFromKey, } from "../collections";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
@@ -152,7 +152,6 @@ const createCollectionWithSchema = async ({ ...args }) => {
             }
             logContent.executed_at = new Date().toISOString();
             logContent.status = "success";
-            // Write log using primary logging mechanism.
             await toLogs(logTopic, logDetails, logContent);
             return { data: coll, error: null };
         }
@@ -160,7 +159,7 @@ const createCollectionWithSchema = async ({ ...args }) => {
     catch (error) {
         logContent.executed_at = new Date().toISOString();
         logContent.status = "failure";
-        await toLogsFolder(logTopic, logDetails, logContent);
+        await toLogs(logTopic, logDetails, logContent);
         return {
             data: null,
             error: await handleApwError({ error }),
@@ -1125,14 +1124,13 @@ const updateCollectionWithSchema = async ({ ...args }) => {
         }
         logContent.executed_at = new Date().toISOString();
         logContent.status = "success";
-        // Write log using primary logging mechanism.
         await toLogs(logTopic, logDetails, logContent);
         return { data: coll, error: null };
     }
     catch (error) {
         logContent.executed_at = new Date().toISOString();
         logContent.status = "failure";
-        await toLogsFolder(logTopic, logDetails, logContent);
+        await toLogs(logTopic, logDetails, logContent);
         return {
             data: null,
             error: await handleApwError({ error }),

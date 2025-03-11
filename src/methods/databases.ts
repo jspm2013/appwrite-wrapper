@@ -487,7 +487,6 @@ const createCollectionWithSchema = async ({
       logContent.executed_at = new Date().toISOString();
       logContent.status = "success";
 
-      // Write log using primary logging mechanism.
       await toLogs(logTopic, logDetails, logContent);
 
       return { data: coll, error: null };
@@ -495,7 +494,7 @@ const createCollectionWithSchema = async ({
   } catch (error: any) {
     logContent.executed_at = new Date().toISOString();
     logContent.status = "failure";
-    await toLogsFolder(logTopic, logDetails, logContent);
+    await toLogs(logTopic, logDetails, logContent);
     return {
       data: null,
       error: await handleApwError({ error }),
@@ -2013,14 +2012,13 @@ const updateCollectionWithSchema = async ({
     logContent.executed_at = new Date().toISOString();
     logContent.status = "success";
 
-    // Write log using primary logging mechanism.
     await toLogs(logTopic, logDetails, logContent);
 
     return { data: coll, error: null };
   } catch (error: any) {
     logContent.executed_at = new Date().toISOString();
     logContent.status = "failure";
-    await toLogsFolder(logTopic, logDetails, logContent);
+    await toLogs(logTopic, logDetails, logContent);
     return {
       data: null,
       error: await handleApwError({ error }),

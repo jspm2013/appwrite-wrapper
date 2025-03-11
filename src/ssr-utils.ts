@@ -97,7 +97,7 @@ export const toLogs = async (
         fileId: ID.unique(),
         file: InputFile.fromBuffer(Buffer.from(logJson), fileName),
       });
-      console.log(`Log stored in Appwrite bucket as "${fileName}"`);
+      console.log(`Log stored in appwrite bucket '' as "${fileName}"`);
     } else {
       console.error("No bucket available. Using local log fallback.");
       toLogsFolder(logTopic, logDetails, logContent);
@@ -106,5 +106,23 @@ export const toLogs = async (
     // Step 3: Fallback to local logging on failure.
     console.error("Failed to upload log. Using local log fallback.", error);
     toLogsFolder(logTopic, logDetails, logContent);
+  }
+};
+
+/**
+ * Checks that all provided folder paths exist.
+ * @param paths An array of absolute folder paths.
+ * @throws An Error if any folder does not exist or is not accessible.
+ */
+export const checkPathsExists = async (paths: string[]): Promise<void> => {
+  for (const folderPath of paths) {
+    try {
+      await fs.access(folderPath);
+    } catch (error: any) {
+      const folderName = path.basename(folderPath);
+      throw new Error(
+        `Required folder "${folderName}" not found or inaccessible at path: ${folderPath}. Please ensure the environment variable is correctly set and the folder exists.`
+      );
+    }
   }
 };

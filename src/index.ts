@@ -14,7 +14,11 @@ import {
   isEmptyObject,
   isValidJsonObject,
 } from "./utils";
+import { paths } from "./appwriteConfig";
+import { checkPathsExists } from "./ssr-utils";
 export { Models, ID, Query } from "node-appwrite";
+
+checkPathsExists(paths);
 
 interface ErrorObject {
   appwrite: boolean;

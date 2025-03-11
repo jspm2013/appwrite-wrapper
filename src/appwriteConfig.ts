@@ -21,17 +21,19 @@ const liveEnvVarName = process.env.APPWRITE_LIVE_ENV_VAR_NAME || "";
  */
 const port = process.env.PORT || 3000;
 const signInPath = process.env.APPWRITE_SIGN_IN_PATH || "sign-in";
-const logsPath = process.env.APPWRITE_LOGS_PATH || "lib/appwrite/logs";
 const logsBucketName = process.env.APPWRITE_LOGS_BUCKET_NAME || "logs";
-const i18nPath = process.env.APPWRITE_I18N_PATH || "messages/appwrite";
 const cookiePrefix = process.env.APPWRITE_SESSION_COOKIE_PREFIX || "_apw_";
-const schemasPath = process.env.APPWRITE_SCHEMAS_PATH || "lib/appwrite/schemas";
 const oauthSuccessPath = process.env.APPWRITE_OAUTH_SUCCESS_PATH || "api/oauth";
 const oauthFailurePath = process.env.APPWRITE_OAUTH_FAILURE_PATH || signInPath;
 const verificationPath =
   process.env.APPWRITE_VERIFICATION_PATH || "verification";
 const cookieName =
   process.env.APPWRITE_SESSION_COOKIE_NAME || cookiePrefix + "s";
+// File/Folder paths
+const i18nPath = process.env.APPWRITE_I18N_PATH || "messages/appwrite";
+const logsPath = process.env.APPWRITE_LOGS_PATH || "lib/appwrite/logs";
+const schemasPath = process.env.APPWRITE_SCHEMAS_PATH || "lib/appwrite/schemas";
+const paths: string[] = [i18nPath, logsPath, schemasPath];
 
 /*
  *
@@ -90,6 +92,7 @@ export {
   oauthFailurePath,
   projectId,
   port,
+  paths,
   logsPath,
   schemasPath,
   signInPath,

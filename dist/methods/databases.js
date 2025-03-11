@@ -699,12 +699,15 @@ const updateCollectionWithSchema = async ({ ...args }) => {
             });
         }
         // coll.attributes is a string[] of attribute keys.
-        const currentAttributeKeys = coll.attributes || [];
+        const currentAttributeKeys = new Set(
+        // unknown casting needed since according to the Appwrite SDK’s type definition,
+        // the attributes property on a collection is declared as a string array (string[])
+        coll.attributes.map((attr) => attr.key));
         // Build a Set of attribute keys defined in the new schema.
         const schemaAttributeKeys = new Set(schema.attributes.map((attr) => attr.key));
         // Loop through each attribute defined in the schema.
         for (const schemaAttr of schema.attributes) {
-            const exists = currentAttributeKeys.includes(schemaAttr.key);
+            const exists = currentAttributeKeys.has(schemaAttr.key);
             if (!exists) {
                 migrationLog.changes.push({
                     action: "createAttribute",
@@ -747,7 +750,7 @@ const updateCollectionWithSchema = async ({ ...args }) => {
         // If destructive mode is enabled, remove any attribute that exists in the collection
         // but is not defined in the new schema.
         if (args.destructive) {
-            const attributesToRemove = currentAttributeKeys.filter((key) => !schemaAttributeKeys.has(key));
+            const attributesToRemove = Array.from(currentAttributeKeys).filter((key) => !schemaAttributeKeys.has(key));
             for (const key of attributesToRemove) {
                 migrationLog.changes.push({
                     action: "deleteAttribute",

@@ -388,7 +388,7 @@ declare const getCollection: ({ ...args }: GetCollectionArgs) => Promise<ReturnO
  * Retrieves a database by its ID.
  */
 type GetDatabaseArgs = {
-    dbId: GetDatabase[0];
+    databaseId: GetDatabase[0];
 };
 declare const getDatabase: ({ ...args }: GetDatabaseArgs) => Promise<ReturnObject<GetDatabaseAwaited>>;
 /**
@@ -398,7 +398,7 @@ type GetDocumentArgs = {
     databaseId?: GetDocument[0];
     collectionId?: GetDocument[1];
     documentId: GetDocument[2];
-    query?: string;
+    queries?: GetDocument[3];
 };
 declare const getDocument: ({ ...args }: GetDocumentArgs) => Promise<ReturnObject<GetDocumentAwaited>>;
 /**

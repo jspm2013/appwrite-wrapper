@@ -9,12 +9,23 @@ import { databaseId, userCollectionId } from "../appwriteConfig";
 const createBooleanAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createBooleanAttribute(...Object.values(newArgs));
+        const createBooleanAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.array,
+        ];
+        const data = await databases.createBooleanAttribute(...createBooleanAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -27,12 +38,23 @@ const createBooleanAttribute = async ({ ...args }) => {
 const createCollection = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? ID.unique();
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: ID.unique(),
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createCollection(...Object.values(newArgs));
+        const createCollectionParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.name,
+            newArgs.permissions,
+            newArgs.documentSecurity,
+            newArgs.enabled,
+        ];
+        const data = await databases.createCollection(...createCollectionParams);
         return { data, error: null };
     }
     catch (error) {
@@ -101,7 +123,7 @@ const createCollectionWithSchema = async ({ ...args }) => {
                 action: "getSchema",
                 information: `Schema '${schema.collectionName}' loaded for collection creation.`,
             });
-            coll = await databases.createCollection(newArgs.databaseId, ID.unique(), schema.collectionName, schema.permissions, schema.documentSecurity, schema.enabled);
+            coll = await databases.createCollection(newArgs.databaseId, newArgs.collectionId, schema.collectionName, schema.permissions, schema.documentSecurity, schema.enabled);
             logContent.changes.push({
                 action: "createCollection",
                 information: `Collection '${schema.collectionName}' created.`,
@@ -148,11 +170,18 @@ const createCollectionWithSchema = async ({ ...args }) => {
 const createDatabase = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
+            databaseId: finalDatabaseId,
         };
-        const data = await databases.create(...Object.values(newArgs));
+        const createDatabaseParams = [
+            newArgs.databaseId,
+            newArgs.name,
+            newArgs.enabled,
+        ];
+        const data = await databases.create(...createDatabaseParams);
         return { data, error: null };
     }
     catch (error) {
@@ -165,12 +194,23 @@ const createDatabase = async ({ ...args }) => {
 const createDatetimeAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createDatetimeAttribute(...Object.values(newArgs));
+        const createDatetimeAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.array,
+        ];
+        const data = await databases.createDatetimeAttribute(...createDatetimeAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -183,12 +223,22 @@ const createDatetimeAttribute = async ({ ...args }) => {
 const createDocument = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
             documentId: ID.unique(),
         };
+        const createDocumentParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.documentId,
+            newArgs.data,
+            newArgs.permissions,
+        ];
         const data = await databases.createDocument(...Object.values(newArgs));
         return { data, error: null };
     }
@@ -202,12 +252,23 @@ const createDocument = async ({ ...args }) => {
 const createEmailAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createEmailAttribute(...Object.values(newArgs));
+        const createEmailAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.array,
+        ];
+        const data = await databases.createEmailAttribute(...createEmailAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -220,12 +281,24 @@ const createEmailAttribute = async ({ ...args }) => {
 const createEnumAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createEnumAttribute(...Object.values(newArgs));
+        const createEnumAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.elements,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.array,
+        ];
+        const data = await databases.createEnumAttribute(...createEnumAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -238,12 +311,25 @@ const createEnumAttribute = async ({ ...args }) => {
 const createFloatAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createFloatAttribute(...Object.values(newArgs));
+        const createFloatAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.min,
+            newArgs.max,
+            newArgs.xdefault,
+            newArgs.array,
+        ];
+        const data = await databases.createFloatAttribute(...createFloatAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -256,12 +342,23 @@ const createFloatAttribute = async ({ ...args }) => {
 const createIndex = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createIndex(...Object.values(newArgs));
+        const createIndexParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.type,
+            newArgs.attributes,
+            newArgs.orders,
+        ];
+        const data = await databases.createIndex(...createIndexParams);
         return { data, error: null };
     }
     catch (error) {
@@ -274,12 +371,25 @@ const createIndex = async ({ ...args }) => {
 const createIntegerAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createIntegerAttribute(...Object.values(newArgs));
+        const createIntegerAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.min,
+            newArgs.max,
+            newArgs.xdefault,
+            newArgs.array,
+        ];
+        const data = await databases.createIntegerAttribute(...createIntegerAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -292,12 +402,23 @@ const createIntegerAttribute = async ({ ...args }) => {
 const createIpAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createIpAttribute(...Object.values(newArgs));
+        const createIpAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.array,
+        ];
+        const data = await databases.createIpAttribute(...createIpAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -310,12 +431,25 @@ const createIpAttribute = async ({ ...args }) => {
 const createRelationshipAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createRelationshipAttribute(...Object.values(newArgs));
+        const createRelationshipAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.relatedCollectionId,
+            newArgs.type,
+            newArgs.twoWay,
+            newArgs.key,
+            newArgs.twoWayKey,
+            newArgs.onDelete,
+        ];
+        const data = await databases.createRelationshipAttribute(...createRelationshipAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -328,12 +462,25 @@ const createRelationshipAttribute = async ({ ...args }) => {
 const createStringAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createStringAttribute(...Object.values(newArgs));
+        const createStringAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.size,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.array,
+            newArgs.encrypt,
+        ];
+        const data = await databases.createStringAttribute(...createStringAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -346,12 +493,23 @@ const createStringAttribute = async ({ ...args }) => {
 const createUrlAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.createUrlAttribute(...Object.values(newArgs));
+        const createUrlAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.array,
+        ];
+        const data = await databases.createUrlAttribute(...createUrlAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -364,12 +522,20 @@ const createUrlAttribute = async ({ ...args }) => {
 const deleteAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.deleteAttribute(...Object.values(newArgs));
+        const deleteAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+        ];
+        const data = await databases.deleteAttribute(...deleteAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -382,11 +548,17 @@ const deleteAttribute = async ({ ...args }) => {
 const deleteCollection = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
+            databaseId: finalDatabaseId,
         };
-        const data = await databases.deleteCollection(...Object.values(newArgs));
+        const deleteCollectionParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+        ];
+        const data = await databases.deleteCollection(...deleteCollectionParams);
         return { data, error: null };
     }
     catch (error) {
@@ -402,7 +574,8 @@ const deleteDatabase = async ({ ...args }) => {
         const newArgs = {
             ...args,
         };
-        const data = await databases.delete(...Object.values(newArgs));
+        const deleteDatabaseParams = [newArgs.databaseId];
+        const data = await databases.delete(...deleteDatabaseParams);
         return { data, error: null };
     }
     catch (error) {
@@ -415,12 +588,20 @@ const deleteDatabase = async ({ ...args }) => {
 const deleteDocument = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.deleteDocument(...Object.values(newArgs));
+        const deleteDocumentParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.documentId,
+        ];
+        const data = await databases.deleteDocument(...deleteDocumentParams);
         return { data, error: null };
     }
     catch (error) {
@@ -433,12 +614,20 @@ const deleteDocument = async ({ ...args }) => {
 const deleteIndex = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.deleteIndex(...Object.values(newArgs));
+        const deleteIndexParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+        ];
+        const data = await databases.deleteIndex(...deleteIndexParams);
         return { data, error: null };
     }
     catch (error) {
@@ -451,12 +640,20 @@ const deleteIndex = async ({ ...args }) => {
 const getAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.getAttribute(...Object.values(newArgs));
+        const getAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+        ];
+        const data = await databases.getAttribute(...getAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -469,11 +666,17 @@ const getAttribute = async ({ ...args }) => {
 const getCollection = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
+            databaseId: finalDatabaseId,
         };
-        const data = await databases.getCollection(...Object.values(newArgs));
+        const getCollectionParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+        ];
+        const data = await databases.getCollection(...getCollectionParams);
         return { data, error: null };
     }
     catch (error) {
@@ -489,7 +692,8 @@ const getDatabase = async ({ ...args }) => {
         const newArgs = {
             ...args,
         };
-        const data = await databases.get(...Object.values(newArgs));
+        const getDatabaseParams = [newArgs.databaseId];
+        const data = await databases.get(...getDatabaseParams);
         return { data, error: null };
     }
     catch (error) {
@@ -502,12 +706,21 @@ const getDatabase = async ({ ...args }) => {
 const getDocument = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.getDocument(...Object.values(newArgs));
+        const getDocumentParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.documentId,
+            newArgs.queries,
+        ];
+        const data = await databases.getDocument(...getDocumentParams);
         return { data, error: null };
     }
     catch (error) {
@@ -520,12 +733,20 @@ const getDocument = async ({ ...args }) => {
 const getIndex = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.getIndex(...Object.values(newArgs));
+        const getIndexParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+        ];
+        const data = await databases.getIndex(...getIndexParams);
         return { data, error: null };
     }
     catch (error) {
@@ -538,12 +759,20 @@ const getIndex = async ({ ...args }) => {
 const listAttributes = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.listAttributes(...Object.values(newArgs));
+        const listAttributesParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.queries,
+        ];
+        const data = await databases.listAttributes(...listAttributesParams);
         return { data, error: null };
     }
     catch (error) {
@@ -556,11 +785,18 @@ const listAttributes = async ({ ...args }) => {
 const listCollections = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
+            databaseId: finalDatabaseId,
         };
-        const data = await databases.listCollections(...Object.values(newArgs));
+        const listCollectionsParams = [
+            newArgs.databaseId,
+            newArgs.queries,
+            newArgs.search,
+        ];
+        const data = await databases.listCollections(...listCollectionsParams);
         return { data, error: null };
     }
     catch (error) {
@@ -576,7 +812,11 @@ const listDatabases = async ({ ...args }) => {
         const newArgs = {
             ...args,
         };
-        const data = await databases.list(...Object.values(newArgs));
+        const listDatabasesParams = [
+            newArgs.queries,
+            newArgs.search,
+        ];
+        const data = await databases.list(...listDatabasesParams);
         return { data, error: null };
     }
     catch (error) {
@@ -589,12 +829,20 @@ const listDatabases = async ({ ...args }) => {
 const listDocuments = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.listDocuments(...Object.values(newArgs));
+        const listDocumentsParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.queries,
+        ];
+        const data = await databases.listDocuments(...listDocumentsParams);
         return { data, error: null };
     }
     catch (error) {
@@ -607,12 +855,20 @@ const listDocuments = async ({ ...args }) => {
 const listIndexes = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.listIndexes(...Object.values(newArgs));
+        const listIndexesParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.queries,
+        ];
+        const data = await databases.listIndexes(...listIndexesParams);
         return { data, error: null };
     }
     catch (error) {
@@ -625,12 +881,23 @@ const listIndexes = async ({ ...args }) => {
 const updateBooleanAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.updateBooleanAttribute(...Object.values(newArgs));
+        const updateBooleanAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.newKey,
+        ];
+        const data = await databases.updateBooleanAttribute(...updateBooleanAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -643,10 +910,20 @@ const updateBooleanAttribute = async ({ ...args }) => {
 const updateCollection = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
+            databaseId: finalDatabaseId,
         };
+        const updateCollectionParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.name,
+            newArgs.permissions,
+            newArgs.documentSecurity,
+            newArgs.enabled,
+        ];
         const collList = await databases.listCollections(newArgs.databaseId, [
             Query.and([
                 Query.equal("name", newArgs.name),
@@ -659,7 +936,7 @@ const updateCollection = async ({ ...args }) => {
         if (collList.total > 1) {
             throw new Error(`Collection with name: '${newArgs.name}' / id:'${newArgs.collectionId}' not unique, multiple collections with the same name and/or id found`);
         }
-        const data = await databases.updateCollection(...Object.values(newArgs));
+        const data = await databases.updateCollection(...updateCollectionParams);
         return { data, error: null };
     }
     catch (error) {
@@ -865,11 +1142,18 @@ const updateCollectionWithSchema = async ({ ...args }) => {
 const updateDatabase = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
+            databaseId: finalDatabaseId,
         };
-        const data = await databases.update(...Object.values(newArgs));
+        const updateDatabaseParams = [
+            newArgs.databaseId,
+            newArgs.name,
+            newArgs.enabled,
+        ];
+        const data = await databases.update(...updateDatabaseParams);
         return { data, error: null };
     }
     catch (error) {
@@ -882,12 +1166,23 @@ const updateDatabase = async ({ ...args }) => {
 const updateDatetimeAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.updateDatetimeAttribute(...Object.values(newArgs));
+        const updateDatetimeAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.newKey,
+        ];
+        const data = await databases.updateDatetimeAttribute(...updateDatetimeAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -900,12 +1195,22 @@ const updateDatetimeAttribute = async ({ ...args }) => {
 const updateDocument = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.updateDocument(...Object.values(newArgs));
+        const updateDocumentParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.documentId,
+            newArgs.data,
+            newArgs.permissions,
+        ];
+        const data = await databases.updateDocument(...updateDocumentParams);
         return { data, error: null };
     }
     catch (error) {
@@ -918,12 +1223,23 @@ const updateDocument = async ({ ...args }) => {
 const updateEmailAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.updateEmailAttribute(...Object.values(newArgs));
+        const updateEmailAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.newKey,
+        ];
+        const data = await databases.updateEmailAttribute(...updateEmailAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -936,12 +1252,24 @@ const updateEmailAttribute = async ({ ...args }) => {
 const updateEnumAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.updateEnumAttribute(...Object.values(newArgs));
+        const updateEnumAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.elements,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.newKey,
+        ];
+        const data = await databases.updateEnumAttribute(...updateEnumAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -954,12 +1282,25 @@ const updateEnumAttribute = async ({ ...args }) => {
 const updateFloatAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.updateFloatAttribute(...Object.values(newArgs));
+        const updateFloatAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.min,
+            newArgs.max,
+            newArgs.xdefault,
+            newArgs.newKey,
+        ];
+        const data = await databases.updateFloatAttribute(...updateFloatAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -972,12 +1313,25 @@ const updateFloatAttribute = async ({ ...args }) => {
 const updateIntegerAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.updateIntegerAttribute(...Object.values(newArgs));
+        const updateIntegerAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.min,
+            newArgs.max,
+            newArgs.xdefault,
+            newArgs.newKey,
+        ];
+        const data = await databases.updateIntegerAttribute(...updateIntegerAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -990,12 +1344,23 @@ const updateIntegerAttribute = async ({ ...args }) => {
 const updateIpAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.updateIpAttribute(...Object.values(newArgs));
+        const updateIpAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.newKey,
+        ];
+        const data = await databases.updateIpAttribute(...updateIpAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -1008,12 +1373,22 @@ const updateIpAttribute = async ({ ...args }) => {
 const updateRelationshipAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.updateRelationshipAttribute(...Object.values(newArgs));
+        const updateRelationshipAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.onDelete,
+            newArgs.newKey,
+        ];
+        const data = await databases.updateRelationshipAttribute(...updateRelationshipAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -1026,12 +1401,24 @@ const updateRelationshipAttribute = async ({ ...args }) => {
 const updateStringAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.updateStringAttribute(...Object.values(newArgs));
+        const updateStringAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.size,
+            newArgs.newKey,
+        ];
+        const data = await databases.updateStringAttribute(...updateStringAttributeParams);
         return { data, error: null };
     }
     catch (error) {
@@ -1044,12 +1431,23 @@ const updateStringAttribute = async ({ ...args }) => {
 const updateUrlAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
+        // Use provided databaseId/collectionId if available; otherwise use defaults.
+        const finalDatabaseId = args.databaseId ?? databaseId;
+        const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
             ...args,
-            databaseId: databaseId,
-            collectionId: userCollectionId,
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
-        const data = await databases.updateUrlAttribute(...Object.values(newArgs));
+        const updateUrlAttributeParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.key,
+            newArgs.required,
+            newArgs.xdefault,
+            newArgs.newKey,
+        ];
+        const data = await databases.updateUrlAttribute(...updateUrlAttributeParams);
         return { data, error: null };
     }
     catch (error) {

@@ -1629,6 +1629,7 @@ const updateCollectionWithSchema = async ({
   } catch (error: any) {
     migrationLog.executed_at = new Date().toISOString();
     migrationLog.status = "failure";
+    migrationLog.lastError = JSON.stringify(error);
     await toLogFolder(migrationLog);
     return {
       data: null,

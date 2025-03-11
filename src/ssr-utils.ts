@@ -10,6 +10,7 @@ export type MigrationLog = {
   id: string;
   executed_at: string;
   status: "success" | "failure";
+  lastError?: string;
   databaseId: string;
   collectionId: string;
   changes: {

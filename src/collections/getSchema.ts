@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs/promises";
 import { LogType } from "../ssr-utils";
-import { humanTimeStamp } from "src/utils";
+import { humanTimeStamp } from "../utils";
 import { CollectionSchema } from "./types";
 import { schemasPath } from "../appwriteConfig";
 import { createTypeFile } from "./createTypeFile";

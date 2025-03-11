@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
-import { humanTimeStamp } from "src/utils";
+import { humanTimeStamp } from "../utils";
 import { schemasPath } from "../appwriteConfig";
 import { createTypeFile } from "./createTypeFile";
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);

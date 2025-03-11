@@ -3,7 +3,7 @@ import path from "path";
 import { schemasPath } from "../appwriteConfig";
 import { createTypeFile } from "./createTypeFile";
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
-export const getSchema = async (schema) => {
+export const getSchema = async (schema, log) => {
     const files = await fs.readdir(SCHEMAS_FOLDER);
     try {
         for (const file of files) {
@@ -21,7 +21,12 @@ export const getSchema = async (schema) => {
         throw new Error(`schema object not valid or schema file not found (${schema}.json)`);
     }
     catch (error) {
-        throw new Error(`Error importing schema '${schema}': ${error.message}`);
+        const errStr = `Error importing schema '${schema}': ${error.message}`;
+        log?.changes.push({
+            action: "getSchema",
+            information: errStr,
+        });
+        throw new Error(errStr);
     }
 };
 // Type guard to validate the structure of the schema

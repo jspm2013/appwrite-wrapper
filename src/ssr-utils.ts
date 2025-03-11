@@ -15,7 +15,7 @@ export type MigrationLog = {
   collectionId: string;
   changes: {
     action: string;
-    attribute: string;
+    information: string;
   }[];
 };
 

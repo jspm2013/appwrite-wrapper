@@ -1,3 +1,4 @@
 import { CollectionSchema } from "./types";
-export declare const getSchema: (schema: string) => Promise<CollectionSchema>;
+import { MigrationLog } from "../ssr-utils";
+export declare const getSchema: (schema: string, log?: MigrationLog) => Promise<CollectionSchema>;
 //# sourceMappingURL=getSchema.d.ts.map

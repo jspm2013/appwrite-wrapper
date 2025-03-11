@@ -7,7 +7,7 @@ export type MigrationLog = {
     collectionId: string;
     changes: {
         action: string;
-        attribute: string;
+        information: string;
     }[];
 };
 export declare const generateMigrationId: (collectionName: string) => Promise<string>;

@@ -3,10 +3,14 @@ import path from "path";
 import { schemasPath } from "../appwriteConfig";
 import { CollectionSchema } from "./types";
 import { createTypeFile } from "./createTypeFile";
+import { MigrationLog } from "../ssr-utils";
 
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
 
-export const getSchema = async (schema: string): Promise<CollectionSchema> => {
+export const getSchema = async (
+  schema: string,
+  log?: MigrationLog
+): Promise<CollectionSchema> => {
   const files = await fs.readdir(SCHEMAS_FOLDER);
 
   try {
@@ -28,7 +32,12 @@ export const getSchema = async (schema: string): Promise<CollectionSchema> => {
       `schema object not valid or schema file not found (${schema}.json)`
     );
   } catch (error: any) {
-    throw new Error(`Error importing schema '${schema}': ${error.message}`);
+    const errStr = `Error importing schema '${schema}': ${error.message}`;
+    log?.changes.push({
+      action: "getSchema",
+      information: errStr,
+    });
+    throw new Error(errStr);
   }
 };
 

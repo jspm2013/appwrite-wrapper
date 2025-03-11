@@ -1450,24 +1450,24 @@ const updateCollectionWithSchema = async ({
     if (collList.total < 1) {
       migrationLog.changes.push({
         action: "listCollections",
-        information: `Collection '${newArgs.name}' / id '${newArgs.collectionId}' not found`,
+        information: `Collection '${newArgs.name}' (id: '${newArgs.collectionId}') not found.`,
       });
       throw new Error(
-        `Collection with name: '${newArgs.name}' / id:'${newArgs.collectionId}' not found`
+        `Collection '${newArgs.name}' (id: '${newArgs.collectionId}') not found`
       );
     }
     if (collList.total > 1) {
       migrationLog.changes.push({
         action: "listCollections",
-        information: `Collection '${newArgs.name}' / id '${newArgs.collectionId}' not unique`,
+        information: `Collection '${newArgs.name}' (id: '${newArgs.collectionId}') not unique.`,
       });
       throw new Error(
-        `Collection with name: '${newArgs.name}' / id:'${newArgs.collectionId}' not unique`
+        `Collection '${newArgs.name}' (id: '${newArgs.collectionId}') not unique`
       );
     }
     migrationLog.changes.push({
       action: "listCollections",
-      information: `Found collection '${newArgs.name}' with id '${newArgs.collectionId}'`,
+      information: `Found collection '${newArgs.name}' (id: '${newArgs.collectionId}')`,
     });
 
     // Retrieve the schema.
@@ -1482,7 +1482,7 @@ const updateCollectionWithSchema = async ({
     if (!schema.attributes || schema.attributes.length < 1) {
       migrationLog.changes.push({
         action: "getSchema",
-        information: `No attributes found in schema for collection '${newArgs.name}'`,
+        information: `No attributes found in schema '${schema.collectionName}'.`,
       });
       throw new Error(
         `No attributes found in schema for collection '${newArgs.name}'`
@@ -1490,7 +1490,7 @@ const updateCollectionWithSchema = async ({
     }
     migrationLog.changes.push({
       action: "getSchema",
-      information: `Schema loaded for collection '${newArgs.name}'`,
+      information: `Schema '${schema.collectionName}' loaded for collection.`,
     });
 
     // Update newArgs with values from the schema.
@@ -1499,22 +1499,39 @@ const updateCollectionWithSchema = async ({
     newArgs.documentSecurity = schema.documentSecurity;
     newArgs.enabled = schema.enabled;
 
-    // Build the tuple in the order expected by databases.updateCollection.
-    const updateCollectionParams: UpdateCollection = [
-      newArgs.databaseId!,
-      newArgs.collectionId!,
-      newArgs.name,
-      newArgs.permissions,
-      newArgs.documentSecurity,
-      newArgs.enabled,
-    ];
+    // Retrieve the current collection from the list.
+    const currentCollection = collList.collections[0];
 
-    // Update the collection.
-    const coll = await databases.updateCollection(...updateCollectionParams);
-    migrationLog.changes.push({
-      action: "updateCollection",
-      information: `Collection updated with new schema values`,
-    });
+    let coll: Models.Collection;
+    // Compare keys: permissions, documentSecurity, and enabled.
+    // Note: currentCollection.$permissions is used as the returned permissions.
+    if (
+      JSON.stringify(newArgs.permissions) !==
+        JSON.stringify(currentCollection.$permissions) ||
+      newArgs.documentSecurity !== currentCollection.documentSecurity ||
+      newArgs.enabled !== currentCollection.enabled
+    ) {
+      // Build the tuple in the order expected by databases.updateCollection.
+      const updateCollectionParams: UpdateCollection = [
+        newArgs.databaseId!,
+        newArgs.collectionId!,
+        newArgs.name,
+        newArgs.permissions,
+        newArgs.documentSecurity,
+        newArgs.enabled,
+      ];
+      coll = await databases.updateCollection(...updateCollectionParams);
+      migrationLog.changes.push({
+        action: "updateCollection",
+        information: `Collection updated with new schema values`,
+      });
+    } else {
+      coll = currentCollection;
+      migrationLog.changes.push({
+        action: "updateCollection",
+        information: `No update necessary for permissions, documentSecurity, or enabled keys.`,
+      });
+    }
 
     // coll.attributes is a string[] of attribute keys.
     const currentAttributeKeys: string[] = coll.attributes || [];

@@ -14,16 +14,7 @@
     "strict": true /* Enable all strict type-checking options. */,
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "baseUrl": "./",
-    "lib": [
-      "esnext",
-      "dom"
-    ] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
-    "paths": {
-      "@jspm2013/appwrite-wrapper/enums": ["src/enums"],
-      "@jspm2013/appwrite-wrapper/exceptions": ["src/exceptions"],
-      "@jspm2013/appwrite-wrapper/collections": ["src/collections"],
-      "@jspm2013/appwrite-wrapper/databases": ["src/methods/databases"]
-    }
+    "lib": ["esnext", "dom"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

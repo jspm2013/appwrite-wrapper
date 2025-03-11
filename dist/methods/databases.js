@@ -1,10 +1,10 @@
 "use server";
+import { toLogFolder, generateMigrationId, } from "../ssr-utils";
 import { getSchema, attributesEqual, createAttribute, updateAttribute, getAttributeFromKey, } from "../collections";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 import { ID, Query } from "node-appwrite";
 import { databaseId, userCollectionId } from "../appwriteConfig";
-import { toLogFolder } from "../ssr-utils";
 const createBooleanAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
@@ -598,17 +598,24 @@ const updateCollection = async ({ ...args }) => {
     }
 };
 const updateCollectionWithSchema = async ({ ...args }) => {
-    // Create a log tracker to capture every action.
-    const logActions = [];
-    logActions.push(`Update started at ${new Date().toISOString()}`);
-    logActions.push(`Destructive flag: ${args.destructive ? "true" : "false"}`);
+    // Use provided databaseId/collectionId if available; otherwise use defaults.
+    const finalDatabaseId = args.databaseId ?? databaseId;
+    const finalCollectionId = args.collectionId ?? ID.unique();
+    // Initialize a migration log object.
+    const migrationLog = {
+        id: generateMigrationId(args.name),
+        executed_at: new Date().toISOString(),
+        status: "success",
+        databaseId: finalDatabaseId,
+        collectionId: finalCollectionId,
+        changes: [],
+    };
     try {
         const { databases } = await createAdminClient();
-        // Use provided databaseId/collectionId if available; otherwise use defaults.
         const newArgs = {
             ...args,
-            databaseId: args.databaseId ?? databaseId,
-            collectionId: args.collectionId ?? ID.unique(),
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
         // Verify that the collection exists and is unique.
         const collList = await databases.listCollections(newArgs.databaseId, [
@@ -618,24 +625,50 @@ const updateCollectionWithSchema = async ({ ...args }) => {
             ]),
         ]);
         if (collList.total < 1) {
+            migrationLog.changes.push({
+                action: "listCollections",
+                attribute: `Collection '${newArgs.name}' / id '${newArgs.collectionId}' not found`,
+            });
             throw new Error(`Collection with name: '${newArgs.name}' / id:'${newArgs.collectionId}' not found`);
         }
         if (collList.total > 1) {
-            throw new Error(`Collection with name: '${newArgs.name}' / id:'${newArgs.collectionId}' not unique, multiple collections with the same name and/or id found`);
+            migrationLog.changes.push({
+                action: "listCollections",
+                attribute: `Collection '${newArgs.name}' / id '${newArgs.collectionId}' not unique`,
+            });
+            throw new Error(`Collection with name: '${newArgs.name}' / id:'${newArgs.collectionId}' not unique`);
         }
-        logActions.push(`Found collection: name='${newArgs.name}', id='${newArgs.collectionId}'`);
+        migrationLog.changes.push({
+            action: "listCollections",
+            attribute: `Found collection '${newArgs.name}' with id '${newArgs.collectionId}'`,
+        });
         // Retrieve the schema.
         const schema = await getSchema(newArgs.name);
         if (!schema) {
+            migrationLog.changes.push({
+                action: "getSchema",
+                attribute: `No schema found for collection '${newArgs.name}'`,
+            });
             throw new Error(`No schema found for collection '${newArgs.name}'`);
         }
         if (!schema.attributes || schema.attributes.length < 1) {
+            migrationLog.changes.push({
+                action: "getSchema",
+                attribute: `No attributes found in schema for collection '${newArgs.name}'`,
+            });
             throw new Error(`No attributes found in schema for collection '${newArgs.name}'`);
         }
         if (!schema.indexes || schema.indexes.length < 1) {
+            migrationLog.changes.push({
+                action: "getSchema",
+                attribute: `No indexes found in schema for collection '${newArgs.name}'`,
+            });
             throw new Error(`No indexes found in schema for collection '${newArgs.name}'`);
         }
-        logActions.push(`Schema loaded for collection '${newArgs.name}'`);
+        migrationLog.changes.push({
+            action: "getSchema",
+            attribute: `Schema loaded for collection '${newArgs.name}'`,
+        });
         // Update newArgs with values from the schema.
         newArgs.name = schema.collectionName;
         newArgs.permissions = schema.permissions;
@@ -643,7 +676,10 @@ const updateCollectionWithSchema = async ({ ...args }) => {
         newArgs.enabled = schema.enabled;
         // Update the collection.
         const coll = await databases.updateCollection(...Object.values(newArgs));
-        logActions.push(`Collection updated with new schema values.`);
+        migrationLog.changes.push({
+            action: "updateCollection",
+            attribute: `Collection updated with new schema values`,
+        });
         // coll.attributes is a string[] of attribute keys.
         const currentAttributeKeys = coll.attributes || [];
         // Build a Set of attribute keys defined in the new schema.
@@ -652,28 +688,42 @@ const updateCollectionWithSchema = async ({ ...args }) => {
         for (const schemaAttr of schema.attributes) {
             const exists = currentAttributeKeys.includes(schemaAttr.key);
             if (!exists) {
-                logActions.push(`Attribute '${schemaAttr.key}' not found; creating it.`);
+                migrationLog.changes.push({
+                    action: "createAttribute",
+                    attribute: `Attribute '${schemaAttr.key}' not found; creating it`,
+                });
                 await createAttribute(newArgs.databaseId, newArgs.collectionId, schemaAttr);
-                logActions.push(`Attribute '${schemaAttr.key}' created.`);
+                migrationLog.changes.push({
+                    action: "createAttribute",
+                    attribute: `Attribute '${schemaAttr.key}' created`,
+                });
             }
             else if (args.destructive) {
                 // In destructive mode, update attribute if it differs.
-                // Helper function "attributesEqual" compares only the relevant common
-                // properties for the given attribute type.
-                // If they differ, update the attribute.
                 const existingAttr = getAttributeFromKey(schemaAttr.key, schema.attributes);
                 if (!attributesEqual(existingAttr, schemaAttr)) {
-                    logActions.push(`Attribute '${schemaAttr.key}' differs from schema; updating it (destructive update).`);
+                    migrationLog.changes.push({
+                        action: "updateAttribute",
+                        attribute: `Attribute '${schemaAttr.key}' differs from schema; updating it`,
+                    });
                     await updateAttribute(newArgs.databaseId, newArgs.collectionId, schemaAttr);
-                    logActions.push(`Attribute '${schemaAttr.key}' updated.`);
+                    migrationLog.changes.push({
+                        action: "updateAttribute",
+                        attribute: `Attribute '${schemaAttr.key}' updated`,
+                    });
                 }
                 else {
-                    logActions.push(`Attribute '${schemaAttr.key}' is up-to-date.`);
+                    migrationLog.changes.push({
+                        action: "updateAttribute",
+                        attribute: `Attribute '${schemaAttr.key}' is up-to-date`,
+                    });
                 }
             }
             else {
-                // If not destructive, you might choose to skip the update.
-                logActions.push(`Attribute '${schemaAttr.key}' exists but no update was performed (no destructive flag set).`);
+                migrationLog.changes.push({
+                    action: "skipAttribute",
+                    attribute: `Attribute '${schemaAttr.key}' exists; no update performed`,
+                });
             }
         }
         // If destructive mode is enabled, remove any attribute that exists in the collection
@@ -681,29 +731,44 @@ const updateCollectionWithSchema = async ({ ...args }) => {
         if (args.destructive) {
             const attributesToRemove = currentAttributeKeys.filter((key) => !schemaAttributeKeys.has(key));
             for (const key of attributesToRemove) {
-                logActions.push(`Attribute '${key}' exists in collection but not in schema; removing it.`);
+                migrationLog.changes.push({
+                    action: "deleteAttribute",
+                    attribute: `Attribute '${key}' exists in collection but not in schema; removing it`,
+                });
                 await deleteAttribute({
                     databaseId: newArgs.databaseId,
                     collectionId: newArgs.collectionId,
                     key,
                 });
-                logActions.push(`Attribute '${key}' removed.`);
+                migrationLog.changes.push({
+                    action: "deleteAttribute",
+                    attribute: `Attribute '${key}' removed`,
+                });
             }
         }
         // Process each index defined in the schema.
         for (const index of schema.indexes) {
-            logActions.push(`Creating index '${index.key}' of type '${index.type}'`);
+            migrationLog.changes.push({
+                action: "createIndex",
+                attribute: `Creating index '${index.key}' of type '${index.type}'`,
+            });
             await databases.createIndex(newArgs.databaseId, newArgs.collectionId, index.key, index.type, index.attributes, index.orders);
-            logActions.push(`Index '${index.key}' created.`);
+            migrationLog.changes.push({
+                action: "createIndex",
+                attribute: `Index '${index.key}' created`,
+            });
         }
-        // Write the log to the migration logs folder.
-        await toLogFolder(logActions.join("\n"));
-        logActions.push(`Migration log saved.`);
+        // Update the execution time and status.
+        migrationLog.executed_at = new Date().toISOString();
+        migrationLog.status = "success";
+        // Write the log to the migration logs folder as JSON.
+        await toLogFolder(migrationLog);
         return { data: coll, error: null };
     }
     catch (error) {
-        // In case of an error, write the log (or part of it) to file.
-        await toLogFolder(logActions.join("\n"));
+        migrationLog.executed_at = new Date().toISOString();
+        migrationLog.status = "failure";
+        await toLogFolder(migrationLog);
         return {
             data: null,
             error: await handleApwError({ error }),

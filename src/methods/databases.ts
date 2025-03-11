@@ -1488,15 +1488,6 @@ const updateCollectionWithSchema = async ({
         `No attributes found in schema for collection '${newArgs.name}'`
       );
     }
-    if (!schema.indexes || schema.indexes.length < 1) {
-      migrationLog.changes.push({
-        action: "getSchema",
-        information: `No indexes found in schema for collection '${newArgs.name}'`,
-      });
-      throw new Error(
-        `No indexes found in schema for collection '${newArgs.name}'`
-      );
-    }
     migrationLog.changes.push({
       action: "getSchema",
       information: `Schema loaded for collection '${newArgs.name}'`,

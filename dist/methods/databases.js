@@ -42,31 +42,95 @@ const createCollection = async ({ ...args }) => {
     }
 };
 const createCollectionWithSchema = async ({ ...args }) => {
+    // Use provided databaseId/collectionId if available; otherwise use defaults.
+    const finalDatabaseId = args.databaseId ?? databaseId;
+    const finalCollectionId = args.collectionId ?? ID.unique();
+    // Initialize a migration log object.
+    const logTopic = "migration";
+    const logDetails = "schemaCreate";
+    const logContent = {
+        id: await generateMigrationId(args.name),
+        executed_at: new Date().toISOString(),
+        status: "success",
+        databaseId: finalDatabaseId,
+        collectionId: finalCollectionId,
+        changes: [],
+    };
     try {
         const { databases } = await createAdminClient();
         const newArgs = {
             ...args,
-            databaseId: args.databaseId ?? databaseId,
-            collectionId: args.collectionId ?? ID.unique(),
+            databaseId: finalDatabaseId,
+            collectionId: finalCollectionId,
         };
+        logContent.changes.push({
+            action: "listCollections",
+            information: `Listing collections in database '${newArgs.databaseId}'.`,
+        });
         const collList = await databases.listCollections(newArgs.databaseId);
         let coll = collList.collections.find((collection) => collection.name === newArgs.name);
         if (coll) {
+            logContent.changes.push({
+                action: "listCollections",
+                information: `Collection '${newArgs.name}' already exists.`,
+            });
             throw new Error(`Collection '${newArgs.name}' already exists`);
         }
         else {
-            const schema = await getSchema(newArgs.name);
+            logContent.changes.push({
+                action: "listCollections",
+                information: `Collection '${newArgs.name}' not found; proceeding to create.`,
+            });
+            const schema = await getSchema(newArgs.name, logContent);
+            if (!schema) {
+                logContent.changes.push({
+                    action: "getSchema",
+                    information: `No schema found for collection '${newArgs.name}'.`,
+                });
+                throw new Error(`No schema found for collection '${newArgs.name}'`);
+            }
+            logContent.changes.push({
+                action: "getSchema",
+                information: `Schema '${schema.collectionName}' loaded for collection creation.`,
+            });
             coll = await databases.createCollection(newArgs.databaseId, ID.unique(), schema.collectionName, schema.permissions, schema.documentSecurity, schema.enabled);
+            logContent.changes.push({
+                action: "createCollection",
+                information: `Collection '${schema.collectionName}' created.`,
+            });
             for (const attr of schema.attributes) {
+                logContent.changes.push({
+                    action: "createAttribute",
+                    information: `Creating attribute '${attr.key}'.`,
+                });
                 await createAttribute(newArgs.databaseId, newArgs.collectionId, attr);
+                logContent.changes.push({
+                    action: "createAttribute",
+                    information: `Attribute '${attr.key}' created.`,
+                });
             }
             for (const index of schema.indexes) {
+                logContent.changes.push({
+                    action: "createIndex",
+                    information: `Creating index '${index.key}' of type '${index.type}'.`,
+                });
                 await databases.createIndex(newArgs.databaseId, newArgs.collectionId, index.key, index.type, index.attributes, index.orders);
+                logContent.changes.push({
+                    action: "createIndex",
+                    information: `Index '${index.key}' created.`,
+                });
             }
+            logContent.executed_at = new Date().toISOString();
+            logContent.status = "success";
+            // Write the log to the migration logs bucket (or fallback to logs folder) as JSON.
+            await toLogs(logTopic, logDetails, logContent);
             return { data: coll, error: null };
         }
     }
     catch (error) {
+        logContent.executed_at = new Date().toISOString();
+        logContent.status = "failure";
+        await toLogsFolder(logTopic, logDetails, logContent);
         return {
             data: null,
             error: await handleApwError({ error }),

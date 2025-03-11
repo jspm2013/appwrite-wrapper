@@ -1,1 +1,1 @@
-{"version":3,"file":"createAttribute.d.ts","sourceRoot":"","sources":["../../src/collections/createAttribute.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAoB,MAAM,SAAS,CAAC;AAoKtD,eAAO,MAAM,eAAe,eACd,MAAM,gBACJ,MAAM,QACd,SAAS,KACd,OAAO,CAAC,IAAI,CAMd,CAAC"}
+{"version":3,"file":"createAttribute.d.ts","sourceRoot":"","sources":["../../src/collections/createAttribute.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAoB,MAAM,SAAS,CAAC;AAoKtD,eAAO,MAAM,eAAe,GAC1B,YAAY,MAAM,EAClB,cAAc,MAAM,EACpB,MAAM,SAAS,KACd,OAAO,CAAC,IAAI,CAMd,CAAC"}

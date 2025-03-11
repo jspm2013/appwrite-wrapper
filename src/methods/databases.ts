@@ -345,7 +345,8 @@ const createCollection = async ({
 
 /**
  * Creates a collection according to a defined schema
- * To execute successfully, there must be a schema file (json) in the schemas folder, named as the collection name
+ * To execute successfully, there must be a schema file (json) in the schemas folder,
+ * named as the collection name
  * This schema folder path must be defined in env vars (see appwriteConfig.ts)
  */
 type CreateCollectionWithSchemaArgs = CreateCollectionArgs;
@@ -354,24 +355,63 @@ const createCollectionWithSchema = async ({
 }: CreateCollectionWithSchemaArgs): Promise<
   ReturnObject<CreateCollectionAwaited>
 > => {
+  // Use provided databaseId/collectionId if available; otherwise use defaults.
+  const finalDatabaseId = args.databaseId ?? databaseId;
+  const finalCollectionId = args.collectionId ?? ID.unique();
+
+  // Initialize a migration log object.
+  const logTopic = "migration";
+  const logDetails = "schemaCreate";
+  const logContent: MigrationLog = {
+    id: await generateMigrationId(args.name),
+    executed_at: new Date().toISOString(),
+    status: "success",
+    databaseId: finalDatabaseId,
+    collectionId: finalCollectionId,
+    changes: [],
+  };
+
   try {
     const { databases } = await createAdminClient();
 
-    const newArgs = {
+    const newArgs: CreateCollectionWithSchemaArgs = {
       ...args,
-      databaseId: args.databaseId ?? databaseId,
-      collectionId: args.collectionId ?? ID.unique(),
-    } as CreateCollectionWithSchemaArgs;
+      databaseId: finalDatabaseId,
+      collectionId: finalCollectionId,
+    };
 
+    logContent.changes.push({
+      action: "listCollections",
+      information: `Listing collections in database '${newArgs.databaseId}'.`,
+    });
     const collList = await databases.listCollections(newArgs.databaseId!);
     let coll = collList.collections.find(
       (collection: Models.Collection) => collection.name === newArgs.name
     );
 
     if (coll) {
+      logContent.changes.push({
+        action: "listCollections",
+        information: `Collection '${newArgs.name}' already exists.`,
+      });
       throw new Error(`Collection '${newArgs.name}' already exists`);
     } else {
-      const schema = await getSchema(newArgs.name);
+      logContent.changes.push({
+        action: "listCollections",
+        information: `Collection '${newArgs.name}' not found; proceeding to create.`,
+      });
+      const schema = await getSchema(newArgs.name, logContent);
+      if (!schema) {
+        logContent.changes.push({
+          action: "getSchema",
+          information: `No schema found for collection '${newArgs.name}'.`,
+        });
+        throw new Error(`No schema found for collection '${newArgs.name}'`);
+      }
+      logContent.changes.push({
+        action: "getSchema",
+        information: `Schema '${schema.collectionName}' loaded for collection creation.`,
+      });
 
       coll = await databases.createCollection(
         newArgs.databaseId!,
@@ -381,12 +421,28 @@ const createCollectionWithSchema = async ({
         schema.documentSecurity,
         schema.enabled
       );
+      logContent.changes.push({
+        action: "createCollection",
+        information: `Collection '${schema.collectionName}' created.`,
+      });
 
       for (const attr of schema.attributes) {
+        logContent.changes.push({
+          action: "createAttribute",
+          information: `Creating attribute '${attr.key}'.`,
+        });
         await createAttribute(newArgs.databaseId!, newArgs.collectionId!, attr);
+        logContent.changes.push({
+          action: "createAttribute",
+          information: `Attribute '${attr.key}' created.`,
+        });
       }
 
       for (const index of schema.indexes) {
+        logContent.changes.push({
+          action: "createIndex",
+          information: `Creating index '${index.key}' of type '${index.type}'.`,
+        });
         await databases.createIndex(
           newArgs.databaseId!,
           newArgs.collectionId!,
@@ -395,10 +451,23 @@ const createCollectionWithSchema = async ({
           index.attributes,
           index.orders
         );
+        logContent.changes.push({
+          action: "createIndex",
+          information: `Index '${index.key}' created.`,
+        });
       }
+      logContent.executed_at = new Date().toISOString();
+      logContent.status = "success";
+
+      // Write the log to the migration logs bucket (or fallback to logs folder) as JSON.
+      await toLogs(logTopic, logDetails, logContent);
+
       return { data: coll, error: null };
     }
   } catch (error: any) {
+    logContent.executed_at = new Date().toISOString();
+    logContent.status = "failure";
+    await toLogsFolder(logTopic, logDetails, logContent);
     return {
       data: null,
       error: await handleApwError({ error }),

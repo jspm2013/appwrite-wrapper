@@ -23,5 +23,5 @@ export {
 addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getAppUserForUserId, getCustomUserForUserId, getUserForUserId, listCustomUsers, listIdentities, listIdentitiesForUserId, listSessionsForUserId, listUsers, updateEmailForUserId, updateEmailVerificationForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, } from "./methods/users";
 export { 
 // ApwWrapper Config
-envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, schemasPath, signInPath, userCollectionId, verificationPath, } from "./appwriteConfig";
+envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, paths, logsPath, schemasPath, signInPath, userCollectionId, verificationPath, logsBucketId, logsBucketName, clientCollectionId, addressCollectionId, } from "./appwriteConfig";
 export { apwManager, temporaryPassword, imgToWebP, hostInternal, hostExternal, live, originInternal, originExternal, isValidJsonString, isEmptyKeyValuePair, isEmptyObject, isValidJsonObject, };

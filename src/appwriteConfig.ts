@@ -12,6 +12,8 @@ const apiKeySsr = process.env.APPWRITE_API_KEY_SSR || "";
 const logsBucketId = process.env.APPWRITE_LOGS_BUCKET_ID || "";
 const userCollectionId = process.env.APPWRITE_USER_COLL_ID || "";
 const liveEnvVarName = process.env.APPWRITE_LIVE_ENV_VAR_NAME || "";
+const clientCollectionId = process.env.APPWRITE_CLIENT_COLL_ID || "";
+const addressCollectionId = process.env.APPWRITE_ADDRESS_COLL_ID || "";
 
 /*
  *
@@ -100,4 +102,6 @@ export {
   verificationPath,
   logsBucketId,
   logsBucketName,
+  clientCollectionId,
+  addressCollectionId,
 };

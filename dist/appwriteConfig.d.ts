@@ -6,6 +6,8 @@ declare const apiKeySsr: string;
 declare const logsBucketId: string;
 declare const userCollectionId: string;
 declare const liveEnvVarName: string;
+declare const clientCollectionId: string;
+declare const addressCollectionId: string;
 declare const port: string | number;
 declare const signInPath: string;
 declare const logsBucketName: string;
@@ -19,5 +21,5 @@ declare const logsPath: string;
 declare const schemasPath: string;
 declare const paths: string[];
 declare const envCheck: () => void;
-export { envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, paths, logsPath, schemasPath, signInPath, userCollectionId, verificationPath, logsBucketId, logsBucketName, };
+export { envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, paths, logsPath, schemasPath, signInPath, userCollectionId, verificationPath, logsBucketId, logsBucketName, clientCollectionId, addressCollectionId, };
 //# sourceMappingURL=appwriteConfig.d.ts.map

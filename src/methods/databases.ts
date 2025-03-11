@@ -1,9 +1,10 @@
 "use server";
 
 import {
-  toLogFolder,
+  toLogsFolder,
   generateMigrationId,
   type MigrationLog,
+  toLogs,
 } from "../ssr-utils";
 import {
   getSchema,
@@ -12,10 +13,17 @@ import {
   updateAttribute,
   getAttributeFromKey,
 } from "../collections";
+import {
+  databaseId,
+  userCollectionId,
+  logsBucketId,
+  logsBucketName,
+} from "../appwriteConfig";
+import { InputFile } from "node-appwrite/file";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
-import { ID, Query, Models, Databases } from "node-appwrite";
-import { databaseId, userCollectionId } from "../appwriteConfig";
+import { createBucket, getBucket, uploadFile } from "./storage";
+import { ID, Query, Models, Databases, Compression } from "node-appwrite";
 
 interface ErrorObject {
   appwrite: boolean;
@@ -1421,7 +1429,9 @@ const updateCollectionWithSchema = async ({
   const finalCollectionId = args.collectionId ?? ID.unique();
 
   // Initialize a migration log object.
-  const migrationLog: MigrationLog = {
+  const logTopic = "migration";
+  const logDetails = "schemaUpdate";
+  const logContent: MigrationLog = {
     id: await generateMigrationId(args.name),
     executed_at: new Date().toISOString(),
     status: "success",
@@ -1448,7 +1458,7 @@ const updateCollectionWithSchema = async ({
     ]);
 
     if (collList.total < 1) {
-      migrationLog.changes.push({
+      logContent.changes.push({
         action: "listCollections",
         information: `Collection '${newArgs.name}' (id: '${newArgs.collectionId}') not found.`,
       });
@@ -1457,7 +1467,7 @@ const updateCollectionWithSchema = async ({
       );
     }
     if (collList.total > 1) {
-      migrationLog.changes.push({
+      logContent.changes.push({
         action: "listCollections",
         information: `Collection '${newArgs.name}' (id: '${newArgs.collectionId}') not unique.`,
       });
@@ -1465,22 +1475,22 @@ const updateCollectionWithSchema = async ({
         `Collection '${newArgs.name}' (id: '${newArgs.collectionId}') not unique`
       );
     }
-    migrationLog.changes.push({
+    logContent.changes.push({
       action: "listCollections",
       information: `Found collection '${newArgs.name}' (id: '${newArgs.collectionId}')`,
     });
 
     // Retrieve the schema.
-    const schema = await getSchema(newArgs.name, migrationLog);
+    const schema = await getSchema(newArgs.name, logContent);
     if (!schema) {
-      migrationLog.changes.push({
+      logContent.changes.push({
         action: "getSchema",
         information: `No schema found for collection '${newArgs.name}'`,
       });
       throw new Error(`No schema found for collection '${newArgs.name}'`);
     }
     if (!schema.attributes || schema.attributes.length < 1) {
-      migrationLog.changes.push({
+      logContent.changes.push({
         action: "getSchema",
         information: `No attributes found in schema '${schema.collectionName}'.`,
       });
@@ -1488,7 +1498,7 @@ const updateCollectionWithSchema = async ({
         `No attributes found in schema for collection '${newArgs.name}'`
       );
     }
-    migrationLog.changes.push({
+    logContent.changes.push({
       action: "getSchema",
       information: `Schema '${schema.collectionName}' loaded for collection.`,
     });
@@ -1521,13 +1531,13 @@ const updateCollectionWithSchema = async ({
         newArgs.enabled,
       ];
       coll = await databases.updateCollection(...updateCollectionParams);
-      migrationLog.changes.push({
+      logContent.changes.push({
         action: "updateCollection",
         information: `Collection updated with new schema values`,
       });
     } else {
       coll = currentCollection;
-      migrationLog.changes.push({
+      logContent.changes.push({
         action: "updateCollection",
         information: `No update necessary for permissions, documentSecurity, or enabled keys.`,
       });
@@ -1551,7 +1561,7 @@ const updateCollectionWithSchema = async ({
     for (const schemaAttr of schema.attributes) {
       const exists = currentAttributeKeys.has(schemaAttr.key);
       if (!exists) {
-        migrationLog.changes.push({
+        logContent.changes.push({
           action: "createAttribute",
           information: `Attribute '${schemaAttr.key}' not found; creating it`,
         });
@@ -1560,7 +1570,7 @@ const updateCollectionWithSchema = async ({
           newArgs.collectionId,
           schemaAttr
         );
-        migrationLog.changes.push({
+        logContent.changes.push({
           action: "createAttribute",
           information: `Attribute '${schemaAttr.key}' created`,
         });
@@ -1571,7 +1581,7 @@ const updateCollectionWithSchema = async ({
           schema.attributes
         );
         if (!attributesEqual(existingAttr!, schemaAttr)) {
-          migrationLog.changes.push({
+          logContent.changes.push({
             action: "updateAttribute",
             information: `Attribute '${schemaAttr.key}' differs from schema; updating it`,
           });
@@ -1580,20 +1590,20 @@ const updateCollectionWithSchema = async ({
             newArgs.collectionId,
             schemaAttr
           );
-          migrationLog.changes.push({
+          logContent.changes.push({
             action: "updateAttribute",
             information: `Attribute '${schemaAttr.key}' updated`,
           });
         } else {
-          migrationLog.changes.push({
+          logContent.changes.push({
             action: "updateAttribute",
             information: `Attribute '${schemaAttr.key}' is up-to-date`,
           });
         }
       } else {
-        migrationLog.changes.push({
+        logContent.changes.push({
           action: "skipAttribute",
-          information: `Attribute '${schemaAttr.key}' exists; no update performed`,
+          information: `Attribute '${schemaAttr.key}' exists but destructive arg was not enabled; no update performed`,
         });
       }
     }
@@ -1605,7 +1615,7 @@ const updateCollectionWithSchema = async ({
         (key) => !schemaAttributeKeys.has(key)
       );
       for (const key of attributesToRemove) {
-        migrationLog.changes.push({
+        logContent.changes.push({
           action: "deleteAttribute",
           information: `Attribute '${key}' exists in collection but not in schema; removing it`,
         });
@@ -1614,7 +1624,7 @@ const updateCollectionWithSchema = async ({
           collectionId: newArgs.collectionId,
           key,
         });
-        migrationLog.changes.push({
+        logContent.changes.push({
           action: "deleteAttribute",
           information: `Attribute '${key}' removed`,
         });
@@ -1623,7 +1633,7 @@ const updateCollectionWithSchema = async ({
 
     // Process each index defined in the schema.
     for (const index of schema.indexes) {
-      migrationLog.changes.push({
+      logContent.changes.push({
         action: "createIndex",
         information: `Creating index '${index.key}' of type '${index.type}'`,
       });
@@ -1635,24 +1645,24 @@ const updateCollectionWithSchema = async ({
         index.attributes,
         index.orders
       );
-      migrationLog.changes.push({
+      logContent.changes.push({
         action: "createIndex",
         information: `Index '${index.key}' created`,
       });
     }
 
     // Update the execution time and status.
-    migrationLog.executed_at = new Date().toISOString();
-    migrationLog.status = "success";
+    logContent.executed_at = new Date().toISOString();
+    logContent.status = "success";
 
-    // Write the log to the migration logs folder as JSON.
-    await toLogFolder(migrationLog);
+    // Write the log to the migration logs bucket (or fallback to logs folder) as JSON.
+    toLogs(logTopic, logDetails, logContent);
 
     return { data: coll, error: null };
   } catch (error: any) {
-    migrationLog.executed_at = new Date().toISOString();
-    migrationLog.status = "failure";
-    await toLogFolder(migrationLog);
+    logContent.executed_at = new Date().toISOString();
+    logContent.status = "failure";
+    await toLogsFolder(logTopic, logDetails, logContent);
     return {
       data: null,
       error: await handleApwError({ error }),

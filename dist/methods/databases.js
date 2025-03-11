@@ -5,7 +5,7 @@ import { createAdminClient } from "../appwriteClients";
 import { ID, Query } from "node-appwrite";
 import { databaseId, userCollectionId } from "../appwriteConfig";
 import { generateMigrationId, toLogs } from "../ssr-utils";
-import { isCollectionSchema, schemaToFile } from "../collections/getSchema";
+import { isCollectionSchema, schemaToFile } from "../collections/schema";
 const createBooleanAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();

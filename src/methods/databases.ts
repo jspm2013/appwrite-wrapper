@@ -12,7 +12,7 @@ import { createAdminClient } from "../appwriteClients";
 import { ID, Query, Models, Databases } from "node-appwrite";
 import { databaseId, userCollectionId } from "../appwriteConfig";
 import { generateMigrationId, type LogType, toLogs } from "../ssr-utils";
-import { isCollectionSchema, schemaToFile } from "../collections/getSchema";
+import { isCollectionSchema, schemaToFile } from "../collections/schema";
 
 interface ErrorObject {
   appwrite: boolean;

@@ -14,4 +14,4 @@ export declare const isCollectionSchema: (obj: any) => obj is CollectionSchema;
  * @param collectionObj The native Appwrite collection object.
  */
 export declare const schemaToFile: (collectionObj: any) => Promise<void>;
-//# sourceMappingURL=getSchema.d.ts.map
+//# sourceMappingURL=schema.d.ts.map

@@ -603,7 +603,7 @@ const updateCollectionWithSchema = async ({ ...args }) => {
     const finalCollectionId = args.collectionId ?? ID.unique();
     // Initialize a migration log object.
     const migrationLog = {
-        id: generateMigrationId(args.name),
+        id: await generateMigrationId(args.name),
         executed_at: new Date().toISOString(),
         status: "success",
         databaseId: finalDatabaseId,

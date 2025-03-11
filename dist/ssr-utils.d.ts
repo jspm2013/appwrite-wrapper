@@ -9,6 +9,6 @@ export type MigrationLog = {
         attribute: string;
     }[];
 };
-export declare const generateMigrationId: (collectionName: string) => string;
+export declare const generateMigrationId: (collectionName: string) => Promise<string>;
 export declare const toLogFolder: (log: MigrationLog) => Promise<void>;
 //# sourceMappingURL=ssr-utils.d.ts.map

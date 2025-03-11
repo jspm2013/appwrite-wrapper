@@ -19,14 +19,16 @@ export type MigrationLog = {
 };
 
 // A helper to generate a migration ID.
-export const generateMigrationId = (collectionName: string): string => {
+export const generateMigrationId = async (
+  collectionName: string
+): Promise<string> => {
   // For example, YYYYMMDD_update_schema_<collectionName>
   const datePart = new Date().toISOString().split("T")[0].replace(/-/g, "");
   return `${datePart}_update_schema_${collectionName}`;
 };
 
 // A helper to log a migration.
-export const toLogFolder = async (log: MigrationLog) => {
+export const toLogFolder = async (log: MigrationLog): Promise<void> => {
   const logJson = JSON.stringify(log, null, 2);
   // Construct a filename, e.g., using the log id:
   const filename = `${LOGS_FOLDER}/${log.id}.json`;

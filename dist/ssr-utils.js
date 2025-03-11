@@ -4,7 +4,7 @@ import fs from "fs/promises";
 import path from "path";
 const LOGS_FOLDER = path.join(process.cwd(), logsPath);
 // A helper to generate a migration ID.
-export const generateMigrationId = (collectionName) => {
+export const generateMigrationId = async (collectionName) => {
     // For example, YYYYMMDD_update_schema_<collectionName>
     const datePart = new Date().toISOString().split("T")[0].replace(/-/g, "");
     return `${datePart}_update_schema_${collectionName}`;

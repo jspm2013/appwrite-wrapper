@@ -1422,7 +1422,7 @@ const updateCollectionWithSchema = async ({
 
   // Initialize a migration log object.
   const migrationLog: MigrationLog = {
-    id: generateMigrationId(args.name),
+    id: await generateMigrationId(args.name),
     executed_at: new Date().toISOString(),
     status: "success",
     databaseId: finalDatabaseId,

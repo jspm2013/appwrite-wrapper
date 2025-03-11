@@ -1499,10 +1499,18 @@ const updateCollectionWithSchema = async ({
     newArgs.documentSecurity = schema.documentSecurity;
     newArgs.enabled = schema.enabled;
 
+    // Build the tuple in the order expected by databases.updateCollection.
+    const updateCollectionParams: UpdateCollection = [
+      newArgs.databaseId!,
+      newArgs.collectionId!,
+      newArgs.name,
+      newArgs.permissions,
+      newArgs.documentSecurity,
+      newArgs.enabled,
+    ];
+
     // Update the collection.
-    const coll = await databases.updateCollection(
-      ...(Object.values(newArgs) as UpdateCollection)
-    );
+    const coll = await databases.updateCollection(...updateCollectionParams);
     migrationLog.changes.push({
       action: "updateCollection",
       information: `Collection updated with new schema values`,

@@ -667,8 +667,17 @@ const updateCollectionWithSchema = async ({ ...args }) => {
         newArgs.permissions = schema.permissions;
         newArgs.documentSecurity = schema.documentSecurity;
         newArgs.enabled = schema.enabled;
+        // Build the tuple in the order expected by databases.updateCollection.
+        const updateCollectionParams = [
+            newArgs.databaseId,
+            newArgs.collectionId,
+            newArgs.name,
+            newArgs.permissions,
+            newArgs.documentSecurity,
+            newArgs.enabled,
+        ];
         // Update the collection.
-        const coll = await databases.updateCollection(...Object.values(newArgs));
+        const coll = await databases.updateCollection(...updateCollectionParams);
         migrationLog.changes.push({
             action: "updateCollection",
             information: `Collection updated with new schema values`,

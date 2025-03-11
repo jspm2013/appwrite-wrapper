@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
+import { humanTimeStamp } from "src/utils";
 import { schemasPath } from "../appwriteConfig";
 import { createTypeFile } from "./createTypeFile";
 const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
@@ -54,4 +55,54 @@ export const isCollectionSchema = (obj) => {
         typeof obj.enabled === "boolean" &&
         Array.isArray(obj.attributes) &&
         Array.isArray(obj.indexes));
+};
+/**
+ * Helper function to filter out unwanted keys from an object.
+ */
+const filterObjectKeys = (obj, keysToRemove) => {
+    const result = {};
+    for (const key in obj) {
+        if (!keysToRemove.includes(key)) {
+            result[key] = obj[key];
+        }
+    }
+    return result;
+};
+/**
+ * Transforms a native Appwrite collection object by removing the keys
+ * "$createdAt", "$updatedAt", "error", and "status" from each item in its
+ * "attributes" and "indexes" arrays. Then writes the resulting schema object
+ * to a JSON file for documentation purposes.
+ *
+ * The generated file is saved in the schemas folder with the name:
+ *    <collectionName>_deprecated_<timestamp>.json
+ *
+ * @param collectionObj The native Appwrite collection object.
+ */
+export const schemaToFile = async (collectionObj) => {
+    const keysToRemove = ["$createdAt", "$updatedAt", "error", "status"];
+    // Process attributes if available.
+    const transformedAttributes = Array.isArray(collectionObj.attributes)
+        ? collectionObj.attributes.map((attr) => filterObjectKeys(attr, keysToRemove))
+        : [];
+    // Process indexes similarly.
+    const transformedIndexes = Array.isArray(collectionObj.indexes)
+        ? collectionObj.indexes.map((index) => filterObjectKeys(index, keysToRemove))
+        : [];
+    // Create a new schema object without tsFileName/tsFileFormat.
+    const newSchema = {
+        collectionName: collectionObj.name,
+        permissions: collectionObj.permissions,
+        documentSecurity: collectionObj.documentSecurity,
+        enabled: collectionObj.enabled,
+        attributes: transformedAttributes,
+        indexes: transformedIndexes,
+    };
+    // Generate a human-readable timestamp.
+    const timestamp = humanTimeStamp();
+    const fileName = `${collectionObj.name}_deprecated_${timestamp}.json`;
+    const filePath = path.join(SCHEMAS_FOLDER, fileName);
+    const schemaJson = JSON.stringify(newSchema, null, 2);
+    await fs.writeFile(filePath, schemaJson, "utf-8");
+    console.log(`Schema file written: ${filePath}`);
 };

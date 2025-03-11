@@ -1,12 +1,6 @@
 "use server";
 
 import {
-  toLogsFolder,
-  generateMigrationId,
-  type LogType,
-  toLogs,
-} from "../ssr-utils";
-import {
   getSchema,
   attributesEqual,
   createAttribute,
@@ -16,8 +10,9 @@ import {
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 import { ID, Query, Models, Databases } from "node-appwrite";
-import { isCollectionSchema } from "../collections/getSchema";
 import { databaseId, userCollectionId } from "../appwriteConfig";
+import { generateMigrationId, type LogType, toLogs } from "../ssr-utils";
+import { isCollectionSchema, schemaToFile } from "../collections/getSchema";
 
 interface ErrorObject {
   appwrite: boolean;
@@ -2012,13 +2007,19 @@ const updateCollectionWithSchema = async ({
     logContent.executed_at = new Date().toISOString();
     logContent.status = "success";
 
+    // Safe old schema to file
+    await schemaToFile(coll);
+
+    // Write log
     await toLogs(logTopic, logDetails, logContent);
 
     return { data: coll, error: null };
   } catch (error: any) {
+    // Write log
     logContent.executed_at = new Date().toISOString();
     logContent.status = "failure";
     await toLogs(logTopic, logDetails, logContent);
+
     return {
       data: null,
       error: await handleApwError({ error }),

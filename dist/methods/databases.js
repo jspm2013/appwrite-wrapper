@@ -1,11 +1,11 @@
 "use server";
-import { generateMigrationId, toLogs, } from "../ssr-utils";
 import { getSchema, attributesEqual, createAttribute, updateAttribute, getAttributeFromKey, } from "../collections";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 import { ID, Query } from "node-appwrite";
-import { isCollectionSchema } from "../collections/getSchema";
 import { databaseId, userCollectionId } from "../appwriteConfig";
+import { generateMigrationId, toLogs } from "../ssr-utils";
+import { isCollectionSchema, schemaToFile } from "../collections/getSchema";
 const createBooleanAttribute = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
@@ -1124,10 +1124,14 @@ const updateCollectionWithSchema = async ({ ...args }) => {
         }
         logContent.executed_at = new Date().toISOString();
         logContent.status = "success";
+        // Safe old schema to file
+        await schemaToFile(coll);
+        // Write log
         await toLogs(logTopic, logDetails, logContent);
         return { data: coll, error: null };
     }
     catch (error) {
+        // Write log
         logContent.executed_at = new Date().toISOString();
         logContent.status = "failure";
         await toLogs(logTopic, logDetails, logContent);

@@ -169,9 +169,9 @@ type CreateCollectionArgs = {
 };
 declare const createCollection: ({ ...args }: CreateCollectionArgs) => Promise<ReturnObject<CreateCollectionAwaited>>;
 /**
- * Creates a collection according to a defined schema
- * To execute successfully, there must be a schema file (json) in the schemas folder,
- * named as the collection name
+ * Creates a collection according to a defined schema.
+ * To execute successfully, there must be a schema file (JSON) in the schemas folder,
+ * named as the collection name.
  * This schema folder path must be defined in env vars (see appwriteConfig.ts)
  */
 type CreateCollectionWithSchemaArgs = CreateCollectionArgs;

@@ -11,7 +11,7 @@ import { createBucket, getBucket, uploadFile } from "./methods/storage";
 
 const LOGS_FOLDER = path.join(process.cwd(), logsPath);
 
-export type MigrationLog = {
+export type LogType = {
   id: string;
   executed_at: string;
   status: "success" | "failure";
@@ -37,7 +37,7 @@ export const generateMigrationId = async (
 export const toLogsFolder = async (
   logTopic: string,
   logDetails: string,
-  logContent: MigrationLog
+  logContent: LogType
 ): Promise<void> => {
   try {
     const timestamp = humanTimeStamp();
@@ -60,7 +60,7 @@ export const toLogsFolder = async (
 export const toLogs = async (
   logTopic: string,
   logDetails: string,
-  logContent: MigrationLog
+  logContent: LogType
 ): Promise<void> => {
   let bucket;
   const timestamp = humanTimeStamp();

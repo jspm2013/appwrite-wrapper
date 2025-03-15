@@ -1,6 +1,6 @@
 {
   "name": "appwrite-server-wrapper",
-  "version": "1.8.24",
+  "version": "1.8.25",
   "description": "Wrapper library to handle Appwrite methods including server handling using SSR with NextJS v15 (useActionState, useAction,...)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -41,25 +41,29 @@
     "node-appwrite": "^15.0.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
   "sideEffects": false,
   "exports": {
     ".": {
-      "default": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "node": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./enums": {
-      "default": "./dist/enums/index.js",
-      "types": "./dist/enums/index.d.ts"
+      "node": "./dist/enums/index.js",
+      "types": "./dist/enums/index.d.ts",
+      "default": "./dist/enums/index.js"
     },
     "./exceptions": {
-      "default": "./dist/exceptions/index.js",
-      "types": "./dist/exceptions/index.d.ts"
+      "node": "./dist/exceptions/index.js",
+      "types": "./dist/exceptions/index.d.ts",
+      "default": "./dist/exceptions/index.js"
     },
     "./databases": {
-      "default": "./dist/methods/databases.js",
-      "types": "./dist/methods/databases.d.ts"
+      "node": "./dist/methods/databases.js",
+      "types": "./dist/methods/databases.d.ts",
+      "default": "./dist/methods/databases.js"
     }
   }
 }

@@ -39,6 +39,9 @@ const paths = [i18nPath, logsPath, schemasPath];
  *
  */
 const envCheck = () => {
+    if (process.env.NEXT_RUNTIME === "edge") {
+        throw new Error("APW-WRAPPER - Error: 'appwrite-server-wrapper' is not supported in Edge runtime!");
+    }
     if (!process.env.APP_DOMAIN) {
         throw new Error("APW-WRAPPER - Error: Missing required environment variable: APP_DOMAIN");
     }

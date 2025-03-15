@@ -366,12 +366,11 @@ const getUserForUserId = async ({
     const { databases } = await createAdminClient();
 
     const user = await users.get(userId);
-    console.log("getUserForUserId - user1:", user);
+
     if (!user) {
       throw new Error("No session user found in database.");
     }
 
-    console.log("getUserForUserId - user2:", user);
     const { total, documents } = await databases.listDocuments(
       databaseId,
       userCollectionId,
@@ -387,18 +386,6 @@ const getUserForUserId = async ({
             ]),
       ]
     );
-    console.log("Queries: ", [
-      includingDeleted === undefined
-        ? queries.length
-          ? Query.and([...queries, Query.equal("user_id", userId)])
-          : Query.equal("user_id", userId)
-        : Query.and([
-            ...queries,
-            Query.equal("user_id", userId),
-            Query.equal("deleted", includingDeleted),
-          ]),
-    ]);
-    console.log("getUserForUserId - total/documents:", total, documents);
 
     return {
       data: {

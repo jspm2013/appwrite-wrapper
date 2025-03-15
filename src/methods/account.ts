@@ -493,7 +493,7 @@ const getUser = async (): Promise<ReturnObject<typeof AppUserType>> => {
       throw new Error("No session user found in database.");
     }
 
-    const { documents } = await databases.listDocuments(
+    const { total, documents } = await databases.listDocuments(
       databaseId,
       userCollectionId,
       [Query.equal("user_id", user.$id)]
@@ -502,7 +502,7 @@ const getUser = async (): Promise<ReturnObject<typeof AppUserType>> => {
     return {
       data: {
         ...user,
-        customUser: documents[0],
+        customUser: total === 1 ? documents[0] : {},
       },
       error: null,
     };

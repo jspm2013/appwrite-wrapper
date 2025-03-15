@@ -358,8 +358,6 @@ const getCustomUserForUserId = async ({
  */
 const getUserForUserId = async ({
   userId,
-  queries = [],
-  includingDeleted = undefined,
 }: GetUserForUserIdParams): Promise<ReturnObject<typeof AppUserType>> => {
   try {
     const { users } = await createAdminClient();
@@ -374,17 +372,7 @@ const getUserForUserId = async ({
     const { total, documents } = await databases.listDocuments(
       databaseId,
       userCollectionId,
-      [
-        includingDeleted === undefined
-          ? queries.length
-            ? Query.and([...queries, Query.equal("user_id", userId)])
-            : Query.equal("user_id", userId)
-          : Query.and([
-              ...queries,
-              Query.equal("user_id", userId),
-              Query.equal("deleted", includingDeleted),
-            ]),
-      ]
+      [Query.equal("user_id", user.$id)]
     );
 
     return {

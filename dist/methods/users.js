@@ -230,7 +230,7 @@ const getUserForUserId = async ({ userId, queries = [], includingDeleted = undef
         if (!user) {
             throw new Error("No session user found in database.");
         }
-        const { documents } = await databases.listDocuments(databaseId, userCollectionId, [
+        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
             includingDeleted === undefined
                 ? queries.length
                     ? Query.and([...queries, Query.equal("user_id", userId)])
@@ -244,7 +244,7 @@ const getUserForUserId = async ({ userId, queries = [], includingDeleted = undef
         return {
             data: {
                 ...user,
-                customUser: documents[0],
+                customUser: total === 1 ? documents[0] : {},
             },
             error: null,
         };

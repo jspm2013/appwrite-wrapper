@@ -370,7 +370,7 @@ const getUserForUserId = async ({
       throw new Error("No session user found in database.");
     }
 
-    const { documents } = await databases.listDocuments(
+    const { total, documents } = await databases.listDocuments(
       databaseId,
       userCollectionId,
       [
@@ -389,7 +389,7 @@ const getUserForUserId = async ({
     return {
       data: {
         ...user,
-        customUser: documents[0],
+        customUser: total === 1 ? documents[0] : {},
       },
       error: null,
     };

@@ -374,6 +374,11 @@ const getUserForUserId = async ({
       throw new Error("No session user found in database.");
     }
 
+    console.log(
+      "apwWrapper - getUserForUserId - userCollectionId, databaseId",
+      userCollectionId,
+      databaseId
+    );
     const { total, documents } = await databases.listDocuments(
       databaseId,
       userCollectionId,

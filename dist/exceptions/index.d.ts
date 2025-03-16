@@ -1,4 +1,3 @@
-export declare const runtime = "nodejs";
 interface ErrorHandler {
     error: any;
     locale?: string;

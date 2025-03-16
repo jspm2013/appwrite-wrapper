@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { apwManager } from "../utils";
 import allExceptions from "./exceptions.json";
 import { AppwriteException } from "node-appwrite";

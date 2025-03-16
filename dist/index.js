@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { hostInternal, hostExternal, live, originInternal, originExternal, } from "./host";
 import { apwManager, imgToWebP, temporaryPassword, isValidJsonString, isEmptyKeyValuePair, isEmptyObject, isValidJsonObject, } from "./utils";
 import { paths } from "./appwriteConfig";

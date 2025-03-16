@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { Attribute, Models } from "./types";
 export { Attribute, AttributeHandler, CollectionSchema, Index } from "./types";
 export { createAttribute } from "./createAttribute";

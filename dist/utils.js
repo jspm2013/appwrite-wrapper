@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { randomInt } from "crypto";
 /**
  * Converts an ArrayBuffer to a Base64 string.

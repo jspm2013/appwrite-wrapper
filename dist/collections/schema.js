@@ -104,5 +104,4 @@ export const schemaToFile = async (collectionObj) => {
     const filePath = path.join(SCHEMAS_FOLDER, fileName);
     const schemaJson = JSON.stringify(newSchema, null, 2);
     await fs.writeFile(filePath, schemaJson, "utf-8");
-    console.log(`Schema file written: ${filePath}`);
 };

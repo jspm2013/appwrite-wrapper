@@ -70,7 +70,4 @@ export const createTypeFile = async (
 
   // Write the type definition to a file in the same folder as the schema
   await fs.writeFile(typeFilePath, typeDefinition, "utf-8");
-  console.log(
-    `Type definition for schema '${tsFileName}' created at ${typeFilePath}`
-  );
 };

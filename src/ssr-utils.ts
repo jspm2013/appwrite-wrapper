@@ -48,9 +48,6 @@ export const toLogsFolder = async (
     const filePath = path.join(LOGS_FOLDER, fileName);
 
     await fs.writeFile(filePath, logJson, "utf-8");
-    console.log(
-      `Log file created: ${filePath} at ${new Date().toLocaleString()}`
-    );
   } catch (err: any) {
     console.error(`Error writing log file: ${err.message}`);
     throw new Error(`Error writing log file: ${err.message}`);
@@ -97,7 +94,6 @@ export const toLogs = async (
         fileId: ID.unique(),
         file: InputFile.fromBuffer(Buffer.from(logJson), fileName),
       });
-      console.log(`Log stored in appwrite bucket '' as "${fileName}"`);
     } else {
       console.error("No bucket available. Using local log fallback.");
       toLogsFolder(logTopic, logDetails, logContent);

@@ -358,37 +358,33 @@ const getCustomUserForUserId = async ({
  */
 const getUserForUserId = async ({
   userId,
+  queries = [],
+  includingDeleted = undefined,
 }: GetUserForUserIdParams): Promise<ReturnObject<typeof AppUserType>> => {
   try {
     const { users } = await createAdminClient();
     const { databases } = await createAdminClient();
 
-    console.log("apwWrapper - getUserForUserId - userId", userId);
-    console.log("apwWrapper - getUserForUserId - users", users);
-
     const user = await users.get(userId);
-
-    console.log("apwWrapper - getUserForUserId - user", user);
 
     if (!user) {
       throw new Error("No session user found in database.");
     }
 
-    console.log(
-      "apwWrapper - getUserForUserId - userCollectionId, databaseId",
-      userCollectionId,
-      databaseId
-    );
     const { total, documents } = await databases.listDocuments(
       databaseId,
       userCollectionId,
-      [Query.equal("user_id", user.$id)]
-    );
-
-    console.log(
-      "apwWrapper - getUserForUserId - total, documents",
-      total,
-      documents
+      [
+        includingDeleted === undefined
+          ? queries.length
+            ? Query.and([...queries, Query.equal("user_id", userId)])
+            : Query.equal("user_id", userId)
+          : Query.and([
+              ...queries,
+              Query.equal("user_id", userId),
+              Query.equal("deleted", includingDeleted),
+            ]),
+      ]
     );
 
     return {

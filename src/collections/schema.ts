@@ -128,5 +128,4 @@ export const schemaToFile = async (collectionObj: any): Promise<void> => {
 
   const schemaJson = JSON.stringify(newSchema, null, 2);
   await fs.writeFile(filePath, schemaJson, "utf-8");
-  console.log(`Schema file written: ${filePath}`);
 };

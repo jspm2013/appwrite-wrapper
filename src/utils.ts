@@ -1,5 +1,3 @@
-export const runtime = "nodejs";
-
 import { randomInt } from "crypto";
 
 /**

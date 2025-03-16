@@ -1,4 +1,3 @@
-export const runtime = "nodejs";
 export { createAttribute } from "./createAttribute";
 export { updateAttribute } from "./updateAttribute";
 export { getSchema } from "./schema";

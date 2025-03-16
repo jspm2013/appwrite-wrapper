@@ -1,4 +1,3 @@
-export declare const runtime = "nodejs";
 /**
  * Converts an ArrayBuffer to a Base64 string.
  * @param buffer - The ArrayBuffer to convert.

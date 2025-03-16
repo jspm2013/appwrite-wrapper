@@ -1,4 +1,4 @@
-export const runtime = "nodejs";
+"use server";
 
 import path from "path";
 import fs from "fs/promises";
@@ -16,8 +16,6 @@ export const getTypeFile = async ({
 }: {
   typeFileName: string;
 }) => {
-  "use server";
-
   const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
 
   try {
@@ -56,8 +54,6 @@ export const getType = async ({
   typeFileName: string;
   typeName: string;
 }) => {
-  "use server";
-
   try {
     const typeFile = await getTypeFile({ typeFileName });
 

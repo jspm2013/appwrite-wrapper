@@ -1,4 +1,5 @@
 "use server";
+export const runtime = "nodejs";
 import fs from "fs/promises";
 import path from "path";
 import { i18nPath } from "../appwriteConfig";

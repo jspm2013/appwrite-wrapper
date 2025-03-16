@@ -1,3 +1,4 @@
+export declare const runtime = "nodejs";
 interface LocalizedMessages {
     [key: string]: {
         header: string;

@@ -226,11 +226,15 @@ const getUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
+        console.log("apwWrapper - getUserForUserId - userId", userId);
+        console.log("apwWrapper - getUserForUserId - users", users);
         const user = await users.get(userId);
+        console.log("apwWrapper - getUserForUserId - user", user);
         if (!user) {
             throw new Error("No session user found in database.");
         }
         const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", user.$id)]);
+        console.log("apwWrapper - getUserForUserId - total, documents", total, documents);
         return {
             data: {
                 ...user,

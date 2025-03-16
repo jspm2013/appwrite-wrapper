@@ -1,4 +1,3 @@
-export declare const runtime = "nodejs";
 import { hostInternal, hostExternal, live, originInternal, originExternal } from "./host";
 import { apwManager, imgToWebP, temporaryPassword, isValidJsonString, isEmptyKeyValuePair, isEmptyObject, isValidJsonObject } from "./utils";
 export { Models, ID, Query } from "node-appwrite";

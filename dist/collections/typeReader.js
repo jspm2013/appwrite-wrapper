@@ -1,8 +1,7 @@
-"use server";
+export const runtime = "nodejs";
 import path from "path";
 import fs from "fs/promises";
 import { schemasPath } from "../appwriteConfig";
-const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
 /**
  * Retrieves the absolute file path of a TypeScript type definition file.
  *
@@ -11,6 +10,8 @@ const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
  * @returns {Promise<string | null>} - The absolute file path of the type file if found, otherwise `null`.
  */
 export const getTypeFile = async ({ typeFileName, }) => {
+    "use server";
+    const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
     try {
         const files = await fs.readdir(SCHEMAS_FOLDER);
         for (const file of files) {
@@ -37,6 +38,7 @@ export const getTypeFile = async ({ typeFileName, }) => {
  * @returns {Promise<any | null>} - The extracted type definition or `null` if not found.
  */
 export const getType = async ({ typeFileName, typeName, }) => {
+    "use server";
     try {
         const typeFile = await getTypeFile({ typeFileName });
         if (!typeFile) {

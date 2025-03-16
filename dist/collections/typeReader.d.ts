@@ -1,3 +1,4 @@
+export declare const runtime = "nodejs";
 /**
  * Retrieves the absolute file path of a TypeScript type definition file.
  *

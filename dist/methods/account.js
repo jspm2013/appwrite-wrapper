@@ -87,10 +87,11 @@ const createEmailPasswordSession = async ({ email, password, }) => {
         const { account } = await createAdminClient();
         const data = await account.createEmailPasswordSession(email, password);
         (await cookies()).set(cookieName, data.secret, {
-            path: "/",
             httpOnly: true,
-            sameSite: "lax",
             secure: true,
+            sameSite: "strict",
+            expires: new Date(data.expire),
+            path: "/",
         });
         return { data, error: null };
     }

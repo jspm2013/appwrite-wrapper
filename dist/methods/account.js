@@ -89,7 +89,7 @@ const createEmailPasswordSession = async ({ email, password, }) => {
         (await cookies()).set(cookieName, data.secret, {
             path: "/",
             httpOnly: true,
-            sameSite: "strict",
+            sameSite: "lax",
             secure: true,
         });
         return { data, error: null };

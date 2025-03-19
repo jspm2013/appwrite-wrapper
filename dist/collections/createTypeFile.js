@@ -36,16 +36,16 @@ export const createTypeFile = async (schema, schemaFilePath) => {
     }
     const typeName = `${tsFileName.charAt(0).toUpperCase() + tsFileName.slice(1)}Type`;
     // Ensure every generated type extends `Models.Document`
-    const fields = attributes
-        .map((attr) => {
+    const fields = attributes.map((attr) => {
         const type = mapAttributeToType(attr);
         const isOptional = !attr.required ? "?" : "";
         return `  ${attr.key}${isOptional}: ${type};`;
-    })
-        .join("\n");
+    });
+    fields.unshift(`  "$id": string;`);
+    const formattedFields = fields.join("\n");
     // Replace placeholders in tsFileFormat
     const typeDefinition = tsFileFormat
-        .replaceAll(/\$\{fields\}/g, fields) // Replace fields placeholder
+        .replaceAll(/\$\{fields\}/g, formattedFields) // Replace fields placeholder
         .replaceAll(/\$\{typeName\}/g, typeName); // Replace typeName placeholder
     // Define TypeScript file path
     const typeFilePath = path.join(path.dirname(schemaFilePath), `${tsFileName}.ts`);

@@ -55,7 +55,7 @@ export const createTypeFile = async (
     return `  ${attr.key}${isOptional}: ${type};`;
   });
 
-  fields.unshift(`  "$id": string;`);
+  fields.unshift(`  $id: string;`);
 
   const formattedFields = fields.join("\n");
 

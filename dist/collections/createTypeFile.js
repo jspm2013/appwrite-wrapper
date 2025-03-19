@@ -41,7 +41,7 @@ export const createTypeFile = async (schema, schemaFilePath) => {
         const isOptional = !attr.required ? "?" : "";
         return `  ${attr.key}${isOptional}: ${type};`;
     });
-    fields.unshift(`  "$id": string;`);
+    fields.unshift(`  $id: string;`);
     const formattedFields = fields.join("\n");
     // Replace placeholders in tsFileFormat
     const typeDefinition = tsFileFormat

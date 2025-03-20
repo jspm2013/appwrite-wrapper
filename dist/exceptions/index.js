@@ -86,8 +86,8 @@ export const handleApwError = async ({ error, }) => {
          * Define error properties.
          */
         const jsonError = JSON.parse(JSON.stringify(error));
-        const jsonErrorReponse = jsonError.response; // since response is not a string, we need to stringify it for type satisfaction
-        const { type, code } = jsonErrorReponse || jsonError;
+        const jsonErrorReponse = JSON.parse(jsonError.response);
+        const { type, code } = jsonError;
         const typeLowerCase = type?.toLowerCase();
         const variant = code < 300 ? "success" : code < 400 ? "info" : "error";
         const header = admin

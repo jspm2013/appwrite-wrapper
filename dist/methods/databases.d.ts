@@ -443,6 +443,7 @@ type ListDocumentsArgs = {
     databaseId?: ListDocuments[0];
     collectionId?: ListDocuments[1];
     queries?: ListDocuments[2];
+    relationshipQueries?: string[];
 };
 declare const listDocuments: ({ ...args }: ListDocumentsArgs) => Promise<ReturnObject<ListDocumentsAwaited>>;
 /**

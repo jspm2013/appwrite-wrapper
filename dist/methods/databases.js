@@ -828,7 +828,6 @@ const listDatabases = async ({ ...args }) => {
 const listDocuments = async ({ ...args }) => {
     try {
         const { databases } = await createAdminClient();
-        // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
         const finalCollectionId = args.collectionId ?? userCollectionId;
         const newArgs = {
@@ -842,6 +841,63 @@ const listDocuments = async ({ ...args }) => {
             newArgs.queries,
         ];
         const data = await databases.listDocuments(...listDocumentsParams);
+        let filteredDocuments = data.documents;
+        if (newArgs.relationshipQueries && newArgs.relationshipQueries.length > 0) {
+            filteredDocuments = data.documents.filter((document) => {
+                return newArgs.relationshipQueries.every((query) => {
+                    try {
+                        const parsedQuery = JSON.parse(query);
+                        const attribute = parsedQuery.attribute;
+                        const method = parsedQuery.method;
+                        const values = parsedQuery.values;
+                        switch (method) {
+                            case "equal":
+                                return document[attribute] === values[0];
+                            case "notEqual":
+                                return document[attribute] !== values[0];
+                            case "lessThan":
+                                return document[attribute] < values[0];
+                            case "lessThanEqual":
+                                return document[attribute] <= values[0];
+                            case "greaterThan":
+                                return document[attribute] > values[0];
+                            case "greaterThanEqual":
+                                return document[attribute] >= values[0];
+                            case "search":
+                                return String(document[attribute]).includes(String(values[0]));
+                            case "isIn":
+                                return values.includes(document[attribute]);
+                            case "isNotIn":
+                                return !values.includes(document[attribute]);
+                            case "contains":
+                                if (typeof document[attribute] === "string" &&
+                                    typeof values[0] === "string") {
+                                    return document[attribute].includes(values[0]);
+                                }
+                                return false;
+                            case "between":
+                                return (document[attribute] >= values[0] &&
+                                    document[attribute] <= values[1]);
+                            // Add more cases for other methods as needed
+                            default:
+                                return false;
+                        }
+                    }
+                    catch (e) {
+                        console.error("error while parsing relationship query: ", e);
+                        return false;
+                    }
+                });
+            });
+            return {
+                data: {
+                    ...data,
+                    documents: filteredDocuments,
+                    total: filteredDocuments.length,
+                },
+                error: null,
+            };
+        }
         return { data, error: null };
     }
     catch (error) {

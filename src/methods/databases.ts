@@ -1641,15 +1641,26 @@ const listDocuments = async ({
               case "search":
                 return String(document[attribute]).includes(String(values[0]));
               case "isIn":
-                return values.includes(document[attribute]);
+                return (
+                  Array.isArray(values) && values.includes(document[attribute])
+                );
               case "isNotIn":
-                return !values.includes(document[attribute]);
+                return (
+                  Array.isArray(values) && !values.includes(document[attribute])
+                );
               case "contains":
                 if (
                   typeof document[attribute] === "string" &&
-                  typeof values[0] === "string"
+                  typeof values === "string"
                 ) {
-                  return document[attribute].includes(values[0]);
+                  return document[attribute].includes(values);
+                } else if (
+                  Array.isArray(values) &&
+                  typeof document[attribute] === "string"
+                ) {
+                  return values.some((val) =>
+                    document[attribute].includes(val)
+                  );
                 }
                 return false;
               case "between":

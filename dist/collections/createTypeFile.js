@@ -34,7 +34,10 @@ export const createTypeFile = async (schema, schemaFilePath) => {
     if (!tsFileFormat) {
         throw new Error(`Schema for '${tsFileName}' is missing 'tsFileFormat' key.`);
     }
-    const typeName = `${tsFileName.charAt(0).toUpperCase() + tsFileName.slice(1)}Type`;
+    const typeName = `${tsFileName
+        .split("_")
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join("")}Type`;
     // Ensure every generated type extends `Models.Document`
     const fields = attributes.map((attr) => {
         const type = mapAttributeToType(attr);

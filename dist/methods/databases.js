@@ -133,7 +133,10 @@ const createCollectionWithSchema = async (args) => {
                     action: "createAttribute",
                     information: `Creating attribute '${attr.key}'.`,
                 });
-                await createAttribute(newArgs.databaseId, newArgs.collectionId, attr);
+                const createdAttribute = await createAttribute(newArgs.databaseId, newArgs.collectionId, attr);
+                if (!createdAttribute) {
+                    throw new Error(`Couldn't create attribute '${attr.key}'`);
+                }
                 logContent.changes.push({
                     action: "createAttribute",
                     information: `Attribute '${attr.key}' created.`,
@@ -144,7 +147,10 @@ const createCollectionWithSchema = async (args) => {
                     action: "createIndex",
                     information: `Creating index '${index.key}' of type '${index.type}'.`,
                 });
-                await databases.createIndex(newArgs.databaseId, newArgs.collectionId, index.key, index.type, index.attributes, index.orders);
+                const createdIndex = await databases.createIndex(newArgs.databaseId, newArgs.collectionId, index.key, index.type, index.attributes, index.orders);
+                if (!createdIndex) {
+                    throw new Error(`Couldn't create index '${index.key}'`);
+                }
                 logContent.changes.push({
                     action: "createIndex",
                     information: `Index '${index.key}' created.`,
@@ -1147,7 +1153,10 @@ const updateCollectionWithSchema = async (args) => {
                     action: "createAttribute",
                     information: `Attribute '${schemaAttr.key}' not found; creating it.`,
                 });
-                await createAttribute(newArgs.databaseId, newArgs.collectionId, schemaAttr);
+                const createdAttribute = await createAttribute(newArgs.databaseId, newArgs.collectionId, schemaAttr);
+                if (!createdAttribute) {
+                    throw new Error(`Couldn't create attribute '${schemaAttr}'`);
+                }
                 logContent.changes.push({
                     action: "createAttribute",
                     information: `Attribute '${schemaAttr.key}' created.`,
@@ -1160,7 +1169,10 @@ const updateCollectionWithSchema = async (args) => {
                         action: "updateAttribute",
                         information: `Attribute '${schemaAttr.key}' differs from schema; updating it.`,
                     });
-                    await updateAttribute(newArgs.databaseId, newArgs.collectionId, schemaAttr);
+                    const updatedAttribute = await updateAttribute(newArgs.databaseId, newArgs.collectionId, schemaAttr);
+                    if (!updatedAttribute) {
+                        throw new Error(`Couldn't update attribute '${schemaAttr}'`);
+                    }
                     logContent.changes.push({
                         action: "updateAttribute",
                         information: `Attribute '${schemaAttr.key}' updated.`,
@@ -1187,15 +1199,20 @@ const updateCollectionWithSchema = async (args) => {
                     action: "deleteAttribute",
                     information: `Attribute '${key}' exists in collection but not in schema; removing it.`,
                 });
-                await deleteAttribute({
-                    databaseId: newArgs.databaseId,
-                    collectionId: newArgs.collectionId,
-                    key,
-                });
-                logContent.changes.push({
-                    action: "deleteAttribute",
-                    information: `Attribute '${key}' removed.`,
-                });
+                try {
+                    await deleteAttribute({
+                        databaseId: newArgs.databaseId,
+                        collectionId: newArgs.collectionId,
+                        key,
+                    });
+                    logContent.changes.push({
+                        action: "deleteAttribute",
+                        information: `Attribute '${key}' removed.`,
+                    });
+                }
+                catch (error) {
+                    throw new Error(`Couldn't delete attribute '${key}': ${error.message}`);
+                }
             }
         }
         // Process indexes.
@@ -1204,11 +1221,35 @@ const updateCollectionWithSchema = async (args) => {
                 action: "createIndex",
                 information: `Creating index '${index.key}' of type '${index.type}'.`,
             });
-            await databases.createIndex(newArgs.databaseId, newArgs.collectionId, index.key, index.type, index.attributes, index.orders);
+            const createdIndex = await databases.createIndex(newArgs.databaseId, newArgs.collectionId, index.key, index.type, index.attributes, index.orders);
+            if (!createdIndex) {
+                throw new Error(`Couldn't create index '${index.key}'`);
+            }
             logContent.changes.push({
                 action: "createIndex",
                 information: `Index '${index.key}' created.`,
             });
+        }
+        if (args.destructive) {
+            const existingIndexes = coll.indexes || [];
+            const schemaIndexKeys = new Set(schema.indexes.map((idx) => idx.key));
+            const indexesToDelete = existingIndexes.filter((idx) => !schemaIndexKeys.has(idx.key));
+            for (const index of indexesToDelete) {
+                logContent.changes.push({
+                    action: "deleteIndex",
+                    information: `Index '${index.key}' exists in collection but not in schema; removing it.`,
+                });
+                try {
+                    await databases.deleteIndex(newArgs.databaseId, newArgs.collectionId, index.key);
+                    logContent.changes.push({
+                        action: "deleteIndex",
+                        information: `Index '${index.key}' removed.`,
+                    });
+                }
+                catch (error) {
+                    throw new Error(`Couldn't delete index '${index.key}': ${error.message}`);
+                }
+            }
         }
         logContent.executed_at = new Date().toISOString();
         logContent.status = "success";

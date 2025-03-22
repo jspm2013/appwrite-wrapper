@@ -1,4 +1,5 @@
 import { createBooleanAttribute, createDatetimeAttribute, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, } from "../methods/databases";
+import { RelationshipType, RelationMutate } from "../enums";
 const createAttributeHandlers = {
     boolean: async (databaseId, collectionId, attr) => {
         await createBooleanAttribute({
@@ -80,11 +81,25 @@ const createAttributeHandlers = {
             databaseId,
             collectionId,
             relatedCollectionId: attr.relatedCollectionId,
-            type: attr.type,
+            type: attr.type === "oneToOne"
+                ? RelationshipType.OneToOne
+                : attr.type === "oneToMany"
+                    ? RelationshipType.OneToMany
+                    : attr.type === "manyToOne"
+                        ? RelationshipType.ManyToOne
+                        : attr.type === "manyToMany"
+                            ? RelationshipType.ManyToMany
+                            : undefined,
             twoWay: attr.twoWay,
             key: attr.key,
             twoWayKey: attr.twoWayKey,
-            onDelete: attr.onDelete,
+            onDelete: attr.onDelete === "setNull"
+                ? RelationMutate.SetNull
+                : attr.onDelete === "restrict"
+                    ? RelationMutate.Restrict
+                    : attr.onDelete === "cascade"
+                        ? RelationMutate.Cascade
+                        : undefined,
         });
     },
     string: async (databaseId, collectionId, attr) => {

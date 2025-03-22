@@ -1,4 +1,5 @@
 import { updateBooleanAttribute, updateDatetimeAttribute, updateEmailAttribute, updateEnumAttribute, updateFloatAttribute, updateIntegerAttribute, updateIpAttribute, updateRelationshipAttribute, updateStringAttribute, updateUrlAttribute, } from "../methods/databases";
+import { RelationMutate } from "../enums";
 const updateAttributeHandlers = {
     boolean: async (databaseId, collectionId, attr) => {
         await updateBooleanAttribute({
@@ -80,7 +81,13 @@ const updateAttributeHandlers = {
             databaseId,
             collectionId,
             key: attr.key,
-            onDelete: attr.onDelete,
+            onDelete: attr.onDelete === "setNull"
+                ? RelationMutate.SetNull
+                : attr.onDelete === "restrict"
+                    ? RelationMutate.Restrict
+                    : attr.onDelete === "cascade"
+                        ? RelationMutate.Cascade
+                        : undefined,
             newKey: attr.newKey,
         });
     },

@@ -1,4 +1,5 @@
 import { Models, IndexType } from "node-appwrite";
+import { ReturnObject } from "src";
 
 /*
  *
@@ -43,4 +44,4 @@ export type AttributeHandler = (
   databaseId: string,
   collectionId: string,
   attr: any
-) => Promise<void>;
+) => Promise<ReturnObject<any>>;

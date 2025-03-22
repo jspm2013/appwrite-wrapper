@@ -1,4 +1,5 @@
 import { Models, IndexType } from "node-appwrite";
+import { ReturnObject } from "src";
 export { Models, IndexType };
 export type Attribute = Models.AttributeString | Models.AttributeInteger | Models.AttributeFloat | Models.AttributeBoolean | Models.AttributeEmail | Models.AttributeEnum | Models.AttributeUrl | Models.AttributeIp | Models.AttributeDatetime | Models.AttributeRelationship;
 export type Index = {
@@ -17,5 +18,5 @@ export type CollectionSchema = {
     attributes: Attribute[];
     indexes: Index[];
 };
-export type AttributeHandler = (databaseId: string, collectionId: string, attr: any) => Promise<void>;
+export type AttributeHandler = (databaseId: string, collectionId: string, attr: any) => Promise<ReturnObject<any>>;
 //# sourceMappingURL=types.d.ts.map

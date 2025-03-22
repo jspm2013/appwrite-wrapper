@@ -1,6 +1,7 @@
 import { Attribute, AttributeHandler } from "./types";
 import {
   createBooleanAttribute,
+  CreateBooleanAttributeAwaited,
   createDatetimeAttribute,
   createEmailAttribute,
   createEnumAttribute,
@@ -24,52 +25,63 @@ import {
   type CreateStringAttributeArgs,
   type CreateUrlAttributeArgs,
 } from "../methods/databases";
-import { RelationshipType, RelationMutate } from "../enums";
 
+import { RelationshipType, RelationMutate } from "../enums";
+import { ReturnObject, Models } from "src";
+
+// --- UPDATE: use ReturnObject<T> as return type for each handler ---
 const createAttributeHandlers: Record<string, AttributeHandler> = {
   boolean: async (
     databaseId,
     collectionId,
     attr: CreateBooleanAttributeArgs
-  ) => {
-    await createBooleanAttribute({
+  ): Promise<ReturnObject<Models.AttributeBoolean>> => {
+    return await createBooleanAttribute({
       databaseId,
       collectionId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.xdefault,
       array: attr.array,
-    } as CreateBooleanAttributeArgs);
+    });
   },
 
   datetime: async (
     databaseId,
     collectionId,
     attr: CreateDatetimeAttributeArgs
-  ) => {
-    await createDatetimeAttribute({
+  ): Promise<ReturnObject<Models.AttributeDatetime>> => {
+    return await createDatetimeAttribute({
       databaseId,
       collectionId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.xdefault,
       array: attr.array,
-    } as CreateDatetimeAttributeArgs);
+    });
   },
 
-  email: async (databaseId, collectionId, attr: CreateEmailAttributeArgs) => {
-    await createEmailAttribute({
+  email: async (
+    databaseId,
+    collectionId,
+    attr: CreateEmailAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeEmail>> => {
+    return await createEmailAttribute({
       databaseId,
       collectionId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.xdefault,
       array: attr.array,
-    } as CreateEmailAttributeArgs);
+    });
   },
 
-  enum: async (databaseId, collectionId, attr: CreateEnumAttributeArgs) => {
-    await createEnumAttribute({
+  enum: async (
+    databaseId,
+    collectionId,
+    attr: CreateEnumAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeEnum>> => {
+    return await createEnumAttribute({
       databaseId,
       collectionId,
       key: attr.key,
@@ -77,11 +89,15 @@ const createAttributeHandlers: Record<string, AttributeHandler> = {
       required: attr.required,
       xdefault: attr.xdefault,
       array: attr.array,
-    } as CreateEnumAttributeArgs);
+    });
   },
 
-  float: async (databaseId, collectionId, attr: CreateFloatAttributeArgs) => {
-    await createFloatAttribute({
+  float: async (
+    databaseId,
+    collectionId,
+    attr: CreateFloatAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeFloat>> => {
+    return await createFloatAttribute({
       databaseId,
       collectionId,
       key: attr.key,
@@ -90,15 +106,15 @@ const createAttributeHandlers: Record<string, AttributeHandler> = {
       max: attr.max,
       xdefault: attr.xdefault,
       array: attr.array,
-    } as CreateFloatAttributeArgs);
+    });
   },
 
   integer: async (
     databaseId,
     collectionId,
     attr: CreateIntegerAttributeArgs
-  ) => {
-    await createIntegerAttribute({
+  ): Promise<ReturnObject<Models.AttributeInteger>> => {
+    return await createIntegerAttribute({
       databaseId,
       collectionId,
       key: attr.key,
@@ -107,26 +123,30 @@ const createAttributeHandlers: Record<string, AttributeHandler> = {
       max: attr.max,
       xdefault: attr.xdefault,
       array: attr.array,
-    } as CreateIntegerAttributeArgs);
+    });
   },
 
-  ip: async (databaseId, collectionId, attr: CreateIpAttributeArgs) => {
-    await createIpAttribute({
+  ip: async (
+    databaseId,
+    collectionId,
+    attr: CreateIpAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeIp>> => {
+    return await createIpAttribute({
       databaseId,
       collectionId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.xdefault,
       array: attr.array,
-    } as CreateIpAttributeArgs);
+    });
   },
 
   relationship: async (
     databaseId,
     collectionId,
     attr: CreateRelationshipAttributeArgs
-  ) => {
-    await createRelationshipAttribute({
+  ): Promise<ReturnObject<Models.AttributeRelationship>> => {
+    return await createRelationshipAttribute({
       databaseId,
       collectionId,
       relatedCollectionId: attr.relatedCollectionId,
@@ -139,7 +159,7 @@ const createAttributeHandlers: Record<string, AttributeHandler> = {
           ? RelationshipType.ManyToOne
           : attr.type === "manyToMany"
           ? RelationshipType.ManyToMany
-          : undefined,
+          : RelationshipType.OneToOne,
       twoWay: attr.twoWay,
       key: attr.key,
       twoWayKey: attr.twoWayKey,
@@ -151,11 +171,15 @@ const createAttributeHandlers: Record<string, AttributeHandler> = {
           : attr.onDelete === "cascade"
           ? RelationMutate.Cascade
           : undefined,
-    } as CreateRelationshipAttributeArgs);
+    });
   },
 
-  string: async (databaseId, collectionId, attr: CreateStringAttributeArgs) => {
-    await createStringAttribute({
+  string: async (
+    databaseId,
+    collectionId,
+    attr: CreateStringAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeString>> => {
+    return await createStringAttribute({
       databaseId,
       collectionId,
       key: attr.key,
@@ -164,29 +188,35 @@ const createAttributeHandlers: Record<string, AttributeHandler> = {
       xdefault: attr.xdefault,
       array: attr.array,
       encrypt: attr.encrypt,
-    } as CreateStringAttributeArgs);
+    });
   },
 
-  url: async (databaseId, collectionId, attr: CreateUrlAttributeArgs) => {
-    await createUrlAttribute({
+  url: async (
+    databaseId,
+    collectionId,
+    attr: CreateUrlAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeUrl>> => {
+    return await createUrlAttribute({
       databaseId,
       collectionId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.xdefault,
       array: attr.array,
-    } as CreateUrlAttributeArgs);
+    });
   },
 };
 
+// --- Main function ---
 export const createAttribute = async (
   databaseId: string,
   collectionId: string,
   attr: Attribute
-): Promise<void> => {
+): Promise<ReturnObject<any>> => {
   const handler = createAttributeHandlers[attr.type];
   if (!handler) {
     throw new Error(`Unsupported attribute type: '${attr.type}'`);
   }
-  await handler(databaseId, collectionId, attr);
+
+  return await handler(databaseId, collectionId, attr);
 };

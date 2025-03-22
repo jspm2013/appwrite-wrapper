@@ -11,6 +11,7 @@ import {
   updateStringAttribute,
   updateUrlAttribute,
 } from "../methods/databases";
+
 import {
   type UpdateBooleanAttributeArgs,
   type UpdateDatetimeAttributeArgs,
@@ -23,52 +24,62 @@ import {
   type UpdateStringAttributeArgs,
   type UpdateUrlAttributeArgs,
 } from "../methods/databases";
+
 import { RelationMutate } from "../enums";
+import { ReturnObject, Models } from "src";
 
 const updateAttributeHandlers: Record<string, AttributeHandler> = {
   boolean: async (
     databaseId,
     collectionId,
     attr: UpdateBooleanAttributeArgs
-  ) => {
-    await updateBooleanAttribute({
+  ): Promise<ReturnObject<Models.AttributeBoolean>> => {
+    return await updateBooleanAttribute({
       databaseId,
       collectionId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.xdefault,
       newKey: attr.newKey,
-    } as UpdateBooleanAttributeArgs);
+    });
   },
 
   datetime: async (
     databaseId,
     collectionId,
     attr: UpdateDatetimeAttributeArgs
-  ) => {
-    await updateDatetimeAttribute({
+  ): Promise<ReturnObject<Models.AttributeDatetime>> => {
+    return await updateDatetimeAttribute({
       databaseId,
       collectionId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.xdefault,
       newKey: attr.newKey,
-    } as UpdateDatetimeAttributeArgs);
+    });
   },
 
-  email: async (databaseId, collectionId, attr: UpdateEmailAttributeArgs) => {
-    await updateEmailAttribute({
+  email: async (
+    databaseId,
+    collectionId,
+    attr: UpdateEmailAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeEmail>> => {
+    return await updateEmailAttribute({
       databaseId,
       collectionId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.xdefault,
       newKey: attr.newKey,
-    } as UpdateEmailAttributeArgs);
+    });
   },
 
-  enum: async (databaseId, collectionId, attr: UpdateEnumAttributeArgs) => {
-    await updateEnumAttribute({
+  enum: async (
+    databaseId,
+    collectionId,
+    attr: UpdateEnumAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeEnum>> => {
+    return await updateEnumAttribute({
       databaseId,
       collectionId,
       key: attr.key,
@@ -76,11 +87,15 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       required: attr.required,
       xdefault: attr.xdefault,
       newKey: attr.newKey,
-    } as UpdateEnumAttributeArgs);
+    });
   },
 
-  float: async (databaseId, collectionId, attr: UpdateFloatAttributeArgs) => {
-    await updateFloatAttribute({
+  float: async (
+    databaseId,
+    collectionId,
+    attr: UpdateFloatAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeFloat>> => {
+    return await updateFloatAttribute({
       databaseId,
       collectionId,
       key: attr.key,
@@ -89,15 +104,15 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       max: attr.max,
       xdefault: attr.xdefault,
       newKey: attr.newKey,
-    } as UpdateFloatAttributeArgs);
+    });
   },
 
   integer: async (
     databaseId,
     collectionId,
     attr: UpdateIntegerAttributeArgs
-  ) => {
-    await updateIntegerAttribute({
+  ): Promise<ReturnObject<Models.AttributeInteger>> => {
+    return await updateIntegerAttribute({
       databaseId,
       collectionId,
       key: attr.key,
@@ -106,26 +121,30 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       max: attr.max,
       xdefault: attr.xdefault,
       newKey: attr.newKey,
-    } as UpdateIntegerAttributeArgs);
+    });
   },
 
-  ip: async (databaseId, collectionId, attr: UpdateIpAttributeArgs) => {
-    await updateIpAttribute({
+  ip: async (
+    databaseId,
+    collectionId,
+    attr: UpdateIpAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeIp>> => {
+    return await updateIpAttribute({
       databaseId,
       collectionId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.xdefault,
       newKey: attr.newKey,
-    } as UpdateIpAttributeArgs);
+    });
   },
 
   relationship: async (
     databaseId,
     collectionId,
     attr: UpdateRelationshipAttributeArgs
-  ) => {
-    await updateRelationshipAttribute({
+  ): Promise<ReturnObject<Models.AttributeRelationship>> => {
+    return await updateRelationshipAttribute({
       databaseId,
       collectionId,
       key: attr.key,
@@ -138,11 +157,15 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
           ? RelationMutate.Cascade
           : undefined,
       newKey: attr.newKey,
-    } as UpdateRelationshipAttributeArgs);
+    });
   },
 
-  string: async (databaseId, collectionId, attr: UpdateStringAttributeArgs) => {
-    await updateStringAttribute({
+  string: async (
+    databaseId,
+    collectionId,
+    attr: UpdateStringAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeString>> => {
+    return await updateStringAttribute({
       databaseId,
       collectionId,
       key: attr.key,
@@ -150,18 +173,22 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       xdefault: attr.xdefault,
       size: attr.size,
       newKey: attr.newKey,
-    } as UpdateStringAttributeArgs);
+    });
   },
 
-  url: async (databaseId, collectionId, attr: UpdateUrlAttributeArgs) => {
-    await updateUrlAttribute({
+  url: async (
+    databaseId,
+    collectionId,
+    attr: UpdateUrlAttributeArgs
+  ): Promise<ReturnObject<Models.AttributeUrl>> => {
+    return await updateUrlAttribute({
       databaseId,
       collectionId,
       key: attr.key,
       required: attr.required,
       xdefault: attr.xdefault,
       newKey: attr.newKey,
-    } as UpdateUrlAttributeArgs);
+    });
   },
 };
 
@@ -169,10 +196,11 @@ export const updateAttribute = async (
   databaseId: string,
   collectionId: string,
   attr: Attribute
-): Promise<void> => {
+): Promise<ReturnObject<any>> => {
   const handler = updateAttributeHandlers[attr.type];
   if (!handler) {
     throw new Error(`Unsupported attribute type: '${attr.type}'`);
   }
-  await handler(databaseId, collectionId, attr);
+
+  return await handler(databaseId, collectionId, attr);
 };

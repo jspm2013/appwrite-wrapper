@@ -1,8 +1,9 @@
 import { createBooleanAttribute, createDatetimeAttribute, createEmailAttribute, createEnumAttribute, createFloatAttribute, createIntegerAttribute, createIpAttribute, createRelationshipAttribute, createStringAttribute, createUrlAttribute, } from "../methods/databases";
 import { RelationshipType, RelationMutate } from "../enums";
+// --- UPDATE: use ReturnObject<T> as return type for each handler ---
 const createAttributeHandlers = {
     boolean: async (databaseId, collectionId, attr) => {
-        await createBooleanAttribute({
+        return await createBooleanAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -12,7 +13,7 @@ const createAttributeHandlers = {
         });
     },
     datetime: async (databaseId, collectionId, attr) => {
-        await createDatetimeAttribute({
+        return await createDatetimeAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -22,7 +23,7 @@ const createAttributeHandlers = {
         });
     },
     email: async (databaseId, collectionId, attr) => {
-        await createEmailAttribute({
+        return await createEmailAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -32,7 +33,7 @@ const createAttributeHandlers = {
         });
     },
     enum: async (databaseId, collectionId, attr) => {
-        await createEnumAttribute({
+        return await createEnumAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -43,7 +44,7 @@ const createAttributeHandlers = {
         });
     },
     float: async (databaseId, collectionId, attr) => {
-        await createFloatAttribute({
+        return await createFloatAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -55,7 +56,7 @@ const createAttributeHandlers = {
         });
     },
     integer: async (databaseId, collectionId, attr) => {
-        await createIntegerAttribute({
+        return await createIntegerAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -67,7 +68,7 @@ const createAttributeHandlers = {
         });
     },
     ip: async (databaseId, collectionId, attr) => {
-        await createIpAttribute({
+        return await createIpAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -77,7 +78,7 @@ const createAttributeHandlers = {
         });
     },
     relationship: async (databaseId, collectionId, attr) => {
-        await createRelationshipAttribute({
+        return await createRelationshipAttribute({
             databaseId,
             collectionId,
             relatedCollectionId: attr.relatedCollectionId,
@@ -89,7 +90,7 @@ const createAttributeHandlers = {
                         ? RelationshipType.ManyToOne
                         : attr.type === "manyToMany"
                             ? RelationshipType.ManyToMany
-                            : undefined,
+                            : RelationshipType.OneToOne,
             twoWay: attr.twoWay,
             key: attr.key,
             twoWayKey: attr.twoWayKey,
@@ -103,7 +104,7 @@ const createAttributeHandlers = {
         });
     },
     string: async (databaseId, collectionId, attr) => {
-        await createStringAttribute({
+        return await createStringAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -115,7 +116,7 @@ const createAttributeHandlers = {
         });
     },
     url: async (databaseId, collectionId, attr) => {
-        await createUrlAttribute({
+        return await createUrlAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -125,10 +126,11 @@ const createAttributeHandlers = {
         });
     },
 };
+// --- Main function ---
 export const createAttribute = async (databaseId, collectionId, attr) => {
     const handler = createAttributeHandlers[attr.type];
     if (!handler) {
         throw new Error(`Unsupported attribute type: '${attr.type}'`);
     }
-    await handler(databaseId, collectionId, attr);
+    return await handler(databaseId, collectionId, attr);
 };

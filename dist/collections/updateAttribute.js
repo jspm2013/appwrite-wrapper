@@ -2,7 +2,7 @@ import { updateBooleanAttribute, updateDatetimeAttribute, updateEmailAttribute, 
 import { RelationMutate } from "../enums";
 const updateAttributeHandlers = {
     boolean: async (databaseId, collectionId, attr) => {
-        await updateBooleanAttribute({
+        return await updateBooleanAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -12,7 +12,7 @@ const updateAttributeHandlers = {
         });
     },
     datetime: async (databaseId, collectionId, attr) => {
-        await updateDatetimeAttribute({
+        return await updateDatetimeAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -22,7 +22,7 @@ const updateAttributeHandlers = {
         });
     },
     email: async (databaseId, collectionId, attr) => {
-        await updateEmailAttribute({
+        return await updateEmailAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -32,7 +32,7 @@ const updateAttributeHandlers = {
         });
     },
     enum: async (databaseId, collectionId, attr) => {
-        await updateEnumAttribute({
+        return await updateEnumAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -43,7 +43,7 @@ const updateAttributeHandlers = {
         });
     },
     float: async (databaseId, collectionId, attr) => {
-        await updateFloatAttribute({
+        return await updateFloatAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -55,7 +55,7 @@ const updateAttributeHandlers = {
         });
     },
     integer: async (databaseId, collectionId, attr) => {
-        await updateIntegerAttribute({
+        return await updateIntegerAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -67,7 +67,7 @@ const updateAttributeHandlers = {
         });
     },
     ip: async (databaseId, collectionId, attr) => {
-        await updateIpAttribute({
+        return await updateIpAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -77,7 +77,7 @@ const updateAttributeHandlers = {
         });
     },
     relationship: async (databaseId, collectionId, attr) => {
-        await updateRelationshipAttribute({
+        return await updateRelationshipAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -92,7 +92,7 @@ const updateAttributeHandlers = {
         });
     },
     string: async (databaseId, collectionId, attr) => {
-        await updateStringAttribute({
+        return await updateStringAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -103,7 +103,7 @@ const updateAttributeHandlers = {
         });
     },
     url: async (databaseId, collectionId, attr) => {
-        await updateUrlAttribute({
+        return await updateUrlAttribute({
             databaseId,
             collectionId,
             key: attr.key,
@@ -118,5 +118,5 @@ export const updateAttribute = async (databaseId, collectionId, attr) => {
     if (!handler) {
         throw new Error(`Unsupported attribute type: '${attr.type}'`);
     }
-    await handler(databaseId, collectionId, attr);
+    return await handler(databaseId, collectionId, attr);
 };

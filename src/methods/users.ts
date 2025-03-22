@@ -435,11 +435,14 @@ const listAppUsers = async ({
 
     // Convert customUsersList to a Map for O(1) lookups
     const customUsersMap = new Map(
-      customUsersList.map((customUser) => [customUser.user_id, customUser])
+      customUsersList.map((customUser: typeof UserType) => [
+        customUser.user_id,
+        customUser,
+      ])
     );
 
     // Merge users with customUser data
-    const appUsers: any[] = usersList.map((user) => ({
+    const appUsers: any[] = usersList.map((user: typeof AppUserType) => ({
       ...user,
       customUser: customUsersMap.get(user.$id) || {}, // Add customUser if found, otherwise {}
     }));
@@ -744,7 +747,7 @@ const deleteLabelsForUserId = async ({
     }
 
     const newLabels = existingLabels.filter(
-      (label) => !labelsToRemove.includes(label)
+      (label: string) => !labelsToRemove.includes(label)
     );
 
     const data = await users.updateLabels(userId, newLabels);

@@ -64,7 +64,7 @@ const createCollection = async ({ ...args }) => {
         };
     }
 };
-const createCollectionWithSchema = async ({ ...args }) => {
+const createCollectionWithSchema = async (args) => {
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
     const finalCollectionId = args.collectionId ?? ID.unique();
@@ -825,7 +825,7 @@ const listDatabases = async ({ ...args }) => {
         };
     }
 };
-const listDocuments = async ({ ...args }) => {
+const listDocuments = async (args) => {
     try {
         const { databases } = await createAdminClient();
         const finalDatabaseId = args.databaseId ?? databaseId;
@@ -1033,7 +1033,7 @@ const updateCollection = async ({ ...args }) => {
         };
     }
 };
-const updateCollectionWithSchema = async ({ ...args }) => {
+const updateCollectionWithSchema = async (args) => {
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
     const finalCollectionId = args.collectionId ?? ID.unique();

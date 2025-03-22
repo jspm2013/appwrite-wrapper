@@ -174,8 +174,15 @@ declare const createCollection: ({ ...args }: CreateCollectionArgs) => Promise<R
  * named as the collection name.
  * This schema folder path must be defined in env vars (see appwriteConfig.ts)
  */
-type CreateCollectionWithSchemaArgs = CreateCollectionArgs;
-declare const createCollectionWithSchema: ({ ...args }: CreateCollectionWithSchemaArgs) => Promise<ReturnObject<CreateCollectionAwaited>>;
+type CreateCollectionWithSchemaArgs = {
+    databaseId?: string;
+    collectionId?: string;
+    name: string;
+    permissions?: string[];
+    documentSecurity?: boolean;
+    enabled?: boolean;
+};
+declare const createCollectionWithSchema: (args: CreateCollectionWithSchemaArgs) => Promise<ReturnObject<CreateCollectionAwaited>>;
 /**
  * Creates a database.
  */
@@ -440,12 +447,12 @@ declare const listDatabases: ({ ...args }: ListDatabasesArgs) => Promise<ReturnO
  * Lists all documents in a specific collection.
  */
 type ListDocumentsArgs = {
-    databaseId?: ListDocuments[0];
-    collectionId?: ListDocuments[1];
-    queries?: ListDocuments[2];
+    databaseId?: string;
+    collectionId?: string;
+    queries?: string[];
     relationshipQueries?: string[];
 };
-declare const listDocuments: ({ ...args }: ListDocumentsArgs) => Promise<ReturnObject<ListDocumentsAwaited>>;
+declare const listDocuments: (args: ListDocumentsArgs) => Promise<ReturnObject<ListDocumentsAwaited>>;
 /**
  * Lists all indexes in a collection.
  */
@@ -484,10 +491,16 @@ declare const updateCollection: ({ ...args }: UpdateCollectionArgs) => Promise<R
  * To execute successfully, there must be a schema file (JSON) in the schemas folder,
  * named as the collection name. The schema folder path must be defined in env vars.
  */
-type UpdateCollectionWithSchemaArgs = UpdateCollectionArgs & {
+type UpdateCollectionWithSchemaArgs = {
+    databaseId?: string;
+    collectionId?: string;
+    name: string;
+    permissions?: string[];
+    documentSecurity?: boolean;
+    enabled?: boolean;
     destructive?: boolean;
 };
-declare const updateCollectionWithSchema: ({ ...args }: UpdateCollectionWithSchemaArgs) => Promise<ReturnObject<UpdateCollectionWithSchemaAwaited>>;
+declare const updateCollectionWithSchema: (args: UpdateCollectionWithSchemaArgs) => Promise<ReturnObject<UpdateCollectionWithSchemaAwaited>>;
 /**
  * Updates a database in the Appwrite project.
  */

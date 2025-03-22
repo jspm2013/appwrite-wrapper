@@ -271,7 +271,10 @@ const listAppUsers = async ({ queries = [], search, includingDeleted = undefined
         const usersList = usersResult.data?.users ?? [];
         const customUsersList = customUsersResult.data?.documents ?? [];
         // Convert customUsersList to a Map for O(1) lookups
-        const customUsersMap = new Map(customUsersList.map((customUser) => [customUser.user_id, customUser]));
+        const customUsersMap = new Map(customUsersList.map((customUser) => [
+            customUser.user_id,
+            customUser,
+        ]));
         // Merge users with customUser data
         const appUsers = usersList.map((user) => ({
             ...user,

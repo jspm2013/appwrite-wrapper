@@ -363,12 +363,17 @@ const createCollection = async ({
  * named as the collection name.
  * This schema folder path must be defined in env vars (see appwriteConfig.ts)
  */
-type CreateCollectionWithSchemaArgs = CreateCollectionArgs;
-const createCollectionWithSchema = async ({
-  ...args
-}: CreateCollectionWithSchemaArgs): Promise<
-  ReturnObject<CreateCollectionAwaited>
-> => {
+type CreateCollectionWithSchemaArgs = {
+  databaseId?: string;
+  collectionId?: string;
+  name: string;
+  permissions?: string[];
+  documentSecurity?: boolean;
+  enabled?: boolean;
+};
+const createCollectionWithSchema = async (
+  args: CreateCollectionWithSchemaArgs
+): Promise<ReturnObject<CreateCollectionAwaited>> => {
   // Use provided databaseId/collectionId if available; otherwise use defaults.
   const finalDatabaseId = args.databaseId ?? databaseId;
   const finalCollectionId = args.collectionId ?? ID.unique();
@@ -1586,14 +1591,14 @@ const listDatabases = async ({
  * Lists all documents in a specific collection.
  */
 type ListDocumentsArgs = {
-  databaseId?: ListDocuments[0];
-  collectionId?: ListDocuments[1];
-  queries?: ListDocuments[2];
+  databaseId?: string;
+  collectionId?: string;
+  queries?: string[];
   relationshipQueries?: string[];
 };
-const listDocuments = async ({
-  ...args
-}: ListDocumentsArgs): Promise<ReturnObject<ListDocumentsAwaited>> => {
+const listDocuments = async (
+  args: ListDocumentsArgs
+): Promise<ReturnObject<ListDocumentsAwaited>> => {
   try {
     const { databases } = await createAdminClient();
 
@@ -1617,7 +1622,7 @@ const listDocuments = async ({
     let filteredDocuments = data.documents;
 
     if (newArgs.relationshipQueries && newArgs.relationshipQueries.length > 0) {
-      filteredDocuments = data.documents.filter((document) => {
+      filteredDocuments = data.documents.filter((document: Models.Document) => {
         return newArgs.relationshipQueries!.every((query) => {
           try {
             const parsedQuery = JSON.parse(query);
@@ -1930,14 +1935,18 @@ const updateCollection = async ({
  * To execute successfully, there must be a schema file (JSON) in the schemas folder,
  * named as the collection name. The schema folder path must be defined in env vars.
  */
-type UpdateCollectionWithSchemaArgs = UpdateCollectionArgs & {
+type UpdateCollectionWithSchemaArgs = {
+  databaseId?: string;
+  collectionId?: string;
+  name: string;
+  permissions?: string[];
+  documentSecurity?: boolean;
+  enabled?: boolean;
   destructive?: boolean;
 };
-const updateCollectionWithSchema = async ({
-  ...args
-}: UpdateCollectionWithSchemaArgs): Promise<
-  ReturnObject<UpdateCollectionWithSchemaAwaited>
-> => {
+const updateCollectionWithSchema = async (
+  args: UpdateCollectionWithSchemaArgs
+): Promise<ReturnObject<UpdateCollectionWithSchemaAwaited>> => {
   // Use provided databaseId/collectionId if available; otherwise use defaults.
   const finalDatabaseId = args.databaseId ?? databaseId;
   const finalCollectionId = args.collectionId ?? ID.unique();
@@ -1971,7 +1980,7 @@ const updateCollectionWithSchema = async ({
     const collList = await databases.listCollections(newArgs.databaseId!, [
       Query.and([
         Query.equal("name", newArgs.name),
-        Query.equal("$id", newArgs.collectionId),
+        Query.equal("$id", newArgs.collectionId!),
       ]),
     ]);
     if (collList.total < 1) {
@@ -2074,7 +2083,7 @@ const updateCollectionWithSchema = async ({
         });
         await createAttribute(
           newArgs.databaseId!,
-          newArgs.collectionId,
+          newArgs.collectionId!,
           schemaAttr
         );
         logContent.changes.push({
@@ -2093,7 +2102,7 @@ const updateCollectionWithSchema = async ({
           });
           await updateAttribute(
             newArgs.databaseId!,
-            newArgs.collectionId,
+            newArgs.collectionId!,
             schemaAttr
           );
           logContent.changes.push({
@@ -2125,7 +2134,7 @@ const updateCollectionWithSchema = async ({
         });
         await deleteAttribute({
           databaseId: newArgs.databaseId!,
-          collectionId: newArgs.collectionId,
+          collectionId: newArgs.collectionId!,
           key,
         });
         logContent.changes.push({
@@ -2143,7 +2152,7 @@ const updateCollectionWithSchema = async ({
       });
       await databases.createIndex(
         newArgs.databaseId!,
-        newArgs.collectionId,
+        newArgs.collectionId!,
         index.key,
         index.type,
         index.attributes,

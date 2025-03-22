@@ -1621,57 +1621,132 @@ const listDocuments = async ({
         return newArgs.relationshipQueries!.every((query) => {
           try {
             const parsedQuery = JSON.parse(query);
-            const attribute = parsedQuery.attribute;
-            const method = parsedQuery.method;
-            const values = parsedQuery.values;
 
-            switch (method) {
-              case "equal":
-                return document[attribute] === values[0];
-              case "notEqual":
-                return document[attribute] !== values[0];
-              case "lessThan":
-                return document[attribute] < values[0];
-              case "lessThanEqual":
-                return document[attribute] <= values[0];
-              case "greaterThan":
-                return document[attribute] > values[0];
-              case "greaterThanEqual":
-                return document[attribute] >= values[0];
-              case "search":
-                return String(document[attribute]).includes(String(values[0]));
-              case "isIn":
-                return (
-                  Array.isArray(values) && values.includes(document[attribute])
-                );
-              case "isNotIn":
-                return (
-                  Array.isArray(values) && !values.includes(document[attribute])
-                );
-              case "contains":
-                if (
-                  typeof document[attribute] === "string" &&
-                  typeof values === "string"
-                ) {
-                  return document[attribute].includes(values);
-                } else if (
-                  Array.isArray(values) &&
-                  typeof document[attribute] === "string"
-                ) {
-                  return values.some((val) =>
-                    document[attribute].includes(val)
+            const evaluateQuery = (parsedQuery: any, doc: any): boolean => {
+              const attribute = parsedQuery.attribute;
+              const method = parsedQuery.method;
+              const values = parsedQuery.values;
+
+              switch (method) {
+                case "equal":
+                  return (
+                    Array.isArray(doc[attribute]) &&
+                    doc[attribute].some(
+                      (item: any) =>
+                        typeof item === "object" && item.$id === values[0]
+                    )
                   );
-                }
-                return false;
-              case "between":
-                return (
-                  document[attribute] >= values[0] &&
-                  document[attribute] <= values[1]
-                );
-              // Add more cases for other methods as needed
-              default:
-                return false;
-            }
+                case "notEqual":
+                  return (
+                    Array.isArray(doc[attribute]) &&
+                    !doc[attribute].some(
+                      (item: any) =>
+                        typeof item === "object" && item.$id === values[0]
+                    )
+                  );
+                case "lessThan":
+                  return (
+                    Array.isArray(doc[attribute]) &&
+                    doc[attribute].some(
+                      (item: any) =>
+                        typeof item === "object" && item.$id < values[0]
+                    )
+                  );
+                case "lessThanEqual":
+                  return (
+                    Array.isArray(doc[attribute]) &&
+                    doc[attribute].some(
+                      (item: any) =>
+                        typeof item === "object" && item.$id <= values[0]
+                    )
+                  );
+                case "greaterThan":
+                  return (
+                    Array.isArray(doc[attribute]) &&
+                    doc[attribute].some(
+                      (item: any) =>
+                        typeof item === "object" && item.$id > values[0]
+                    )
+                  );
+                case "greaterThanEqual":
+                  return (
+                    Array.isArray(doc[attribute]) &&
+                    doc[attribute].some(
+                      (item: any) =>
+                        typeof item === "object" && item.$id >= values[0]
+                    )
+                  );
+                case "search":
+                  return (
+                    Array.isArray(doc[attribute]) &&
+                    doc[attribute].some(
+                      (item: any) =>
+                        typeof item === "object" &&
+                        String(item.$id).includes(String(values[0]))
+                    )
+                  );
+                case "isIn":
+                  return (
+                    Array.isArray(values) &&
+                    Array.isArray(doc[attribute]) &&
+                    doc[attribute].some(
+                      (item: any) =>
+                        typeof item === "object" && values.includes(item.$id)
+                    )
+                  );
+                case "isNotIn":
+                  return (
+                    Array.isArray(values) &&
+                    Array.isArray(doc[attribute]) &&
+                    !doc[attribute].some(
+                      (item: any) =>
+                        typeof item === "object" && values.includes(item.$id)
+                    )
+                  );
+                case "contains":
+                  if (Array.isArray(doc[attribute]) && Array.isArray(values)) {
+                    return values.every((val) =>
+                      doc[attribute].some((item: any) => {
+                        if (typeof item === "object" && item.$id) {
+                          return item.$id === val;
+                        }
+                        return false;
+                      })
+                    );
+                  }
+                  return false;
+                case "between":
+                  return (
+                    Array.isArray(doc[attribute]) &&
+                    doc[attribute].some(
+                      (item: any) =>
+                        typeof item === "object" &&
+                        item.$id >= values[0] &&
+                        item.$id <= values[1]
+                    )
+                  );
+                case "startsWith":
+                  return String(doc[attribute]).startsWith(String(values[0]));
+                case "endsWith":
+                  return String(doc[attribute]).endsWith(String(values[0]));
+                case "isNull":
+                  return doc[attribute] === null;
+                case "isNotNull":
+                  return doc[attribute] !== null;
+                case "or":
+                  return values.some((subQuery: any) =>
+                    evaluateQuery(subQuery, doc)
+                  );
+                case "and":
+                  return values.every((subQuery: any) =>
+                    evaluateQuery(subQuery, doc)
+                  );
+                default:
+                  return false;
+              }
+            };
+
+            return evaluateQuery(parsedQuery, document);
           } catch (e) {
             console.error("error while parsing relationship query: ", e);
             return false;

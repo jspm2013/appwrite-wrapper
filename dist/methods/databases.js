@@ -852,6 +852,30 @@ const listDocuments = async (args) => {
         ];
         const data = await databases.listDocuments(...listDocumentsParams);
         let filteredDocuments = data.documents;
+        // Helper to extract comparable ID from value
+        const getMatchingId = (val) => {
+            if (val === null || val === undefined)
+                return null;
+            if (typeof val === "object" && "$id" in val)
+                return val.$id;
+            if (typeof val === "string")
+                return val;
+            return null;
+        };
+        // Helper to check if value(s) match doc field
+        const matchesValue = (docVal, target) => {
+            if (Array.isArray(docVal)) {
+                return docVal.some((item) => getMatchingId(item) === target);
+            }
+            return getMatchingId(docVal) === target;
+        };
+        const matchesValues = (docVal, targets) => {
+            if (Array.isArray(docVal)) {
+                return docVal.some((item) => targets.includes(getMatchingId(item)));
+            }
+            const docId = getMatchingId(docVal);
+            return docId ? targets.includes(docId) : false;
+        };
         if (newArgs.relationshipQueries && newArgs.relationshipQueries.length > 0) {
             filteredDocuments = data.documents.filter((document) => {
                 return newArgs.relationshipQueries.every((query) => {
@@ -863,54 +887,38 @@ const listDocuments = async (args) => {
                             const values = parsedQuery.values;
                             switch (method) {
                                 case "equal":
-                                    return (Array.isArray(doc[attribute]) &&
-                                        doc[attribute].some((item) => typeof item === "object" && item.$id === values[0]));
+                                    return matchesValue(doc[attribute], values[0]);
                                 case "notEqual":
-                                    return (Array.isArray(doc[attribute]) &&
-                                        !doc[attribute].some((item) => typeof item === "object" && item.$id === values[0]));
+                                    return !matchesValue(doc[attribute], values[0]);
                                 case "lessThan":
-                                    return (Array.isArray(doc[attribute]) &&
-                                        doc[attribute].some((item) => typeof item === "object" && item.$id < values[0]));
+                                    return getMatchingId(doc[attribute]) < values[0];
                                 case "lessThanEqual":
-                                    return (Array.isArray(doc[attribute]) &&
-                                        doc[attribute].some((item) => typeof item === "object" && item.$id <= values[0]));
+                                    return getMatchingId(doc[attribute]) <= values[0];
                                 case "greaterThan":
-                                    return (Array.isArray(doc[attribute]) &&
-                                        doc[attribute].some((item) => typeof item === "object" && item.$id > values[0]));
+                                    return getMatchingId(doc[attribute]) > values[0];
                                 case "greaterThanEqual":
-                                    return (Array.isArray(doc[attribute]) &&
-                                        doc[attribute].some((item) => typeof item === "object" && item.$id >= values[0]));
+                                    return getMatchingId(doc[attribute]) >= values[0];
                                 case "search":
-                                    return (Array.isArray(doc[attribute]) &&
-                                        doc[attribute].some((item) => typeof item === "object" &&
-                                            String(item.$id).includes(String(values[0]))));
+                                    return getMatchingId(doc[attribute])
+                                        .toLowerCase()
+                                        .includes(values[0].toLowerCase());
                                 case "isIn":
-                                    return (Array.isArray(values) &&
-                                        Array.isArray(doc[attribute]) &&
-                                        doc[attribute].some((item) => typeof item === "object" && values.includes(item.$id)));
+                                    return matchesValues(doc[attribute], values);
                                 case "isNotIn":
-                                    return (Array.isArray(values) &&
-                                        Array.isArray(doc[attribute]) &&
-                                        !doc[attribute].some((item) => typeof item === "object" && values.includes(item.$id)));
+                                    return !matchesValues(doc[attribute], values);
                                 case "contains":
-                                    if (Array.isArray(doc[attribute]) && Array.isArray(values)) {
-                                        return values.every((val) => doc[attribute].some((item) => {
-                                            if (typeof item === "object" && item.$id) {
-                                                return item.$id === val;
-                                            }
-                                            return false;
-                                        }));
-                                    }
-                                    return false;
+                                    return Array.isArray(values)
+                                        ? values.every((val) => matchesValue(doc[attribute], val))
+                                        : false;
                                 case "between":
-                                    return (Array.isArray(doc[attribute]) &&
-                                        doc[attribute].some((item) => typeof item === "object" &&
-                                            item.$id >= values[0] &&
-                                            item.$id <= values[1]));
+                                    const id = getMatchingId(doc[attribute]);
+                                    if (id === null)
+                                        return false;
+                                    return id >= values[0] && id <= values[1];
                                 case "startsWith":
-                                    return String(doc[attribute]).startsWith(String(values[0]));
+                                    return String(getMatchingId(doc[attribute])).startsWith(String(values[0]));
                                 case "endsWith":
-                                    return String(doc[attribute]).endsWith(String(values[0]));
+                                    return String(getMatchingId(doc[attribute])).endsWith(String(values[0]));
                                 case "isNull":
                                     return doc[attribute] === null;
                                 case "isNotNull":
@@ -926,7 +934,7 @@ const listDocuments = async (args) => {
                         return evaluateQuery(parsedQuery, document);
                     }
                     catch (e) {
-                        console.error("error while parsing relationship query: ", e);
+                        console.error("❌ Error parsing relationship query:", query, e);
                         return false;
                     }
                 });

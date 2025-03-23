@@ -77,11 +77,11 @@ const createAttributeHandlers = {
             array: attr.array,
         });
     },
-    relationship: async (databaseId, collectionId, attr) => {
+    relationship: async (databaseId, collectionId, attr, relatedCollectionId) => {
         return await createRelationshipAttribute({
             databaseId,
             collectionId,
-            relatedCollectionId: attr.relatedCollectionId,
+            relatedCollectionId: relatedCollectionId,
             type: attr.relationType === "oneToOne"
                 ? RelationshipType.OneToOne
                 : attr.relationType === "oneToMany"
@@ -127,10 +127,10 @@ const createAttributeHandlers = {
     },
 };
 // --- Main function ---
-export const createAttribute = async (databaseId, collectionId, attr) => {
+export const createAttribute = async (databaseId, collectionId, attr, relatedCollectionId) => {
     const handler = createAttributeHandlers[attr.type];
     if (!handler) {
         throw new Error(`Unsupported attribute type: '${attr.type}'`);
     }
-    return await handler(databaseId, collectionId, attr);
+    return await handler(databaseId, collectionId, attr, relatedCollectionId);
 };

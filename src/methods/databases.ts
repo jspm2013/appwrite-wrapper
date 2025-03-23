@@ -370,6 +370,10 @@ type CreateCollectionWithSchemaArgs = {
   permissions?: string[];
   documentSecurity?: boolean;
   enabled?: boolean;
+  relationshipAttributeData?: {
+    relationshipKey: string;
+    relatedCollectionId: string;
+  }[];
 };
 const createCollectionWithSchema = async (
   args: CreateCollectionWithSchemaArgs
@@ -460,11 +464,42 @@ const createCollectionWithSchema = async (
           information: `Creating attribute '${attr.key}'.`,
         });
 
+        // Check relationshipAttributeData prop
+        if (attr.key === "relationship") {
+          if (newArgs.relationshipAttributeData?.length) {
+            newArgs.relationshipAttributeData.map((relAttr: any) => {
+              if (
+                !relAttr.relationshipKey.length ||
+                !relAttr.relatedCollectionId.length
+              ) {
+                logContent.changes.push({
+                  action: "createAttribute (relationship)",
+                  information: `Not able to create Attribute '${newArgs.name}' (id: '${newArgs.collectionId}'), since relationship information for key '${attr.key}' is missing (relationshipKey or relatedCollectionId or both, passed with param 'relationshipAttributeData' are are not valid)`,
+                });
+                throw new Error(
+                  `Not able to create Attribute '${newArgs.name}' (id: '${newArgs.collectionId}'), since relationship information for key '${attr.key}' is missing (relationshipKey or relatedCollectionId or both, passed with param 'relationshipAttributeData' are are not valid)`
+                );
+              }
+            });
+          } else {
+            logContent.changes.push({
+              action: "createAttribute (relationship)",
+              information: `Not able to create Attribute '${newArgs.name}' (id: '${newArgs.collectionId}'), since relationship information for key '${attr.key}' is missing (relationshipAttributeData)`,
+            });
+            throw new Error(
+              `Not able to create Attribute '${newArgs.name}' (id: '${newArgs.collectionId}'), since relationship information for key '${attr.key}' is missing (relationshipAttributeData)`
+            );
+          }
+        }
+
         try {
           await createAttribute(
             newArgs.databaseId!,
             newArgs.collectionId!,
-            attr
+            attr,
+            newArgs.relationshipAttributeData?.find(
+              (relAttr) => relAttr.relationshipKey === attr.key
+            )?.relatedCollectionId
           );
 
           logContent.changes.push({
@@ -1749,7 +1784,7 @@ const listDocuments = async (
 
             return evaluateQuery(parsedQuery, document);
           } catch (e) {
-            console.error("❌ Error parsing relationship query:", query, e);
+            console.error("Error parsing relationship query:", query, e);
             return false;
           }
         });
@@ -1939,6 +1974,10 @@ type UpdateCollectionWithSchemaArgs = {
   documentSecurity?: boolean;
   enabled?: boolean;
   destructive?: boolean;
+  relationshipAttributeData?: {
+    relationshipKey: string;
+    relatedCollectionId: string;
+  }[];
 };
 const updateCollectionWithSchema = async (
   args: UpdateCollectionWithSchemaArgs
@@ -2078,11 +2117,42 @@ const updateCollectionWithSchema = async (
           information: `Attribute '${schemaAttr.key}' not found; creating it.`,
         });
 
+        // Check relationshipAttributeData prop
+        if (schemaAttr.key === "relationship") {
+          if (newArgs.relationshipAttributeData?.length) {
+            newArgs.relationshipAttributeData.map((relAttr: any) => {
+              if (
+                !relAttr.relationshipKey.length ||
+                !relAttr.relatedCollectionId.length
+              ) {
+                logContent.changes.push({
+                  action: "createAttribute (relationship)",
+                  information: `Not able to create Attribute '${newArgs.name}' (id: '${newArgs.collectionId}'), since relationship information for key '${schemaAttr.key}' is missing (relationshipKey or relatedCollectionId or both, passed with param 'relationshipAttributeData' are are not valid)`,
+                });
+                throw new Error(
+                  `Not able to create Attribute '${newArgs.name}' (id: '${newArgs.collectionId}'), since relationship information for key '${schemaAttr.key}' is missing (relationshipKey or relatedCollectionId or both, passed with param 'relationshipAttributeData' are are not valid)`
+                );
+              }
+            });
+          } else {
+            logContent.changes.push({
+              action: "createAttribute (relationship)",
+              information: `Not able to create Attribute '${newArgs.name}' (id: '${newArgs.collectionId}'), since relationship information for key '${schemaAttr.key}' is missing (relationshipAttributeData)`,
+            });
+            throw new Error(
+              `Not able to create Attribute '${newArgs.name}' (id: '${newArgs.collectionId}'), since relationship information for key '${schemaAttr.key}' is missing (relationshipAttributeData)`
+            );
+          }
+        }
+
         try {
           await createAttribute(
             newArgs.databaseId!,
             newArgs.collectionId!,
-            schemaAttr
+            schemaAttr,
+            newArgs.relationshipAttributeData?.find(
+              (relAttr) => relAttr.relationshipKey === schemaAttr.key
+            )?.relatedCollectionId
           );
 
           logContent.changes.push({

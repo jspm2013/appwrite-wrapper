@@ -43,5 +43,6 @@ export type CollectionSchema = {
 export type AttributeHandler = (
   databaseId: string,
   collectionId: string,
-  attr: any
+  attr: any,
+  relatedCollectionId?: string
 ) => Promise<ReturnObject<any>>;

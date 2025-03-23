@@ -18,5 +18,5 @@ export type CollectionSchema = {
     attributes: Attribute[];
     indexes: Index[];
 };
-export type AttributeHandler = (databaseId: string, collectionId: string, attr: any) => Promise<ReturnObject<any>>;
+export type AttributeHandler = (databaseId: string, collectionId: string, attr: any, relatedCollectionId?: string) => Promise<ReturnObject<any>>;
 //# sourceMappingURL=types.d.ts.map

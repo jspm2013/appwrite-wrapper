@@ -181,6 +181,10 @@ type CreateCollectionWithSchemaArgs = {
     permissions?: string[];
     documentSecurity?: boolean;
     enabled?: boolean;
+    relationshipAttributeData?: {
+        relationshipKey: string;
+        relatedCollectionId: string;
+    }[];
 };
 declare const createCollectionWithSchema: (args: CreateCollectionWithSchemaArgs) => Promise<ReturnObject<CreateCollectionAwaited>>;
 /**
@@ -500,6 +504,10 @@ type UpdateCollectionWithSchemaArgs = {
     documentSecurity?: boolean;
     enabled?: boolean;
     destructive?: boolean;
+    relationshipAttributeData?: {
+        relationshipKey: string;
+        relatedCollectionId: string;
+    }[];
 };
 declare const updateCollectionWithSchema: (args: UpdateCollectionWithSchemaArgs) => Promise<ReturnObject<UpdateCollectionWithSchemaAwaited>>;
 /**

@@ -1,7 +1,6 @@
 import { Attribute, AttributeHandler } from "./types";
 import {
   createBooleanAttribute,
-  CreateBooleanAttributeAwaited,
   createDatetimeAttribute,
   createEmailAttribute,
   createEnumAttribute,
@@ -144,12 +143,13 @@ const createAttributeHandlers: Record<string, AttributeHandler> = {
   relationship: async (
     databaseId,
     collectionId,
-    attr: CreateRelationshipAttributeArgs
+    attr: CreateRelationshipAttributeArgs,
+    relatedCollectionId?: string
   ): Promise<ReturnObject<Models.AttributeRelationship>> => {
     return await createRelationshipAttribute({
       databaseId,
       collectionId,
-      relatedCollectionId: attr.relatedCollectionId,
+      relatedCollectionId: relatedCollectionId!,
       type:
         attr.relationType === "oneToOne"
           ? RelationshipType.OneToOne
@@ -211,12 +211,13 @@ const createAttributeHandlers: Record<string, AttributeHandler> = {
 export const createAttribute = async (
   databaseId: string,
   collectionId: string,
-  attr: Attribute
+  attr: Attribute,
+  relatedCollectionId?: string
 ): Promise<ReturnObject<any>> => {
   const handler = createAttributeHandlers[attr.type];
   if (!handler) {
     throw new Error(`Unsupported attribute type: '${attr.type}'`);
   }
 
-  return await handler(databaseId, collectionId, attr);
+  return await handler(databaseId, collectionId, attr, relatedCollectionId);
 };

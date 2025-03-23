@@ -164,8 +164,6 @@ export {
   verificationPath,
   logsBucketId,
   logsBucketName,
-  clientCollectionId,
-  addressCollectionId,
 } from "./appwriteConfig";
 
 export {

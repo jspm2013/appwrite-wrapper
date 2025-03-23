@@ -10,10 +10,8 @@ const endpoint = process.env.APPWRITE_ENDPOINT || "";
 const projectId = process.env.APPWRITE_PROJECT_ID || "";
 const apiKeySsr = process.env.APPWRITE_API_KEY_SSR || "";
 const logsBucketId = process.env.APPWRITE_LOGS_BUCKET_ID || "";
-const userCollectionId = process.env.APPWRITE_USER_COLL_ID || "";
+const userCollectionId = process.env.APPWRITE_USERS_COLL_ID || "";
 const liveEnvVarName = process.env.APPWRITE_LIVE_ENV_VAR_NAME || "";
-const clientCollectionId = process.env.APPWRITE_CLIENT_COLL_ID || "";
-const addressCollectionId = process.env.APPWRITE_ADDRESS_COLL_ID || "";
 
 /*
  *
@@ -73,9 +71,9 @@ const envCheck = () => {
       "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_DB_ID"
     );
   }
-  if (!process.env.APPWRITE_USER_COLL_ID) {
+  if (!process.env.APPWRITE_USERS_COLL_ID) {
     throw new Error(
-      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_USER_COLL_ID"
+      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_USERS_COLL_ID"
     );
   }
   if (!process.env.APPWRITE_LIVE_ENV_VAR_NAME) {
@@ -107,6 +105,4 @@ export {
   verificationPath,
   logsBucketId,
   logsBucketName,
-  clientCollectionId,
-  addressCollectionId,
 };

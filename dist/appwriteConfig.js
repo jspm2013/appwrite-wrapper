@@ -10,10 +10,8 @@ const endpoint = process.env.APPWRITE_ENDPOINT || "";
 const projectId = process.env.APPWRITE_PROJECT_ID || "";
 const apiKeySsr = process.env.APPWRITE_API_KEY_SSR || "";
 const logsBucketId = process.env.APPWRITE_LOGS_BUCKET_ID || "";
-const userCollectionId = process.env.APPWRITE_USER_COLL_ID || "";
+const userCollectionId = process.env.APPWRITE_USERS_COLL_ID || "";
 const liveEnvVarName = process.env.APPWRITE_LIVE_ENV_VAR_NAME || "";
-const clientCollectionId = process.env.APPWRITE_CLIENT_COLL_ID || "";
-const addressCollectionId = process.env.APPWRITE_ADDRESS_COLL_ID || "";
 /*
  *
  * OPTIONAL
@@ -57,11 +55,11 @@ const envCheck = () => {
     if (!process.env.APPWRITE_DB_ID) {
         throw new Error("APW-WRAPPER - Error: Missing required environment variable: APPWRITE_DB_ID");
     }
-    if (!process.env.APPWRITE_USER_COLL_ID) {
-        throw new Error("APW-WRAPPER - Error: Missing required environment variable: APPWRITE_USER_COLL_ID");
+    if (!process.env.APPWRITE_USERS_COLL_ID) {
+        throw new Error("APW-WRAPPER - Error: Missing required environment variable: APPWRITE_USERS_COLL_ID");
     }
     if (!process.env.APPWRITE_LIVE_ENV_VAR_NAME) {
         throw new Error("APW-WRAPPER - Error: Missing required environment variable: APPWRITE_LIVE_ENV_VAR_NAME");
     }
 };
-export { envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, paths, logsPath, schemasPath, signInPath, userCollectionId, verificationPath, logsBucketId, logsBucketName, clientCollectionId, addressCollectionId, };
+export { envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, i18nPath, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, paths, logsPath, schemasPath, signInPath, userCollectionId, verificationPath, logsBucketId, logsBucketName, };

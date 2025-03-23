@@ -1,4 +1,4 @@
-import { Databases } from "node-appwrite";
+import { Databases, RelationshipType } from "node-appwrite";
 interface ErrorObject {
     appwrite: boolean;
     header: string;
@@ -304,6 +304,7 @@ type CreateRelationshipAttributeArgs = {
     key?: CreateRelationshipAttribute[5];
     twoWayKey?: CreateRelationshipAttribute[6];
     onDelete?: CreateRelationshipAttribute[7];
+    relationType?: RelationshipType;
 };
 declare const createRelationshipAttribute: ({ ...args }: CreateRelationshipAttributeArgs) => Promise<ReturnObject<CreateRelationshipAttributeAwaited>>;
 /**

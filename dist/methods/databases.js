@@ -150,7 +150,7 @@ const createCollectionWithSchema = async (args) => {
                     information: `Creating index '${index.key}' of type '${index.type}'.`,
                 });
                 try {
-                    const createdIndex = await databases.createIndex(newArgs.databaseId, newArgs.collectionId, index.key, index.type, index.attributes, index.orders);
+                    await databases.createIndex(newArgs.databaseId, newArgs.collectionId, index.key, index.type, index.attributes, index.orders);
                     logContent.changes.push({
                         action: "createIndex",
                         information: `Index '${index.key}' created.`,

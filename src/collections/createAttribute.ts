@@ -151,13 +151,13 @@ const createAttributeHandlers: Record<string, AttributeHandler> = {
       collectionId,
       relatedCollectionId: attr.relatedCollectionId,
       type:
-        attr.type === "oneToOne"
+        attr.relationType === "oneToOne"
           ? RelationshipType.OneToOne
-          : attr.type === "oneToMany"
+          : attr.relationType === "oneToMany"
           ? RelationshipType.OneToMany
-          : attr.type === "manyToOne"
+          : attr.relationType === "manyToOne"
           ? RelationshipType.ManyToOne
-          : attr.type === "manyToMany"
+          : attr.relationType === "manyToMany"
           ? RelationshipType.ManyToMany
           : RelationshipType.OneToOne,
       twoWay: attr.twoWay,

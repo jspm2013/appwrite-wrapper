@@ -9,7 +9,7 @@ import {
 } from "../collections";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
-import { ID, Query, Models, Databases } from "node-appwrite";
+import { ID, Query, Models, Databases, RelationshipType } from "node-appwrite";
 import { databaseId, userCollectionId } from "../appwriteConfig";
 import { generateMigrationId, type LogType, toLogs } from "../ssr-utils";
 import { isCollectionSchema, schemaToFile } from "../collections/schema";
@@ -483,7 +483,7 @@ const createCollectionWithSchema = async (
         });
 
         try {
-          const createdIndex = await databases.createIndex(
+          await databases.createIndex(
             newArgs.databaseId!,
             newArgs.collectionId!,
             index.key,
@@ -976,6 +976,7 @@ type CreateRelationshipAttributeArgs = {
   key?: CreateRelationshipAttribute[5];
   twoWayKey?: CreateRelationshipAttribute[6];
   onDelete?: CreateRelationshipAttribute[7];
+  relationType?: RelationshipType;
 };
 const createRelationshipAttribute = async ({
   ...args

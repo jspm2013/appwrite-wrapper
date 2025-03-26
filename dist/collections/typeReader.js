@@ -44,7 +44,7 @@ export const getType = async ({ typeFileName, typeName, }) => {
             return null;
         }
         const tsContent = await fs.readFile(typeFile, "utf-8");
-        const typeRegex = new RegExp(`export\\s+(?:interface|type)\\s+${typeName}\\s+[^]+?\\n}`, "gs");
+        const typeRegex = new RegExp(`export\\s+(?:interface|type)\\s+${typeName}\\b[\\s\\S]*?(?:[};])`, "gs");
         const match = tsContent.match(typeRegex);
         if (!match) {
             throw new Error(`Type '${typeName}' not found in ${typeFile}`);

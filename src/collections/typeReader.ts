@@ -64,7 +64,7 @@ export const getType = async ({
 
     const tsContent = await fs.readFile(typeFile, "utf-8");
     const typeRegex = new RegExp(
-      `export\\s+(?:interface|type)\\s+${typeName}\\s+[^]+?\\n}`,
+      `export\\s+(?:interface|type)\\s+${typeName}\\b[\\s\\S]*?(?:[};])`,
       "gs"
     );
     const match = tsContent.match(typeRegex);

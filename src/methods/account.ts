@@ -434,9 +434,9 @@ const getApwUser = async (): Promise<ReturnObject<typeof ApwUserType>> => {
 };
 
 /*
- * Retrieves user details.
+ * Retrieves a authenticated and verified a custom user (from users collection).
  */
-const getUser = async (): Promise<ReturnObject<typeof ApwUserType>> => {
+const getUser = async (): Promise<ReturnObject<typeof UserType>> => {
   try {
     const { account } = await createSessionClient();
     const { databases } = await createAdminClient();

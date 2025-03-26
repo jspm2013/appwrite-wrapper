@@ -322,7 +322,7 @@ const getUserForUserId = async ({
 };
 
 /*
- * Get users list (not native appwrite users, but those from usersCollectionId).
+ * Get users list (not native appwrite users, but those from users collection).
  */
 type ListUsersParams = {
   queries?: string[];
@@ -333,7 +333,7 @@ const listUsers = async ({
   queries,
   deleted,
 }: ListUsersParams): Promise<
-  ReturnObject<Models.DocumentList<Models.Document>>
+  ReturnObject<Models.DocumentList<Models.Document & typeof UserType>>
 > => {
   try {
     const { databases } = await createAdminClient();
@@ -380,7 +380,7 @@ const listApwUsers = async ({
   blocked,
   verified,
 }: ListApwUsersParams): Promise<
-  ReturnObject<Models.UserList<Models.Preferences>>
+  ReturnObject<Models.UserList<Models.Preferences & typeof ApwUserType>>
 > => {
   try {
     const { users } = await createAdminClient();

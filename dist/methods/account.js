@@ -310,7 +310,7 @@ const getApwUser = async () => {
     }
 };
 /*
- * Retrieves user details.
+ * Retrieves a authenticated and verified a custom user (from users collection).
  */
 const getUser = async () => {
     try {

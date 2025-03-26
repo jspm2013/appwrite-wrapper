@@ -61,14 +61,14 @@ type ListUsersParams = {
     queries?: string[];
     deleted?: boolean;
 };
-declare const listUsers: ({ queries, deleted, }: ListUsersParams) => Promise<ReturnObject<Models.DocumentList<Models.Document>>>;
+declare const listUsers: ({ queries, deleted, }: ListUsersParams) => Promise<ReturnObject<Models.DocumentList<Models.Document & typeof UserType>>>;
 type ListApwUsersParams = {
     queries?: string[];
     search?: string;
     blocked?: boolean;
     verified?: boolean;
 };
-declare const listApwUsers: ({ queries, search, blocked, verified, }: ListApwUsersParams) => Promise<ReturnObject<Models.UserList<Models.Preferences>>>;
+declare const listApwUsers: ({ queries, search, blocked, verified, }: ListApwUsersParams) => Promise<ReturnObject<Models.UserList<Models.Preferences & typeof ApwUserType>>>;
 type ListIdentitiesParams = {
     queries?: string[];
     search?: string;

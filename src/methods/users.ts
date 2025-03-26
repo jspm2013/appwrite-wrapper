@@ -261,13 +261,13 @@ const getApwUserForUserId = async ({
   try {
     const { users } = await createAdminClient();
 
-    const user = await users.get(userId);
+    const data = await users.get(userId);
 
-    if (!user?.$id) {
+    if (!data?.$id) {
       return { data: null, error: null };
     }
 
-    return { data: user, error: null };
+    return { data, error: null };
   } catch (error: any) {
     return {
       data: null,

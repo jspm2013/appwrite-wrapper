@@ -1,7 +1,6 @@
 import { OAuthProvider } from "../enums";
 import { Models } from "node-appwrite";
 declare let ApwUserType: any;
-declare let UserType: any;
 interface ErrorObject {
     appwrite: boolean;
     header: string;
@@ -63,7 +62,6 @@ declare const deleteSession: ({ sessionId, }?: {
 }) => Promise<ReturnObject<string>>;
 declare const deleteSessions: () => Promise<ReturnObject<string>>;
 declare const getApwUser: () => Promise<ReturnObject<typeof ApwUserType>>;
-declare const getCustomUser: () => Promise<ReturnObject<typeof UserType>>;
 declare const getUser: () => Promise<ReturnObject<typeof ApwUserType>>;
 declare const getSession: ({ sessionId, }?: {
     sessionId?: string;
@@ -101,5 +99,5 @@ declare const updateVerification: ({ userId, secret, }: {
     userId: string;
     secret: string;
 }) => Promise<ReturnObject<Models.Token>>;
-export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getApwUser, getCustomUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, };
+export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getApwUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, };
 //# sourceMappingURL=account.d.ts.map

@@ -285,56 +285,20 @@ const deleteSessions = async () => {
     }
 };
 /*
- * Retrieves the authenticated and verified user.
+ * Retrieves a authenticated and verified native appwrite user.
  */
 const getApwUser = async () => {
     try {
         const { account } = await createSessionClient();
-        const { databases } = await createAdminClient();
-        const user = await account.get();
-        if (!user) {
-            throw new Error("No session user found in database.");
+        const data = await account.get();
+        if (!data?.$id) {
+            return { data: null, error: null };
         }
-        if ((user.emailVerification || user.phoneVerification) && user.status) {
-            const { total, documents } = await databases.listDocuments(databaseId, usersCollectionId, [Query.equal("user_id", user.$id)]);
-            if (total === 1) {
-                return {
-                    data: {
-                        ...user,
-                        customUser: documents[0],
-                    },
-                    error: null,
-                };
-            }
-        }
-        return { data: null, error: null };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-/*
- * Retrieves the authenticated and verified user.
- */
-const getCustomUser = async () => {
-    try {
-        const { account } = await createSessionClient();
-        const { databases } = await createAdminClient();
-        const user = await account.get();
-        if (!user) {
-            throw new Error("No session user found in database.");
-        }
-        if ((user.emailVerification || user.phoneVerification) && user.status) {
-            const { total, documents } = await databases.listDocuments(databaseId, usersCollectionId, [Query.equal("user_id", user.$id)]);
-            if (total === 1) {
-                return {
-                    data: documents[0],
-                    error: null,
-                };
-            }
+        if ((data.emailVerification || data.phoneVerification) && data.status) {
+            return {
+                data,
+                error: null,
+            };
         }
         return { data: null, error: null };
     }
@@ -352,16 +316,13 @@ const getUser = async () => {
     try {
         const { account } = await createSessionClient();
         const { databases } = await createAdminClient();
-        const user = await account.get();
-        if (!user) {
-            throw new Error("No session user found in database.");
+        const data = await account.get();
+        if (!data?.$id) {
+            return { data: null, error: null };
         }
-        const { total, documents } = await databases.listDocuments(databaseId, usersCollectionId, [Query.equal("user_id", user.$id)]);
+        const { total, documents } = await databases.listDocuments(databaseId, usersCollectionId, [Query.equal("user_id", data.$id)]);
         return {
-            data: {
-                ...user,
-                customUser: total === 1 ? documents[0] : {},
-            },
+            data: total === 1 ? documents[0] : null,
             error: null,
         };
     }
@@ -548,4 +509,4 @@ const updateVerification = async ({ userId, secret, }) => {
         };
     }
 };
-export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getApwUser, getCustomUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, };
+export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getApwUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, };

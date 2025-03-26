@@ -152,11 +152,11 @@ const deleteUserForUserId = async ({ userId, }) => {
 const getApwUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
-        const user = await users.get(userId);
-        if (!user?.$id) {
+        const data = await users.get(userId);
+        if (!data?.$id) {
             return { data: null, error: null };
         }
-        return { data: user, error: null };
+        return { data, error: null };
     }
     catch (error) {
         return {

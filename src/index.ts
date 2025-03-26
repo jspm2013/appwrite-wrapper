@@ -52,7 +52,6 @@ export {
   deleteSession,
   deleteSessions,
   getApwUser,
-  getCustomUser,
   getSession,
   getUser,
   listSessions,

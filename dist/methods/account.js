@@ -287,7 +287,7 @@ const deleteSessions = async () => {
 /*
  * Retrieves the authenticated and verified user.
  */
-const getAppUser = async () => {
+const getApwUser = async () => {
     try {
         const { account } = await createSessionClient();
         const { databases } = await createAdminClient();
@@ -548,4 +548,4 @@ const updateVerification = async ({ userId, secret, }) => {
         };
     }
 };
-export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getAppUser, getCustomUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, };
+export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getApwUser, getCustomUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, };

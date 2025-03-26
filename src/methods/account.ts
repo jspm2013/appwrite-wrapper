@@ -408,7 +408,7 @@ const deleteSessions = async (): Promise<ReturnObject<string>> => {
 /*
  * Retrieves the authenticated and verified user.
  */
-const getAppUser = async (): Promise<ReturnObject<typeof ApwUserType>> => {
+const getApwUser = async (): Promise<ReturnObject<typeof ApwUserType>> => {
   try {
     const { account } = await createSessionClient();
     const { databases } = await createAdminClient();
@@ -759,7 +759,7 @@ export {
   deletePrefs,
   deleteSession,
   deleteSessions,
-  getAppUser,
+  getApwUser,
   getCustomUser,
   getSession,
   getUser,

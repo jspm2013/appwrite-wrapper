@@ -149,7 +149,7 @@ const deleteUserForUserId = async ({ userId, }) => {
         };
     }
 };
-const getAppUserForUserId = async ({ userId, queries = [], includingDeleted = undefined, }) => {
+const getApwUserForUserId = async ({ userId, queries = [], includingDeleted = undefined, }) => {
     try {
         const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
@@ -256,7 +256,7 @@ const getUserForUserId = async ({ userId, queries = [], includingDeleted = undef
         };
     }
 };
-const listAppUsers = async ({ queries = [], search, includingDeleted = undefined, }) => {
+const listApwUsers = async ({ queries = [], search, includingDeleted = undefined, }) => {
     try {
         // Run both queries in parallel for better performance
         const [usersResult, customUsersResult] = await Promise.all([
@@ -539,10 +539,10 @@ const updateStatusForUserId = async ({ userId, status, }) => {
         };
     }
 };
-export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getAppUserForUserId, // INcl. deleted=false as default
+export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getApwUserForUserId, // INcl. deleted=false as default
 getCustomUserForUserId, // INcl. deleted=false as default
 getUserForUserId, // INcl. deleted=false as default
-listAppUsers, // INcl. deleted=false as default
+listApwUsers, // INcl. deleted=false as default
 listCustomUsers, // INcl. deleted=false as default
 listUsers, // INcl. deleted=false as default
 listIdentities, listIdentitiesForUserId, listSessionsForUserId, updateEmailForUserId, updateEmailVerificationForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, };

@@ -261,7 +261,7 @@ type GetUserForUserIdParams = {
   queries?: string[];
   includingDeleted?: boolean;
 };
-const getAppUserForUserId = async ({
+const getApwUserForUserId = async ({
   userId,
   queries = [],
   includingDeleted = undefined,
@@ -405,17 +405,17 @@ const getUserForUserId = async ({
 /*
  * Gets APP users list.
  */
-type ListAppUsersParams = {
+type ListApwUsersParams = {
   queries?: string[];
   search?: string;
   includingDeleted?: boolean;
 };
 
-const listAppUsers = async ({
+const listApwUsers = async ({
   queries = [],
   search,
   includingDeleted = undefined,
-}: ListAppUsersParams): Promise<
+}: ListApwUsersParams): Promise<
   ReturnObject<Models.DocumentList<typeof ApwUserType>>
 > => {
   try {
@@ -909,10 +909,10 @@ export {
   deleteSessionForUserId,
   deleteSessionsForUserId,
   deleteUserForUserId,
-  getAppUserForUserId, // INcl. deleted=false as default
+  getApwUserForUserId, // INcl. deleted=false as default
   getCustomUserForUserId, // INcl. deleted=false as default
   getUserForUserId, // INcl. deleted=false as default
-  listAppUsers, // INcl. deleted=false as default
+  listApwUsers, // INcl. deleted=false as default
   listCustomUsers, // INcl. deleted=false as default
   listUsers, // INcl. deleted=false as default
   listIdentities,

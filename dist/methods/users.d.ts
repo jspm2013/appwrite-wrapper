@@ -47,30 +47,28 @@ type DeleteUserForUserIdParams = {
     userId: string;
 };
 declare const deleteUserForUserId: ({ userId, }: DeleteUserForUserIdParams) => Promise<ReturnObject<string>>;
+type GetApwUserForUserIdParams = {
+    userId: string;
+};
+declare const getApwUserForUserId: ({ userId, }: GetApwUserForUserIdParams) => Promise<ReturnObject<typeof ApwUserType>>;
 type GetUserForUserIdParams = {
     userId: string;
-    queries?: string[];
+    queries?: [];
     includingDeleted?: boolean;
 };
-declare const getApwUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<typeof ApwUserType>>;
-declare const getCustomUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<typeof UserType>>;
-declare const getUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<typeof ApwUserType>>;
+declare const getUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<typeof UserType>>;
+type ListUsersParams = {
+    queries?: string[];
+    deleted?: boolean;
+};
+declare const listUsers: ({ queries, deleted, }: ListUsersParams) => Promise<ReturnObject<Models.DocumentList<Models.Document>>>;
 type ListApwUsersParams = {
     queries?: string[];
     search?: string;
-    includingDeleted?: boolean;
+    blocked?: boolean;
+    verified?: boolean;
 };
-declare const listApwUsers: ({ queries, search, includingDeleted, }: ListApwUsersParams) => Promise<ReturnObject<Models.DocumentList<typeof ApwUserType>>>;
-type ListCustomUsersParams = {
-    queries?: string[];
-    includingDeleted?: boolean;
-};
-declare const listCustomUsers: ({ queries, includingDeleted, }: ListCustomUsersParams) => Promise<ReturnObject<Models.DocumentList<Models.Document>>>;
-type ListUsersParams = {
-    queries?: string[];
-    search?: string;
-};
-declare const listUsers: ({ queries, search, }: ListUsersParams) => Promise<ReturnObject<Models.UserList<Models.Preferences>>>;
+declare const listApwUsers: ({ queries, search, blocked, verified, }: ListApwUsersParams) => Promise<ReturnObject<Models.UserList<Models.Preferences>>>;
 type ListIdentitiesParams = {
     queries?: string[];
     search?: string;
@@ -127,11 +125,7 @@ type UpdateStatusForUserIdParams = {
     status: boolean;
 };
 declare const updateStatusForUserId: ({ userId, status, }: UpdateStatusForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
-export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getApwUserForUserId, // INcl. deleted=false as default
-getCustomUserForUserId, // INcl. deleted=false as default
-getUserForUserId, // INcl. deleted=false as default
-listApwUsers, // INcl. deleted=false as default
-listCustomUsers, // INcl. deleted=false as default
-listUsers, // INcl. deleted=false as default
+export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getApwUserForUserId, getUserForUserId, // INcl. deleted=false as default
+listApwUsers, listUsers, // INcl. deleted=false as default
 listIdentities, listIdentitiesForUserId, listSessionsForUserId, updateEmailForUserId, updateEmailVerificationForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, };
 //# sourceMappingURL=users.d.ts.map

@@ -10,7 +10,7 @@ import {
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 import { ID, Query, Models, Databases, RelationshipType } from "node-appwrite";
-import { databaseId, userCollectionId } from "../appwriteConfig";
+import { databaseId, usersCollectionId } from "../appwriteConfig";
 import { generateMigrationId, type LogType, toLogs } from "../ssr-utils";
 import { isCollectionSchema, schemaToFile } from "../collections/schema";
 
@@ -281,7 +281,7 @@ const createBooleanAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -613,7 +613,7 @@ const createDatetimeAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -661,7 +661,7 @@ const createDocument = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -712,7 +712,7 @@ const createEmailAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -764,7 +764,7 @@ const createEnumAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -818,7 +818,7 @@ const createFloatAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -869,7 +869,7 @@ const createIndex = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -920,7 +920,7 @@ const createIntegerAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -971,7 +971,7 @@ const createIpAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1023,7 +1023,7 @@ const createRelationshipAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1078,7 +1078,7 @@ const createStringAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1131,7 +1131,7 @@ const createUrlAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1177,7 +1177,7 @@ const deleteAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1281,7 +1281,7 @@ const deleteDocument = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1321,7 +1321,7 @@ const deleteIndex = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1361,7 +1361,7 @@ const getAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1464,7 +1464,7 @@ const getDocument = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1505,7 +1505,7 @@ const getIndex = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1545,7 +1545,7 @@ const listAttributes = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1656,7 +1656,7 @@ const listDocuments = async (
     const { databases } = await createAdminClient();
 
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1825,7 +1825,7 @@ const listIndexes = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -1870,7 +1870,7 @@ const updateBooleanAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -2374,7 +2374,7 @@ const updateDatetimeAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -2421,7 +2421,7 @@ const updateDocument = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -2468,7 +2468,7 @@ const updateEmailAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -2519,7 +2519,7 @@ const updateEnumAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -2572,7 +2572,7 @@ const updateFloatAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -2626,7 +2626,7 @@ const updateIntegerAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -2676,7 +2676,7 @@ const updateIpAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -2723,7 +2723,7 @@ const updateRelationshipAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -2773,7 +2773,7 @@ const updateStringAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,
@@ -2824,7 +2824,7 @@ const updateUrlAttribute = async ({
 
     // Use provided databaseId/collectionId if available; otherwise use defaults.
     const finalDatabaseId = args.databaseId ?? databaseId;
-    const finalCollectionId = args.collectionId ?? userCollectionId;
+    const finalCollectionId = args.collectionId ?? usersCollectionId;
 
     const newArgs = {
       ...args,

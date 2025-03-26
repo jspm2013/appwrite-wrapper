@@ -10,7 +10,7 @@ const endpoint = process.env.APPWRITE_ENDPOINT || "";
 const projectId = process.env.APPWRITE_PROJECT_ID || "";
 const apiKeySsr = process.env.APPWRITE_API_KEY_SSR || "";
 const logsBucketId = process.env.APPWRITE_LOGS_BUCKET_ID || "";
-const userCollectionId = process.env.APPWRITE_USERS_COLL_ID || "";
+const usersCollectionId = process.env.APPWRITE_USERS_COLL_ID || "";
 const liveEnvVarName = process.env.APPWRITE_LIVE_ENV_VAR_NAME || "";
 
 /*
@@ -101,7 +101,7 @@ export {
   logsPath,
   schemasPath,
   signInPath,
-  userCollectionId,
+  usersCollectionId,
   verificationPath,
   logsBucketId,
   logsBucketName,

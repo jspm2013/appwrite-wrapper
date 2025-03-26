@@ -1,5 +1,5 @@
 "use server";
-import { cookieName, signInPath, databaseId, oauthSuccessPath, oauthFailurePath, verificationPath, userCollectionId, } from "../appwriteConfig";
+import { cookieName, signInPath, databaseId, oauthSuccessPath, oauthFailurePath, verificationPath, usersCollectionId, } from "../appwriteConfig";
 import { cookies } from "next/headers";
 import { hostExternal } from "../host";
 import { OAuthProvider } from "../enums";
@@ -296,7 +296,7 @@ const getApwUser = async () => {
             throw new Error("No session user found in database.");
         }
         if ((user.emailVerification || user.phoneVerification) && user.status) {
-            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", user.$id)]);
+            const { total, documents } = await databases.listDocuments(databaseId, usersCollectionId, [Query.equal("user_id", user.$id)]);
             if (total === 1) {
                 return {
                     data: {
@@ -328,7 +328,7 @@ const getCustomUser = async () => {
             throw new Error("No session user found in database.");
         }
         if ((user.emailVerification || user.phoneVerification) && user.status) {
-            const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", user.$id)]);
+            const { total, documents } = await databases.listDocuments(databaseId, usersCollectionId, [Query.equal("user_id", user.$id)]);
             if (total === 1) {
                 return {
                     data: documents[0],
@@ -356,7 +356,7 @@ const getUser = async () => {
         if (!user) {
             throw new Error("No session user found in database.");
         }
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [Query.equal("user_id", user.$id)]);
+        const { total, documents } = await databases.listDocuments(databaseId, usersCollectionId, [Query.equal("user_id", user.$id)]);
         return {
             data: {
                 ...user,

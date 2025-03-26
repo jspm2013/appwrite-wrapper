@@ -3,7 +3,7 @@ import { Query } from "node-appwrite";
 import { handleApwError } from "../exceptions";
 import { getType } from "../collections/typeReader";
 import { createAdminClient } from "../appwriteClients";
-import { databaseId, userCollectionId } from "../appwriteConfig";
+import { databaseId, usersCollectionId } from "../appwriteConfig";
 let ApwUserType;
 let UserType;
 const init = async () => {
@@ -149,35 +149,14 @@ const deleteUserForUserId = async ({ userId, }) => {
         };
     }
 };
-const getApwUserForUserId = async ({ userId, queries = [], includingDeleted = undefined, }) => {
+const getApwUserForUserId = async ({ userId, }) => {
     try {
         const { users } = await createAdminClient();
-        const { databases } = await createAdminClient();
         const user = await users.get(userId);
-        if (!user) {
-            throw new Error("No user found in database.");
+        if (!user?.$id) {
+            return { data: null, error: null };
         }
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
-            includingDeleted === undefined
-                ? queries.length
-                    ? Query.and([...queries, Query.equal("user_id", userId)])
-                    : Query.equal("user_id", userId)
-                : Query.and([
-                    ...queries,
-                    Query.equal("user_id", userId),
-                    Query.equal("deleted", includingDeleted),
-                ]),
-        ]);
-        if (total === 1) {
-            return {
-                data: {
-                    ...user,
-                    customUser: documents[0],
-                },
-                error: null,
-            };
-        }
-        return { data: null, error: null };
+        return { data: user, error: null };
     }
     catch (error) {
         return {
@@ -186,19 +165,17 @@ const getApwUserForUserId = async ({ userId, queries = [], includingDeleted = un
         };
     }
 };
-/*
- * Retrieves an App User (native appwrite user extended by custom user (key = customUser)) by their ID.
- */
-const getCustomUserForUserId = async ({ userId, queries = [], includingDeleted = undefined, }) => {
+const getUserForUserId = async ({ userId, queries = [], includingDeleted = true, }) => {
     try {
         const { databases } = await createAdminClient();
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
-            includingDeleted === undefined
-                ? queries.length
-                    ? Query.and([...queries, Query.equal("user_id", userId)])
-                    : Query.equal("user_id", userId)
-                : Query.and([
+        const { total, documents } = await databases.listDocuments(databaseId, usersCollectionId, [
+            queries.length
+                ? Query.and([
                     ...queries,
+                    Query.equal("user_id", userId),
+                    Query.equal("deleted", includingDeleted),
+                ])
+                : Query.and([
                     Query.equal("user_id", userId),
                     Query.equal("deleted", includingDeleted),
                 ]),
@@ -215,94 +192,15 @@ const getCustomUserForUserId = async ({ userId, queries = [], includingDeleted =
         };
     }
 };
-/*
- * Retrieves a user by their ID.
- *
- * NATIVE APPWRITE USER (BUT NOT NECESSARILY VERIFIED) extended by custom user (key = customUser)
- * ...user for lists/displaying all app users
- *
- */
-const getUserForUserId = async ({ userId, queries = [], includingDeleted = undefined, }) => {
+const listUsers = async ({ queries, deleted, }) => {
     try {
-        const { users } = await createAdminClient();
         const { databases } = await createAdminClient();
-        const user = await users.get(userId);
-        if (!user) {
-            throw new Error("No session user found in database.");
+        let queryArray = queries ? [...queries] : [];
+        if (deleted !== undefined) {
+            queryArray.push(Query.equal("deleted", deleted));
         }
-        const { total, documents } = await databases.listDocuments(databaseId, userCollectionId, [
-            includingDeleted === undefined
-                ? queries.length
-                    ? Query.and([...queries, Query.equal("user_id", userId)])
-                    : Query.equal("user_id", userId)
-                : Query.and([
-                    ...queries,
-                    Query.equal("user_id", userId),
-                    Query.equal("deleted", includingDeleted),
-                ]),
-        ]);
-        return {
-            data: {
-                ...user,
-                customUser: total === 1 ? documents[0] : {},
-            },
-            error: null,
-        };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-const listApwUsers = async ({ queries = [], search, includingDeleted = undefined, }) => {
-    try {
-        // Run both queries in parallel for better performance
-        const [usersResult, customUsersResult] = await Promise.all([
-            listUsers({ queries, search }),
-            listCustomUsers({ queries, includingDeleted }),
-        ]);
-        // Check for errors
-        if (usersResult.error)
-            return { data: null, error: usersResult.error };
-        if (customUsersResult.error)
-            return { data: null, error: customUsersResult.error };
-        const usersList = usersResult.data?.users ?? [];
-        const customUsersList = customUsersResult.data?.documents ?? [];
-        // Convert customUsersList to a Map for O(1) lookups
-        const customUsersMap = new Map(customUsersList.map((customUser) => [
-            customUser.user_id,
-            customUser,
-        ]));
-        // Merge users with customUser data
-        const appUsers = usersList.map((user) => ({
-            ...user,
-            customUser: customUsersMap.get(user.$id) || {}, // Add customUser if found, otherwise {}
-        }));
-        return {
-            data: { total: appUsers.length, documents: appUsers ?? [] },
-            error: null,
-        };
-    }
-    catch (error) {
-        return {
-            data: null,
-            error: await handleApwError({ error }),
-        };
-    }
-};
-const listCustomUsers = async ({ queries = [], includingDeleted = undefined, }) => {
-    try {
-        const { databases } = await createAdminClient();
-        const query = queries.length
-            ? includingDeleted === undefined
-                ? queries
-                : [Query.and([...queries, Query.equal("deleted", includingDeleted)])]
-            : includingDeleted === undefined
-                ? []
-                : [Query.equal("deleted", includingDeleted)];
-        const data = await databases.listDocuments(databaseId, userCollectionId, query);
+        const finalQuery = queryArray.length > 0 ? [Query.and(queryArray)] : undefined;
+        const data = await databases.listDocuments(databaseId, usersCollectionId, finalQuery);
         return {
             data,
             error: null,
@@ -315,10 +213,30 @@ const listCustomUsers = async ({ queries = [], includingDeleted = undefined, }) 
         };
     }
 };
-const listUsers = async ({ queries, search, }) => {
+const listApwUsers = async ({ queries, search, blocked, verified, }) => {
     try {
         const { users } = await createAdminClient();
-        const data = await users.list(queries, search);
+        let queryArray = queries ? [...queries] : []; // Consistent variable name
+        if (blocked !== undefined) {
+            const blockedQuery = Query.equal("status", !blocked);
+            queryArray = queryArray ? [...queryArray, blockedQuery] : [blockedQuery];
+        }
+        if (verified !== undefined) {
+            const verifiedQuery = verified
+                ? Query.or([
+                    Query.equal("emailVerification", true),
+                    Query.equal("phoneVerification", true),
+                ])
+                : Query.and([
+                    Query.equal("emailVerification", false),
+                    Query.equal("phoneVerification", false),
+                ]);
+            queryArray = queryArray
+                ? [...queryArray, verifiedQuery]
+                : [verifiedQuery];
+        }
+        const finalQuery = queryArray.length > 0 ? queryArray : undefined; // Consistent variable name
+        const data = await users.list(finalQuery, search);
         return { data, error: null };
     }
     catch (error) {
@@ -539,10 +457,6 @@ const updateStatusForUserId = async ({ userId, status, }) => {
         };
     }
 };
-export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getApwUserForUserId, // INcl. deleted=false as default
-getCustomUserForUserId, // INcl. deleted=false as default
-getUserForUserId, // INcl. deleted=false as default
-listApwUsers, // INcl. deleted=false as default
-listCustomUsers, // INcl. deleted=false as default
-listUsers, // INcl. deleted=false as default
+export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getApwUserForUserId, getUserForUserId, // INcl. deleted=false as default
+listApwUsers, listUsers, // INcl. deleted=false as default
 listIdentities, listIdentitiesForUserId, listSessionsForUserId, updateEmailForUserId, updateEmailVerificationForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, };

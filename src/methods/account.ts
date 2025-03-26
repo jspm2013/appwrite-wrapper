@@ -7,7 +7,7 @@ import {
   oauthSuccessPath,
   oauthFailurePath,
   verificationPath,
-  userCollectionId,
+  usersCollectionId,
 } from "../appwriteConfig";
 import { cookies } from "next/headers";
 import { hostExternal } from "../host";
@@ -421,7 +421,7 @@ const getApwUser = async (): Promise<ReturnObject<typeof ApwUserType>> => {
     if ((user.emailVerification || user.phoneVerification) && user.status) {
       const { total, documents } = await databases.listDocuments(
         databaseId,
-        userCollectionId,
+        usersCollectionId,
         [Query.equal("user_id", user.$id)]
       );
 
@@ -461,7 +461,7 @@ const getCustomUser = async (): Promise<ReturnObject<typeof UserType>> => {
     if ((user.emailVerification || user.phoneVerification) && user.status) {
       const { total, documents } = await databases.listDocuments(
         databaseId,
-        userCollectionId,
+        usersCollectionId,
         [Query.equal("user_id", user.$id)]
       );
 
@@ -497,7 +497,7 @@ const getUser = async (): Promise<ReturnObject<typeof ApwUserType>> => {
 
     const { total, documents } = await databases.listDocuments(
       databaseId,
-      userCollectionId,
+      usersCollectionId,
       [Query.equal("user_id", user.$id)]
     );
 

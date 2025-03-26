@@ -3,7 +3,7 @@ import { getSchema, attributesEqual, createAttribute, updateAttribute, getAttrib
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
 import { ID, Query } from "node-appwrite";
-import { databaseId, userCollectionId } from "../appwriteConfig";
+import { databaseId, usersCollectionId } from "../appwriteConfig";
 import { generateMigrationId, toLogs } from "../ssr-utils";
 import { isCollectionSchema, schemaToFile } from "../collections/schema";
 const createBooleanAttribute = async ({ ...args }) => {
@@ -11,7 +11,7 @@ const createBooleanAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -227,7 +227,7 @@ const createDatetimeAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -256,7 +256,7 @@ const createDocument = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -285,7 +285,7 @@ const createEmailAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -314,7 +314,7 @@ const createEnumAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -344,7 +344,7 @@ const createFloatAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -375,7 +375,7 @@ const createIndex = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -404,7 +404,7 @@ const createIntegerAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -435,7 +435,7 @@ const createIpAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -464,7 +464,7 @@ const createRelationshipAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -495,7 +495,7 @@ const createStringAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -526,7 +526,7 @@ const createUrlAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -555,7 +555,7 @@ const deleteAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -621,7 +621,7 @@ const deleteDocument = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -647,7 +647,7 @@ const deleteIndex = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -673,7 +673,7 @@ const getAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -739,7 +739,7 @@ const getDocument = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -766,7 +766,7 @@ const getIndex = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -792,7 +792,7 @@ const listAttributes = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -861,7 +861,7 @@ const listDocuments = async (args) => {
     try {
         const { databases } = await createAdminClient();
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -984,7 +984,7 @@ const listIndexes = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -1010,7 +1010,7 @@ const updateBooleanAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -1359,7 +1359,7 @@ const updateDatetimeAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -1388,7 +1388,7 @@ const updateDocument = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -1416,7 +1416,7 @@ const updateEmailAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -1445,7 +1445,7 @@ const updateEnumAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -1475,7 +1475,7 @@ const updateFloatAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -1506,7 +1506,7 @@ const updateIntegerAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -1537,7 +1537,7 @@ const updateIpAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -1566,7 +1566,7 @@ const updateRelationshipAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -1594,7 +1594,7 @@ const updateStringAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,
@@ -1624,7 +1624,7 @@ const updateUrlAttribute = async ({ ...args }) => {
         const { databases } = await createAdminClient();
         // Use provided databaseId/collectionId if available; otherwise use defaults.
         const finalDatabaseId = args.databaseId ?? databaseId;
-        const finalCollectionId = args.collectionId ?? userCollectionId;
+        const finalCollectionId = args.collectionId ?? usersCollectionId;
         const newArgs = {
             ...args,
             databaseId: finalDatabaseId,

@@ -17,17 +17,17 @@ import { ID, Models, Query } from "node-appwrite";
 import { getType } from "../collections/typeReader";
 import { createSessionClient, createAdminClient } from "../appwriteClients";
 
-let AppUserType: any;
+let ApwUserType: any;
 let UserType: any;
 
 const init = async () => {
-  AppUserType = await getType({
+  ApwUserType = await getType({
     typeFileName: "user", // without extension
-    typeName: "AppUserType",
+    typeName: "ApwUserType",
   });
 
-  if (!AppUserType) {
-    throw new Error("No Type 'AppUserType' found (service: account).");
+  if (!ApwUserType) {
+    throw new Error("No Type 'ApwUserType' found (service: account).");
   }
 
   UserType = await getType({
@@ -291,10 +291,11 @@ const createSession = async ({
     const { account } = await createAdminClient();
     const data = await account.createSession(userId, secret);
     (await cookies()).set(cookieName, data.secret, {
-      path: "/",
       httpOnly: true,
-      sameSite: "strict",
       secure: true,
+      sameSite: "strict",
+      expires: new Date(data.expire),
+      path: "/",
     });
     return { data, error: null };
   } catch (error: any) {
@@ -407,7 +408,7 @@ const deleteSessions = async (): Promise<ReturnObject<string>> => {
 /*
  * Retrieves the authenticated and verified user.
  */
-const getAppUser = async (): Promise<ReturnObject<typeof AppUserType>> => {
+const getAppUser = async (): Promise<ReturnObject<typeof ApwUserType>> => {
   try {
     const { account } = await createSessionClient();
     const { databases } = await createAdminClient();
@@ -484,7 +485,7 @@ const getCustomUser = async (): Promise<ReturnObject<typeof UserType>> => {
 /*
  * Retrieves user details.
  */
-const getUser = async (): Promise<ReturnObject<typeof AppUserType>> => {
+const getUser = async (): Promise<ReturnObject<typeof ApwUserType>> => {
   try {
     const { account } = await createSessionClient();
     const { databases } = await createAdminClient();

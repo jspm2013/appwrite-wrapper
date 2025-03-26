@@ -6,17 +6,17 @@ import { getType } from "../collections/typeReader";
 import { createAdminClient } from "../appwriteClients";
 import { databaseId, userCollectionId } from "../appwriteConfig";
 
-let AppUserType: any;
+let ApwUserType: any;
 let UserType: any;
 
 const init = async () => {
-  AppUserType = await getType({
+  ApwUserType = await getType({
     typeFileName: "user", // without extension
-    typeName: "AppUserType",
+    typeName: "ApwUserType",
   });
 
-  if (!AppUserType) {
-    throw new Error("No Type 'AppUserType' found (service: account).");
+  if (!ApwUserType) {
+    throw new Error("No Type 'ApwUserType' found (service: account).");
   }
 
   UserType = await getType({
@@ -265,7 +265,7 @@ const getAppUserForUserId = async ({
   userId,
   queries = [],
   includingDeleted = undefined,
-}: GetUserForUserIdParams): Promise<ReturnObject<typeof AppUserType>> => {
+}: GetUserForUserIdParams): Promise<ReturnObject<typeof ApwUserType>> => {
   try {
     const { users } = await createAdminClient();
     const { databases } = await createAdminClient();
@@ -360,7 +360,7 @@ const getUserForUserId = async ({
   userId,
   queries = [],
   includingDeleted = undefined,
-}: GetUserForUserIdParams): Promise<ReturnObject<typeof AppUserType>> => {
+}: GetUserForUserIdParams): Promise<ReturnObject<typeof ApwUserType>> => {
   try {
     const { users } = await createAdminClient();
     const { databases } = await createAdminClient();
@@ -416,7 +416,7 @@ const listAppUsers = async ({
   search,
   includingDeleted = undefined,
 }: ListAppUsersParams): Promise<
-  ReturnObject<Models.DocumentList<typeof AppUserType>>
+  ReturnObject<Models.DocumentList<typeof ApwUserType>>
 > => {
   try {
     // Run both queries in parallel for better performance
@@ -442,7 +442,7 @@ const listAppUsers = async ({
     );
 
     // Merge users with customUser data
-    const appUsers: any[] = usersList.map((user: typeof AppUserType) => ({
+    const appUsers: any[] = usersList.map((user: typeof ApwUserType) => ({
       ...user,
       customUser: customUsersMap.get(user.$id) || {}, // Add customUser if found, otherwise {}
     }));

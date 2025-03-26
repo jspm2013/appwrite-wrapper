@@ -1,5 +1,5 @@
 import { Models } from "node-appwrite";
-declare let AppUserType: any;
+declare let ApwUserType: any;
 declare let UserType: any;
 interface ErrorObject {
     appwrite: boolean;
@@ -52,15 +52,15 @@ type GetUserForUserIdParams = {
     queries?: string[];
     includingDeleted?: boolean;
 };
-declare const getAppUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<typeof AppUserType>>;
+declare const getAppUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<typeof ApwUserType>>;
 declare const getCustomUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<typeof UserType>>;
-declare const getUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<typeof AppUserType>>;
+declare const getUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<typeof ApwUserType>>;
 type ListAppUsersParams = {
     queries?: string[];
     search?: string;
     includingDeleted?: boolean;
 };
-declare const listAppUsers: ({ queries, search, includingDeleted, }: ListAppUsersParams) => Promise<ReturnObject<Models.DocumentList<typeof AppUserType>>>;
+declare const listAppUsers: ({ queries, search, includingDeleted, }: ListAppUsersParams) => Promise<ReturnObject<Models.DocumentList<typeof ApwUserType>>>;
 type ListCustomUsersParams = {
     queries?: string[];
     includingDeleted?: boolean;

@@ -11,7 +11,7 @@ import {
   Avatars,
 } from "node-appwrite";
 import { apwManager } from "./utils";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
 
 /**
@@ -38,6 +38,9 @@ export async function createSessionClient(params = {}) {
   }
 
   client.setSession(session.value);
+
+  const headersList = await headers();
+  client.setForwardedUserAgent(headersList["user-agent"]);
 
   return {
     get account() {
@@ -84,6 +87,9 @@ export async function createAdminClient(params = {}) {
     .setSelfSigned(selfSigned)
     .setLocale(locale)
     .setKey(apiKeySsr);
+
+  const headersList = await headers();
+  client.setForwardedUserAgent(headersList["user-agent"]);
 
   return {
     get account() {

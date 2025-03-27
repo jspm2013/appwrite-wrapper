@@ -293,7 +293,7 @@ const getUserForUserId = async ({
   try {
     const { databases } = await createAdminClient();
 
-    let queryArray: string[] = queries ? [...queries] : [];
+    let queryArray: string[] = [];
 
     queryArray.push(Query.equal("user_id", userId));
 
@@ -301,8 +301,13 @@ const getUserForUserId = async ({
       queryArray.push(Query.equal("deleted", deleted));
     }
 
-    const finalQuery =
-      queryArray.length > 0 ? [Query.and(queryArray)] : undefined;
+    let finalQuery: string[] | undefined;
+
+    if (queryArray.length > 1) {
+      finalQuery = [Query.and(queryArray)];
+    } else if (queryArray.length === 1) {
+      finalQuery = queryArray; // Use the single query directly
+    }
 
     const { total, documents } = await databases.listDocuments(
       databaseId,
@@ -345,8 +350,13 @@ const listUsers = async ({
       queryArray.push(Query.equal("deleted", deleted));
     }
 
-    const finalQuery =
-      queryArray.length > 0 ? [Query.and(queryArray)] : undefined;
+    let finalQuery: string[] | undefined;
+
+    if (queryArray.length > 1) {
+      finalQuery = [Query.and(queryArray)];
+    } else if (queryArray.length === 1) {
+      finalQuery = queryArray; // Use the single query directly
+    }
 
     const data = await databases.listDocuments(
       databaseId,
@@ -375,6 +385,7 @@ type ListApwUsersParams = {
   blocked?: boolean;
   verified?: boolean;
 };
+
 const listApwUsers = async ({
   queries,
   search,
@@ -386,11 +397,11 @@ const listApwUsers = async ({
   try {
     const { users } = await createAdminClient();
 
-    let queryArray: string[] = queries ? [...queries] : []; // Consistent variable name
+    let queryArray: string[] = queries ? [...queries] : [];
 
     if (blocked !== undefined) {
       const blockedQuery = Query.equal("status", !blocked);
-      queryArray = queryArray ? [...queryArray, blockedQuery] : [blockedQuery];
+      queryArray.push(blockedQuery);
     }
 
     if (verified !== undefined) {
@@ -403,12 +414,10 @@ const listApwUsers = async ({
             Query.equal("emailVerification", false),
             Query.equal("phoneVerification", false),
           ]);
-      queryArray = queryArray
-        ? [...queryArray, verifiedQuery]
-        : [verifiedQuery];
+      queryArray.push(verifiedQuery);
     }
 
-    const finalQuery = queryArray.length > 0 ? queryArray : undefined; // Consistent variable name
+    const finalQuery = queryArray.length > 0 ? queryArray : undefined;
 
     const data = await users.list(finalQuery, search);
     return { data, error: null };

@@ -281,32 +281,33 @@ const getApwUserForUserId = async ({
  */
 type GetUserForUserIdParams = {
   userId: string;
-  queries?: [];
-  includingDeleted?: boolean;
+  queries?: string[];
+  deleted?: boolean;
 };
+
 const getUserForUserId = async ({
   userId,
-  queries = [],
-  includingDeleted = true,
+  queries,
+  deleted,
 }: GetUserForUserIdParams): Promise<ReturnObject<typeof UserType>> => {
   try {
     const { databases } = await createAdminClient();
 
+    let queryArray: string[] = queries ? [...queries] : [];
+
+    queryArray.push(Query.equal("user_id", userId));
+
+    if (deleted !== undefined) {
+      queryArray.push(Query.equal("deleted", deleted));
+    }
+
+    const finalQuery =
+      queryArray.length > 0 ? [Query.and(queryArray)] : undefined;
+
     const { total, documents } = await databases.listDocuments(
       databaseId,
       usersCollectionId,
-      [
-        queries.length
-          ? Query.and([
-              ...queries,
-              Query.equal("user_id", userId),
-              Query.equal("deleted", includingDeleted),
-            ])
-          : Query.and([
-              Query.equal("user_id", userId),
-              Query.equal("deleted", includingDeleted),
-            ]),
-      ]
+      finalQuery
     );
 
     return {

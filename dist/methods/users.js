@@ -165,21 +165,16 @@ const getApwUserForUserId = async ({ userId, }) => {
         };
     }
 };
-const getUserForUserId = async ({ userId, queries = [], includingDeleted = true, }) => {
+const getUserForUserId = async ({ userId, queries, deleted, }) => {
     try {
         const { databases } = await createAdminClient();
-        const { total, documents } = await databases.listDocuments(databaseId, usersCollectionId, [
-            queries.length
-                ? Query.and([
-                    ...queries,
-                    Query.equal("user_id", userId),
-                    Query.equal("deleted", includingDeleted),
-                ])
-                : Query.and([
-                    Query.equal("user_id", userId),
-                    Query.equal("deleted", includingDeleted),
-                ]),
-        ]);
+        let queryArray = queries ? [...queries] : [];
+        queryArray.push(Query.equal("user_id", userId));
+        if (deleted !== undefined) {
+            queryArray.push(Query.equal("deleted", deleted));
+        }
+        const finalQuery = queryArray.length > 0 ? [Query.and(queryArray)] : undefined;
+        const { total, documents } = await databases.listDocuments(databaseId, usersCollectionId, finalQuery);
         return {
             data: total === 1 ? documents[0] : null,
             error: null,

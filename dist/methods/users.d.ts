@@ -53,10 +53,10 @@ type GetApwUserForUserIdParams = {
 declare const getApwUserForUserId: ({ userId, }: GetApwUserForUserIdParams) => Promise<ReturnObject<typeof ApwUserType>>;
 type GetUserForUserIdParams = {
     userId: string;
-    queries?: [];
-    includingDeleted?: boolean;
+    queries?: string[];
+    deleted?: boolean;
 };
-declare const getUserForUserId: ({ userId, queries, includingDeleted, }: GetUserForUserIdParams) => Promise<ReturnObject<typeof UserType>>;
+declare const getUserForUserId: ({ userId, queries, deleted, }: GetUserForUserIdParams) => Promise<ReturnObject<typeof UserType>>;
 type ListUsersParams = {
     queries?: string[];
     deleted?: boolean;

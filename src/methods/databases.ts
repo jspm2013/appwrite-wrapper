@@ -476,8 +476,8 @@ const createCollectionWithSchema = async (
         }
         const hasXdefault =
           attr.type !== "relationship" &&
-          "default" in attr &&
-          (attr as any).default !== undefined;
+          "xdefault" in attr &&
+          (attr as any).xdefault !== undefined;
         if (hasXdefault && attr.required === true) {
           const msg = `Not able to create Attribute '${attr.key}' for Collection '${newArgs.name}' (id: '${newArgs.collectionId}'), because both 'xdefault' and 'required' are set. Appwrite does not allow both properties to be defined simultaneously.`;
           logContent.changes.push({
@@ -2153,8 +2153,8 @@ const updateCollectionWithSchema = async (
         }
         const hasXdefault =
           schemaAttr.type !== "relationship" &&
-          "default" in schemaAttr &&
-          (schemaAttr as any).default !== undefined;
+          "xdefault" in schemaAttr &&
+          (schemaAttr as any).xdefault !== undefined;
         if (hasXdefault && schemaAttr.required === true) {
           const msg = `Not able to create Attribute '${schemaAttr.key}' for Collection '${newArgs.name}' (id: '${newArgs.collectionId}'), because both 'xdefault' and 'required' are set. Appwrite does not allow both properties to be defined simultaneously.`;
           logContent.changes.push({

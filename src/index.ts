@@ -124,11 +124,12 @@ export {
   deleteSessionsForUserId,
   deleteUserForUserId,
   getApwUserForUserId,
-  getUserForUserId,
+  getUserForUserId, // INcl. deleted=false as default
+  listApwUsers,
+  listUsers, // INcl. deleted=false as default
   listIdentities,
   listIdentitiesForUserId,
   listSessionsForUserId,
-  listUsers,
   updateEmailForUserId,
   updateEmailVerificationForUserId,
   updateNameForUserId,

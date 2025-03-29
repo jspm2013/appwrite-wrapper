@@ -17,6 +17,7 @@ import {
 import { paths } from "./appwriteConfig";
 import { checkPathsExists } from "./ssr-utils";
 export { Models, ID, Query } from "node-appwrite";
+export { Client as RealtimeClient } from "./appwriteRealtimeClient";
 
 checkPathsExists(paths);
 

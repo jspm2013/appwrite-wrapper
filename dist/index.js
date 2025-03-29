@@ -3,6 +3,7 @@ import { imgToWebP, apwManager, isEmptyObject, isValidJsonObject, temporaryPassw
 import { paths } from "./appwriteConfig";
 import { checkPathsExists } from "./ssr-utils";
 export { ID, Query } from "node-appwrite";
+export { Client as RealtimeClient } from "./appwriteRealtimeClient";
 checkPathsExists(paths);
 export { createRealtime } from "./methods/realtime";
 export { 

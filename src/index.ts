@@ -17,8 +17,6 @@ import {
 import { paths } from "./appwriteConfig";
 import { checkPathsExists } from "./ssr-utils";
 export { Models, ID, Query } from "node-appwrite";
-import { Client as RealtimeClient } from "./appwriteRealtimeClient";
-export { createRealtimeSessionClient } from "./appwriteClients";
 
 checkPathsExists(paths);
 
@@ -36,8 +34,6 @@ interface ReturnObject<T> {
   data: T | null;
 }
 export { type ErrorObject, type ReturnObject };
-
-export { RealtimeClient };
 
 export { createRealtime } from "./methods/realtime";
 

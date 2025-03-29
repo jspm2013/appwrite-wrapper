@@ -10,7 +10,7 @@ import {
   usersCollectionId,
 } from "../appwriteConfig";
 import { cookies } from "next/headers";
-import { hostExternal } from "../host";
+import { hostExternal, live } from "../host";
 import { OAuthProvider } from "../enums";
 import { handleApwError } from "../exceptions";
 import { ID, Models, Query } from "node-appwrite";
@@ -145,7 +145,7 @@ const createEmailPasswordSession = async ({
     const data = await account.createEmailPasswordSession(email, password);
     (await cookies()).set(cookieName, data.secret, {
       httpOnly: true,
-      secure: true,
+      secure: live,
       sameSite: "strict",
       expires: new Date(data.expire),
       path: "/",
@@ -292,7 +292,7 @@ const createSession = async ({
     const data = await account.createSession(userId, secret);
     (await cookies()).set(cookieName, data.secret, {
       httpOnly: true,
-      secure: true,
+      secure: live,
       sameSite: "strict",
       expires: new Date(data.expire),
       path: "/",

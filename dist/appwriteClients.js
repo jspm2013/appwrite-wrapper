@@ -1,5 +1,5 @@
 import { Client, Account, Teams, Functions, Databases, Storage, Messaging, Locale, Users, Avatars, } from "node-appwrite";
-import { RealtimeClient } from "./appwriteRealtimeClient";
+import { Client as RealtimeClient } from "./appwriteRealtimeClient";
 import { apwManager } from "./utils";
 import { cookies, headers } from "next/headers";
 import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";

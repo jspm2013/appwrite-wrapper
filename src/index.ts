@@ -39,6 +39,8 @@ export { type ErrorObject, type ReturnObject };
 
 export { RealtimeClient };
 
+export { createRealtime } from "./methods/realtime";
+
 export {
   // Account functions
   addPrefs,

@@ -44,32 +44,8 @@ export async function createRealtimeSessionClient(params = {}) {
   client.setForwardedUserAgent(headersList["user-agent"]);
 
   return {
-    get account() {
-      return new Account(client);
-    },
-    get teams() {
-      return new Teams(client);
-    },
-    get databases() {
-      return new Databases(client);
-    },
-    get storage() {
-      return new Storage(client);
-    },
-    get functions() {
-      return new Functions(client);
-    },
-    get messaging() {
-      return new Messaging(client);
-    },
-    get locale() {
-      return new Locale(client);
-    },
-    get avatars() {
-      return new Avatars(client);
-    },
-    get users() {
-      return new Users(client);
+    get client() {
+      return client;
     },
   };
 }

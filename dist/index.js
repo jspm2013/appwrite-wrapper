@@ -2,8 +2,9 @@ import { live, hostInternal, hostExternal, originInternal, originExternal, } fro
 import { imgToWebP, apwManager, isEmptyObject, isValidJsonObject, temporaryPassword, isValidJsonString, isEmptyKeyValuePair, } from "./utils";
 import { paths } from "./appwriteConfig";
 import { checkPathsExists } from "./ssr-utils";
-import { Client as RealtimeClient } from "./appwriteRealtimeClient";
 export { ID, Query } from "node-appwrite";
+import { Client as RealtimeClient } from "./appwriteRealtimeClient";
+export { createRealtimeSessionClient } from "./appwriteClients";
 checkPathsExists(paths);
 export { RealtimeClient };
 export { 

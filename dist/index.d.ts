@@ -1,7 +1,8 @@
 import { live, hostInternal, hostExternal, originInternal, originExternal } from "./host";
 import { imgToWebP, apwManager, isEmptyObject, isValidJsonObject, temporaryPassword, isValidJsonString, isEmptyKeyValuePair } from "./utils";
-import { Client as RealtimeClient } from "./appwriteRealtimeClient";
 export { Models, ID, Query } from "node-appwrite";
+import { Client as RealtimeClient } from "./appwriteRealtimeClient";
+export { createRealtimeSessionClient } from "./appwriteClients";
 interface ErrorObject {
     appwrite: boolean;
     header: string;

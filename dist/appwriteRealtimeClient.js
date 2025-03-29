@@ -1,3 +1,4 @@
+import { cookieName } from "./appwriteConfig";
 /**
  * Client that handles requests to Appwrite
  */
@@ -216,7 +217,7 @@ class Client {
                         if (!session.trim()) {
                             // Fetch cookieFallback from localStorage if session is not set
                             const cookie = JSON.parse(window.localStorage.getItem("cookieFallback") ?? "{}");
-                            session = cookie?.[`a_session_${this.config.project}`];
+                            session = cookie?.[cookieName];
                         }
                         const messageData = message.data;
                         if (session && !messageData.user) {

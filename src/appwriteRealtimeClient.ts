@@ -1,3 +1,5 @@
+import { cookieName } from "./appwriteConfig";
+
 /**
  * Headers type representing a key-value pair with string keys and string values.
  */
@@ -494,7 +496,7 @@ class Client {
               const cookie = JSON.parse(
                 window.localStorage.getItem("cookieFallback") ?? "{}"
               );
-              session = cookie?.[`a_session_${this.config.project}`];
+              session = cookie?.[cookieName];
             }
             const messageData = <RealtimeResponseConnected>message.data;
 

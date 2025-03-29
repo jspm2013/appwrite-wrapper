@@ -1,4 +1,18 @@
 /**
+ * Creates a realtime session client for the current user.
+ */
+export function createRealtimeSessionClient(params?: {}): Promise<{
+    readonly account: Account;
+    readonly teams: Teams;
+    readonly databases: Databases;
+    readonly storage: Storage;
+    readonly functions: Functions;
+    readonly messaging: Messaging;
+    readonly locale: Locale;
+    readonly avatars: Avatars;
+    readonly users: Users;
+}>;
+/**
  * Creates a session client for the current user.
  */
 export function createSessionClient(params?: {}): Promise<{

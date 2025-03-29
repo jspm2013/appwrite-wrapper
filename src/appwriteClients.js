@@ -10,9 +10,69 @@ import {
   Users,
   Avatars,
 } from "node-appwrite";
+import { RealtimeClient } from "src";
 import { apwManager } from "./utils";
 import { cookies, headers } from "next/headers";
 import { projectId, endpoint, apiKeySsr, cookieName } from "./appwriteConfig";
+
+/**
+ * Creates a realtime session client for the current user.
+ */
+export async function createRealtimeSessionClient(params = {}) {
+  const { selfSigned = false } = params;
+
+  const locale = apwManager.getLocale();
+
+  const client = new RealtimeClient()
+    .setEndpoint(endpoint)
+    .setProject(projectId)
+    .setSelfSigned(selfSigned)
+    .setLocale(locale);
+
+  const cookiesList = await cookies();
+  const session = cookiesList.get(cookieName);
+
+  if (!session || !session.value) {
+    throw new Error(
+      "APW-WRAPPER - Error: No session found in cookies while calling createSessionClient()"
+    );
+  }
+
+  client.setSession(session.value);
+
+  const headersList = await headers();
+  client.setForwardedUserAgent(headersList["user-agent"]);
+
+  return {
+    get account() {
+      return new Account(client);
+    },
+    get teams() {
+      return new Teams(client);
+    },
+    get databases() {
+      return new Databases(client);
+    },
+    get storage() {
+      return new Storage(client);
+    },
+    get functions() {
+      return new Functions(client);
+    },
+    get messaging() {
+      return new Messaging(client);
+    },
+    get locale() {
+      return new Locale(client);
+    },
+    get avatars() {
+      return new Avatars(client);
+    },
+    get users() {
+      return new Users(client);
+    },
+  };
+}
 
 /**
  * Creates a session client for the current user.

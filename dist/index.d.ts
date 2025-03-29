@@ -1,5 +1,6 @@
-import { hostInternal, hostExternal, live, originInternal, originExternal } from "./host";
-import { apwManager, imgToWebP, temporaryPassword, isValidJsonString, isEmptyKeyValuePair, isEmptyObject, isValidJsonObject } from "./utils";
+import { live, hostInternal, hostExternal, originInternal, originExternal } from "./host";
+import { imgToWebP, apwManager, isEmptyObject, isValidJsonObject, temporaryPassword, isValidJsonString, isEmptyKeyValuePair } from "./utils";
+import { Client as RealtimeClient } from "./appwriteRealtimeClient";
 export { Models, ID, Query } from "node-appwrite";
 interface ErrorObject {
     appwrite: boolean;
@@ -15,6 +16,7 @@ interface ReturnObject<T> {
     data: T | null;
 }
 export { type ErrorObject, type ReturnObject };
+export { RealtimeClient };
 export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getApwUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, } from "./methods/account";
 export { getBrowserIcon, getCreditCardIcon, getFavicon, getFlag, getImage, getInitials, getQr, } from "./methods/avatars";
 export { createBucket, deleteBucket, getBucket, getFile, getFileDownload, getFilePreview, getFileView, deleteFile, listBuckets, listFiles, updateBucket, updateFile, uploadFile, } from "./methods/storage";

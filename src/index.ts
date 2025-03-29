@@ -1,21 +1,22 @@
 import {
+  live,
   hostInternal,
   hostExternal,
-  live,
   originInternal,
   originExternal,
 } from "./host";
 import {
-  apwManager,
   imgToWebP,
+  apwManager,
+  isEmptyObject,
+  isValidJsonObject,
   temporaryPassword,
   isValidJsonString,
   isEmptyKeyValuePair,
-  isEmptyObject,
-  isValidJsonObject,
 } from "./utils";
 import { paths } from "./appwriteConfig";
 import { checkPathsExists } from "./ssr-utils";
+import { Client as RealtimeClient } from "./appwriteRealtimeClient";
 export { Models, ID, Query } from "node-appwrite";
 
 checkPathsExists(paths);
@@ -34,6 +35,8 @@ interface ReturnObject<T> {
   data: T | null;
 }
 export { type ErrorObject, type ReturnObject };
+
+export { RealtimeClient };
 
 export {
   // Account functions

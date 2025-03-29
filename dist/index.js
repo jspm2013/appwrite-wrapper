@@ -1,9 +1,11 @@
-import { hostInternal, hostExternal, live, originInternal, originExternal, } from "./host";
-import { apwManager, imgToWebP, temporaryPassword, isValidJsonString, isEmptyKeyValuePair, isEmptyObject, isValidJsonObject, } from "./utils";
+import { live, hostInternal, hostExternal, originInternal, originExternal, } from "./host";
+import { imgToWebP, apwManager, isEmptyObject, isValidJsonObject, temporaryPassword, isValidJsonString, isEmptyKeyValuePair, } from "./utils";
 import { paths } from "./appwriteConfig";
 import { checkPathsExists } from "./ssr-utils";
+import { Client as RealtimeClient } from "./appwriteRealtimeClient";
 export { ID, Query } from "node-appwrite";
 checkPathsExists(paths);
+export { RealtimeClient };
 export { 
 // Account functions
 addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getApwUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, } from "./methods/account";

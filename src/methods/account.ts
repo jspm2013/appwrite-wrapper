@@ -164,7 +164,7 @@ const createEmailPasswordSession = async ({
  */
 const createJWT = async (): Promise<ReturnObject<Models.Jwt>> => {
   try {
-    const { account } = await createAdminClient();
+    const { account } = await createSessionClient();
     const data = await account.createJWT();
     return { data, error: null };
   } catch (error: any) {

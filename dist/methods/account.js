@@ -107,7 +107,7 @@ const createEmailPasswordSession = async ({ email, password, }) => {
  */
 const createJWT = async () => {
     try {
-        const { account } = await createAdminClient();
+        const { account } = await createSessionClient();
         const data = await account.createJWT();
         return { data, error: null };
     }

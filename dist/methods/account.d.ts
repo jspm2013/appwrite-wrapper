@@ -15,10 +15,11 @@ interface ReturnObject<T> {
     error: ErrorObject | null;
     data: T | null;
 }
-type AddPrefsParams = {
+type PrefsParams = {
     prefs: string;
 };
-declare const addPrefs: ({ prefs, }: AddPrefsParams) => Promise<ReturnObject<Models.Preferences>>;
+declare const addPrefs: ({ prefs, }: PrefsParams) => Promise<ReturnObject<Models.Preferences>>;
+declare const updatePrefs: ({ prefs, }: PrefsParams) => Promise<ReturnObject<Models.Preferences>>;
 declare const createAccount: ({ email, password, name, }: {
     email: string;
     password: string;
@@ -100,5 +101,5 @@ declare const updateVerification: ({ userId, secret, }: {
     userId: string;
     secret: string;
 }) => Promise<ReturnObject<Models.Token>>;
-export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getApwUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, };
+export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getApwUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updatePrefs, updateRecovery, updateSession, updateStatus, updateVerification, };
 //# sourceMappingURL=account.d.ts.map

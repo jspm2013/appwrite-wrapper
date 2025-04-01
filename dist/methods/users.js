@@ -44,6 +44,30 @@ const addPrefsForUserId = async ({ userId, prefs, }) => {
         };
     }
 };
+/*
+ * Update preferences for a user by their ID.
+ */
+const updatePrefsForUserId = async ({ userId, prefs, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const currentPrefs = await users.getPrefs(userId);
+        // Ensure prefs is a valid JSON string
+        let newPrefs = {};
+        newPrefs = JSON.parse(prefs);
+        if (typeof newPrefs !== "object" || Array.isArray(newPrefs)) {
+            throw new Error("Invalid prefs format. Must be a stringified JSON object.");
+        }
+        const updatedPrefs = { ...currentPrefs, ...newPrefs };
+        const user = await users.updatePrefs(userId, updatedPrefs);
+        return { data: user.prefs, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
 const createSessionForUserId = async ({ userId, }) => {
     try {
         if (!userId)
@@ -481,4 +505,4 @@ const updateStatusForUserId = async ({ userId, status, }) => {
 };
 export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getApwUserForUserId, getUserForUserId, // INcl. deleted=false as default
 listApwUsers, listUsers, // INcl. deleted=false as default
-listIdentities, listIdentitiesForUserId, listSessionsForUserId, updateEmailForUserId, updateEmailVerificationForUserId, updateLabelsForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, };
+listIdentities, listIdentitiesForUserId, listSessionsForUserId, updateEmailForUserId, updateEmailVerificationForUserId, updateLabelsForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updatePrefsForUserId, updateStatusForUserId, };

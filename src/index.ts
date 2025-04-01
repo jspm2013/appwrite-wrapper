@@ -140,6 +140,7 @@ export {
   updatePasswordForUserId,
   updatePhoneForUserId,
   updatePhoneVerificationForUserId,
+  updatePrefsForUserId,
   updateStatusForUserId,
 } from "./methods/users";
 

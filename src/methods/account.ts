@@ -58,12 +58,42 @@ interface ReturnObject<T> {
 /*
  * Add preferences for a user.
  */
-type AddPrefsParams = {
+type PrefsParams = {
   prefs: string; // Must be a stringified JSON object
 };
 const addPrefs = async ({
   prefs,
-}: AddPrefsParams): Promise<ReturnObject<Models.Preferences>> => {
+}: PrefsParams): Promise<ReturnObject<Models.Preferences>> => {
+  try {
+    const { account } = await createSessionClient();
+    const currentPrefs = await account.getPrefs();
+
+    // Ensure prefs is a valid JSON string
+    let newPrefs: Record<string, any> = {};
+    newPrefs = JSON.parse(prefs);
+    if (typeof newPrefs !== "object" || Array.isArray(newPrefs)) {
+      throw new Error(
+        "Invalid prefs format. Must be a stringified JSON object."
+      );
+    }
+
+    const updatedPrefs = { ...currentPrefs, ...newPrefs };
+    const user = await account.updatePrefs(updatedPrefs);
+    return { data: user.prefs, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Update preferences for a user.
+ */
+const updatePrefs = async ({
+  prefs,
+}: PrefsParams): Promise<ReturnObject<Models.Preferences>> => {
   try {
     const { account } = await createSessionClient();
     const currentPrefs = await account.getPrefs();
@@ -716,6 +746,7 @@ export {
   updatePassword,
   updatePhone,
   updatePhoneVerification,
+  updatePrefs,
   updateRecovery,
   updateSession,
   updateStatus,

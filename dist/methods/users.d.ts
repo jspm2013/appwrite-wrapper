@@ -14,11 +14,12 @@ interface ReturnObject<T> {
     error: ErrorObject | null;
     data: T | null;
 }
-type AddPrefsForUserIdParams = {
+type PrefsForUserIdParams = {
     userId: string;
     prefs: string;
 };
-declare const addPrefsForUserId: ({ userId, prefs, }: AddPrefsForUserIdParams) => Promise<ReturnObject<Models.Preferences>>;
+declare const addPrefsForUserId: ({ userId, prefs, }: PrefsForUserIdParams) => Promise<ReturnObject<Models.Preferences>>;
+declare const updatePrefsForUserId: ({ userId, prefs, }: PrefsForUserIdParams) => Promise<ReturnObject<Models.Preferences>>;
 type CreateSessionForUserIdParams = {
     userId: string;
 };
@@ -128,5 +129,5 @@ type UpdateStatusForUserIdParams = {
 declare const updateStatusForUserId: ({ userId, status, }: UpdateStatusForUserIdParams) => Promise<ReturnObject<Models.User<Models.Preferences>>>;
 export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getApwUserForUserId, getUserForUserId, // INcl. deleted=false as default
 listApwUsers, listUsers, // INcl. deleted=false as default
-listIdentities, listIdentitiesForUserId, listSessionsForUserId, updateEmailForUserId, updateEmailVerificationForUserId, updateLabelsForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, };
+listIdentities, listIdentitiesForUserId, listSessionsForUserId, updateEmailForUserId, updateEmailVerificationForUserId, updateLabelsForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updatePrefsForUserId, updateStatusForUserId, };
 //# sourceMappingURL=users.d.ts.map

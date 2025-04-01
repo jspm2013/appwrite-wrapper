@@ -48,6 +48,30 @@ const addPrefs = async ({ prefs, }) => {
     }
 };
 /*
+ * Update preferences for a user.
+ */
+const updatePrefs = async ({ prefs, }) => {
+    try {
+        const { account } = await createSessionClient();
+        const currentPrefs = await account.getPrefs();
+        // Ensure prefs is a valid JSON string
+        let newPrefs = {};
+        newPrefs = JSON.parse(prefs);
+        if (typeof newPrefs !== "object" || Array.isArray(newPrefs)) {
+            throw new Error("Invalid prefs format. Must be a stringified JSON object.");
+        }
+        const updatedPrefs = { ...currentPrefs, ...newPrefs };
+        const user = await account.updatePrefs(updatedPrefs);
+        return { data: user.prefs, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+/*
  * Creates an account.
  */
 const createAccount = async ({ email, password, name, }) => {
@@ -509,4 +533,4 @@ const updateVerification = async ({ userId, secret, }) => {
         };
     }
 };
-export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getApwUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updateRecovery, updateSession, updateStatus, updateVerification, };
+export { addPrefs, createAccount, createAnonymousSession, createEmailPasswordSession, createJWT, createMagicURLSession, createOAuth2Token, createPhoneVerification, createRecovery, createSession, createVerification, deletePrefs, deleteSession, deleteSessions, getApwUser, getSession, getUser, listSessions, updateEmail, updateName, updatePassword, updatePhone, updatePhoneVerification, updatePrefs, updateRecovery, updateSession, updateStatus, updateVerification, };

@@ -47,14 +47,45 @@ interface ReturnObject<T> {
 /*
  * Add preferences for a user by their ID.
  */
-type AddPrefsForUserIdParams = {
+type PrefsForUserIdParams = {
   userId: string;
   prefs: string; // Must be a stringified JSON object
 };
 const addPrefsForUserId = async ({
   userId,
   prefs,
-}: AddPrefsForUserIdParams): Promise<ReturnObject<Models.Preferences>> => {
+}: PrefsForUserIdParams): Promise<ReturnObject<Models.Preferences>> => {
+  try {
+    const { users } = await createAdminClient();
+    const currentPrefs = await users.getPrefs(userId);
+
+    // Ensure prefs is a valid JSON string
+    let newPrefs: Record<string, any> = {};
+    newPrefs = JSON.parse(prefs);
+    if (typeof newPrefs !== "object" || Array.isArray(newPrefs)) {
+      throw new Error(
+        "Invalid prefs format. Must be a stringified JSON object."
+      );
+    }
+
+    const updatedPrefs = { ...currentPrefs, ...newPrefs };
+    const user = await users.updatePrefs(userId, updatedPrefs);
+    return { data: user.prefs, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Update preferences for a user by their ID.
+ */
+const updatePrefsForUserId = async ({
+  userId,
+  prefs,
+}: PrefsForUserIdParams): Promise<ReturnObject<Models.Preferences>> => {
   try {
     const { users } = await createAdminClient();
     const currentPrefs = await users.getPrefs(userId);
@@ -850,5 +881,6 @@ export {
   updatePasswordForUserId,
   updatePhoneForUserId,
   updatePhoneVerificationForUserId,
+  updatePrefsForUserId,
   updateStatusForUserId,
 };

@@ -135,6 +135,7 @@ export {
   listSessionsForUserId,
   updateEmailForUserId,
   updateEmailVerificationForUserId,
+  updateLabelsForUserId,
   updateNameForUserId,
   updatePasswordForUserId,
   updatePhoneForUserId,

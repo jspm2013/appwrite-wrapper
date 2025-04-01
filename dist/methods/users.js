@@ -318,6 +318,23 @@ const updateEmailVerificationForUserId = async ({ userId, emailVerification, }) 
         };
     }
 };
+const updateLabelsForUserId = async ({ userId, labels, }) => {
+    try {
+        const { users } = await createAdminClient();
+        const newLabels = Array.isArray(labels) ? labels : [String(labels)];
+        const data = await users.updateLabels(userId, newLabels);
+        return { data, error: null };
+    }
+    catch (error) {
+        return {
+            data: null,
+            error: await handleApwError({ error }),
+        };
+    }
+};
+/*
+ * Adds labels for a user by their ID.
+ */
 const addLabelsForUserId = async ({ userId, labels, }) => {
     try {
         const { users } = await createAdminClient();
@@ -464,4 +481,4 @@ const updateStatusForUserId = async ({ userId, status, }) => {
 };
 export { addLabelsForUserId, addPrefsForUserId, createSessionForUserId, createToken, deleteLabelsForUserId, deletePrefsForUserId, deleteSessionForUserId, deleteSessionsForUserId, deleteUserForUserId, getApwUserForUserId, getUserForUserId, // INcl. deleted=false as default
 listApwUsers, listUsers, // INcl. deleted=false as default
-listIdentities, listIdentitiesForUserId, listSessionsForUserId, updateEmailForUserId, updateEmailVerificationForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, };
+listIdentities, listIdentitiesForUserId, listSessionsForUserId, updateEmailForUserId, updateEmailVerificationForUserId, updateLabelsForUserId, updateNameForUserId, updatePasswordForUserId, updatePhoneForUserId, updatePhoneVerificationForUserId, updateStatusForUserId, };

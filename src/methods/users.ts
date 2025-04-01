@@ -568,6 +568,31 @@ type LabelsForUserIdParams = {
   userId: string;
   labels: string | string[];
 };
+const updateLabelsForUserId = async ({
+  userId,
+  labels,
+}: LabelsForUserIdParams): Promise<
+  ReturnObject<Models.User<Models.Preferences>>
+> => {
+  try {
+    const { users } = await createAdminClient();
+
+    const newLabels = Array.isArray(labels) ? labels : [String(labels)];
+
+    const data = await users.updateLabels(userId, newLabels);
+
+    return { data, error: null };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: await handleApwError({ error }),
+    };
+  }
+};
+
+/*
+ * Adds labels for a user by their ID.
+ */
 const addLabelsForUserId = async ({
   userId,
   labels,
@@ -820,6 +845,7 @@ export {
   listSessionsForUserId,
   updateEmailForUserId,
   updateEmailVerificationForUserId,
+  updateLabelsForUserId,
   updateNameForUserId,
   updatePasswordForUserId,
   updatePhoneForUserId,

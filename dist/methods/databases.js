@@ -133,13 +133,13 @@ const createCollectionWithSchema = async (args) => {
                     action: "createAttribute",
                     information: `Creating attribute '${attr.key}'.`,
                 });
-                // Keys validation: can't have both xdefault and required
-                const hasRequired = "required" in attr && attr.required !== undefined;
+                // Validate that xdefault is not defined if required is set to true
+                const hasRequiredTrue = "required" in attr && attr.required === true;
                 const hasXdefault = attr.type !== "relationship" &&
                     "xdefault" in attr &&
                     attr.xdefault !== undefined;
-                if (hasXdefault && hasRequired) {
-                    const msg = `Not able to create Attribute '${attr.key}' for Collection '${newArgs.name}' (id: '${newArgs.collectionId}'), because both 'xdefault' and 'required' are set. Appwrite does not allow both properties to be defined simultaneously.`;
+                if (hasRequiredTrue && hasXdefault) {
+                    const msg = `Not able to create Attribute '${attr.key}' for Collection '${newArgs.name}' (id: '${newArgs.collectionId}'), because both 'xdefault' and 'required: true' are set. Appwrite does not allow xdefault to be defined while required is true.`;
                     logContent.changes.push({
                         action: "createAttribute",
                         information: msg,
@@ -1200,13 +1200,13 @@ const updateCollectionWithSchema = async (args) => {
                     action: "createAttribute",
                     information: `Attribute '${schemaAttr.key}' not found; creating it.`,
                 });
-                // Keys validation: can't have both xdefault and required
-                const hasRequired = "required" in schemaAttr && schemaAttr.required !== undefined;
+                // Validate that xdefault is not defined if required is set to true
+                const hasRequiredTrue = "required" in schemaAttr && schemaAttr.required === true;
                 const hasXdefault = schemaAttr.type !== "relationship" &&
                     "xdefault" in schemaAttr &&
                     schemaAttr.xdefault !== undefined;
-                if (hasXdefault && hasRequired) {
-                    const msg = `Not able to create Attribute '${schemaAttr.key}' for Collection '${newArgs.name}' (id: '${newArgs.collectionId}'), because both 'xdefault' and 'required' are set. Appwrite does not allow both properties to be defined simultaneously.`;
+                if (hasRequiredTrue && hasXdefault) {
+                    const msg = `Not able to create Attribute '${schemaAttr.key}' for Collection '${newArgs.name}' (id: '${newArgs.collectionId}'), because both 'xdefault' and 'required: true' are set. Appwrite does not allow xdefault to be defined while required is true.`;
                     logContent.changes.push({
                         action: "createAttribute",
                         information: msg,

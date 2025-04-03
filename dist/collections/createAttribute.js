@@ -132,13 +132,13 @@ export const createAttribute = async (databaseId, collectionId, attr, relatedCol
     if (!handler) {
         throw new Error(`Unsupported attribute type: '${attr.type}'`);
     }
-    // ⚠️ Validate that required and xdefault are not both defined
-    const hasRequired = "required" in attr && attr.required === true;
+    // Validate that xdefault is not defined if required is set to true
+    const hasRequiredTrue = "required" in attr && attr.required === true;
     const hasXdefault = attr.type !== "relationship" &&
         "xdefault" in attr &&
         attr.xdefault !== undefined;
-    if (hasRequired && hasXdefault) {
-        throw new Error(`Cannot create attribute '${attr.key}' with both 'required: true' and 'xdefault'. Appwrite forbids this combination.`);
+    if (hasRequiredTrue && hasXdefault) {
+        throw new Error(`Cannot create attribute '${attr.key}' with both 'required: true' and 'xdefault' set. Appwrite forbids this combination.`);
     }
     return await handler(databaseId, collectionId, attr, relatedCollectionId);
 };

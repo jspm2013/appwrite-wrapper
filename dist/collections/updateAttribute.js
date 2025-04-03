@@ -118,5 +118,13 @@ export const updateAttribute = async (databaseId, collectionId, attr) => {
     if (!handler) {
         throw new Error(`Unsupported attribute type: '${attr.type}'`);
     }
+    // ⚠️ Check for xdefault + required conflict
+    const hasRequired = "required" in attr && attr.required !== undefined && attr.required === true;
+    const hasXdefault = attr.type !== "relationship" &&
+        "xdefault" in attr &&
+        attr.xdefault !== undefined;
+    if (hasRequired && hasXdefault) {
+        throw new Error(`Cannot update attribute '${attr.key}' because both 'xdefault' and 'required' are set. Appwrite forbids this combination.`);
+    }
     return await handler(databaseId, collectionId, attr);
 };

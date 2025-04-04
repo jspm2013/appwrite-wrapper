@@ -2339,18 +2339,19 @@ const updateCollectionWithSchema = async (
         }
       }
     } catch (error: any) {
+      const errorMessage = currentlyProcessedIndex
+        ? `Error while processing index '${currentlyProcessedIndex.key}': ${error.message}`
+        : `Error while processing indexes: ${error.message}`;
       logContent.changes.push({
         action: "indexProcessingError",
-        information: currentlyProcessedIndex
-          ? `Error while processing index '${currentlyProcessedIndex.key}': ${error.message}`
-          : `Error while processing indexes: ${error.message}`,
+        information: errorMessage,
       });
 
       // Mark the failure and continue bubbling up the error
       logContent.status = "failure";
       logContent.executed_at = new Date().toISOString();
       await toLogs(logTopic, logDetails, logContent);
-      throw error;
+      throw { ...error, message: errorMessage };
     }
 
     logContent.executed_at = new Date().toISOString();

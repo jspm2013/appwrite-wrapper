@@ -4,7 +4,7 @@ import { getSchema, attributesEqual, createAttribute, updateAttribute,
  } from "../collections";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
-import { ID, Query, AppwriteException, } from "node-appwrite";
+import { ID, Query, } from "node-appwrite";
 import { databaseId, usersCollectionId } from "../appwriteConfig";
 import { generateMigrationId, toLogs } from "../ssr-utils";
 import { isCollectionSchema, schemaToFile } from "../collections/schema";
@@ -1362,20 +1362,7 @@ const updateCollectionWithSchema = async (args) => {
             logContent.status = "failure";
             logContent.executed_at = new Date().toISOString();
             await toLogs(logTopic, logDetails, logContent);
-            // Preserve all original fields and replace only `message` in `response`
-            const originalResponse = error.response ?? "{}";
-            let parsedResponse = {};
-            try {
-                parsedResponse = JSON.parse(originalResponse);
-            }
-            catch {
-                parsedResponse = {};
-            }
-            const updatedResponse = {
-                ...parsedResponse,
-                message: errorMessage,
-            };
-            throw new AppwriteException(error.message, error.code || 500, error.type || "index_processing_error", JSON.stringify(updatedResponse));
+            throw { message: errorMessage };
         }
         logContent.executed_at = new Date().toISOString();
         logContent.status = "success";

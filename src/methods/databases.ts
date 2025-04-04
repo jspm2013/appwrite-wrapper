@@ -2359,27 +2359,7 @@ const updateCollectionWithSchema = async (
       logContent.executed_at = new Date().toISOString();
       await toLogs(logTopic, logDetails, logContent);
 
-      // Preserve all original fields and replace only `message` in `response`
-      const originalResponse = error.response ?? "{}";
-      let parsedResponse: any = {};
-
-      try {
-        parsedResponse = JSON.parse(originalResponse);
-      } catch {
-        parsedResponse = {};
-      }
-
-      const updatedResponse = {
-        ...parsedResponse,
-        message: errorMessage,
-      };
-
-      throw new AppwriteException(
-        error.message,
-        error.code || 500,
-        error.type || "index_processing_error",
-        JSON.stringify(updatedResponse)
-      );
+      throw { message: errorMessage };
     }
 
     logContent.executed_at = new Date().toISOString();

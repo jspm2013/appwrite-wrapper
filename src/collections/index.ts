@@ -19,31 +19,39 @@ export const getAttributeFromKey = (
 };
 
 /**
- * Compares two attribute definitions to determine if they are equal.
+ * Compares two Appwrite attribute definitions to determine if they are equal.
  *
- * @param existingAttr - The existing attribute definition.
- * @param schemaAttr - The attribute definition from your schema.
- * @returns True if the attributes are equal, false otherwise.
+ * This comparison checks common properties like `type`, `required`, `array`, and `default`/`xdefault` values,
+ * as well as type-specific properties such as `size` for strings, `min`/`max` for numbers, and enum/relationship details.
+ * It properly handles falsy values (e.g. `false`, `0`, `""`) and distinguishes between `undefined` and explicit defaults.
+ *
+ * @param existingAttr - The existing attribute object retrieved from the Appwrite collection.
+ * @param schemaAttr - The attribute definition as defined in your local schema JSON.
+ * @returns `true` if both attributes are considered equal; otherwise, `false`.
  */
+const getAttrDefault = (attr: any): any =>
+  "xdefault" in attr
+    ? attr.xdefault
+    : "default" in attr
+    ? attr.default
+    : undefined;
 export const attributesEqual = (
   existingAttr: Attribute,
   schemaAttr: Attribute
 ): boolean => {
-  // Compare the common properties.
+  const existingDefault = getAttrDefault(existingAttr);
+  const schemaDefault = getAttrDefault(schemaAttr);
+
   const commonEqual =
     existingAttr.required === schemaAttr.required &&
     existingAttr.type === schemaAttr.type &&
     existingAttr.array === schemaAttr.array &&
-    // Only compare `default` if both objects have that property.
-    ("default" in existingAttr && "default" in schemaAttr
-      ? existingAttr.default === schemaAttr.default
-      : true);
+    existingDefault === schemaDefault; // Compares false/null/undefined correctly
 
-  // For type-specific comparisons, narrow based on the attribute type.
   let typeSpecificEqual = true;
+
   switch (existingAttr.type) {
     case "string":
-      // For string attributes, compare size.
       typeSpecificEqual =
         (existingAttr as Models.AttributeString).size ===
         (schemaAttr as Models.AttributeString).size;
@@ -63,7 +71,6 @@ export const attributesEqual = (
           (schemaAttr as Models.AttributeFloat).max;
       break;
     case "enum":
-      // Compare format and elements. (For elements, we use JSON.stringify here as a simple deep-equality check.)
       typeSpecificEqual =
         (existingAttr as Models.AttributeEnum).format ===
           (schemaAttr as Models.AttributeEnum).format &&
@@ -71,7 +78,6 @@ export const attributesEqual = (
           JSON.stringify((schemaAttr as Models.AttributeEnum).elements);
       break;
     case "relationship":
-      // Relationship attributes don't have a default.
       typeSpecificEqual =
         (existingAttr as Models.AttributeRelationship).relatedCollection ===
           (schemaAttr as Models.AttributeRelationship).relatedCollection &&
@@ -84,7 +90,6 @@ export const attributesEqual = (
         (existingAttr as Models.AttributeRelationship).onDelete ===
           (schemaAttr as Models.AttributeRelationship).onDelete;
       break;
-    // For other types (boolean, email, ip, url, datetime) you may compare additional keys as needed.
     default:
       break;
   }

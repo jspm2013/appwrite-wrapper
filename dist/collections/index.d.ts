@@ -11,12 +11,5 @@ export { getSchema } from "./schema";
  * @returns The matching attribute definition, or undefined if not found.
  */
 export declare const getAttributeFromKey: (key: string, schemaAttributes: Attribute[]) => Attribute | undefined;
-/**
- * Compares two attribute definitions to determine if they are equal.
- *
- * @param existingAttr - The existing attribute definition.
- * @param schemaAttr - The attribute definition from your schema.
- * @returns True if the attributes are equal, false otherwise.
- */
 export declare const attributesEqual: (existingAttr: Attribute, schemaAttr: Attribute) => boolean;
 //# sourceMappingURL=index.d.ts.map

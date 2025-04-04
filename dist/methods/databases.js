@@ -888,7 +888,7 @@ const listDocuments = async (args) => {
             newArgs.queries,
         ];
         const data = await databases.listDocuments(...listDocumentsParams);
-        // ✅ Defensive null check
+        // Defensive null check
         if (!data || !Array.isArray(data.documents)) {
             return {
                 data: { documents: [], total: 0 },
@@ -948,7 +948,7 @@ const listDocuments = async (args) => {
                                     return !matchesValues(doc[attribute], values);
                                 case "contains":
                                     return Array.isArray(values)
-                                        ? values.every((val) => matchesValue(doc[attribute], val))
+                                        ? values.some((val) => matchesValue(doc[attribute], val))
                                         : false;
                                 case "between":
                                     const id = getMatchingId(doc[attribute]);

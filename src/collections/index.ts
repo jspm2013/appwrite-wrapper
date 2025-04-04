@@ -41,12 +41,18 @@ export const attributesEqual = (
 ): boolean => {
   const existingDefault = getAttrDefault(existingAttr);
   const schemaDefault = getAttrDefault(schemaAttr);
+  const hasDefinedSchemaDefault =
+    "xdefault" in schemaAttr || "default" in schemaAttr;
+
+  const defaultsEqual = hasDefinedSchemaDefault
+    ? existingDefault === schemaDefault
+    : true;
 
   const commonEqual =
     existingAttr.required === schemaAttr.required &&
     existingAttr.type === schemaAttr.type &&
     existingAttr.array === schemaAttr.array &&
-    existingDefault === schemaDefault; // Compares false/null/undefined correctly
+    defaultsEqual;
 
   let typeSpecificEqual = true;
 

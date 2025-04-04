@@ -8,7 +8,7 @@ const createAttributeHandlers = {
             collectionId,
             key: attr.key,
             required: attr.required,
-            xdefault: attr.xdefault,
+            xdefault: "xdefault" in attr ? attr.xdefault : undefined,
             array: attr.array,
         });
     },
@@ -18,7 +18,7 @@ const createAttributeHandlers = {
             collectionId,
             key: attr.key,
             required: attr.required,
-            xdefault: attr.xdefault,
+            xdefault: "xdefault" in attr ? attr.xdefault : undefined,
             array: attr.array,
         });
     },
@@ -28,7 +28,7 @@ const createAttributeHandlers = {
             collectionId,
             key: attr.key,
             required: attr.required,
-            xdefault: attr.xdefault,
+            xdefault: "xdefault" in attr ? attr.xdefault : undefined,
             array: attr.array,
         });
     },
@@ -39,7 +39,7 @@ const createAttributeHandlers = {
             key: attr.key,
             elements: attr.elements,
             required: attr.required,
-            xdefault: attr.xdefault,
+            xdefault: "xdefault" in attr ? attr.xdefault : undefined,
             array: attr.array,
         });
     },
@@ -51,7 +51,7 @@ const createAttributeHandlers = {
             required: attr.required,
             min: attr.min,
             max: attr.max,
-            xdefault: attr.xdefault,
+            xdefault: "xdefault" in attr ? attr.xdefault : undefined,
             array: attr.array,
         });
     },
@@ -63,7 +63,7 @@ const createAttributeHandlers = {
             required: attr.required,
             min: attr.min,
             max: attr.max,
-            xdefault: attr.xdefault,
+            xdefault: "xdefault" in attr ? attr.xdefault : undefined,
             array: attr.array,
         });
     },
@@ -73,7 +73,7 @@ const createAttributeHandlers = {
             collectionId,
             key: attr.key,
             required: attr.required,
-            xdefault: attr.xdefault,
+            xdefault: "xdefault" in attr ? attr.xdefault : undefined,
             array: attr.array,
         });
     },
@@ -110,7 +110,7 @@ const createAttributeHandlers = {
             key: attr.key,
             size: attr.size,
             required: attr.required,
-            xdefault: attr.xdefault,
+            xdefault: "xdefault" in attr ? attr.xdefault : undefined,
             array: attr.array,
             encrypt: attr.encrypt,
         });
@@ -121,12 +121,11 @@ const createAttributeHandlers = {
             collectionId,
             key: attr.key,
             required: attr.required,
-            xdefault: attr.xdefault,
+            xdefault: "xdefault" in attr ? attr.xdefault : undefined,
             array: attr.array,
         });
     },
 };
-// --- Main function ---
 export const createAttribute = async (databaseId, collectionId, attr, relatedCollectionId) => {
     const handler = createAttributeHandlers[attr.type];
     if (!handler) {
@@ -134,9 +133,7 @@ export const createAttribute = async (databaseId, collectionId, attr, relatedCol
     }
     // Validate that xdefault is not defined if required is set to true
     const hasRequiredTrue = "required" in attr && attr.required === true;
-    const hasXdefault = attr.type !== "relationship" &&
-        "xdefault" in attr &&
-        attr.xdefault !== undefined;
+    const hasXdefault = attr.type !== "relationship" && "xdefault" in attr;
     if (hasRequiredTrue && hasXdefault) {
         throw new Error(`Cannot create attribute '${attr.key}' with both 'required: true' and 'xdefault' set. Appwrite forbids this combination.`);
     }

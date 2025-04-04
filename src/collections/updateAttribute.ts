@@ -39,7 +39,7 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       collectionId,
       key: attr.key,
       required: attr.required,
-      xdefault: attr.xdefault,
+      xdefault: "xdefault" in attr ? attr.xdefault : undefined,
       newKey: attr.newKey,
     });
   },
@@ -54,7 +54,7 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       collectionId,
       key: attr.key,
       required: attr.required,
-      xdefault: attr.xdefault,
+      xdefault: "xdefault" in attr ? attr.xdefault : undefined,
       newKey: attr.newKey,
     });
   },
@@ -69,7 +69,7 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       collectionId,
       key: attr.key,
       required: attr.required,
-      xdefault: attr.xdefault,
+      xdefault: "xdefault" in attr ? attr.xdefault : undefined,
       newKey: attr.newKey,
     });
   },
@@ -85,7 +85,7 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       key: attr.key,
       elements: attr.elements,
       required: attr.required,
-      xdefault: attr.xdefault,
+      xdefault: "xdefault" in attr ? attr.xdefault : undefined,
       newKey: attr.newKey,
     });
   },
@@ -102,7 +102,7 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       required: attr.required,
       min: attr.min,
       max: attr.max,
-      xdefault: attr.xdefault,
+      xdefault: "xdefault" in attr ? attr.xdefault : undefined,
       newKey: attr.newKey,
     });
   },
@@ -119,7 +119,7 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       required: attr.required,
       min: attr.min,
       max: attr.max,
-      xdefault: attr.xdefault,
+      xdefault: "xdefault" in attr ? attr.xdefault : undefined,
       newKey: attr.newKey,
     });
   },
@@ -134,7 +134,7 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       collectionId,
       key: attr.key,
       required: attr.required,
-      xdefault: attr.xdefault,
+      xdefault: "xdefault" in attr ? attr.xdefault : undefined,
       newKey: attr.newKey,
     });
   },
@@ -170,7 +170,7 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       collectionId,
       key: attr.key,
       required: attr.required,
-      xdefault: attr.xdefault,
+      xdefault: "xdefault" in attr ? attr.xdefault : undefined,
       size: attr.size,
       newKey: attr.newKey,
     });
@@ -186,7 +186,7 @@ const updateAttributeHandlers: Record<string, AttributeHandler> = {
       collectionId,
       key: attr.key,
       required: attr.required,
-      xdefault: attr.xdefault,
+      xdefault: "xdefault" in attr ? attr.xdefault : undefined,
       newKey: attr.newKey,
     });
   },
@@ -204,10 +204,7 @@ export const updateAttribute = async (
 
   // Validate that xdefault is not defined if required is set to true
   const hasRequiredTrue = "required" in attr && attr.required === true;
-  const hasXdefault =
-    attr.type !== "relationship" &&
-    "xdefault" in attr &&
-    attr.xdefault !== undefined;
+  const hasXdefault = attr.type !== "relationship" && "xdefault" in attr;
 
   if (hasRequiredTrue && hasXdefault) {
     throw new Error(

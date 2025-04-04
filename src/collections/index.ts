@@ -29,18 +29,18 @@ export const getAttributeFromKey = (
  * @param schemaAttr - The attribute definition as defined in your local schema JSON.
  * @returns `true` if both attributes are considered equal; otherwise, `false`.
  */
-const getAttrDefault = (attr: any): any =>
-  "xdefault" in attr
-    ? attr.xdefault
-    : "default" in attr
-    ? attr.default
-    : undefined;
+const getAttrDefault = (attr: any, isSchema: boolean): any => {
+  if (isSchema) {
+    return "xdefault" in attr ? attr.xdefault : attr.default;
+  }
+  return attr.default;
+};
 export const attributesEqual = (
   existingAttr: Attribute,
   schemaAttr: Attribute
 ): boolean => {
-  const existingDefault = getAttrDefault(existingAttr);
-  const schemaDefault = getAttrDefault(schemaAttr);
+  const existingDefault = getAttrDefault(existingAttr, false);
+  const schemaDefault = getAttrDefault(schemaAttr, true);
   const hasDefinedSchemaDefault =
     "xdefault" in schemaAttr || "default" in schemaAttr;
 

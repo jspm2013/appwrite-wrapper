@@ -1307,9 +1307,11 @@ const updateCollectionWithSchema = async (args) => {
             action: "schemaToFile",
             information: `Old collection schema saved to disk - starting index processing.`,
         });
+        let currentlyProcessedIndex;
         try {
             // Create indexes from schema
             for (const index of schema.indexes) {
+                currentlyProcessedIndex = index;
                 logContent.changes.push({
                     action: "createIndex",
                     information: `Creating index '${index.key}' of type '${index.type}'.`,
@@ -1326,6 +1328,7 @@ const updateCollectionWithSchema = async (args) => {
                 const schemaIndexKeys = new Set(schema.indexes.map((idx) => idx.key));
                 const indexesToDelete = existingIndexes.filter((idx) => !schemaIndexKeys.has(idx.key));
                 for (const index of indexesToDelete) {
+                    currentlyProcessedIndex = index;
                     logContent.changes.push({
                         action: "deleteIndex",
                         information: `Index '${index.key}' exists in collection but not in schema; removing it.`,
@@ -1350,7 +1353,9 @@ const updateCollectionWithSchema = async (args) => {
         catch (error) {
             logContent.changes.push({
                 action: "indexProcessingError",
-                information: `Error while processing indexes: ${error.message}`,
+                information: currentlyProcessedIndex
+                    ? `Error while processing index '${currentlyProcessedIndex.key}': ${error.message}`
+                    : `Error while processing indexes: ${error.message}`,
             });
             // Mark the failure and continue bubbling up the error
             logContent.status = "failure";

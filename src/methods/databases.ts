@@ -2271,9 +2271,14 @@ const updateCollectionWithSchema = async (
       information: `Old collection schema saved to disk - starting index processing.`,
     });
 
+    let currentlyProcessedIndex:
+      | { key: string; type: string; attributes: string[]; orders?: string[] }
+      | undefined;
     try {
       // Create indexes from schema
       for (const index of schema.indexes) {
+        currentlyProcessedIndex = index;
+
         logContent.changes.push({
           action: "createIndex",
           information: `Creating index '${index.key}' of type '${index.type}'.`,
@@ -2304,6 +2309,8 @@ const updateCollectionWithSchema = async (
         );
 
         for (const index of indexesToDelete) {
+          currentlyProcessedIndex = index;
+
           logContent.changes.push({
             action: "deleteIndex",
             information: `Index '${index.key}' exists in collection but not in schema; removing it.`,
@@ -2334,7 +2341,9 @@ const updateCollectionWithSchema = async (
     } catch (error: any) {
       logContent.changes.push({
         action: "indexProcessingError",
-        information: `Error while processing indexes: ${error.message}`,
+        information: currentlyProcessedIndex
+          ? `Error while processing index '${currentlyProcessedIndex.key}': ${error.message}`
+          : `Error while processing indexes: ${error.message}`,
       });
 
       // Mark the failure and continue bubbling up the error

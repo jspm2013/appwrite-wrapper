@@ -1681,11 +1681,11 @@ const listDocuments = async (
     const finalDatabaseId = args.databaseId ?? databaseId;
     const finalCollectionId = args.collectionId ?? usersCollectionId;
 
-    const newArgs = {
+    const newArgs: ListDocumentsArgs = {
       ...args,
       databaseId: finalDatabaseId,
       collectionId: finalCollectionId,
-    } as ListDocumentsArgs;
+    };
 
     const listDocumentsParams: ListDocuments = [
       newArgs.databaseId!,
@@ -1695,9 +1695,16 @@ const listDocuments = async (
 
     const data = await databases.listDocuments(...listDocumentsParams);
 
+    // ✅ Defensive null check
+    if (!data || !Array.isArray(data.documents)) {
+      return {
+        data: { documents: [], total: 0 },
+        error: null,
+      };
+    }
+
     let filteredDocuments = data.documents;
 
-    // Helper to extract comparable ID from value
     const getMatchingId = (val: any): string | null => {
       if (val === null || val === undefined) return null;
       if (typeof val === "object" && "$id" in val) return val.$id;
@@ -1705,7 +1712,6 @@ const listDocuments = async (
       return null;
     };
 
-    // Helper to check if value(s) match doc field
     const matchesValue = (docVal: any, target: string): boolean => {
       if (Array.isArray(docVal)) {
         return docVal.some((item) => getMatchingId(item) === target);
@@ -1721,109 +1727,84 @@ const listDocuments = async (
       return docId ? targets.includes(docId) : false;
     };
 
-    if (newArgs.relationshipQueries && newArgs.relationshipQueries.length > 0) {
-      filteredDocuments = data.documents.filter((document: Models.Document) => {
+    if (newArgs.relationshipQueries?.length) {
+      filteredDocuments = data.documents.filter((doc) => {
         return newArgs.relationshipQueries!.every((query) => {
           try {
             const parsedQuery = JSON.parse(query);
 
             const evaluateQuery = (parsedQuery: any, doc: any): boolean => {
-              const attribute = parsedQuery.attribute;
-              const method = parsedQuery.method;
-              const values = parsedQuery.values;
+              const { attribute, method, values } = parsedQuery;
 
               switch (method) {
                 case "equal":
                   return matchesValue(doc[attribute], values[0]);
-
                 case "notEqual":
                   return !matchesValue(doc[attribute], values[0]);
-
                 case "lessThan":
                   return getMatchingId(doc[attribute])! < values[0];
-
                 case "lessThanEqual":
                   return getMatchingId(doc[attribute])! <= values[0];
-
                 case "greaterThan":
                   return getMatchingId(doc[attribute])! > values[0];
-
                 case "greaterThanEqual":
                   return getMatchingId(doc[attribute])! >= values[0];
-
                 case "search":
                   return getMatchingId(doc[attribute])!
                     .toLowerCase()
                     .includes(values[0].toLowerCase());
-
                 case "isIn":
                   return matchesValues(doc[attribute], values);
-
                 case "isNotIn":
                   return !matchesValues(doc[attribute], values);
-
                 case "contains":
                   return Array.isArray(values)
-                    ? values.every((val: string) =>
-                        matchesValue(doc[attribute], val)
-                      )
+                    ? values.every((val) => matchesValue(doc[attribute], val))
                     : false;
-
                 case "between":
                   const id = getMatchingId(doc[attribute]);
-                  if (id === null) return false;
-                  return id >= values[0] && id <= values[1];
-
+                  return id !== null && id >= values[0] && id <= values[1];
                 case "startsWith":
                   return String(getMatchingId(doc[attribute])).startsWith(
                     String(values[0])
                   );
-
                 case "endsWith":
                   return String(getMatchingId(doc[attribute])).endsWith(
                     String(values[0])
                   );
-
                 case "isNull":
                   return doc[attribute] === null;
-
                 case "isNotNull":
                   return doc[attribute] !== null;
-
                 case "or":
                   return values.some((subQuery: any) =>
                     evaluateQuery(subQuery, doc)
                   );
-
                 case "and":
                   return values.every((subQuery: any) =>
                     evaluateQuery(subQuery, doc)
                   );
-
                 default:
                   return false;
               }
             };
 
-            return evaluateQuery(parsedQuery, document);
+            return evaluateQuery(parsedQuery, doc);
           } catch (e) {
             console.error("Error parsing relationship query:", query, e);
             return false;
           }
         });
       });
-
-      return {
-        data: {
-          ...data,
-          documents: filteredDocuments,
-          total: filteredDocuments.length,
-        },
-        error: null,
-      };
     }
 
-    return { data, error: null };
+    return {
+      data: {
+        total: filteredDocuments.length,
+        documents: filteredDocuments,
+      },
+      error: null,
+    };
   } catch (error: any) {
     return {
       data: null,

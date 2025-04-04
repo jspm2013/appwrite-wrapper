@@ -888,8 +888,14 @@ const listDocuments = async (args) => {
             newArgs.queries,
         ];
         const data = await databases.listDocuments(...listDocumentsParams);
+        // ✅ Defensive null check
+        if (!data || !Array.isArray(data.documents)) {
+            return {
+                data: { documents: [], total: 0 },
+                error: null,
+            };
+        }
         let filteredDocuments = data.documents;
-        // Helper to extract comparable ID from value
         const getMatchingId = (val) => {
             if (val === null || val === undefined)
                 return null;
@@ -899,7 +905,6 @@ const listDocuments = async (args) => {
                 return val;
             return null;
         };
-        // Helper to check if value(s) match doc field
         const matchesValue = (docVal, target) => {
             if (Array.isArray(docVal)) {
                 return docVal.some((item) => getMatchingId(item) === target);
@@ -913,15 +918,13 @@ const listDocuments = async (args) => {
             const docId = getMatchingId(docVal);
             return docId ? targets.includes(docId) : false;
         };
-        if (newArgs.relationshipQueries && newArgs.relationshipQueries.length > 0) {
-            filteredDocuments = data.documents.filter((document) => {
+        if (newArgs.relationshipQueries?.length) {
+            filteredDocuments = data.documents.filter((doc) => {
                 return newArgs.relationshipQueries.every((query) => {
                     try {
                         const parsedQuery = JSON.parse(query);
                         const evaluateQuery = (parsedQuery, doc) => {
-                            const attribute = parsedQuery.attribute;
-                            const method = parsedQuery.method;
-                            const values = parsedQuery.values;
+                            const { attribute, method, values } = parsedQuery;
                             switch (method) {
                                 case "equal":
                                     return matchesValue(doc[attribute], values[0]);
@@ -949,9 +952,7 @@ const listDocuments = async (args) => {
                                         : false;
                                 case "between":
                                     const id = getMatchingId(doc[attribute]);
-                                    if (id === null)
-                                        return false;
-                                    return id >= values[0] && id <= values[1];
+                                    return id !== null && id >= values[0] && id <= values[1];
                                 case "startsWith":
                                     return String(getMatchingId(doc[attribute])).startsWith(String(values[0]));
                                 case "endsWith":
@@ -968,7 +969,7 @@ const listDocuments = async (args) => {
                                     return false;
                             }
                         };
-                        return evaluateQuery(parsedQuery, document);
+                        return evaluateQuery(parsedQuery, doc);
                     }
                     catch (e) {
                         console.error("Error parsing relationship query:", query, e);
@@ -976,16 +977,14 @@ const listDocuments = async (args) => {
                     }
                 });
             });
-            return {
-                data: {
-                    ...data,
-                    documents: filteredDocuments,
-                    total: filteredDocuments.length,
-                },
-                error: null,
-            };
         }
-        return { data, error: null };
+        return {
+            data: {
+                total: filteredDocuments.length,
+                documents: filteredDocuments,
+            },
+            error: null,
+        };
     }
     catch (error) {
         return {

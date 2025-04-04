@@ -2,10 +2,11 @@
 
 import {
   getSchema,
+  Attribute,
   attributesEqual,
   createAttribute,
   updateAttribute,
-  getAttributeFromKey,
+  //getAttributeFromKey,
 } from "../collections";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
@@ -2196,9 +2197,8 @@ const updateCollectionWithSchema = async (
           );
         }
       } else if (args.destructive) {
-        const existingAttr = getAttributeFromKey(
-          schemaAttr.key,
-          schema.attributes
+        const existingAttr = (coll.attributes as Attribute[]).find(
+          (attr) => attr.key === schemaAttr.key
         );
         if (!attributesEqual(existingAttr!, schemaAttr)) {
           logContent.changes.push({
@@ -2264,14 +2264,21 @@ const updateCollectionWithSchema = async (
       }
     }
 
-    // Process indexes.
-    for (const index of schema.indexes) {
-      logContent.changes.push({
-        action: "createIndex",
-        information: `Creating index '${index.key}' of type '${index.type}'.`,
-      });
+    // Save current schema before index changes
+    await schemaToFile(coll);
+    logContent.changes.push({
+      action: "schemaToFile",
+      information: `Old collection schema saved to disk - starting index processing.`,
+    });
 
-      try {
+    try {
+      // Create indexes from schema
+      for (const index of schema.indexes) {
+        logContent.changes.push({
+          action: "createIndex",
+          information: `Creating index '${index.key}' of type '${index.type}'.`,
+        });
+
         await databases.createIndex(
           newArgs.databaseId!,
           newArgs.collectionId!,
@@ -2285,49 +2292,60 @@ const updateCollectionWithSchema = async (
           action: "createIndex",
           information: `Index '${index.key}' created.`,
         });
-      } catch (error: any) {
-        throw new Error(`Couldn't create index '${index.key}': ${error}`);
       }
-    }
 
-    if (args.destructive) {
-      const existingIndexes = coll.indexes || [];
-      const schemaIndexKeys = new Set(schema.indexes.map((idx) => idx.key));
+      // Destructive path: Remove indexes not in schema
+      if (args.destructive) {
+        const existingIndexes = coll.indexes || [];
+        const schemaIndexKeys = new Set(schema.indexes.map((idx) => idx.key));
 
-      const indexesToDelete = existingIndexes.filter(
-        (idx) => !schemaIndexKeys.has(idx.key)
-      );
+        const indexesToDelete = existingIndexes.filter(
+          (idx) => !schemaIndexKeys.has(idx.key)
+        );
 
-      for (const index of indexesToDelete) {
-        logContent.changes.push({
-          action: "deleteIndex",
-          information: `Index '${index.key}' exists in collection but not in schema; removing it.`,
-        });
-
-        try {
-          await databases.deleteIndex(
-            newArgs.databaseId!,
-            newArgs.collectionId!,
-            index.key
-          );
-
+        for (const index of indexesToDelete) {
           logContent.changes.push({
             action: "deleteIndex",
-            information: `Index '${index.key}' removed.`,
+            information: `Index '${index.key}' exists in collection but not in schema; removing it.`,
           });
-        } catch (error: any) {
-          throw new Error(
-            `Couldn't delete index '${index.key}': ${error.message}`
-          );
+
+          try {
+            await databases.deleteIndex(
+              newArgs.databaseId!,
+              newArgs.collectionId!,
+              index.key
+            );
+
+            logContent.changes.push({
+              action: "deleteIndex",
+              information: `Index '${index.key}' removed.`,
+            });
+          } catch (error: any) {
+            logContent.changes.push({
+              action: "deleteIndex",
+              information: `Error deleting index '${index.key}': ${error.message}`,
+            });
+            throw new Error(
+              `Couldn't delete index '${index.key}': ${error.message}`
+            );
+          }
         }
       }
+    } catch (error: any) {
+      logContent.changes.push({
+        action: "indexProcessingError",
+        information: `Error while processing indexes: ${error.message}`,
+      });
+
+      // Mark the failure and continue bubbling up the error
+      logContent.status = "failure";
+      logContent.executed_at = new Date().toISOString();
+      await toLogs(logTopic, logDetails, logContent);
+      throw error;
     }
 
     logContent.executed_at = new Date().toISOString();
     logContent.status = "success";
-
-    // Safe old schema to file
-    await schemaToFile(coll);
 
     // Write log
     await toLogs(logTopic, logDetails, logContent);

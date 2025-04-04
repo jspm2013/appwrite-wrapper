@@ -4,7 +4,7 @@ import { getSchema, attributesEqual, createAttribute, updateAttribute,
  } from "../collections";
 import { handleApwError } from "../exceptions";
 import { createAdminClient } from "../appwriteClients";
-import { ID, Query, } from "node-appwrite";
+import { ID, Query, AppwriteException, } from "node-appwrite";
 import { databaseId, usersCollectionId } from "../appwriteConfig";
 import { generateMigrationId, toLogs } from "../ssr-utils";
 import { isCollectionSchema, schemaToFile } from "../collections/schema";
@@ -1362,18 +1362,20 @@ const updateCollectionWithSchema = async (args) => {
             logContent.status = "failure";
             logContent.executed_at = new Date().toISOString();
             await toLogs(logTopic, logDetails, logContent);
-            console.log(222, error.response);
-            const response = error.response ?? error;
-            console.log(333, response);
-            const parsedResponse = JSON.parse(response);
-            console.log(444, parsedResponse);
-            const newResponse = { ...parsedResponse, message: errorMessage };
-            console.log(555, newResponse);
-            throw {
-                ...error,
-                response: JSON.stringify(newResponse),
+            // Preserve all original fields and replace only `message` in `response`
+            const originalResponse = error.response ?? "{}";
+            let parsedResponse = {};
+            try {
+                parsedResponse = JSON.parse(originalResponse);
+            }
+            catch {
+                parsedResponse = {};
+            }
+            const updatedResponse = {
+                ...parsedResponse,
+                message: errorMessage,
             };
-            //throw { ...error, message: errorMessage };
+            throw new AppwriteException(error.message, error.code || 500, error.type || "index_processing_error", JSON.stringify(updatedResponse));
         }
         logContent.executed_at = new Date().toISOString();
         logContent.status = "success";

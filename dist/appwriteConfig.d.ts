@@ -1,0 +1,23 @@
+declare const appDomain: string;
+declare const databaseId: string;
+declare const endpoint: string;
+declare const projectId: string;
+declare const apiKeySsr: string;
+declare const logsBucketId: string;
+declare const usersCollectionId: string;
+declare const liveEnvVarName: string;
+declare const port: string | number;
+declare const signInPath: string;
+declare const logsBucketName: string;
+declare const cookiePrefix: string;
+declare const oauthSuccessPath: string;
+declare const oauthFailurePath: string;
+declare const verificationPath: string;
+declare const cookieName: string;
+declare const pathI18n: string;
+declare const pathLogs: string;
+declare const pathSchemas: string;
+declare const paths: string[];
+declare const envCheck: () => void;
+export { envCheck, apiKeySsr, appDomain, cookiePrefix, cookieName, databaseId, endpoint, pathI18n, liveEnvVarName, oauthSuccessPath, oauthFailurePath, projectId, port, paths, pathLogs, pathSchemas, signInPath, usersCollectionId, verificationPath, logsBucketId, logsBucketName, };
+//# sourceMappingURL=appwriteConfig.d.ts.map

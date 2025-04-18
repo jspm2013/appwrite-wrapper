@@ -33,12 +33,12 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.10",
-    "next": "^15.2.1",
+    "next": "^15.3.1",
     "react": "^19.0.0",
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "node-appwrite": "^15.0.1"
+    "node-appwrite": "^16.0.0"
   },
   "engines": {
     "node": ">=22.0.0"

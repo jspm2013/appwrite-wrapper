@@ -2,7 +2,7 @@
 
 import path from "path";
 import fs from "fs/promises";
-import { schemasPath } from "../appwriteConfig";
+import { pathSchemas } from "../appwriteConfig";
 
 /**
  * Retrieves the absolute file path of a TypeScript type definition file.
@@ -16,7 +16,7 @@ export const getTypeFile = async ({
 }: {
   typeFileName: string;
 }) => {
-  const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
+  const SCHEMAS_FOLDER = path.join(process.cwd(), pathSchemas);
 
   try {
     const files = await fs.readdir(SCHEMAS_FOLDER);

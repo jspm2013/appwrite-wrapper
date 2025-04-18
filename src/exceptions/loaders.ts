@@ -2,7 +2,7 @@
 
 import fs from "fs/promises";
 import path from "path";
-import { i18nPath } from "../appwriteConfig";
+import { pathI18n } from "../appwriteConfig";
 
 interface LocalizedMessages {
   [key: string]: {
@@ -26,7 +26,7 @@ interface Config {
 export async function messagesLoader(
   locale: string
 ): Promise<LocalizedMessages> {
-  const msgsPath = path.join(process.cwd(), i18nPath, `${locale}.json`);
+  const msgsPath = path.join(process.cwd(), pathI18n, `${locale}.json`);
 
   try {
     const messagesContent = await fs.readFile(msgsPath, "utf-8");
@@ -45,7 +45,7 @@ export async function messagesLoader(
  * @throws {Error} If the configuration file cannot be read or parsed.
  */
 export async function configLoader(): Promise<Config> {
-  const configPath = path.join(process.cwd(), i18nPath, "config.json");
+  const configPath = path.join(process.cwd(), pathI18n, "config.json");
 
   try {
     const config = await fs.readFile(configPath, "utf-8");

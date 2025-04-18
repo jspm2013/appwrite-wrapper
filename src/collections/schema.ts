@@ -3,10 +3,10 @@ import fs from "fs/promises";
 import { LogType } from "../ssr-utils";
 import { humanTimeStamp } from "../utils";
 import { CollectionSchema } from "./types";
-import { schemasPath } from "../appwriteConfig";
+import { pathSchemas } from "../appwriteConfig";
 import { createTypeFile } from "./createTypeFile";
 
-const SCHEMAS_FOLDER = path.join(process.cwd(), schemasPath);
+const SCHEMAS_FOLDER = path.join(process.cwd(), pathSchemas);
 
 export const getSchema = async (
   schema: string,

@@ -3,13 +3,13 @@
 import path from "path";
 import fs from "fs/promises";
 import { humanTimeStamp } from "./utils";
-import { logsPath } from "./appwriteConfig";
+import { pathLogs } from "./appwriteConfig";
 import { ID, Compression } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 import { logsBucketId, logsBucketName } from "./appwriteConfig";
 import { createBucket, getBucket, uploadFile } from "./methods/storage";
 
-const LOGS_FOLDER = path.join(process.cwd(), logsPath);
+const LOGS_FOLDER = path.join(process.cwd(), pathLogs);
 
 export type LogType = {
   id: string;

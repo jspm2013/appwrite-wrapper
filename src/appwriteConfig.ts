@@ -5,13 +5,13 @@
  *
  */
 const appDomain = process.env.APP_DOMAIN || "";
-const databaseId = process.env.APPWRITE_DB_ID || "";
+const databaseId = process.env.APPWRITE_DB || "";
 const endpoint = process.env.APPWRITE_ENDPOINT || "";
-const projectId = process.env.APPWRITE_PROJECT_ID || "";
-const apiKeySsr = process.env.APPWRITE_API_KEY_SSR || "";
-const logsBucketId = process.env.APPWRITE_LOGS_BUCKET_ID || "";
-const usersCollectionId = process.env.APPWRITE_USERS_COLL_ID || "";
-const liveEnvVarName = process.env.APPWRITE_LIVE_ENV_VAR_NAME || "";
+const projectId = process.env.APPWRITE_PROJECT || "";
+const apiKeySsr = process.env.APPWRITE_KEY_SSR || "";
+const logsBucketId = process.env.APPWRITE_BUCKET_LOGS || "";
+const usersCollectionId = process.env.APPWRITE_COLL_USERS || "";
+const liveEnvVarName = process.env.APPWRITE_LIVE_ENV_VAR_NAME || ""; // ENV VAR name of the env var that refers to the publicly accessible URL of your hosting instance (which is only existent when running the app on the production server/system)
 
 /*
  *
@@ -21,7 +21,7 @@ const liveEnvVarName = process.env.APPWRITE_LIVE_ENV_VAR_NAME || "";
  */
 const port = process.env.PORT || 3000;
 const signInPath = process.env.APPWRITE_SIGN_IN_PATH || "sign-in";
-const logsBucketName = process.env.APPWRITE_LOGS_BUCKET_NAME || "logs";
+const logsBucketName = process.env.APPWRITE_BUCKET_LOGS_NAME || "logs";
 const cookiePrefix = process.env.APPWRITE_SESSION_COOKIE_PREFIX || "a_session_";
 const oauthSuccessPath = process.env.APPWRITE_OAUTH_SUCCESS_PATH || "api/oauth";
 const oauthFailurePath = process.env.APPWRITE_OAUTH_FAILURE_PATH || signInPath;
@@ -29,11 +29,16 @@ const verificationPath =
   process.env.APPWRITE_VERIFICATION_PATH || "verification";
 const cookieName =
   process.env.APPWRITE_SESSION_COOKIE_NAME || cookiePrefix.concat(projectId);
-// File/Folder paths
-const i18nPath = process.env.APPWRITE_I18N_PATH || "messages/appwrite";
-const logsPath = process.env.APPWRITE_LOGS_PATH || "lib/appwrite/logs";
-const schemasPath = process.env.APPWRITE_SCHEMAS_PATH || "lib/appwrite/schemas";
-const paths: string[] = [i18nPath, logsPath, schemasPath];
+/*
+ *
+ * FILE FOLDER PATHS
+ * Pre-defined: optionally customizable, using env vars
+ *
+ */
+const pathI18n = process.env.APPWRITE_PATH_I18N || "messages/appwrite";
+const pathLogs = process.env.APPWRITE_PATH_LOGS || "lib/appwrite/logs";
+const pathSchemas = process.env.APPWRITE_PATH_SCHEMAS || "lib/appwrite/schemas";
+const paths: string[] = [pathI18n, pathLogs, pathSchemas];
 
 /*
  *
@@ -56,29 +61,34 @@ const envCheck = () => {
       "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_ENDPOINT"
     );
   }
-  if (!process.env.APPWRITE_PROJECT_ID) {
+  if (!process.env.APPWRITE_PROJECT) {
     throw new Error(
-      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_PROJECT_ID"
+      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_PROJECT"
     );
   }
-  if (!process.env.APPWRITE_API_KEY_SSR) {
+  if (!process.env.APPWRITE_KEY_SSR) {
     throw new Error(
-      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_API_KEY_SSR"
+      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_KEY_SSR"
     );
   }
-  if (!process.env.APPWRITE_DB_ID) {
+  if (!process.env.APPWRITE_DB) {
     throw new Error(
-      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_DB_ID"
+      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_DB"
     );
   }
-  if (!process.env.APPWRITE_USERS_COLL_ID) {
+  if (!process.env.APPWRITE_COLL_USERS) {
     throw new Error(
-      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_USERS_COLL_ID"
+      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_COLL_USERS"
     );
   }
   if (!process.env.APPWRITE_LIVE_ENV_VAR_NAME) {
     throw new Error(
       "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_LIVE_ENV_VAR_NAME"
+    );
+  }
+  if (!process.env.APPWRITE_BUCKET_LOGS) {
+    throw new Error(
+      "APW-WRAPPER - Error: Missing required environment variable: APPWRITE_BUCKET_LOGS"
     );
   }
 };
@@ -91,15 +101,15 @@ export {
   cookieName,
   databaseId,
   endpoint,
-  i18nPath,
+  pathI18n,
   liveEnvVarName,
   oauthSuccessPath,
   oauthFailurePath,
   projectId,
   port,
   paths,
-  logsPath,
-  schemasPath,
+  pathLogs,
+  pathSchemas,
   signInPath,
   usersCollectionId,
   verificationPath,
